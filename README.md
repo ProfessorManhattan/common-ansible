@@ -1,3 +1,0 @@
-# Ansible
-
-Shared Ansible files
