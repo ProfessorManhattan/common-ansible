@@ -4,6 +4,8 @@ os: linux
 language: python
 python:
   - "3.8"
+git:
+  submodules: false
 
 jobs:
   include:
