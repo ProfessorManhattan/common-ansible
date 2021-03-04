@@ -39,4 +39,4 @@ flake8
 echo "Linting Python files with black"
 black .
 echo "Running npm test"
-npm test
+npm run lint
