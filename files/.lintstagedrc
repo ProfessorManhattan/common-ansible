@@ -1,0 +1,11 @@
+{
+  "*.{json}": [
+    "prettier --write"
+  ],
+  "scripts/desktop.sh": [
+    "prettier --write"
+  ],
+  "*.sh": [
+      prettier --write
+  ]
+}
