@@ -79,4 +79,14 @@ npx -y @appnest/readme generate --config __bp.json --input ./.modules/docs/bluep
 npx -y @appnest/readme generate --config __bp.json --input ./.modules/docs/blueprint-$README_TEMPLATE.md | true
 rm __bp.json
 
+# Install Python 3 requirements if requirements.txt is present
+if [ -f requirements.txt ]; then
+  pip3 install -r requirements.txt
+fi
+
+# Install Ansible Galaxy requirements if requirements.yml is present
+if [ -f requirements.yml ]; then
+  ansible-galaxy install -r requirements.yml
+fi
+
 echo "*** Done updating meta files and generating documentation ***"
