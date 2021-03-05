@@ -4,7 +4,8 @@
 # installed and then copies over base files from the modules. It also generates the
 # documentation.
 
-set -e
+set -ex
+
 REPO_TYPE=ansible
 git submodule update --init --recursive
 if [ ! -f "./.modules/${REPO_TYPE}/update.sh" ]; then
