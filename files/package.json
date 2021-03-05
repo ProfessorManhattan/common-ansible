@@ -11,7 +11,7 @@
     "info": "npm-scripts-info",
     "lint": "run-s lint:*",
     "lint:prettier": "prettier \"{**/*.yml,files/*.sh}\" --list-different",
-    "lint:spelling": "cspell \"{README.md,CONTRIBUTING.md,CHANGELOG.md,.github/*.md,.gitlab/*.md,blueprint.json,**/*.yml}\"",
+    "lint:spelling": "cspell --config ./.modules/shared/.cspell.json \"{README.md,CONTRIBUTING.md,CHANGELOG.md,.github/*.md,.gitlab/*.md,blueprint.json,**/*.yml}\"",
     "postinstall": "husky install && bash .update.sh",
     "prepare-release": "run-s update lint test version",
     "test": "molecule test",
