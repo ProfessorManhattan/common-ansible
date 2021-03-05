@@ -11,7 +11,6 @@
     "info": "npm-scripts-info",
     "lint": "run-s lint:*",
     "lint:prettier": "prettier \"{**/*.yml,files/*.sh}\" --list-different",
-    "lint:shellcheck": "shellcheck **/*.sh",
     "lint:spelling": "cspell \"{README.md,CONTRIBUTING.md,CHANGELOG.md,.github/*.md,.gitlab/*.md,blueprint.json,**/*.yml}\"",
     "postinstall": "husky install && bash .update.sh",
     "prepare-release": "run-s update lint test version",
@@ -48,11 +47,15 @@
     }
   },
   "lint-staged": {
+    "*.{json,yml,md}": [
+      "cspell"
+    ],
     "*.{json,yml}": [
       "prettier --write"
     ],
     "files/*.sh": [
-      "prettier --write"
+      "prettier --write",
+      "docker run -v \"$PWD:/mnt\" koalaman/shellcheck"
     ],
     "package.json": [
       "prettier-package-json --write"
