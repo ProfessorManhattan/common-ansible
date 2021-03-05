@@ -74,7 +74,7 @@ if [ -f ./main.yml ]; then
   # main.yml is in directory so this must be the root playbook directory
   README_TEMPLATE=readme-playbooks
 fi
-jq -s '.[0] * .[1]' blueprint.json ./.modules/docs/common.json > __bp.json | true
+jq -s '.[0] * .[1]' .blueprint.json ./.modules/docs/common.json > __bp.json | true
 npx -y @appnest/readme generate --config __bp.json --input ./.modules/docs/blueprint-contributing.md --output CONTRIBUTING.md | true
 npx -y @appnest/readme generate --config __bp.json --input ./.modules/docs/blueprint-$README_TEMPLATE.md | true
 rm __bp.json
