@@ -32,22 +32,38 @@ cp ./.modules/shared/.flake8 .flake8
 cp ./.modules/shared/.yamllint .yamllint
 cp ./.modules/shared/CODE_OF_CONDUCT.md CODE_OF_CONDUCT.md
 
-# Replace the role_name placeholder with the repository folder name
-ROLE_FOLDER=$(basename "$PWD")
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  grep -rl 'MEGABYTE_ROLE_PLACEHOLDER' ./.modules/ansible/files | xargs sed -i .bak "s/MEGABYTE_ROLE_PLACEHOLDER/${ROLE_FOLDER}/g"
-  find ./.modules/ansible/files -name "*.bak" -type f -delete
+# Check for presence of the main.yml folder
+if [ ! -f ./main.yml ]; then
+  # main.yml is not present so this must be a role folder
+
+  # Replace the role_name placeholder with the repository folder name
+  ROLE_FOLDER=$(basename "$PWD")
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    grep -rl 'MEGABYTE_ROLE_PLACEHOLDER' ./.modules/ansible/files | xargs sed -i .bak "s/MEGABYTE_ROLE_PLACEHOLDER/${ROLE_FOLDER}/g"
+    find ./.modules/ansible/files -name "*.bak" -type f -delete
+  else
+    grep -rl 'MEGABYTE_ROLE_PLACEHOLDER' ./.modules/ansible/files | xargs sed -i "s/MEGABYTE_ROLE_PLACEHOLDER/${ROLE_FOLDER}/g"
+  fi
+  
+  # Copy files over from the Ansible shared submodule
+  cp -Rf ./.modules/ansible/files/ .
+
+  # Reset the Ansible shared module to HEAD
+  cd ./.modules/ansible
+  git reset --hard HEAD
+  cd ../..
 else
-  grep -rl 'MEGABYTE_ROLE_PLACEHOLDER' ./.modules/ansible/files | xargs sed -i "s/MEGABYTE_ROLE_PLACEHOLDER/${ROLE_FOLDER}/g"
+  # Since this is not a role folder, it must be the main playbook
+
+  # Selectively copy parts of the ansible submodule
+  cp -Rf ./.modules/ansible/files/.gitlab .
+  cp -Rf ./.modules/ansible/files/.husky .
+  cp -Rf ./.modules/ansible/files/.vscode .
+  cp -Rf ./.modules/ansible/files/molecule .
+  cp ./.modules/ansible/files/LICENSE LICENSE
+  cp ./.modules/ansible/files/package.json package.json
+  cp ./.modules/ansible/files/requirements.txt requirements.txt
 fi
-
-# Copy files over from the Ansible shared submodule
-cp -Rf ./.modules/ansible/files/ .
-
-# Reset the Ansible shared module to HEAD
-cd ./.modules/ansible
-git reset --hard HEAD
-cd ../..
 
 # Ensure the pre-commit hook is executable
 chmod 755 .husky/pre-commit
