@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
-echo "Ensuring Python requirements are installed
+echo "Ensuring Python requirements are installed"
 pip3 install -r requirements.txt
 echo "Checking for files that are too large.."
 check-added-large-files
