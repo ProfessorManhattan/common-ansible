@@ -47,9 +47,6 @@
     }
   },
   "lint-staged": {
-    "*.{json,yml,md}": [
-      "cspell check"
-    ],
     "*.{json,yml}": [
       "prettier --write"
     ],
