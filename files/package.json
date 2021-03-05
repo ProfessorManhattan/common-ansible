@@ -13,7 +13,7 @@
     "lint:prettier": "prettier \"{**/*.yml,files/*.sh}\" --list-different",
     "lint:shellcheck": "shellcheck **/*.sh",
     "lint:spelling": "cspell \"{README.md,CONTRIBUTING.md,CHANGELOG.md,.github/*.md,.gitlab/*.md,blueprint.json,**/*.yml}\"",
-    "postinstall": "husky install && bash .update.sh && pip3 install -r requirements.txt && ansible-galaxy install -r requirements.yml",
+    "postinstall": "husky install && bash .update.sh",
     "prepare-release": "run-s update lint test version",
     "test": "molecule test",
     "test:docker": "molecule test -s docker",
