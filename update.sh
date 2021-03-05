@@ -26,7 +26,6 @@ fi
 cp -Rf ./.modules/shared/.github .
 cp -Rf ./.modules/shared/.gitlab .
 cp -Rf ./.modules/shared/.vscode .
-cp ./.modules/shared/.cspell.json .cspell.json
 cp ./.modules/shared/.editorconfig .editorconfig
 cp ./.modules/shared/.flake8 .flake8
 cp ./.modules/shared/.yamllint .yamllint
