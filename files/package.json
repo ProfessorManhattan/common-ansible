@@ -48,7 +48,7 @@
   },
   "lint-staged": {
     "*.{json,yml,md}": [
-      "cspell"
+      "cspell check"
     ],
     "*.{json,yml}": [
       "prettier --write"
