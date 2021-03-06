@@ -11,6 +11,7 @@
     "info": "npm-scripts-info",
     "lint": "run-s lint:*",
     "lint:prettier": "prettier \"{**/*.yml,files/*.sh}\" --list-different || echo 'Run \"npm run fix\" to automatically fix Prettier formatting errors'",
+    "lint:shellcheck": "shellcheck files/*.sh",
     "postinstall": "husky install && bash .update.sh",
     "prepare-release": "run-s update lint test version",
     "test": "molecule test",
