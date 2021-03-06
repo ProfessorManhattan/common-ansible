@@ -45,10 +45,15 @@ if [ ! -f ./main.yml ]; then
   fi
   
   # Copy files over from the Ansible shared submodule
-  PACKAGE_VERSION=$(cat package.json | jq '.version')
-  cp -Rf ./.modules/ansible/files/ .
-  jq --arg a "${PACKAGE_VERSION}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
-  npx prettier-package-json --write
+  if [ -f ./package.json ]; then
+    PACKAGE_VERSION=$(cat package.json | jq '.version')
+    cp -Rf ./.modules/ansible/files/ .
+    jq --arg a "${PACKAGE_VERSION}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
+    npx prettier-package-json --write
+  else
+    cp -Rf ./.modules/ansible/files/ .
+  fi
+  
 
   # Reset the Ansible shared module to HEAD
   cd ./.modules/ansible
@@ -63,7 +68,14 @@ else
   cp -Rf ./.modules/ansible/files/.vscode .
   cp -Rf ./.modules/ansible/files/molecule .
   cp ./.modules/ansible/files/LICENSE LICENSE
-  cp ./.modules/ansible/files/package.json package.json
+  if [ -f ./package.json ]; then
+    PACKAGE_VERSION=$(cat package.json | jq '.version')
+    cp ./.modules/ansible/files/package.json package.json
+    jq --arg a "${PACKAGE_VERSION}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
+    npx prettier-package-json --write
+  else
+    cp ./.modules/ansible/files/package.json package.json
+  fi
   cp ./.modules/ansible/files/requirements.txt requirements.txt
 fi
 
