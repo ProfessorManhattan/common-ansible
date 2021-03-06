@@ -48,7 +48,7 @@ if [ ! -f ./main.yml ]; then
   if [ -f ./package.json ]; then
     PACKAGE_VERSION=$(cat package.json | jq '.version')
     cp -Rf ./.modules/ansible/files/ .
-    jq --arg a "${PACKAGE_VERSION}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a $PACKAGE_VERSION '.version = $a' package.json > __jq.json && mv __jq.json package.json
     npx prettier-package-json --write
   else
     cp -Rf ./.modules/ansible/files/ .
@@ -71,7 +71,7 @@ else
   if [ -f ./package.json ]; then
     PACKAGE_VERSION=$(cat package.json | jq '.version')
     cp ./.modules/ansible/files/package.json package.json
-    jq --arg a "${PACKAGE_VERSION}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a $PACKAGE_VERSION '.version = $a' package.json > __jq.json && mv __jq.json package.json
     npx prettier-package-json --write
   else
     cp ./.modules/ansible/files/package.json package.json
