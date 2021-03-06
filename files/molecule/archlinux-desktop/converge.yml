@@ -4,4 +4,4 @@
   vars:
     ansible_user: ansible
   roles:
-    - role: professormanhattan.MEGABYTE_ROLE_PLACEHOLDER
+    - role: "{{ lookup('env', 'ANSIBLE_GALAXY_USERNAME_PREFIX') | default('')  }}MEGABYTE_ROLE_PLACEHOLDER"
