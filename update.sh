@@ -46,8 +46,12 @@ if [ ! -f ./main.yml ]; then
   
   # Copy files over from the Ansible shared submodule
   if [ -f ./package.json ]; then
+    PACKAGE_NAME=$(cat package.json | jq '.name')
+    PACKAGE_DESCRIPTION=$(cat package.json | jq '.description')
     PACKAGE_VERSION=$(cat package.json | jq '.version')
     cp -Rf ./.modules/ansible/files/ .
+    jq --arg a $PACKAGE_NAME '.name = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a $PACKAGE_DESCRIPTION '.description = $a' package.json > __jq.json && mv __jq.json package.json
     jq --arg a $PACKAGE_VERSION '.version = $a' package.json > __jq.json && mv __jq.json package.json
     npx prettier-package-json --write
   else
@@ -69,8 +73,12 @@ else
   cp -Rf ./.modules/ansible/files/molecule .
   cp ./.modules/ansible/files/LICENSE LICENSE
   if [ -f ./package.json ]; then
+    PACKAGE_NAME=$(cat package.json | jq '.name')
+    PACKAGE_DESCRIPTION=$(cat package.json | jq '.description')
     PACKAGE_VERSION=$(cat package.json | jq '.version')
     cp ./.modules/ansible/files/package.json package.json
+    jq --arg a $PACKAGE_NAME '.name = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a $PACKAGE_DESCRIPTION '.description = $a' package.json > __jq.json && mv __jq.json package.json
     jq --arg a $PACKAGE_VERSION '.version = $a' package.json > __jq.json && mv __jq.json package.json
     npx prettier-package-json --write
   else
