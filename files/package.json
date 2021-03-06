@@ -44,6 +44,16 @@
       "path": "cz-conventional-changelog"
     }
   },
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/megabytelabs"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/ProfessorManhattan"
+    }
+  ],
   "lint-staged": {
     "{**/*.yml,*.json}": [
       "prettier --write"
