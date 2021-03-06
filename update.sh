@@ -45,7 +45,10 @@ if [ ! -f ./main.yml ]; then
   fi
   
   # Copy files over from the Ansible shared submodule
+  PACKAGE_VERSION=$(cat package.json | jq '.version')
   cp -Rf ./.modules/ansible/files/ .
+  jq --arg a "${PACKAGE_VERSION}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
+  npx prettier-package-json --write
 
   # Reset the Ansible shared module to HEAD
   cd ./.modules/ansible
