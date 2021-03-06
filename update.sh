@@ -47,9 +47,9 @@ if [ ! -f ./main.yml ]; then
   # Copy files over from the Ansible shared submodule
   if [ -f ./package.json ]; then
     # Retain package.json "name", "description", and "version"
-    PACKAGE_NAME=$(cat package.json | jq '.name')
     PACKAGE_DESCRIPTION=$(cat package.json | jq '.description')
-    PACKAGE_VERSION=$(cat package.json | jq '.version')
+    PACKAGE_NAME=$(cat package.json | jq '.name' | cut -d '"' -f 2)
+    PACKAGE_VERSION=$(cat package.json | jq '.version' | cut -d '"' -f 2)
     cp -Rf ./.modules/ansible/files/ .
     jq --arg a ${PACKAGE_DESCRIPTION//\/} '.description = $a' package.json > __jq.json && mv __jq.json package.json
     jq --arg a ${PACKAGE_NAME//\/} '.name = $a' package.json > __jq.json && mv __jq.json package.json
@@ -75,9 +75,9 @@ else
   cp ./.modules/ansible/files/LICENSE LICENSE
   if [ -f ./package.json ]; then
     # Retain package.json "name", "description", and "version"
-    PACKAGE_NAME=$(cat package.json | jq '.name')
     PACKAGE_DESCRIPTION=$(cat package.json | jq '.description')
-    PACKAGE_VERSION=$(cat package.json | jq '.version')
+    PACKAGE_NAME=$(cat package.json | jq '.name' | cut -d '"' -f 2)
+    PACKAGE_VERSION=$(cat package.json | jq '.version' | cut -d '"' -f 2)
     cp ./.modules/ansible/files/package.json package.json
     jq --arg a ${PACKAGE_DESCRIPTION//\/} '.description = $a' package.json > __jq.json && mv __jq.json package.json
     jq --arg a ${PACKAGE_NAME//\/} '.name = $a' package.json > __jq.json && mv __jq.json package.json
