@@ -33,7 +33,7 @@
     }
   },
   "devDependencies": {
-    "@megabytelabs/prettier-config": "^1.2.17",
+    "@megabytelabs/prettier-config-ansible": "^1.0.0",
     "cspell": "^5.3.3",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "^5.1.1",
@@ -68,7 +68,7 @@
       "prettier-package-json --write"
     ]
   },
-  "prettier": "@megabytelabs/prettier-config",
+  "prettier": "@megabytelabs/prettier-config-ansible",
   "scripts-info": {
     "commit": "IMPORTANT: Whenever committing code run 'git-cz' or 'npm run commit'",
     "fix": "Automatically fix formatting errors",
