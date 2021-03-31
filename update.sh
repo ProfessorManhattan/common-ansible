@@ -28,6 +28,7 @@ cp -Rf ./.modules/shared/.gitlab .
 cp -Rf ./.modules/shared/.vscode .
 cp ./.modules/shared/.editorconfig .editorconfig
 cp ./.modules/shared/.flake8 .flake8
+cp ./.modules/shared/.prettierignore .prettierignore
 cp ./.modules/shared/.yamllint .yamllint
 cp ./.modules/shared/CODE_OF_CONDUCT.md CODE_OF_CONDUCT.md
 
