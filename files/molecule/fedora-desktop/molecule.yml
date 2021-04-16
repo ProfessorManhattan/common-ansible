@@ -13,8 +13,8 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: Fedora-Latest
-    box: ProfessorManhattan/Base-Fedora-Desktop
+  - name: Fedora-33-Desktop
+    box: MegabyteLabs/Fedora-Desktop
     memory: 4096
     cpus: 2
     interfaces:
