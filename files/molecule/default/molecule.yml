@@ -74,7 +74,7 @@ platforms:
       ssh.keep_alive: true
       ssh.remote_user: "'vagrant'"
   - name: Fedora-33
-    box: bento/fedora-33
+    box: alvistack/fedora-33
     memory: 1024
     cpus: 1
     interfaces:
