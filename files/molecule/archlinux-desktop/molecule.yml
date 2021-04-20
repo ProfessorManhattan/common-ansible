@@ -14,7 +14,7 @@ lint: |
   flake8
 platforms:
   - name: Archlinux-Latest-Desktop
-    box: MegabyteLabs/Archlinux-Desktop
+    box: Megabyte/Archlinux-Desktop
     memory: 4096
     cpus: 2
     interfaces:
