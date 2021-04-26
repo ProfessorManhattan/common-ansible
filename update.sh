@@ -106,7 +106,9 @@ rm __bp.json
 
 # Remove formatting error
 sed -i .bak 's/](#-/](#/g' README.md
+rm README.md.bak | true
 sed -i .bak 's/](#-/](#/g' CONTRIBUTING.md
+rm CONTRIBUTING.md.bak | true
 
 # Install Python 3 requirements if requirements.txt is present
 if [ -f requirements.txt ]; then
