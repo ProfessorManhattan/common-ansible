@@ -52,9 +52,9 @@ if [ ! -f ./main.yml ]; then
     PACKAGE_NAME=$(cat package.json | jq '.name' | cut -d '"' -f 2)
     PACKAGE_VERSION=$(cat package.json | jq '.version' | cut -d '"' -f 2)
     cp -Rf ./.modules/ansible/files/ .
-    jq --arg a ${PACKAGE_DESCRIPTION//\/} '.description = $a' package.json > __jq.json && mv __jq.json package.json
-    jq --arg a ${PACKAGE_NAME//\/} '.name = $a' package.json > __jq.json && mv __jq.json package.json
-    jq --arg a ${PACKAGE_VERSION//\/} '.version = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a "${PACKAGE_DESCRIPTION//\/}" '.description = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a "${PACKAGE_NAME//\/}" '.name = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a "${PACKAGE_VERSION//\/}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
     npx prettier-package-json --write
   else
     cp -Rf ./.modules/ansible/files/ .
@@ -80,9 +80,9 @@ else
     PACKAGE_NAME=$(cat package.json | jq '.name' | cut -d '"' -f 2)
     PACKAGE_VERSION=$(cat package.json | jq '.version' | cut -d '"' -f 2)
     cp ./.modules/ansible/files/package.json package.json
-    jq --arg a ${PACKAGE_DESCRIPTION//\/} '.description = $a' package.json > __jq.json && mv __jq.json package.json
-    jq --arg a ${PACKAGE_NAME//\/} '.name = $a' package.json > __jq.json && mv __jq.json package.json
-    jq --arg a ${PACKAGE_VERSION//\/} '.version = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a "${PACKAGE_DESCRIPTION//\/}" '.description = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a "${PACKAGE_NAME//\/}" '.name = $a' package.json > __jq.json && mv __jq.json package.json
+    jq --arg a "${PACKAGE_VERSION//\/}" '.version = $a' package.json > __jq.json && mv __jq.json package.json
     npx prettier-package-json --write
   else
     cp ./.modules/ansible/files/package.json package.json
