@@ -104,6 +104,10 @@ npx -y @appnest/readme generate --config __bp.json --input ./.modules/docs/bluep
 npx -y @appnest/readme generate --config __bp.json --input ./.modules/docs/blueprint-$README_TEMPLATE.md | true
 rm __bp.json
 
+# Remove formatting error
+sed -i .bak 's/](#-/](#/g' README.md
+sed -i .bak 's/](#-/](#/g' CONTRIBUTING.md
+
 # Install Python 3 requirements if requirements.txt is present
 if [ -f requirements.txt ]; then
   pip3 install -r requirements.txt
