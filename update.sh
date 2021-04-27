@@ -120,4 +120,7 @@ if [ -f requirements.yml ]; then
   ansible-galaxy install -r requirements.yml
 fi
 
+# Ensure .blueprint.json is formatted properly
+npx prettier --write .blueprint.json
+
 echo "*** Done updating meta files and generating documentation ***"
