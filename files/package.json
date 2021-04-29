@@ -9,7 +9,7 @@
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"{**/*.yml,files/*.sh}\" --write && prettier-package-json --write",
     "info": "npm-scripts-info",
-    "postinstall": "husky install && bash .update.sh",
+    "postinstall": "husky install && bash .start.sh",
     "lint": "run-s lint:*",
     "lint:ansible": "ansible-lint",
     "lint:black": "black .",
