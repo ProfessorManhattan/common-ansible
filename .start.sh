@@ -4,9 +4,10 @@
 # installed and then copies over base files from the modules. It also generates the
 # documentation.
 
-set -ex
+set -e
 
-REPO_TYPE=ansible
+curl -sL https://git.io/_has | bash -s docker git jq node npm python3 wget
+export REPO_TYPE=ansible
 git submodule update --init --recursive
 if [ ! -f "./.modules/${REPO_TYPE}/update.sh" ]; then
   mkdir -p ./.modules

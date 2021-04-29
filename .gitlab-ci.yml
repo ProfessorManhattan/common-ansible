@@ -1,6 +1,8 @@
 ---
 stages:
+  - lint
   - deploy
 
 include:
   - remote: https://gitlab.com/megabyte-space/gitlab-ci-templates/-/raw/master/propagate.gitlab-ci.yml
+  - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci.templates/-/raw/master/shellcheck.gitlab-ci.yml
