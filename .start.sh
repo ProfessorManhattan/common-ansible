@@ -6,7 +6,10 @@
 
 set -e
 
-curl -sL https://git.io/_has | bash -s docker git jq node npm python3 wget
+if [ "$container" != 'docker' ]; then
+  curl -sL https://git.io/_has | bash -s docker git jq node npm python3 wget
+fi
+
 export REPO_TYPE=ansible
 git submodule update --init --recursive
 if [ ! -f "./.modules/${REPO_TYPE}/update.sh" ]; then
