@@ -9,7 +9,7 @@
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"{**/*.yml,files/*.sh}\" --write && prettier-package-json --write",
     "info": "npm-scripts-info",
-    "postinstall": "husky install && bash .start.sh",
+    "postinstall": "husky install && run-s update",
     "lint": "run-s lint:*",
     "lint:ansible": "ansible-lint",
     "lint:black": "black .",
@@ -30,7 +30,7 @@
     "test:macos": "molecule converge -s macos-desktop",
     "test:ubuntu": "molecule converge -s ubuntu-desktop",
     "test:windows": "molecule converge -s windows-desktop",
-    "update": "bash .start.sh",
+    "update": "bash .start.sh && cp ./.modules/ansible/.start.sh .start.sh",
     "version": "standard-version --no-verify"
   },
   "config": {
