@@ -9,11 +9,11 @@ set -e
 # Ensure shared submodule is present
 if [ ! -d "./.modules/shared" ]; then
   mkdir -p ./.modules
-  git submodule add -b master https://gitlab.com/megabyte-space/common/shared.git ./.modules/shared
+  git submodule add -b master --depth 1 https://gitlab.com/megabyte-space/common/shared.git ./.modules/shared
 else
   cd ./.modules/shared
   git config pull.rebase true
-  git checkout master && git pull origin master
+  git checkout master && git pull --depth 1 --allow-unrelated-histories origin master
   cd ../..
 fi
 

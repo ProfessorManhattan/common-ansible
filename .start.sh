@@ -14,11 +14,11 @@ export REPO_TYPE=ansible
 git submodule update --init --recursive
 if [ ! -f "./.modules/${REPO_TYPE}/update.sh" ]; then
   mkdir -p ./.modules
-  git submodule add -b master https://gitlab.com/megabyte-space/common/$REPO_TYPE.git ./.modules/$REPO_TYPE
+  git submodule add -b master --depth 1 https://gitlab.com/megabyte-space/common/$REPO_TYPE.git ./.modules/$REPO_TYPE
 else
   cd ./.modules/$REPO_TYPE
   git config pull.rebase true
-  git checkout master && git pull origin master
+  git checkout master && git pull --depth 1 --allow-unrelated-histories origin master
   cd ../..
 fi
 bash ./.modules/$REPO_TYPE/update.sh
