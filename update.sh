@@ -12,8 +12,7 @@ if [ ! -d "./.modules/shared" ]; then
   git submodule add -b master --depth 1 https://gitlab.com/megabyte-space/common/shared.git ./.modules/shared
 else
   cd ./.modules/shared
-  git config pull.rebase true
-  git checkout master && git pull --depth 1 --allow-unrelated-histories origin master
+  git checkout master && git pull --depth 1 --rebase origin master
   cd ../..
 fi
 
