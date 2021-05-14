@@ -6,6 +6,7 @@
 
 set -e
 
+# shellcheck disable=SC2154
 if [ "$container" != 'docker' ]; then
   curl -sL https://git.io/_has | bash -s docker git jq node npm python3 wget
 fi
