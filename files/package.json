@@ -87,7 +87,7 @@
   },
   "prettier": "@megabytelabs/prettier-config-ansible",
   "scripts-info": {
-    "commit": "IMPORTANT: Whenever committing code run 'git-cz' or 'npm run commit' - this command will automatically test and prompt with an interactive questionaire to populate proper commit messages",
+    "commit": "IMPORTANT: Whenever committing code run 'git-cz' or 'npm run commit' - this command will automatically test and prompt with an interactive questionnaire to populate proper commit messages",
     "fix": "Automatically fix formatting errors",
     "fix:black": "Automatically format Python files",
     "fix:prettier": "Automatically format files with Prettier",
