@@ -1,6 +1,6 @@
 ---
 name: macOS
-'on':
+"on":
   pull_request:
   push:
     branches:
@@ -47,17 +47,17 @@ jobs:
           cp tests/inventory ./inventory
           cp tests/test.yml main.yml
           ROLE_FOLDER=$(basename "$PWD")
-          sed -i "s/MEGABYTE_ROLE_PLACEHOLDER/${ROLE_FOLDER}/g" main.yml
+          sed -i "s/snapd/${ROLE_FOLDER}/g" main.yml
 
       - name: Test the playbook.
         env:
-          ANSIBLE_FORCE_COLOR: '1'
+          ANSIBLE_FORCE_COLOR: "1"
         run: |
           ansible-playbook main.yml
 
       - name: Check for idempotence.
         env:
-          ANSIBLE_FORCE_COLOR: '1'
+          ANSIBLE_FORCE_COLOR: "1"
         run: |
           idempotence=$(mktemp)
           ansible-playbook main.yml | tee -a ${idempotence}
