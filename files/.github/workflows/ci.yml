@@ -1,5 +1,5 @@
 ---
-name: CI
+name: macOS
 'on':
   pull_request:
   push:
