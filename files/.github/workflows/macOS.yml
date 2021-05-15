@@ -31,8 +31,7 @@ jobs:
           cp tests/ansible.cfg ./ansible.cfg
           cp tests/inventory ./inventory
           cp tests/test.yml main.yml
-          ROLE_FOLDER=$(basename "$PWD")
-          sed -i "s/snapd/${ROLE_FOLDER}/g" main.yml
+          sed -i '.bak' "s/-.role:./- role:\ ansible-/g" main.yml
 
       - name: Test the playbook.
         env:
