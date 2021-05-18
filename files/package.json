@@ -41,7 +41,7 @@
     "test:fedora": "molecule converge -s fedora-desktop",
     "test:macos": "molecule converge -s macos-desktop",
     "test:ubuntu": "molecule converge -s ubuntu-desktop",
-    "test:windows": "molecule converge -s windows-desktop",
+    "test:windows": "export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES && molecule converge -s windows-desktop",
     "update": "bash .start.sh && cp ./.modules/ansible/.start.sh .start.sh",
     "version": "standard-version --no-verify"
   },
