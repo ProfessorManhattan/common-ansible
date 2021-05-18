@@ -23,6 +23,7 @@
     "prepare-release": "run-s update lint test version",
     "misc:logos-resize": "find . -name 'logo.png' -print0 | while read -d $'\\0' file; do; sharp -i \"$file\" -o \"${file%/*}/logo-resized.png\" --lossless resize 200 200; mv \"${file%/*}/logo-resized.png\" \"$file\"; done",
     "misc:missing-logos": "find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e \"{}/logo.png\" ';' -print",
+    "misc:symlink-roles": "mkdir -p ~/.ansible/roles && find ./roles -mindepth 2 -maxdepth 2 -print0 | while read -d $'\\0' role_path; do; ln -sf \"$PWD/$role_path\" \"$HOME/.ansible/roles/professormanhattan.$(basename $role_path)\"; done",
     "shell:archlinux": "docker run --cap-drop=ALL -it -v ${PWD}:/ANSIBLE_ROLE_NAME -w /ANSIBLE_ROLE_NAME --rm megabytelabs/ansible-molecule-archlinux:latest /bin/bash",
     "shell:centos-7": "docker run --cap-drop=ALL -it -v ${PWD}:/ANSIBLE_ROLE_NAME -w /ANSIBLE_ROLE_NAME --rm megabytelabs/ansible-molecule-centos-7:latest /bin/bash",
     "shell:centos-8": "docker run --cap-drop=ALL -it -v ${PWD}:/ANSIBLE_ROLE_NAME -w /ANSIBLE_ROLE_NAME --rm megabytelabs/ansible-molecule-centos-8:latest /bin/bash",
