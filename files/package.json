@@ -104,6 +104,8 @@
     "lint:prettier": "Checks for presence of files that Prettier wants to format differently",
     "lint:shellcheck": "Performs linting of shell scripts",
     "lint:yaml": "Runs yamllint which is a general purpose linter for YAML files",
+    "misc:find-missing-logos": "When this command is run in the main playbook root directory, it will report all of the roles that are missing the logo.png file",
+    "misc:symlink-roles": "When run in the main playbook root directory, this will symlink all of the roles to the ~/.ansible/roles folder, adding the professormanhattan. prefix as well because the Ansible Galaxy dependencies are hardcoded to include professormanhattan. in front of the role name",
     "prepare-release": "Prepares the repository for a release",
     "shell:{{ OS NAME }}": "Open a Docker shell session for debugging ({{ OS NAME }} can be archlinux, centos-7, centos-8, debian-9, debian-10, fedora-33, ubuntu-18.04, or ubuntu-20.04",
     "test": "Runs molecule tests for all the supported operating systems using VirtualBox (this is RAM intensive)",
