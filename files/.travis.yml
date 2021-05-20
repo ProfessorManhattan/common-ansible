@@ -28,5 +28,6 @@ jobs:
         - ROLE_FOLDER=$(basename "$PWD")
         - sed -i "s/MEGABYTE_ROLE_PLACEHOLDER/${ROLE_FOLDER}/g" main.yml
         - ansible-playbook main.yml
+
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
