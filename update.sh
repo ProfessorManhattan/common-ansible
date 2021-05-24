@@ -37,7 +37,7 @@ cp ./.modules/shared/.yamllint .yamllint
 cp ./.modules/shared/CODE_OF_CONDUCT.md CODE_OF_CONDUCT.md
 
 # Ensure role(s) are symlinked
-symlink_roles
+#symlink_roles
 
 # Update shared files and install requirements
 copy_project_files_and_generate_package_json
