@@ -17,9 +17,6 @@ platforms:
     box: Megabyte/Windows-Desktop
     memory: 4096
     cpus: 2
-    interfaces:
-      - network_name: private_network
-        ip: 172.24.24.33
     provider_raw_config_args:
       - "customize [ 'modifyvm', :id, '--natdnshostresolver1', 'on' ]"
     config_options:
@@ -30,11 +27,14 @@ provisioner:
   inventory:
     group_vars:
       all:
+        ansible_become_method: runas
+        ansible_shell_type: powershell
         virtualbox_molecule_test: true
   options:
     vvv: true
   playbooks:
     converge: converge.yml
+    prepare: prepare.yml
 verifier:
   name: ansible
 scenario:
