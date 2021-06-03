@@ -44,6 +44,7 @@ copy_project_files_and_generate_package_json
 generate_documentation
 install_requirements
 populate_alternative_descriptions
+generate_ansible_charts
 misc_fixes
 
 # Ensure .start.sh is the latest version # TODO: Figure out how to make this work
