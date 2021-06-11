@@ -35,7 +35,7 @@ platforms:
     privileged: true
     pre_build_image: true
   - name: Ubuntu-21.04
-    image: megabytelabs/ansible-molecule-ubuntu-20.04:latest
+    image: megabytelabs/ansible-molecule-ubuntu-21.04:latest
     command: /sbin/init
     tmpfs:
       - /run
