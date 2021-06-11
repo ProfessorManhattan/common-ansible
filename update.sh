@@ -22,6 +22,7 @@ source "./.modules/shared/update.lib.sh"
 # Install software dependencies if they are missing
 ensure_node_installed
 ensure_jq_installed
+ensure_yq_installed
 
 # Ensure documentation partials submodule is present and in sync with master
 ensure_project_docs_submodule_latest
@@ -37,15 +38,13 @@ cp ./.modules/shared/.yamllint .yamllint
 cp ./.modules/shared/CODE_OF_CONDUCT.md CODE_OF_CONDUCT.md
 
 # Ensure role(s) are symlinked
-#symlink_roles
+symlink_roles
 
 # Update shared files and install requirements
 copy_project_files_and_generate_package_json
 populate_alternative_descriptions
 generate_ansible_charts
 generate_documentation
+populate_common_missing_ansible_dependencies
 install_requirements
 misc_fixes
-
-# Ensure .start.sh is the latest version # TODO: Figure out how to make this work
-# cp ./.modules/$REPO_TYPE/.start.sh .start.sh
