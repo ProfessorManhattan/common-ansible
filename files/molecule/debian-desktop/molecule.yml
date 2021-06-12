@@ -15,8 +15,8 @@ lint: |
 platforms:
   - name: Debian-10
     box: Megabyte/Debian-Desktop
-    memory: 4096
     cpus: 2
+    memory: 4096
     provider_raw_config_args:
       - "customize [ 'modifyvm', :id, '--natdnshostresolver1', 'on' ]"
 provisioner:

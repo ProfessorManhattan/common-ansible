@@ -15,8 +15,8 @@ lint: |
 platforms:
   - name: macOS-Big-Sur-11
     box: Megabyte/macOS-Desktop
-    memory: 4096
     cpus: 2
+    memory: 4096
     provider_raw_config_args:
       - "customize [ 'modifyvm', :id, '--natdnshostresolver1', 'on' ]"
 provisioner:
