@@ -77,7 +77,7 @@
     "standard-version": "^9.3.0"
   },
   "keywords": [
-    "ANSIBLE_PROJECT_SLUG",
+    "ANSIBLE_ROLE_NAME",
     "ansible",
     "megabytelabs",
     "playbook",
