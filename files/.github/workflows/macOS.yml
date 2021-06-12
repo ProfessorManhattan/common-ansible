@@ -6,7 +6,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 5 * * 2'
+    - cron: "0 5 * * 2"
 
 jobs:
   integration:
@@ -35,13 +35,13 @@ jobs:
 
       - name: Test the playbook.
         env:
-          ANSIBLE_FORCE_COLOR: '1'
+          ANSIBLE_FORCE_COLOR: "1"
         run: |
           ansible-playbook main.yml
 
       - name: Check for idempotence.
         env:
-          ANSIBLE_FORCE_COLOR: '1'
+          ANSIBLE_FORCE_COLOR: "1"
         run: |
           idempotence=$(mktemp)
           ansible-playbook main.yml | tee -a ${idempotence}
