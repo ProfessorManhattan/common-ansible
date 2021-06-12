@@ -5,4 +5,5 @@ stages:
 
 include:
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/propagate.gitlab-ci.yml
+  - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/prettier.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/shellcheck.gitlab-ci.yml

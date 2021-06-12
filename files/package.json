@@ -3,6 +3,15 @@
   "description": "Node files that support the development of Ansible roles",
   "license": "MIT",
   "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
+  "homepage": "https://install.doctor",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_PROJECT_SLUG.git"
+  },
+  "bugs": {
+    "email": "help@megabyte.space",
+    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_PROJECT_SLUG/-/issues"
+  },
   "version": "1.0.0",
   "scripts": {
     "commit": "git-cz",
@@ -67,6 +76,23 @@
     "shellcheck": "^1.0.0",
     "standard-version": "^9.3.0"
   },
+  "keywords": [
+    "ansible",
+    "megabytelabs",
+    "playbook",
+    "professormanhattan",
+    "archlinux",
+    "centos",
+    "debian",
+    "fedora",
+    "macos",
+    "ubuntu",
+    "windows",
+    "molecule"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
   "funding": [
     {
       "type": "opencollective",
@@ -115,5 +141,10 @@
     "test:OS_NAME": "Provisions a full desktop VirtualBox VM, installs the role(s), and does not delete the VM after testing for further inspection (OS NAME can be archlinux, centos, debian, fedora, macos, ubuntu, or windows)",
     "update": "Runs .start.sh to automatically update meta files and documentation",
     "version": "Used by 'npm run prepare-release' to update the CHANGELOG"
+  },
+  "standard-version": {
+    "scripts": {
+      "prerelease": "git add --all"
+    }
   }
 }
