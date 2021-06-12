@@ -19,9 +19,6 @@ platforms:
     cpus: 2
     provider_raw_config_args:
       - "customize [ 'modifyvm', :id, '--natdnshostresolver1', 'on' ]"
-    config_options:
-      ssh.keep_alive: true
-      ssh.remote_user: "'vagrant'"
 provisioner:
   name: ansible
   inventory:
