@@ -6,7 +6,7 @@
   "homepage": "https://install.doctor",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_ROLE_NAME.git"
+    "url": "git+https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_ROLE_NAME.git"
   },
   "bugs": {
     "email": "help@megabyte.space",
