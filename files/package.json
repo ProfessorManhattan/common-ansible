@@ -6,11 +6,11 @@
   "homepage": "https://install.doctor",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_PROJECT_SLUG.git"
+    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_ROLE_NAME.git"
   },
   "bugs": {
     "email": "help@megabyte.space",
-    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_PROJECT_SLUG/-/issues"
+    "url": "https://gitlab.com/megabyte-labs/ansible-roles/ANSIBLE_ROLE_NAME/-/issues"
   },
   "version": "1.0.0",
   "scripts": {
