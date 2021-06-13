@@ -2,8 +2,6 @@
 ignore: |
   venv
   .cache/
-  .github/
-  .gitlab/
   node_modules/
 
 extends: default
