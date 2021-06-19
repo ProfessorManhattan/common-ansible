@@ -5,8 +5,9 @@ stages:
   - deploy
 
 include:
+  - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/fix/prettier-fix.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/gitlab-ci-lint.gitlab-ci.yml
-  - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/prettier-fix.gitlab-ci.yml
+  - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/prettier.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/shellcheck.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/yamllint.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/propagate/propagate-groups.gitlab-ci.yml
