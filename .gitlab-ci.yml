@@ -1,5 +1,6 @@
 ---
 stages:
+  - update
   - fix
   - lint
   - deploy
@@ -11,3 +12,4 @@ include:
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/shellcheck.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/lint/yamllint.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/propagate/propagate-groups.gitlab-ci.yml
+  - remote: https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/update/update-common.gitlab-ci.yml
