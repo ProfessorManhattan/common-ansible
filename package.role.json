@@ -107,16 +107,9 @@
     }
   ],
   "lint-staged": {
-    "{**/*.yml,**/*.json}": [
-      "prettier --write"
-    ],
-    "{**/*.sh,**/*.sh.j2": [
-      "prettier --write",
-      "docker run -v \"$PWD:/mnt\" koalaman/shellcheck"
-    ],
-    "package.json": [
-      "prettier-package-json --write"
-    ]
+    "{**/*.yml,**/*.json}": ["prettier --write"],
+    "{**/*.sh,**/*.sh.j2": ["prettier --write", "docker run -v \"$PWD:/mnt\" koalaman/shellcheck"],
+    "package.json": ["prettier-package-json --write"]
   },
   "prettier": "@megabytelabs/prettier-config-ansible",
   "scripts-info": {

@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   lint-ansible:
@@ -101,4 +101,3 @@ tasks:
         else
           molecule test
         fi
-
