@@ -1,4 +1,4 @@
 ---
 - hosts: localhost:windows-docker
   roles:
-    - role: MEGABYTE_ROLE_PLACEHOLDER
+    - role: {{PROJECT_FOLDER_NAME}}

@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  find-missing-files:
+    desc: Find roles that are missing files
+    summary: |
+      Find roles that are missing any given file
+
+      This task scans through all the folders in the roles/ directory and checks
+      for the presence of a file that you pass in through the CLI.
+
+      Example usage:
+      > task find-missing-files -- logo.png
+    cmds:
+      - find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print
+
+  symlink-ansible:
+    desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
+    cmds:
+      - |
+        find ./roles -mindepth 2 -maxdepth 2 -type d -print0 | while read -d $'\0' ROLE_PATH; do;
+          PATH_BASENAME=$(basename "$ROLE_PATH");
+          if [ ! -d "~/.ansible/roles/$GALAXY_NAMESPACE.$PATH_BASENAME" ]; then
+            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/$GALAXY_NAMESPACE.$PATH_BASENAME"
+          fi
+        done

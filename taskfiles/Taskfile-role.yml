@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  symlink-ansible:
+    desc: Symlink the current role to ~/.ansible/roles/{{GALAXY_NAMESPACE}}.{{GALAXY_ROLE_NAME}}
+    cmds:
+      - rm -f "$HOME/.ansible/roles/${GALAXY_NAMESPACE}.${GALAXY_ROLE_NAME}"
+      - mkdir -p "$HOME/.ansible/roles"
+      - ln -s "$PWD" "~/.ansible/roles/${GALAXY_NAMESPACE}.${GALAXY_ROLE_NAME}"
+    sources:
+      - roles/*/*/
+    method: timestamp

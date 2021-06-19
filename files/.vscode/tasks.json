@@ -2,119 +2,43 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Lint: Ansible (ansible-lint)",
+      "label": "Update: Update/initialize the project",
       "type": "shell",
-      "command": "ansible-lint"
+      "command": "task update"
     },
     {
-      "label": "Lint: Markdown (mdl)",
+      "label": "Fix: Automatically apply code formatting adjustments",
       "type": "shell",
-      "command": "mdl ."
+      "command": "task fix"
     },
     {
-      "label": "Lint: Python (flake8)",
+      "label": "Lint: Run all the linters in parallel",
       "type": "shell",
-      "command": "flake8"
+      "command": "task lint"
     },
     {
-      "label": "Lint: YML (yamllint)",
+      "label": "Setup: Ensure all project dependencies are installed",
       "type": "shell",
-      "command": "yamllint ."
-    },
-    {
-      "label": "Setup: Install all project dependencies",
-      "type": "shell",
-      "command": "",
+      "command": "ADDITIONAL_PACKAGES=packer,python,taskfile,jq,wget,yq curl -sS https://install.doctor/node | bash",
       "windows": {
-        "command": ""
+        "command": "Set-Variables -Name \"ADDITIONAL_PACKAGES\" -Value \"packer,taskfile,jq,yq\"; Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://win.install.doctor/node'))"
       }
     },
     {
-      "label": "Setup: Install Appium",
+      "label": "Setup: Ensure Docker is installed (requires elevated permissions)",
       "type": "shell",
-      "command": "",
+      "command": "curl -sS https://install.doctor/docker | bash",
       "windows": {
-        "command": ""
+        "command": "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://win.install.doctor/docker'))"
       }
     },
     {
-      "label": "Setup: Install Docker",
+      "label": "Setup: Ensure VirtualBox is installed (requires elevated permissions)",
       "type": "shell",
-      "command": "",
+      "command": "curl -sS https://install.doctor/virtualbox | bash",
       "windows": {
-        "command": ""
+        "command": "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://win.install.doctor/virtualbox'))"
       }
-    },
-    {
-      "label": "Setup: Install KVM (Linux only)",
-      "type": "shell",
-      "command": ""
-    },
-    {
-      "label": "Setup: Install Node.js and NVM",
-      "type": "shell",
-      "command": "",
-      "windows": {
-        "command": ""
-      }
-    },
-    {
-      "label": "Setup: Install Node.js global dependencies",
-      "type": "shell",
-      "command": "",
-      "windows": {
-        "command": ""
-      }
-    },
-    {
-      "label": "Setup: Install pre-commit",
-      "type": "shell",
-      "command": "pre-commit install",
-      "dependsOn": ["Setup: Install Python/Ansible Galaxy dependencies"]
-    },
-    {
-      "label": "Setup: Install Python",
-      "type": "shell",
-      "command": "", // example for Ubuntu 20.04: sudo apt-get install python3 python3-netaddr python3-pip
-      "windows": {
-        "command": ""
-      }
-    },
-    {
-      "label": "Setup: Install VirtualBox",
-      "type": "shell",
-      "command": "",
-      "windows": {
-        "command": ""
-      }
-    },
-    {
-      "label": "Setup: Install VMWare",
-      "type": "shell",
-      "command": "",
-      "windows": {
-        "command": ""
-      }
-    },
-    {
-      "label": "Setup: Install Python/Ansible Galaxy dependencies",
-      "type": "shell",
-      "command": "python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt && ansible-galaxy install -r collections.yml && ansible-galaxy install -r requirements.yml"
-    },
-    {
-      "label": "Test: Run Molecule tests (Docker)",
-      "type": "shell",
-      "command": "molecule test"
-    },
-    {
-      "label": "Test: Install role on Archlinux and open VM (VirtualBox)",
-      "type": "shell",
-      "command": "molecule converge -s virtualbox"
-    },
-    {
-      "label": "Test: Install role on Ubuntu and open VM (VirtualBox)",
-      "type": "shell",
-      "command": "molecule converge -s virtualbox"
     }
   ]
 }

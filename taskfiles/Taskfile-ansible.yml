@@ -1,0 +1,104 @@
+version: '3'
+
+tasks:
+  lint-ansible:
+    deps: [symlink-ansible]
+    desc: Lint Ansible projects using Ansible Lint
+    cmds:
+      - ansible-lint
+    sources:
+      - defaults/**/*
+      - environments/**/*
+      - group_vars/**/*
+      - host_vars/**/*
+      - inventories/**/*
+      - meta/**/*
+      - molecule/**/*
+      - playbooks/**/*
+      - tasks/**/*
+      - tests/**/*
+      - vars/**/*
+      - ./*.yml
+    method: checksum
+
+  lint-yaml:
+    desc: Lint .yml files using YAML Lint
+    cmds:
+      - yamllint .
+    sources:
+      - defaults/**/*
+      - environments/**/*
+      - group_vars/**/*
+      - host_vars/**/*
+      - inventories/**/*
+      - meta/**/*
+      - molecule/**/*
+      - playbooks/**/*
+      - tasks/**/*
+      - tests/**/*
+      - vars/**/*
+      - ./*.yml
+    method: checksum
+
+  local-test:
+    desc: Run the Ansible play on the local machine
+    cmds:
+      - if [ ! -f ansible.cfg.bak ]; then mv ansible.cfg ansible.cfg.bak; fi
+      - cp tests/ansible.cfg ansible.cfg
+      - ansible-playbook --ask-sudo-pass -i tests/inventory-{{OS}} tests/test.yml || true
+      - mv ansible.cfg.bak ansible.cfg
+
+  molecule-desktop:
+    desc: Provisions a desktop VirtualBox VM and then runs a Molecule test
+    summary: |
+      This task opens a VM with an operating system of your choosing and then tests
+      the project's play against it. It then leaves the VM open for inspection.
+
+      Example usage:
+      task molecule -- archlinux
+
+      Available scenarios:
+      archlinux, centos, debian, fedora, macos, ubuntu, windows
+    cmds:
+      - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+      - molecule converge -s {{.CLI_ARGS}}-desktop
+
+  molecule-docker:
+    desc: Performs a full test, including a test for idempotency, on all available Linux systems using Docker
+    summary: |
+      This task runs the project's Molecule tests using Docker. It only tests against
+      Linux systems. If the role/project contains any steps that use the
+      community.general.snap plugin, then only the operating systems that support that
+      plugin with Docker are tested.
+
+      Example usage:
+      task molecule-docker
+    vars:
+      SNAP_REFS:
+        sh: grep -Ril \"community.general.snap:\" ./tasks
+    cmds:
+      - if [ "$SNAP_REFS" ]; then molecule test -s docker-snap; else molecule test -s docker; fi
+
+  molecule-e2e:
+    desc: Runs a full E2E Molecule test for all supported operating systems
+    summary: |
+      This task uses VirtualBox to run tests for all of our supported operating
+      systems in parallel. It is very RAM intensive so, if you want to run this,
+      your computer should have at least 32GB of RAM.
+
+      Run the full test:
+      task molecule-e2e
+
+      Generate the compatibility matrix in the README.md:
+      task molecule-e2e -- matrix
+    cmds:
+      - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+      - |
+        if [ "{{.CLI_ARGS}}" ]; then
+          if [ "{{.CLI_ARGS}}" == 'matrix']; then
+            PYCOLORS=0 molecule test > molecule-test-output.txt
+          fi
+        else
+          molecule test
+        fi
+
