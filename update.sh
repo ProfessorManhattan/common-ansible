@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 
 # @file .common/update.sh
 # @brief Ensures the project is up-to-date with the latest upstream changes
@@ -12,7 +13,6 @@
 
 set -e
 
-# shellcheck disable=SC1091
 source "./.common/scripts/log.sh"
 source "./.common/scripts/common.sh"
 source "./.common/scripts/software.sh"

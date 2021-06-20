@@ -4,11 +4,9 @@
 # @brief Includes common functions and initialization logic that is used by other scripts
 
 export START_PATH="$PWD"
-export SCRIPT_PATH=$(
-  cd $(dirname ${BASH_SOURCE[0]}) || exit
-  pwd -P
-  cd "$START_PATH" || exit
-)
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit
+export SCRIPT_PATH="$(pwd -P)"
+cd "$START_PATH" || exit
 export TMP_DIR=/tmp/megabytelabs
 export USER_BIN_FOLDER="$HOME/.local/bin"
 if [ "$(uname)" == "Darwin" ]; then
