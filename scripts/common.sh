@@ -5,9 +5,9 @@
 
 export START_PATH="$PWD"
 export SCRIPT_PATH=$(
-  cd $(dirname ${BASH_SOURCE[0]})
+  cd $(dirname ${BASH_SOURCE[0]}) || exit
   pwd -P
-  cd $START_PATH
+  cd "$START_PATH" || exit
 )
 export TMP_DIR=/tmp/megabytelabs
 export USER_BIN_FOLDER="$HOME/.local/bin"

@@ -11,7 +11,7 @@ function missingDockerNotice() {
 }
 
 function missingKVMNotice() {
-  if ([ "$SYSTEM" == 'Darwin' ] || [ "$SYSTEM" == 'Linux' ]) && ! commandExists kvm; then
+  if { [ "$SYSTEM" == 'Darwin' ] || [ "$SYSTEM" == 'Linux' ]; } && ! commandExists kvm; then
     warn "KVM is not currently installed on your computer."
     info "You can install KVM by using the instructions in this link: https://gitlab.com/megabyte-labs/ansible-roles/kvm"
   fi
@@ -25,14 +25,14 @@ function missingParallelsNotice() {
 }
 
 function missingVirtualBoxNotice() {
-  if ([ "$SYSTEM" == 'Darwin' ] || [ "$SYSTEM" == 'Linux' ] || [ "$SYSTEM" == 'Win32' ] || [ "$SYSTEM" == 'Win64' ]) && ! commandExists VBoxManage; then
+  if { [ "$SYSTEM" == 'Darwin' ] || [ "$SYSTEM" == 'Linux' ] || [ "$SYSTEM" == 'Win32' ] || [ "$SYSTEM" == 'Win64' ]; } && ! commandExists VBoxManage; then
     warn "VirtualBox is not currently installed on your computer."
     info "You can install VirtualBox by using the instructions in this link: https://gitlab.com/megabyte-labs/ansible-roles/virtualbox"
   fi
 }
 
 function missingVMWareNotice() {
-  if ([ "$SYSTEM" == 'Linux' ] || [ "$SYSTEM" == 'Win32' ] || [ "$SYSTEM" == 'Win64' ]) && ! commandExists vmware; then
+  if { [ "$SYSTEM" == 'Linux' ] || [ "$SYSTEM" == 'Win32' ] || [ "$SYSTEM" == 'Win64' ]; } && ! commandExists vmware; then
     warn "VMWare is not currently installed on your computer."
     info "You can install VMWare by using the instructions in this link: https://gitlab.com/megabyte-labs/ansible-roles/vmware"
   fi

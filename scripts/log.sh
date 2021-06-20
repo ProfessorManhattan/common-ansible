@@ -28,7 +28,7 @@ LOG_PREFIX=testy
 LOG_SUFFIX=""
 if commandExists node; then
   NODE_PATH="$(npm root -g):$NODE_PATH"
-  if [ "$container" != 'docker' ]; then
+  if [ "${container:=}" != 'docker' ]; then
     ENHANCED_LOGGING=true
   fi
 fi
@@ -39,7 +39,7 @@ function signale() {
 
 function error() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale error $1
+    signale error "$1"
   else
     echo "ERROR: $1"
   fi
@@ -47,7 +47,7 @@ function error() {
 
 function info() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale note $1
+    signale note "$1"
   else
     echo "INFO: $1"
   fi
@@ -55,7 +55,7 @@ function info() {
 
 function star() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale star $1
+    signale star "$1"
   else
     echo "STAR: $1"
   fi
@@ -63,7 +63,7 @@ function star() {
 
 function start() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale start $1
+    signale start "$1"
   else
     echo "BEGIN: $1"
   fi
@@ -71,7 +71,7 @@ function start() {
 
 function stop() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale stop $1
+    signale stop "$1"
   else
     echo "SUCCESS: $1"
   fi
@@ -79,7 +79,7 @@ function stop() {
 
 function success() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale success $1
+    signale success "$1"
   else
     echo "SUCCESS: $1"
   fi
@@ -87,7 +87,7 @@ function success() {
 
 function warn() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale warning $1
+    signale warning "$1"
   else
     echo "WARNING: $1"
   fi

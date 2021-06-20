@@ -143,7 +143,7 @@ function ensureNodeSetup() {
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
     NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
     export NVM_DIR
-    # shellcheck disable=SC1090
+    # shellcheck disable=SC1091
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     info "Installing Node.js via NVM"
     nvm install node
@@ -153,7 +153,8 @@ function ensureNodeSetup() {
   fi
   if ! npm list --depth 1 -g signale | grep signale; then
     npm install -g signale
-    export NODE_PATH="$(npm root -g):$NODE_PATH"
+    NODE_PATH="$(npm root -g):$NODE_PATH"
+    export NODE_PATH
     export ENHANCED_LOGGING=true
   fi
   if ! commandExists hbs; then

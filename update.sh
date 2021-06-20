@@ -12,12 +12,13 @@
 
 set -e
 
+# shellcheck disable=SC1091
 source "./.common/scripts/log.sh"
 source "./.common/scripts/common.sh"
 source "./.common/scripts/software.sh"
 source "./.common/scripts/notices.sh"
 
-if [ "$container" != 'docker' ]; then
+if [ "${container:=}" != 'docker' ]; then
   info "Ensuring Node.js, Task, jq, and yq are installed"
   ensureNodeSetup &
   ensureJQInstalled &
@@ -29,7 +30,7 @@ fi
 
 task requirements update
 
-if [ "$container" != 'docker' ]; then
+if [ "${container:=}" != 'docker' ]; then
   missingDockerNotice
   missingVirtualBoxNotice
 fi
