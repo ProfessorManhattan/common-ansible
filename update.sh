@@ -8,15 +8,17 @@ set -e
 
 source "./.common/scripts/log.sh"
 source "./.common/scripts/common.sh"
-source "./.common/scripts/dependencies.sh"
+source "./.common/scripts/software.sh"
 source "./.common/scripts/notices.sh"
 
-ensureNodeInstalled
-ensureJQInstalled
-ensureTaskInstalled
-ensureYQInstalled
+if [ "$container" != 'docker' ]; then
+  ensureNodeInstalled
+  ensureJQInstalled
+  ensureTaskInstalled
+  ensureYQInstalled
+fi
 
-task documentation requirements update
+task requirements update
 
 if [ "$container" != 'docker' ]; then
   missingDockerNotice

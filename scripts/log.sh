@@ -1,27 +1,27 @@
 #!/bin/bash
 
 # Logs an error message
-error() {
+function error() {
   echo "ERROR: $1"
 }
 
 # Logs an info message
-info() {
+function info() {
   echo "INFO $1"
 }
 
 # Logs a regular log message
-log() {
+function log() {
   echo "LOG: $1"
 }
 
 # Logs a success message
-success() {
+function success() {
   echo "SUCCESS: $1"
 }
 
 # Logs a warning message
-warn() {
+function warn() {
   echo "WARN: $1"
 }
 
