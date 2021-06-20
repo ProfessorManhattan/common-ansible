@@ -3,7 +3,7 @@
     <a href="{{ link.home }}" title="Megabyte Labs homepage" target="_blank">
       <img src="{{ project.assets }}/svg/home-solid.svg" />
     </a>
-    <a href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ role_name }}" title="{{ name }} role on Ansible Galaxy" target="_blank">
+    <a href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" title="{{ name }} role on Ansible Galaxy" target="_blank">
       <img height="50" src="{{ project.assets }}/svg/ansible-galaxy.svg" />
     </a>
     <a href="{{ repository.group.ansible_roles }}/{{ galaxy_info.role_name }}{{ repository.location.contributing }}" title="Learn about contributing" target="_blank">
