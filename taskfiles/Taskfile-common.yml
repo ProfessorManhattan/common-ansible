@@ -16,6 +16,7 @@ tasks:
           hbs
         fi
       done
+
   fix-formatting:
     desc: Automatically format most files using Prettier
     cmds:

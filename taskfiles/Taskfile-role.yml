@@ -1,6 +1,16 @@
 version: '3'
 
 tasks:
+  local-test:
+    desc: Run the Ansible play on the local machine
+    cmds:
+      - cp tests/inventory inventory
+      - if [ ! -f main.yml.bak ]; then mv main.yml main.yml.bak; fi
+      - cp tests/test.yml main.yml
+      - if [ ! -f ansible.cfg.bak ]; then mv ansible.cfg ansible.cfg.bak; fi
+      - cp tests/ansible.cfg ansible.cfg
+      - ansible-playbook --ask-sudo-pass main.yml
+
   symlink:
     desc: Symlink the current role to ~/.ansible/roles/{{GALAXY_NAMESPACE}}.{{GALAXY_ROLE_NAME}}
     cmds:
