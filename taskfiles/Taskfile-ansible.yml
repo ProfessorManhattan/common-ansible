@@ -99,8 +99,12 @@ tasks:
       - |
         if [ "{{.CLI_ARGS}}" ]; then
           if [ "{{.CLI_ARGS}}" == 'matrix']; then
-            PYCOLORS=0 molecule test > molecule-test-output.txt
+            PY_COLOR=0 molecule test > .molecule.txt
           fi
         else
           molecule test
         fi
+
+  requirements:
+    desc: Installs package dependencies
+    deps: [requirements-nodejs, requirements-python]
