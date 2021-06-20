@@ -1,0 +1,15 @@
+{{ load:.common/docs/common/readme/header.md }}
+{{ load:.common/docs/readme-role/subheader.md }}
+{{ load:.common/docs/readme-role/quick-description.md }}
+{{ load:.common/docs/readme-role/quick-start.md }}
+{{ template:toc }}
+{{ load:.common/docs/readme-role/overview.md }}
+{{ load:ansible_actions.md }}
+{{ load:ansible_variables.md }}
+{{ load:.common/docs/readme-role/supported-os.md }}
+{{ load:.common/docs/readme-role/dependencies.md }}
+{{ load:.common/docs/readme-role/example.md }}
+{{ load:ansible_tags.md }}
+{{ load:.common/docs/common/readme/contribute.md }}
+{{ load:ansible_todo.md }}
+{{ load:.common/docs/common/readme/license.md }}
