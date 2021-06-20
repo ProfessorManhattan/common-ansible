@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
+# @file .common/scripts/common.sh
+# @brief Includes common functions and initialization logic that is used by other scripts
+
 export START_PATH="$PWD"
-export SCRIPT_PATH=$(
-  cd $(dirname ${BASH_SOURCE[0]})
-  pwd -P
-  cd $START_PATH
-)
+export SCRIPT_PATH=$(cd $(dirname ${BASH_SOURCE[0]}); pwd -P; cd $START_PATH)
 export TMP_DIR=/tmp/megabytelabs
 export USER_BIN_FOLDER="$HOME/.local/bin"
 if [ "$(uname)" == "Darwin" ]; then
@@ -22,13 +21,14 @@ fi
 export BASH_PROFILE
 export SYSTEM
 
-# Determines whether or not an executable is accessible
+# @description Determines whether or not an executable is accessible
+# @example commandExists node
 function commandExists() {
   type "$1" &>/dev/null
 }
 
-# Verifies the SHA256 checksum of a file
-# Usage: sha256 <file> <checksum>
+# @description Verifies the SHA256 checksum of a file
+# @example sha256 <file> <checksum>
 function sha256() {
   if [ "$SYSTEM" == "Darwin" ]; then
     echo "$2 $1" | sha256sum --check

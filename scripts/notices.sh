@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# @file .common/scripts/notices.sh
+# @brief Contains various functions that can be used to display messages to the user about missing software dependencies.
+
 function missingDockerNotice() {
   if ! commandExists docker; then
     warn "Docker is not currently installed on your computer."
