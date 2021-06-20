@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
 
+# @file .common/scripts/software.sh
+# @brief Functions that can be used to install software dependencies
+# @description
+#   By including this library, you can install various programs without root access.
+#   The software is installed to the ~/.local/bin folder and the PATH is set up
+#   appropriately. This file exports the following functions:
+#
+#   * ensureDockerPushRMInstalled - Ensures the [docker-pushrm](https://github.com/christian-korneck/docker-pushrm) plugin is installed.
+#   * ensureDockerSlimInstalled - Ensures [DockerSlim](https://github.com/docker-slim/docker-slim) is installed.
+#   * ensureJQInstalled - Ensures [jq](https://github.com/stedolan/jq) is installed.
+#   * ensureNodeSetup - Ensures [Node.js](https://nodejs.org/en/) is setup and that [signale](https://github.com/klaussinani/signale) and [hbs-cli](https://www.npmjs.com/package/hbs-cli) are installed as global dependencies
+#   * ensurePackerInstalled - Ensures [Packer](https://www.packer.io/) is installed
+#   * ensureTaskInstalled - Ensures [Task](https://taskfile.dev/#/) is installed
+#   * ensureVagrantInstalled - Ensures [Vagrant](https://www.vagrantup.com/) is installed
+#   * ensureYQInstalled - Ensures [yq](https://github.com/mikefarah/yq) is installed
+
 mkdir -p "$USER_BIN_FOLDER"
 mkdir -p "$TMP_DIR"
 
-# Ensures ~/.local/bin is in the PATH variable
+# @description Ensures ~/.local/bin is in the PATH variable
 function ensureLocalPath() {
   export PATH="$USER_BIN_FOLDER:$PATH"
   # shellcheck disable=SC2016
@@ -14,8 +30,7 @@ function ensureLocalPath() {
   fi
 }
 
-# Ensures the docker pushrm plugin is installed. This is used to automatically
-# update the README.md embedded on the DockerHub website.
+# @description Ensures the docker pushrm plugin is installed. This is used to automatically update the README.md embedded on the DockerHub website.
 function ensureDockerPushRMInstalled() {
   info "Ensuring docker-pushrm is installed"
   DESTINATION="$HOME/.docker/cli-plugins/docker-pushrm"
@@ -45,7 +60,7 @@ function ensureDockerPushRMInstalled() {
   fi
 }
 
-# Ensures DockerSlim is installed. If it is not present, it is installed to ~/.local/bin.
+# @description Ensures DockerSlim is installed. If it is not present, it is installed to ~/.local/bin.
 function ensureDockerSlimInstalled() {
   if ! commandExists docker-slim; then
     log "Installing DockerSlim"
@@ -88,7 +103,7 @@ function ensureDockerSlimInstalled() {
   fi
 }
 
-# Ensures jq is installed. If it is not present, it is installed to ~/.local/bin.
+# @description Ensures jq is installed. If it is not present, it is installed to ~/.local/bin.
 function ensureJQInstalled() {
   if ! commandExists jq; then
     log "Installing jq"
@@ -121,8 +136,8 @@ function ensureJQInstalled() {
   fi
 }
 
-# Ensures Node.js is installed by using NVM.
-function ensureNodeInstalled() {
+# @description Ensures Node.js is installed by using NVM. It then installs global dependencies.
+function ensureNodeSetup() {
   if ! commandExists npx; then
     info "Installing NVM"
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
@@ -136,9 +151,17 @@ function ensureNodeInstalled() {
   else
     info "Node.js appears to be installed"
   fi
+  if ! npm list --depth 1 -g signale | grep signale; then
+    npm install -g signale
+    export NODE_PATH="$(npm root -g):$NODE_PATH"
+    export ENHANCED_LOGGING=true
+  fi
+  if ! commandExists hbs; then
+    npm install -g hbs-cli
+  fi
 }
 
-# Ensures Packer is installed. If it is not present, it is installed to ~/.local/bin.
+# @description Ensures Packer is installed. If it is not present, it is installed to ~/.local/bin.
 function ensurePackerInstalled() {
   if ! commandExists packer; then
     info "Installing Packer"
@@ -169,8 +192,7 @@ function ensurePackerInstalled() {
   fi
 }
 
-# Ensures Python 3 is installed by installing Miniconda if Python 3 is unavailable
-# on the system.
+# @description Ensures Python 3 is installed by installing Miniconda if Python 3 is unavailable on the system.
 function ensurePythonInstalled() {
   if ! commandExists python3; then
     log "Installing Python 3 using Miniconda"
@@ -214,7 +236,7 @@ function ensurePythonInstalled() {
   fi
 }
 
-# Ensures Task is installed. If it is not present, it is installed to ~/.local/bin.
+# @description Ensures Task is installed. If it is not present, it is installed to ~/.local/bin.
 function ensureTaskInstalled() {
   if ! commandExists task; then
     log "Installing Task"
@@ -246,7 +268,7 @@ function ensureTaskInstalled() {
   fi
 }
 
-# Ensures Vagrant is installed. If it is not present, it is installed to ~/.local/bin.
+# @description Ensures Vagrant is installed. If it is not present, it is installed to ~/.local/bin.
 function ensureVagrantInstalled() {
   if ! commandExists vagrant; then
     log "Installing Vagrant"
@@ -279,7 +301,7 @@ function ensureVagrantInstalled() {
   fi
 }
 
-# Ensures yq is installed. If it is not present, it is installed to ~/.local/bin.
+# @description Ensures yq is installed. If it is not present, it is installed to ~/.local/bin.
 function ensureYQInstalled() {
   if ! commandExists yq; then
     log "Installing yq"
@@ -313,7 +335,7 @@ function ensureYQInstalled() {
 export -f ensureDockerPushRMInstalled
 export -f ensureDockerSlimInstalled
 export -f ensureJQInstalled
-export -f ensureNodeInstalled
+export -f ensureNodeSetup
 export -f ensurePackerInstalled
 export -f ensurePythonInstalled
 export -f ensureTaskInstalled

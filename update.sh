@@ -1,8 +1,14 @@
 #!/bin/bash
 
-# This script performs maintenance on Ansible repositories. It ensures git submodules are
-# installed and then copies over base files from the modules. It also generates the
-# documentation.
+# @file .common/update.sh
+# @brief Ensures the project is up-to-date with the latest upstream changes
+# @description
+#   This script performs maintenance on this repository. It includes several bash script
+#   libraries and then it:
+#
+#   1. Ensures Node, jq, Task, and yq are installed
+#   2. Bootstraps the project by using Task to run initialization tasks which bootstrap the project
+#   3. Notifies the user about missing software dependencies that require root priviledges to install
 
 set -e
 
@@ -12,10 +18,13 @@ source "./.common/scripts/software.sh"
 source "./.common/scripts/notices.sh"
 
 if [ "$container" != 'docker' ]; then
-  ensureNodeInstalled
-  ensureJQInstalled
-  ensureTaskInstalled
-  ensureYQInstalled
+  info "Ensuring Node.js, Task, jq, and yq are installed"
+  ensureNodeSetup &
+  ensureJQInstalled &
+  ensureTaskInstalled &
+  ensureYQInstalled &
+  wait
+  success "Node.js, Task, jq, and yq are all available"
 fi
 
 task requirements update
