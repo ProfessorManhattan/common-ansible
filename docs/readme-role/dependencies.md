@@ -13,4 +13,4 @@ Although most of our roles do not have dependencies, there are some cases where 
 
 The `requirements.yml` file contains a full list of the dependencies required by this role (i.e. `meta/main.yml` dependencies, helper roles, and collections). For your convenience, the full list of the dependencies along with quick descriptions is below:
 
-{{ role_dependencies }}
+{{ requirements }}
