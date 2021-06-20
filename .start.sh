@@ -6,22 +6,18 @@
 
 set -e
 
-# shellcheck disable=SC2154
-if [ "$container" != 'docker' ]; then
-  curl -sL https://git.io/_has | bash -s docker git jq node npm python3 wget
-fi
-
 export REPO_TYPE=ansible
-if [ -d "./.git" ]; then
+
+if [ -d .git ]; then
   git pull origin master --ff-only
   git submodule update --init --recursive
 fi
-if [ ! -d "./.modules/${REPO_TYPE}" ]; then
-  mkdir -p ./.modules
-  git submodule add -b master https://gitlab.com/megabyte-space/common/$REPO_TYPE.git ./.modules/$REPO_TYPE
+if [ ! -d .common ]; then
+  mkdir .common
+  git submodule add -b master "https://gitlab.com/megabyte-space/common/$REPO_TYPE.git" ".common/$REPO_TYPE"
 else
-  cd ./.modules/$REPO_TYPE
+  cd .common
   git checkout master && git pull origin master --ff-only
   cd ../..
 fi
-bash ./.modules/$REPO_TYPE/update.sh
+bash .common/update.sh

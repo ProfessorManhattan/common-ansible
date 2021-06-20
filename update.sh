@@ -6,6 +6,10 @@
 
 set -e
 
+source "./.common/scripts/common.sh"
+source "./.common/scripts/log.sh"
+source "./.common/scripts/$REPO_TYPE.sh"
+
 # Ensure shared submodule is present
 if [ ! -d "./.modules/shared" ]; then
   mkdir -p ./.modules
