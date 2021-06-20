@@ -16,8 +16,5 @@ includes:
   type: ./.common/taskfiles/Taskfile-{{.REPOSITORY_TYPE}}.yml
 
 tasks:
-  
-
   lint:
-
     deps: [lint-ansible, lint-dockerfiles, lint-python, lint-yaml]
