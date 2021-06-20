@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  symlink-ansible:
+  symlink:
     desc: Symlink the current role to ~/.ansible/roles/{{GALAXY_NAMESPACE}}.{{GALAXY_ROLE_NAME}}
     cmds:
       - rm -f "$HOME/.ansible/roles/${GALAXY_NAMESPACE}.${GALAXY_ROLE_NAME}"

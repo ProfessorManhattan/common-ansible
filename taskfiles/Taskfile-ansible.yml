@@ -1,8 +1,11 @@
 version: '3'
 
 tasks:
+  lint:
+    deps: [lint-ansible, lint-dockerfiles, lint-python, lint-yaml]
+
   lint-ansible:
-    deps: [symlink-ansible]
+    deps: [symlink]
     desc: Lint Ansible projects using Ansible Lint
     cmds:
       - ansible-lint

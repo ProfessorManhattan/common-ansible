@@ -6,44 +6,22 @@
 
 set -e
 
-source "./.common/scripts/common.sh"
 source "./.common/scripts/log.sh"
-source "./.common/scripts/$REPO_TYPE.sh"
+source "./.common/scripts/common.sh"
+source "./.common/scripts/dependencies.sh"
+source "./.common/scripts/notices.sh"
 
-# Ensure shared submodule is present
-if [ ! -d "./.modules/shared" ]; then
-  mkdir -p ./.modules
-  git submodule add -b master https://gitlab.com/megabyte-space/common/shared.git ./.modules/shared
-else
-  cd ./.modules/shared
-  git checkout master && git pull origin master --ff-only
-  cd ../..
+ensureNodeInstalled
+ensureJQInstalled
+ensureTaskInstalled
+ensureYQInstalled
+
+task documentation requirements update
+
+if [ "$container" != 'docker' ]; then
+  missingDockerNotice
+  missingVirtualBoxNotice
 fi
-
-# shellcheck disable=SC1091
-source "./.modules/shared/update.lib.sh"
-
-# Install software dependencies if they are missing
-ensure_node_installed
-ensure_jq_installed
-ensure_yq_installed
-
-# Ensure documentation partials submodule is present and in sync with master
-ensure_project_docs_submodule_latest
-
-# Copy over files from the shared submodule
-cp -Rf ./.modules/shared/.github .
-cp -Rf ./.modules/shared/.gitlab .
-cp -Rf ./.modules/shared/.vscode .
-cp ./.modules/shared/.editorconfig .editorconfig
-cp ./.modules/shared/.flake8 .flake8
-cp ./.modules/shared/.prettierignore .prettierignore
-cp ./.modules/shared/.yamllint .yamllint
-cp ./.modules/shared/CODE_OF_CONDUCT.md CODE_OF_CONDUCT.md
-
-# Ensure role(s) are symlinked
-symlink_roles
-
 # Update shared files and install requirements
 copy_project_files_and_generate_package_json
 populate_alternative_descriptions

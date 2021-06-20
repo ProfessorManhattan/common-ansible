@@ -121,9 +121,8 @@ function ensureJQInstalled() {
   fi
 }
 
-# Ensures Node.js is installed by using NVM and also makes sure
-# node_modules are setup and that the pre-commit hook is setup.
-function ensureNodeSetup() {
+# Ensures Node.js is installed by using NVM.
+function ensureNodeInstalled() {
   if ! commandExists npx; then
     info "Installing NVM"
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
@@ -314,7 +313,7 @@ function ensureYQInstalled() {
 export -f ensureDockerPushRMInstalled
 export -f ensureDockerSlimInstalled
 export -f ensureJQInstalled
-export -f ensureNodeSetup
+export -f ensureNodeInstalled
 export -f ensurePackerInstalled
 export -f ensurePythonInstalled
 export -f ensureTaskInstalled

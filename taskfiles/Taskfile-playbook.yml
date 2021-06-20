@@ -14,7 +14,7 @@ tasks:
     cmds:
       - find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print
 
-  symlink-ansible:
+  symlink:
     desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
     cmds:
       - |
