@@ -24,30 +24,6 @@ tasks:
     cmds:
       - npm run fix:shellcheck
 
-  lint-dockerfiles:
-    desc: Lint Dockerfiles using Hadolint (requires Docker)
-    cmds:
-      - find . -type d \\( -name .cache -o -name .common -o -name .git -o -name .modules \
-        -o -name node_modules -o -name .husky -o -name .task -o -name test \\) -prune -o \
-        -type f \\( -name Dockerfile -o -name Dockerfile.j2 \\) -print0 | xargs -0 -r -n1 \
-        docker run -v ${PWD}:/work -w /work megabytelabs/hadolint:slim
-    sources:
-      - Dockerfile
-      - Dockerfile.j2
-      - ./**/Dockerfile
-      - ./**/Dockerfile.j2
-    method: checksum
-
-  lint-python:
-    desc: Lint Python files using Flake8
-    cmds:
-      - flake8 .
-
-  lint-yaml:
-    desc: Lint .yml files using YAML Lint
-    cmds:
-      - yamllint .
-
   markdown-link-check:
     desc: Scan markdown files for broken links
     cmds:
@@ -111,3 +87,4 @@ tasks:
           fi
         done
       - mkdir .tmp
+
