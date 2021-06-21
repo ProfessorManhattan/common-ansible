@@ -14,7 +14,7 @@ includes:
   system: ./.common/taskfiles/Taskfile-{{OS}}.yml
   common: ./.common/taskfiles/Taskfile-common.yml
   docs: ./.common/taskfiles/Taskfile-ansible.yml
-  #type: ./.common/taskfiles/Taskfile-{{.REPOSITORY_TYPE}}.yml
+  type: ./.common/taskfiles/Taskfile-{{REPOSITORY_TYPE}}.yml
 
 tasks:
   fix:
