@@ -43,46 +43,19 @@
   },
   "molecule_descriptions": [
     ["Scenario", "Description"],
-    [
-      "`default`",
-      "Uses VirtualBox to run tests for all platforms in parallel."
-    ],
-    [
-      "`docker`",
-      "Uses Docker to run tests for all Linux platforms and versions in parallel."
-    ],
+    ["`default`", "Uses VirtualBox to run tests for all platforms in parallel."],
+    ["`docker`", "Uses Docker to run tests for all Linux platforms and versions in parallel."],
     [
       "`docker-snap`",
       "The same as the `docker` scenario except it excludes platforms that have trouble installing snap packages on Docker."
     ],
-    [
-      "`archlinux-desktop`",
-      "Runs the test on the latest version of Archlinux desktop using VirtualBox."
-    ],
-    [
-      "`centos-desktop`",
-      "Runs the test on the latest version of CentOS desktop using VirtualBox."
-    ],
-    [
-      "`debian-desktop`",
-      "Runs the test on the latest version of Debian desktop using VirtualBox."
-    ],
-    [
-      "`fedora-desktop`",
-      "Runs the test on the latest version of Fedora desktop using VirtualBox."
-    ],
-    [
-      "`macos-desktop`",
-      "Runs the test on the latest version of macOS desktop using VirtualBox."
-    ],
-    [
-      "`ubuntu-desktop`",
-      "Runs the test on the latest version of Ubuntu desktop using VirtualBox."
-    ],
-    [
-      "`windows-desktop`",
-      "Runs the test on the latest version of Windows desktop using VirtualBox."
-    ],
+    ["`archlinux-desktop`", "Runs the test on the latest version of Archlinux desktop using VirtualBox."],
+    ["`centos-desktop`", "Runs the test on the latest version of CentOS desktop using VirtualBox."],
+    ["`debian-desktop`", "Runs the test on the latest version of Debian desktop using VirtualBox."],
+    ["`fedora-desktop`", "Runs the test on the latest version of Fedora desktop using VirtualBox."],
+    ["`macos-desktop`", "Runs the test on the latest version of macOS desktop using VirtualBox."],
+    ["`ubuntu-desktop`", "Runs the test on the latest version of Ubuntu desktop using VirtualBox."],
+    ["`windows-desktop`", "Runs the test on the latest version of Windows desktop using VirtualBox."],
     ["`ci-docker-archlinux`", "Uses Docker to test Archlinux."],
     ["`ci-docker-centos`", "Uses Docker to test multiple versions of CentOS."],
     ["`ci-docker-debian`", "Uses Docker to test multiple versions of Debian."],
