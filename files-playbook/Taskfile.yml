@@ -8,13 +8,14 @@ env:
     sh: yq e '.galaxy_info.role_name' meta/main.yml
   REPOSITORY_SUBTYPE:
     sh: if [ -d environments ]; then echo playbook; else echo role; fi
-  REPOSITORY_TYPE: role
+  REPOSITORY_TYPE: ansible
 
 includes:
-  system: ./.common/taskfiles/Taskfile-{{OS}}.yml
-  common: ./.common/taskfiles/Taskfile-common.yml
-  ansible: ./.common/taskfiles/Taskfile-ansible.yml
-  type: ./.common/taskfiles/Taskfile-role.yml
+  system: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-{{OS}}.yml
+  lint: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-lint.yml
+  fix: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-lint.yml
+  common: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-common.yml
+  ansible: ./.common/taskfiles/Taskfile-{{.REPOSITORY_SUBTYPE}}.yml
 
 tasks:
   fix:

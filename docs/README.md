@@ -1,7 +1,7 @@
 <div align="center">
   <center>
     <a href="https://gitlab.com/megabyte-labs/documentation">
-      <img width="140" height="140" alt="Documentation" src="https://gitlab.com/megabyte-labs/documentation/shared/-/raw/master/logo.png" />
+      <img width="140" height="140" alt="Documentation logo" src="https://gitlab.com/megabyte-labs/documentation/shared/-/raw/master/logo.png" />
     </a>
   </center>
 </div>
