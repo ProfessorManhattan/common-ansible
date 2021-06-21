@@ -5,4 +5,3 @@ flake8
 molecule-docker
 molecule-vagrant
 python-vagrant
-yamllint
