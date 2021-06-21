@@ -9,6 +9,13 @@ tasks:
     desc: Scaffold/update the project by copying the appropriate files from the .common submodule
     dir: .common
 
+  commit:
+    desc: Lint staged files, report spelling errors, and then add commit details
+    cmds:
+      - npm run lint-staged
+      - task: spelling
+      - npm run commit -- --no-verify
+
   fix-formatting:
     desc: Automatically format most files using Prettier
     cmds:
@@ -23,6 +30,30 @@ tasks:
     desc: (Experimental) Automatically apply fixes to .sh files using Shellcheck
     cmds:
       - npm run fix:shellcheck
+
+  lint-dockerfiles:
+    desc: Lint Dockerfiles using Hadolint (requires Docker)
+    cmds:
+      - find . -type d \\( -name .cache -o -name .common -o -name .git -o -name .modules \
+        -o -name node_modules -o -name .husky -o -name .task -o -name test \\) -prune -o \
+        -type f \\( -name Dockerfile -o -name Dockerfile.j2 \\) -print0 | xargs -0 -r -n1 \
+        docker run -v ${PWD}:/work -w /work megabytelabs/hadolint:slim
+    sources:
+      - Dockerfile
+      - Dockerfile.j2
+      - ./**/Dockerfile
+      - ./**/Dockerfile.j2
+    method: checksum
+
+  lint-python:
+    desc: Lint Python files using Flake8
+    cmds:
+      - flake8 .
+
+  lint-yaml:
+    desc: Lint .yml files using YAML Lint
+    cmds:
+      - yamllint .
 
   markdown-link-check:
     desc: Scan markdown files for broken links
@@ -74,6 +105,16 @@ tasks:
     cmds:
       - docker run --cap-drop=ALL -it -v ${PWD}:/{{WORKDIR}} -w /{{WORKDIR}} --rm megabytelabs/ansible-molecule-{{.CLI_ARGS}}:latest /bin/bash
 
+  spelling:
+    desc: Checks for spelling errors in staged files
+    vars:
+      STAGED_FILES:
+        sh: git diff --cached --name-only
+    cmds:
+      - npx cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json || true
+    preconditions:
+      - git diff --cached --name-only
+
   update:
     desc: Ensure the project is completely up-to-date and ready for development
     cmds:
@@ -86,5 +127,3 @@ tasks:
             hbs
           fi
         done
-      - mkdir .tmp
-
