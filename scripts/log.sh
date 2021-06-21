@@ -27,7 +27,7 @@
 LOG_PREFIX=testy
 LOG_SUFFIX=""
 if commandExists node; then
-  NODE_PATH="$(npm root -g):$NODE_PATH"
+  export NODE_PATH="$(npm root -g):$NODE_PATH"
   if [ "${container:=}" != 'docker' ]; then
     ENHANCED_LOGGING=true
   fi
