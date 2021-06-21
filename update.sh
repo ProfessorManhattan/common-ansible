@@ -26,7 +26,7 @@ if [ "${container:=}" != 'docker' ]; then
   ensureTaskInstalled &
   ensureYQInstalled &
   wait
-  success "Node.js, Task, jq, and yq are all available"
+  success "Node.js, Task, jq, and yq are all installed"
 fi
 
 task requirements update
