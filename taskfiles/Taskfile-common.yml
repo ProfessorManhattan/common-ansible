@@ -2,58 +2,12 @@
 version: '3'
 
 tasks:
-  default:
-    cmds:
-      - echo "Hey"
-  bootstrap:
-    desc: Scaffold/update the project by copying the appropriate files from the .common submodule
-    dir: .common
-
   commit:
     desc: Lint staged files, report spelling errors, and then add commit details
     cmds:
       - npm run lint-staged
       - task: spelling
       - npm run commit -- --no-verify
-
-  fix-formatting:
-    desc: Automatically format most files using Prettier
-    cmds:
-      - npm run fix:prettier
-
-  fix-python:
-    desc: Automatically format Python files using Black
-    cmds:
-      - black --exclude '\.cache/|.*\.cache/|\.common/|.*\.common/|.git/|.*\.git/|node_modules/|.*node_modules/|roles/' .
-
-  fix-scripts:
-    desc: (Experimental) Automatically apply fixes to .sh files using Shellcheck
-    cmds:
-      - npm run fix:shellcheck
-
-  lint-dockerfiles:
-    desc: Lint Dockerfiles using Hadolint (requires Docker)
-    cmds:
-      - find . -type d \\( -name .cache -o -name .common -o -name .git -o -name .modules \
-        -o -name node_modules -o -name .husky -o -name .task -o -name test \\) -prune -o \
-        -type f \\( -name Dockerfile -o -name Dockerfile.j2 \\) -print0 | xargs -0 -r -n1 \
-        docker run -v ${PWD}:/work -w /work megabytelabs/hadolint:slim
-    sources:
-      - Dockerfile
-      - Dockerfile.j2
-      - ./**/Dockerfile
-      - ./**/Dockerfile.j2
-    method: checksum
-
-  lint-python:
-    desc: Lint Python files using Flake8
-    cmds:
-      - flake8 .
-
-  lint-yaml:
-    desc: Lint .yml files using YAML Lint
-    cmds:
-      - yamllint .
 
   markdown-link-check:
     desc: Scan markdown files for broken links
@@ -68,7 +22,6 @@ tasks:
       - npm run version
 
   requirements-nodejs:
-    desc: Ensures Node.js dependencies are installed.
     cmds:
       - npm install
     sources:
@@ -77,8 +30,12 @@ tasks:
       - test -f package.json
 
   requirements-python:
-    desc: Ensures Python requirements are installed.
     cmds:
+      - source ".common/scripts/log.sh"
+      - info "Setting up a virtual Python environment"
+      - virtualenv venv
+      - source venv/bin/activate
+      - info "Installing pip requirements"
       - pip3 install requirements.txt
     sources:
       - requirements.txt
@@ -115,14 +72,19 @@ tasks:
     preconditions:
       - git diff --cached --name-only
 
+  start:
+    desc: This is an alias for `bash .start.sh` - this is the first command you should run
+    cmds:
+      - bash .start.sh
+
   update:
-    desc: Ensure the project is completely up-to-date and ready for development
+    desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
       - cp ./.common/.start.sh .start.sh
       - |
         for FOLDER in files-*/; do
-          FOLDER_SUBTYPE=$(echo $FOLDER | sed 's/files-\(.*\)\//\1/')
-          if [ "$FOLDER_SUBTYPE" == "$REPOSITORY_SUBTYPE" ]; then
+          FOLDER_SUBGROUP=$(echo $FOLDER | sed 's/files-\(.*\)\//\1/')
+          if [ "$FOLDER_SUBGROUP" == "$REPOSITORY_SUBTYPE" ]; then
             cp -rT files-$FOLDER_SUBTYPE files
             hbs
           fi

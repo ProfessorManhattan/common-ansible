@@ -1,0 +1,20 @@
+---
+version: '3'
+
+tasks:
+  formatting:
+    desc: Automatically format most files using Prettier
+    cmds:
+      - npm run fix:prettier
+{{#ifMember group ["ansible", "python"]}}
+
+  python:
+    desc: Automatically format Python files using Black
+    cmds:
+      - black --exclude '\.cache/|.*\.cache/|\.common/|.*\.common/|.git/|.*\.git/|node_modules/|.*node_modules/|roles/' .
+{{/ifMember}}
+
+  scripts:
+    desc: (Experimental) Automatically apply fixes to .sh files using Shellcheck
+    cmds:
+      - npm run fix:shellcheck
