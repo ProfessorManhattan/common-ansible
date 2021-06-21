@@ -34,7 +34,7 @@ if commandExists node; then
 fi
 
 function signale() {
-  node -e 'require("signale").'"$1"'(prefix: "'"$LOG_PREFIX"'", message:"'"$2"'", suffix: "'"$LOG_SUFFIX"'")'
+  node -e 'require("signale").'"$1"'({prefix: "'"$LOG_PREFIX"'", message:"'"$2"'", suffix: "'"$LOG_SUFFIX"'"})'
 }
 
 function error() {
