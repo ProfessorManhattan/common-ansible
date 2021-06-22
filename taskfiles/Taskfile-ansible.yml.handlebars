@@ -4,6 +4,23 @@ version: '3'
 tasks:
 {{#if hbs.playbook}}
 
+  environment:
+    desc: Prompts for which environment to use and then symlinks to it
+    summary: |
+      $ Switch environments using an interactive dialogue
+
+      Ansible does not really provide any great ways to switch between environments (or sets of
+      host_vars, group_vars etc.). If you place all the files and folders you wish to constitute
+      as an environment inside a folder named as the name of the environment then you can use
+      this task to handle the symlinking and switching between environments.
+    cmds:
+      - node .common/scripts/environment.js
+    preconditions:
+      - sh: "test -d node_modules"
+        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:requirements` or `bash .start.sh`"
+      - sh: "type node &> /dev/null"
+        msg: "Node.js is required. Install it by running `task software:node` or by running `bash .start.sh`."
+
   find-missing-files:
     desc: Find roles that are missing files
     summary: |

@@ -54,7 +54,7 @@ tasks:
       then install the Python requirements by running `pip3 install -r requirements` after
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
-    deps: [requirements-nodejs, requirements-python{{#if hbs.ansible}}, requirements-galaxy{{/if}}]
+    deps: [dependencies-nodejs, requirements-python{{#if hbs.ansible}}, requirements-galaxy{{/if}}]
 {{#if hbs.ansible}}
 
   requirements-galaxy:
@@ -65,7 +65,7 @@ tasks:
         msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
 {{/if}}
 
-  requirements-nodejs:
+  dependencies-nodejs:
     cmds:
       - npm install
     sources:
@@ -227,7 +227,7 @@ tasks:
       PKG_VERSION:
         sh: jq -r '.version' package.json
     cmds:
-      -- |
+      - |
         FILES="$(find .common/files-\{{.REPOSITORY_SUBTYPE}})"
         for FILE in "$FILES"; do
           if [ "${FILE##*.}" == 'hbs' ]; then
@@ -272,14 +272,15 @@ tasks:
 
   _markdown-scrub:
     vars:
-      DIVIDER_SRC: https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png\
-<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src=
+      # yamllint disable-line rule:line-length
+      DIVIDER_SRC: https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src=
       REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)]$
-      REPLACEMENT:
     cmds:
       - |
-        if [[ '\{{OS}}' == 'darwin' ]]; then
-          sed -i .bak 's^\{{.REGEX}}^\{{DIVIDER_SRC}}"></a>^g' \{{.SCRUB_FILE}} && rm \{{.SCRUB_FILE}}.bak
+        if [[ '{{OS}}' == 'darwin' ]]; then
+          sed -i .bak 's^\{{.REGEX}}^\{{.DIVIDER_SRC}}"></a>^g'\
+            \{{.SCRUB_FILE}} && rm \{{.SCRUB_FILE}}.bak
         else
-          sed -i 's^\{{.REGEX}}^\{{DIVIDER_SRC}}"></a>^g' \{{.SCRUB_FILE}}
+          sed -i 's^\{{.REGEX}}^\{{.DIVIDER_SRC}}"></a>^g'
+            \{{.SCRUB_FILE}}
         fi
