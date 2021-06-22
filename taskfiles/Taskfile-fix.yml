@@ -2,7 +2,6 @@
 version: '3'
 
 tasks:
-
   all:
     desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
     deps: [fix-formatting, fix-scripts]
