@@ -16,11 +16,11 @@ The most important piece of text in each of our Ansible projects is the [Ansible
 
 **The `meta/main.yml` description example:**
 
-- _Installs Android Studio and sets up Android SDKs on nearly any OS_
+- Installs Android Studio and sets up Android SDKs on nearly any OS
 
 **Gets spun and used by our automated documentation framework in the following formats:**
 
-- _Installs Android Studio and sets up Android SDKs on nearly any OS_
+- Installs Android Studio and sets up Android SDKs on nearly any OS
 - An Ansible role that _installs Android Studio and sets up Android SDKs on nearly any OS_
 - This repository is the home of an Ansible role that _installs Ansible Studio and sets up Android SDKs on nearly any OS_.
 
