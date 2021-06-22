@@ -1,0 +1,18 @@
+---
+version: '3'
+
+tasks:
+
+  all:
+    desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
+    deps: [fix-formatting, fix-scripts]
+
+  formatting:
+    desc: Automatically format most files using Prettier
+    cmds:
+      - npm run fix:prettier
+
+  scripts:
+    desc: (Experimental) Automatically apply fixes to .sh files using Shellcheck
+    cmds:
+      - npm run fix:shellcheck
