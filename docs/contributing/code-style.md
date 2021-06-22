@@ -11,17 +11,17 @@ When there is only one parameter, then you should inline it.
 ```yaml
 when:
   - install_minikube
----
-when:
-  - install_minikube
-  - install_hyperv_plugin
 ```
 
 **GOOD**
 
 ```yaml
 when: install_minikube
----
+```
+
+**ALSO GOOD**
+
+```yaml
 when:
   - install_minikube
   - install_hyperv_plugin

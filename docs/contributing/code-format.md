@@ -1,6 +1,6 @@
 ## Code Format
 
-We try to structure our Ansible task and variable files similarly across all [our Ansible projects]({{ repository.group.ansible_roles }}). This allows us to do things like use RegEx to make ecosystem wide changes. A good way of making sure that your code follows the format we are using is to clone the [main playbook repository]({{ project.playbooks }}) (a.k.a. [Install Doctor]({{ link.installdoctor }})) and use Visual Studio Code to search for code examples of how we are performing similar tasks. For example:
+We try to structure our Ansible task and variable files consistently across all [our Ansible projects]({{ repository.group.ansible_roles }}). This allows us to do things like use RegEx to make ecosystem wide changes. A good way of making sure that your code follows the format we are using is to clone the [main playbook repository]({{ project.playbooks }}) (a.k.a. [Install Doctor]({{ link.installdoctor }})) and use Visual Studio Code to search for code examples of how we are performing similar tasks. For example:
 
 - All of our roles use a similar pattern for the `tasks/main.yml` file
 - The file names and variable names are consistent across our roles

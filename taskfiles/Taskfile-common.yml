@@ -1,0 +1,261 @@
+---
+version: '3'
+
+tasks:
+  commit:
+    desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
+    summary: |
+      $ Commit code
+
+      This task will perform linting and auto-fixing on the files that have been staged in
+      git (i.e. the files that were added with `git add --all`). It will then report possible
+      spelling errors that you may choose to fix. Then, it opens a _required_ interactive commit
+      questionnaire that will help you make better commits that are compatible with software
+      that generates the CHANGELOG.md.
+
+      It is very important that you use this task to commit rather than the conventional approach
+      using `git commit -m`. However, if you really need to, you can add the flag `--no-verify`
+      to your regular `git commit -m` command to bypass the pre-commit hook.
+    cmds:
+      - npm run lint-staged
+      - task: spelling
+      - npm run commit -- --no-verify
+
+  markdown-link-check:
+    desc: Scan markdown files for broken links
+    summary: |
+      $ Report any broken links in the files that end with .md
+
+      This task uses the npm package called `markdown-link-check` to scan all the links
+      and then report which ones are broken.
+    cmds:
+      - npm run misc:markdown-links
+
+  prepare-release:
+    desc: Ensure the project has upstream changes, lint, and then update the version
+    summary: |
+      $ Prepare a new release
+
+      This task (1) ensures the project is up-to-date with the latest upstream changes, (2) lints
+      the project with all available linters, and then (3) updates the version of the project in
+      the `package.json` file. It also will add the appropriate details to the CHANGELOG.md file.
+    cmds:
+      - task: update
+      - task: lint
+      - npm run version
+
+  requirements:
+    desc: Ensure all the dependencies are installed (Node.js, Python, etc.)
+    summary: |
+      $ Ensure dependencies are installed
+
+      This task ensures that packages in various languages (Node.js, Python, etc.) are installed.
+      At the very minimum, it will install the Node.js requirements by running `npm install` and
+      then install the Python requirements by running `pip3 install -r requirements` after
+      initiating a `virtualenv`. In some types of projects, additional types of requirements are
+      installed (e.g. Ansible projects also install Ansible Galaxy requirements).
+    deps: [requirements-nodejs, requirements-python]
+
+  requirements-nodejs:
+    cmds:
+      - npm install
+    sources:
+      - .common/files-{{.REPOSITORY_SUBTYPE}}/package.json
+    preconditions:
+      - sh: "test -f package.json"
+        msg: "The package.json file appears to be missing!"
+
+  requirements-python:
+    cmds:
+      - source ".common/scripts/log.sh"
+      - info "Setting up a virtual Python environment"
+      - virtualenv venv
+      - source venv/bin/activate
+      - info "Installing pip requirements"
+      - pip3 install requirements.txt
+    sources:
+      - requirements.txt
+    preconditions:
+      - sh: "test -f requirements.txt"
+        msg: "The requirements.txt file is missing!"
+
+  shell:
+    desc: Start a terminal session using Docker with any Linux operating system
+    summary: |
+      Start a Docker terminal session
+
+      Use Docker to run commands on nearly any operating system. The operating
+      systems are all stock distros with systemd added.
+
+      Example usage:
+      task shell -- ubuntu-21.04
+
+      Available operating systems:
+      archlinux, centos-7, centos-8, debian-9, debian-10, fedora-33, fedora-34,
+      ubuntu-18.04, ubuntu-20.04, ubuntu-21.04
+    vars:
+      WORKDIR:
+        sh: basename $PWD
+    cmds:
+      - docker run --cap-drop=ALL -it -v "${PWD}:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm megabytelabs/ansible-molecule-{{.CLI_ARGS}}:latest /bin/bash
+    preconditions:
+      - sh: "type docker &> /dev/null"
+        msg: "Docker is not installed! Install it to use this feature."
+
+  spelling:
+    desc: Checks for spelling errors in staged files
+    vars:
+      STAGED_FILES:
+        sh: git diff --cached --name-only
+    cmds:
+      - npx cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json {{.STAGED_FILES}} || true
+    preconditions:
+      - sh: "git diff --cached --name-only"
+        msg: "Cannot perform a spell check because there are no staged files"
+
+  start:
+    desc: This is an alias for `bash .start.sh` - this is the first command you should run
+    cmds:
+      - bash .start.sh
+    preconditions:
+      - sh: "test -f .start.sh"
+        msg: "The .start.sh file is missing! It is required to bootstrap the project."
+
+  update:
+    desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
+    cmds:
+      - cp ./.common/.start.sh .start.sh
+      - task: update-variables
+      - task: update-all
+
+  update-variables:
+    vars:
+      BLUEPRINT_DATA:
+        sh: jq -r '.blueprint' package.json
+      COMMON_JSON: ".common/common.{{.REPOSITORY_SUBTYPE}}.json"
+    cmds:
+      - TMP="$(mktemp)"
+      - jq -S --arg blueprint "{{.BLUEPRINT_DATA}}" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
+      - mv "$TMP" .variables.json
+    preconditions:
+      - sh: "type jq &> /dev/null"
+        msg: "jq is not installed! You can install it by running `bash .start.sh`."
+      - sh: "type yq &> /dev/null"
+        msg: "yq is not installed! You can install it by running `bash .start.sh`."
+      - sh: "test -f meta/main.yml"
+        msg: "The meta/main.yml file is missing. A properly populated meta/main.yml is required. You can find an example of one at https://github.com/ProfessorManhattan/ansible-snapd."
+
+  update-all:
+    deps: [update-contributing, update-readme, update-files]
+
+  update-readme-role
+    deps: [_ansible-autodoc, _ansibler]
+    cmds:
+      - task: update-readme
+
+  _ansible-autodoc:
+    vars:
+      ACTIONS_DESCRIPTION:
+        sh: jq -r '.autodoc_actions_description'
+    cmds:
+      - mod-ansible-autodoc --todo-title "### TODO" --actions-title "## Features" --actions-description "{{.ACTIONS_DESCRIPTION}}" --tags-title "### Tags" --variables-title "## Variables"
+      - ROLE_VARIABLES="$(jq -r '.role_variables' ansible_variables.json)"
+      - TMP="$(mktemp)"
+      - jq --arg vars "${ROLE_VARIABLES}" '.role_variables = $vars' .variables > "$TMP"
+      - mv "$TMP" .variables.json
+    preconditions:
+      - sh: "type mod-ansible-autodoc &> /dev/null"
+        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure the Python requirements are installed by running `pip3 install -r requirements.txt` or running `bash .start.sh`."
+
+  _ansibler:
+    cmds:
+      - ansibler
+      - ROLE_DEPS="$(jq -r '.role_dependencies' dependency-chart.json)"
+      - TMP=$(mktemp)
+      - jq --arg deps "$ROLE_DEPS" '.role_dependencies = $deps' .variables.json
+      - mv "$TMP" .variables.json
+    preconditions:
+      - sh: "type ansibler &> /dev/null"
+        msg: "The Node.js package `ansibler` is missing. Ensure the dependencies are installed by running `npm install` or `bash .start.sh` to initialize the project."
+
+  update-contributing:
+    vars:
+      CONTRIB_TEMPLATE: .common/docs/blueprint-contributing.md
+    cmds:
+      - readme generate --config .variables.json --input "$CONTRIB_TEMPLATE" --output CONTRIBUTING.md
+      - task: _markdown-scrub
+        vars:
+          SCRUB_FILE: CONTRIBUTING.md
+      - prettier --write CONTRIBUTING.md
+    preconditions:
+      - sh: "test -f .common/docs/blueprint-contributing.md"
+        msg: "The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`"
+      - sh: "test -f .variables.json"
+        msg: "The .variables.json file is not present. Generate it by running `task common:update`"
+      - sh: type readme &> /dev/null
+        msg: "@appnest/readme is not installed globally. Install it by running `npm install -g @appnest/readme` or by running `bash .start.sh`."
+
+  update-files:
+    vars:
+      PKG_DEPS:
+        sh: jq -r '.dependencies' package.json
+      PKG_DEV_DEPS:
+        sh: jq -r '.devDependencies' package.json
+      PKG_VERSION:
+        sh: jq -r '.version' package.json
+    cmds:
+      -- |
+        FILES="$(find .common/files-{{.REPOSITORY_SUBTYPE}})"
+        for FILE in "$FILES"; do
+          if [ "${FILE##*.}" == 'hbs' ]; then
+            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE%.*}"
+          fi
+        done
+      - rm -rf ".common/files-{{.REPOSITORY_SUBTYPE}}/**.hbs"
+      - rm -rf ".common/files-{{.REPOSITORY_SUBTYPE}}/**/*.hbs"
+      - rsync -aP ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
+      - TMP="$(mktemp)"
+      # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
+      # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
+      # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
+      # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
+      - jq -S --arg deps "{{.PKG_DEPS}}" --arg devDeps "{{.PKG_DEV_DEPS}}" --arg version "{{.PKG_VERSION}}" \
+          '.dependencies = (.dependencies + ($deps | fromjson)) | .devDependencies = (.devDependencies + ($devDeps | fromjson)) | .version = $version' \
+          package.json > "$TMP"
+      - mv "$TMP" package.json
+    preconditions:
+      - sh: "type rsync &> /dev/null"
+        msg: "rsync is not installed!"
+      - sh: "type hbs &> /dev/null"
+        msg: "hbs-cli is not installed globally. Install it by running `npm install -g hbs-cli` or by running `bash .start.sh`."
+
+  update-readme:
+    vars:
+      README_TEMPLATE: "blueprint-readme.md"
+    cmds:
+      - readme generate --config .variables.json --input ".common/docs/{{.README_TEMPLATE}}"
+      - rm -f ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.md ansible_variables.json dependency-chart.json
+      - task: _markdown-scrub
+        vars:
+          SCRUB_FILE: README.md
+      - prettier --write README.md
+    preconditions:
+      - sh: "test -f .common/docs/{{.README_TEMPLATE}}"
+        msg: "The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`"
+      - sh: "test -f .variables.json"
+        msg: "The .variables.json file is not present. Generate it by running `task common:update`"
+      - sh: type readme &> /dev/null
+        msg: "@appnest/readme is not installed globally. Install it by running `npm install -g @appnest/readme` or by running `bash .start.sh`."
+
+  _markdown-scrub:
+    vars:
+      DIVIDER_SRC: https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src=
+      REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)]$
+      REPLACEMENT:
+    cmds:
+      - |
+        if [[ '{{OS}}' == 'darwin' ]]; then
+          sed -i .bak 's^{{.REGEX}}^{{DIVIDER_SRC}}"></a>^g' {{.SCRUB_FILE}} && rm {{.SCRUB_FILE}}.bak
+        else
+          sed -i 's^{{.REGEX}}^{{DIVIDER_SRC}}"></a>^g' {{.SCRUB_FILE}}
+        fi

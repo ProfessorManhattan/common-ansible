@@ -151,7 +151,8 @@ function ensureNodeSetup() {
   else
     info "Node.js appears to be installed"
   fi
-  if ! npm list --depth 1 -g signale | grep signale; then
+  SIGNALE_LISTING=$(npm list --depth 1 -g signale | grep signale)
+  if [ ! "$SIGNALE_LISTING" ]; then
     npm install -g signale
     NODE_PATH="$(npm root -g):$NODE_PATH"
     export NODE_PATH
@@ -159,6 +160,9 @@ function ensureNodeSetup() {
   fi
   if ! commandExists hbs; then
     npm install -g hbs-cli
+  fi
+  if ! commandExists prettier; then
+    npm install -g prettier
   fi
 }
 
