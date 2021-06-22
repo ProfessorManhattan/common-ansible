@@ -109,11 +109,13 @@ tasks:
         sh: grep -Ril "\{{.COLLECTION}}" ./tasks
     cmds:
       - |
-        if [ "\{{.REFERENCES}}" ] && [[ ! "\{{.COLLECTIONS}}" =~ "\{{.COLLECTION}}" ]] && [ ! ("\{{.IS_SNAP}}" && "\{{.ROLE}}" == "\{{.GALAXY_NAMESPACE}}.snapd") ]; then
-            yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
-            TMP=$(mktemp)
-            (echo "---" && cat requirements.yml) > $TMP
-            mv $TMP requirements.yml
+        if [ "\{{.REFERENCES}}" ]
+        && [[ ! "\{{.COLLECTIONS}}" =~ "\{{.COLLECTION}}" ]]
+        && [ ! ("\{{.IS_SNAP}}" && "\{{.ROLE}}" == "\{{.GALAXY_NAMESPACE}}.snapd") ]; then
+          yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
+          TMP=$(mktemp)
+          (echo "---" && cat requirements.yml) > $TMP
+          mv $TMP requirements.yml
         fi
 
   _populate-meta:

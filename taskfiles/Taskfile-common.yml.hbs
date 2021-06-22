@@ -152,7 +152,8 @@ tasks:
       - SUBHEADER_DESCRIPTION="An Ansible role that ${LOWERCASE_DESC}"
       - ALT_DESCRIPTION="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
       - TMP="$(mktemp)"
-      - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION" '.subheader_description = $subheader | .alternative_description = $alt' .variables.json > "$TMP"
+      - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION"
+          '.subheader_description = $subheader | .alternative_description = $alt' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
 {{/if}}
     preconditions:
@@ -161,7 +162,8 @@ tasks:
       - sh: "type yq &> /dev/null"
         msg: "yq is not installed! You can install it by running `bash .start.sh`."
       - sh: "test -f meta/main.yml"
-        msg: "The meta/main.yml file is missing. A properly populated meta/main.yml is required. You can find an example of one at https://github.com/ProfessorManhattan/ansible-snapd."
+        msg: "The meta/main.yml file is missing. A properly populated meta/main.yml is required. You can find an
+          example of one at https://github.com/ProfessorManhattan/ansible-snapd."
 
   update-all:
     deps: [update-contributing, update-readme{{#if hbs.role}}-role{{/if}}, update-files]
@@ -176,14 +178,16 @@ tasks:
       ACTIONS_DESCRIPTION:
         sh: jq -r '.autodoc_actions_description'
     cmds:
-      - mod-ansible-autodoc --todo-title "### TODO" --actions-title "## Features" --actions-description "\{{.ACTIONS_DESCRIPTION}}" --tags-title "### Tags" --variables-title "## Variables"
+      - mod-ansible-autodoc --todo-title "### TODO" --actions-title "## Features" --actions-description "\{{.ACTIONS_DESCRIPTION}}"
+          --tags-title "### Tags" --variables-title "## Variables"
       - ROLE_VARIABLES="$(jq -r '.role_variables' ansible_variables.json)"
       - TMP="$(mktemp)"
       - jq --arg vars "${ROLE_VARIABLES}" '.role_variables = $vars' .variables > "$TMP"
       - mv "$TMP" .variables.json
     preconditions:
       - sh: "type mod-ansible-autodoc &> /dev/null"
-        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure the Python requirements are installed by running `pip3 install -r requirements.txt` or running `bash .start.sh`."
+        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure the Python requirements are installed by running
+          `pip3 install -r requirements.txt` or running `bash .start.sh`."
 
   _ansibler:
     cmds:
@@ -194,7 +198,8 @@ tasks:
       - mv "$TMP" .variables.json
     preconditions:
       - sh: "type ansibler &> /dev/null"
-        msg: "The Node.js package `ansibler` is missing. Ensure the dependencies are installed by running `npm install` or `bash .start.sh` to initialize the project."
+        msg: "The Node.js package `ansibler` is missing. Ensure the dependencies are installed by running `npm install` or `bash .start.sh`
+          to initialize the project."
 
   update-contributing:
     vars:
@@ -238,7 +243,7 @@ tasks:
       # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
       # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
       - jq -S --arg deps "\{{.PKG_DEPS}}" --arg devDeps "\{{.PKG_DEV_DEPS}}" --arg version "\{{.PKG_VERSION}}" \
-          '.dependencies = (.dependencies + ($deps | fromjson)) | .devDependencies = (.devDependencies + ($devDeps | fromjson)) | .version = $version' \
+          '.dependencies = (.dependencies + ($deps | fromjson)) | .devDependencies = (.devDependencies + ($devDeps | fromjson)) | .version = $version'
           package.json > "$TMP"
       - mv "$TMP" package.json
     preconditions:
@@ -267,7 +272,8 @@ tasks:
 
   _markdown-scrub:
     vars:
-      DIVIDER_SRC: https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src=
+      DIVIDER_SRC: https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png\
+<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src=
       REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)]$
       REPLACEMENT:
     cmds:
