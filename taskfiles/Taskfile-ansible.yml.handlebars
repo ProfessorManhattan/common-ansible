@@ -21,7 +21,7 @@ tasks:
         if [ -z "\{{.CLI_ARGS}}" ]; then
           for ITEM in environments/\{{.CLI_ARGS}}/*; do
             if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              echo "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
+              echo "Skipping environments/\{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
             else
               rm -f $ITEM
               ln -s ./environments/\{{.CLI_ARGS}}/$ITEM $ITEM
