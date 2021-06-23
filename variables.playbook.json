@@ -29,6 +29,13 @@
   },
   "github_prefix": "",
   "group": "ansible",
+  "hbs": {
+    "ansible": false,
+    "dockerfile": false,
+    "playbook": false,
+    "python": false,
+    "yaml": false
+  },
   "header_description_post": "",
   "header_description_pre": "",
   "header_title_post": "",
