@@ -13,8 +13,23 @@ tasks:
       host_vars, group_vars etc.). If you place all the files and folders you wish to constitute
       as an environment inside a folder named as the name of the environment then you can use
       this task to handle the symlinking and switching between environments.
+
+      You can directly switch enironments to `environments/prod/` by running:
+      > task ansible:environment -- prod
     cmds:
-      - node .common/scripts/environment.js
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          for ITEM in environments/{{.CLI_ARGS}}/*; do
+            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+              echo "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
+            else
+              rm -f $ITEM
+              ln -s ./environments/{{.CLI_ARGS}}/$ITEM $ITEM
+            fi
+          done
+        else
+          node .common/scripts/environment.js
+        fi
     preconditions:
       - sh: "test -d node_modules"
         msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:requirements` or `bash .start.sh`"
@@ -97,24 +112,24 @@ tasks:
           COLLECTION: community.general
       - task: _populate-meta
         vars:
-          MODULE: "community.general.homebrew"
+          MODULE: community.general.homebrew
           ROLE: "\{{.GALAXY_NAMESPACE}}.homebrew"
-          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.homebrew", "when": "ansible_os_family == \"Darwin\""}'
+          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.homebrew\", \"when\": \"ansible_os_family == 'Darwin'\"}"
       - task: _populate-meta
         vars:
           MODULE: community.general.npm
-          ROLE: \{{.GALAXY_NAMESPACE}}.nodejs
-          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.nodejs"}'
+          ROLE: "\{{.GALAXY_NAMESPACE}}.nodejs"
+          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.nodejs\"}"
       - task: _populate-meta
         vars:
           MODULE: community.general.gem
-          ROLE: \{{.GALAXY_NAMESPACE}}.ruby
-          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.ruby"}'
+          ROLE: "\{{.GALAXY_NAMESPACE}}.ruby"
+          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.ruby\"}"
       - task: _populate-meta
         vars:
           MODULE: community.general.snap
-          ROLE: \{{.GALAXY_NAMESPACE}}.snapd
-          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.snapd", "when": "ansible_system == \"Linux\""}'
+          ROLE: "\{{.GALAXY_NAMESPACE}}.snapd"
+          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.snapd\", \"when\": \"ansible_system == 'Linux'\"}"
 
     preconditions:
       - sh: "type yq &> /dev/null"
