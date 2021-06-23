@@ -8,7 +8,7 @@ In the root of all of our Ansible repositories, we include a file named `package
 
 For every role that is included in our eco-system, we require certain fields to be filled out in the `"blueprint"` section of the `package.json` file. Lucky for you, most of the fields in the file are auto-generated. The fields that need to be filled out as well as descriptions of what they should contain are listed in the chart below:
 
-{{ requirements }}
+{{ blueprint_requirements }}
 
 ### `meta/main.yml` Description
 
