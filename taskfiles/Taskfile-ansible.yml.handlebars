@@ -87,7 +87,7 @@ tasks:
       DEPENDENCIES:
         sh: yq eval '.dependencies' meta/main.yml
       IS_SNAP:
-        sh: grep -Ril "role_name: snapd" meta/main.yml
+        sh: "grep -Ril 'role_name: snapd' meta/main.yml"
     cmds:
       - task: _populate-collection
         vars:
@@ -99,22 +99,22 @@ tasks:
         vars:
           MODULE: community.general.homebrew
           ROLE: \{{.GALAXY_NAMESPACE}}.homebrew
-          VAL: {"role": "\{{.GALAXY_NAMESPACE}}.homebrew", "when": "ansible_os_family == \"Darwin\""}
+          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.homebrew", "when": "ansible_os_family == \"Darwin\""}'
       - task: _populate-meta
         vars:
           MODULE: community.general.npm
           ROLE: \{{.GALAXY_NAMESPACE}}.nodejs
-          VAL: {"role": "\{{.GALAXY_NAMESPACE}}.nodejs"}
+          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.nodejs"}'
       - task: _populate-meta
         vars:
           MODULE: community.general.gem
           ROLE: \{{.GALAXY_NAMESPACE}}.ruby
-          VAL: {"role": "\{{.GALAXY_NAMESPACE}}.ruby"}
+          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.ruby"}'
       - task: _populate-meta
         vars:
           MODULE: community.general.snap
           ROLE: \{{.GALAXY_NAMESPACE}}.snapd
-          VAL: {"role": "\{{.GALAXY_NAMESPACE}}.snapd", "when": "ansible_system == \"Linux\""}
+          VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.snapd", "when": "ansible_system == \"Linux\""}'
 
     preconditions:
       - sh: "type yq &> /dev/null"
@@ -142,7 +142,6 @@ tasks:
     cmds:
       - |
         if [ "\{{.REFERENCES}}" ] && [[ ! "\{{.DEPENDENCIES}}" =~ "\{{.ROLE}}" ]]; then
-
           yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
           TMP=$(mktemp)
           (echo "---" && cat meta/main.yml) > $TMP

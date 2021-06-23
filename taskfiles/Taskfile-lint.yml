@@ -1,7 +1,0 @@
----
-version: '3'
-
-tasks:
-  all:
-    desc: Lint the project by running all the linters in parallel
-    deps: [lint:formatting]
