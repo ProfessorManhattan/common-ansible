@@ -2,20 +2,19 @@
 version: '3'
 
 env:
-  GALAXY_NAMESPACE:
-    sh: yq e '.galaxy_info.namespace' meta/main.yml
-  GALAXY_ROLE_NAME:
-    sh: yq e '.galaxy_info.role_name' meta/main.yml
-  REPOSITORY_SUBTYPE:
-    sh: if [ -d environments ]; then echo playbook; else echo role; fi
+  PROJECT_NAME:
+    sh: if [ -f meta/main.yml ]; then yq e '.galaxy_info.role_name' meta/main.yml; else jq -r '.name' package.json | sed 's/.*\///'; fi
+  PROJECT_NAMESPACE:
+    sh: if [ -f meta/main.yml ]; then yq e '.galaxy_info.namespace' meta/main.yml; else jq -r '.name' package.json | sed 's/\/.*//' | sed 's/@//'; fi
+  REPOSITORY_SUBTYPE: REPO_SUBTYPE
   REPOSITORY_TYPE: ansible
 
 includes:
-  system: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-{{OS}}.yml
-  lint: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-lint.yml
-  fix: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-lint.yml
-  common: ./.common/taskfiles-{{.REPOSITORY_SUBTYPE}}/Taskfile-common.yml
-  ansible: ./.common/taskfiles/Taskfile-{{.REPOSITORY_SUBTYPE}}.yml
+  system: ./.common/taskfiles-REPO_SUBTYPE/Taskfile-{{OS}}.yml
+  common: ./.common/taskfiles-REPO_SUBTYPE/Taskfile-common.yml
+  fix: ./.common/taskfiles-REPO_SUBTYPE/Taskfile-fix.yml
+  lint: ./.common/taskfiles-REPO_SUBTYPE/Taskfile-lint.yml
+  ansible: ./.common/taskfiles-REPO_SUBTYPE/Taskfile-ansible.yml
 
 tasks:
   fix:
