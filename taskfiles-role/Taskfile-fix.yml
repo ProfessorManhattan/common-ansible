@@ -4,12 +4,17 @@ version: '3'
 tasks:
   all:
     desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
-    deps: [fix-formatting, fix-scripts]
+    deps: [fix-formatting, fix-python, fix-scripts]
 
   formatting:
     desc: Automatically format most files using Prettier
     cmds:
       - npm run fix:prettier
+
+  python:
+    desc: Automatically format Python files using Black
+    cmds:
+      - black --exclude '\.cache/|.*\.cache/|\.common/|.*\.common/|.git/|.*\.git/|node_modules/|.*node_modules/|roles/' .
 
   scripts:
     desc: (Experimental) Automatically apply fixes to .sh files using Shellcheck

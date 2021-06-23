@@ -25,15 +25,15 @@
     "help": "help@megabyte.space"
   },
   "galaxy_info": {
-    "role_name": "InstallDoctor"
+    "role_name": "install-doctor"
   },
   "github_prefix": "",
   "group": "ansible",
   "hbs": {
-    "ansible": false,
-    "dockerfile": false,
-    "playbook": false,
-    "python": false,
+    "ansible": true,
+    "dockerfile": true,
+    "playbook": true,
+    "python": true,
     "yaml": false
   },
   "header_description_post": "",

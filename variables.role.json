@@ -25,13 +25,18 @@
   "email": {
     "help": "help@megabyte.space"
   },
+  "galaxy_info": {
+    "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing.",
+    "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
+  },
   "github_prefix": "ansible-",
   "group": "ansible",
   "hbs": {
-    "ansible": false,
-    "dockerfile": false,
+    "ansible": true,
+    "dockerfile": true,
     "playbook": false,
-    "python": false,
+    "python": true,
+    "role": true,
     "yaml": false
   },
   "header_description_post": "",
