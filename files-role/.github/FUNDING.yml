@@ -1,4 +1,4 @@
 ---
-github: ProfessorManhattan
-open_collective: megabytelabs
-patreon: ProfessorManhattan
+github: {{profile.github}}
+open_collective: {{profile.opencollective}}
+patreon: {{profile.patreon}}

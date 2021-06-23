@@ -29,8 +29,14 @@ if [ "${container:=}" != 'docker' ]; then
   success "Node.js, Task, jq, and yq are all installed"
 fi
 
-cp .common/files/Taskfile.yml Taskfile.yml
-task requirements update
+if [ -f meta/main.yml ]; then
+  export REPO_SUBTYPE=role
+else
+  export REPO_SUBTYPE=playbook
+fi
+
+cp ".common/files-$REPO_SUBTYPE/Taskfile.yml" Taskfile.yml
+task common:requirements common:update
 
 if [ "${container:=}" != 'docker' ]; then
   missingDockerNotice
