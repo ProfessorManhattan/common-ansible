@@ -7,7 +7,7 @@ tasks:
     deps: [lint:formatting, lint:ansible, lint:docker, lint-python]
 
   ansible:
-    deps: [:ansible:symlink]
+    deps: [ansible:symlink]
     desc: Lint Ansible projects using Ansible Lint
     cmds:
       - ansible-lint

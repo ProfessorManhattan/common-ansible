@@ -8,7 +8,7 @@ tasks:
 {{#if hbs.ansible}}
 
   ansible:
-    deps: [:ansible:symlink]
+    deps: [ansible:symlink]
     desc: Lint Ansible projects using Ansible Lint
     cmds:
       - ansible-lint
