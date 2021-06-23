@@ -61,12 +61,13 @@ tasks:
       Generate the compatibility matrix used in the README.md:
       > task test:molecule-e2e -- matrix
     env:
+      # yamllint disable-line rule:truthy
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: YES
     cmds:
       - |
         if [ "\{{.CLI_ARGS}}" ]; then
           if [ "\{{.CLI_ARGS}}" == 'matrix']; then
-            PYCOLORS=0 molecule test > molecule-test-output.txt
+            PY_COLORS=0 molecule test > molecule-test-output.txt
           fi
         else
           molecule test
