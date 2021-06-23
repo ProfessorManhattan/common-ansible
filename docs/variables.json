@@ -70,7 +70,9 @@
     ["`ci-docker-fedora`", "Uses Docker to test multiple versions of Fedora."],
     ["`ci-docker-ubuntu`", "Uses Docker to test multiple versions of Ubuntu."]
   ],
+  "name": "[[ package.json .blueprint.name - See CONTRIBUTING.md ]]",
   "organization": "Megabyte Labs",
+  "overview": "This is a new repository without the details filled in yet. Look for the section about blueprint data in the CONTRIBUTING.md to set up the project.",
   "profile": {
     "galaxy": "professormanhattan",
     "github": "ProfessorManhattan",
@@ -98,6 +100,7 @@
     "twitter": "MegabyteLabs",
     "vagrant": "https://app.vagrantup.com"
   },
+  "repo": "[[ package.json .blueprint.repo - See CONTRIBUTING.md ]]",
   "repository": {
     "group": {
       "ansible_roles": "https://gitlab.com/megabyte-labs/ansible-roles",
@@ -132,5 +135,7 @@
       "playbooks": "https://gitlab.com/ProfessorManhattan/Playbooks",
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
-  }
+  },
+  "subgroup": "[[ Needs to be setup. Set this in the common repository for this type of project ]]",
+  "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]"
 }
