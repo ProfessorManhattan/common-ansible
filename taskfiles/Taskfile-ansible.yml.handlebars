@@ -97,8 +97,8 @@ tasks:
           COLLECTION: community.general
       - task: _populate-meta
         vars:
-          MODULE: community.general.homebrew
-          ROLE: \{{.GALAXY_NAMESPACE}}.homebrew
+          MODULE: "community.general.homebrew"
+          ROLE: "\{{.GALAXY_NAMESPACE}}.homebrew"
           VAL: '{"role": "\{{.GALAXY_NAMESPACE}}.homebrew", "when": "ansible_os_family == \"Darwin\""}'
       - task: _populate-meta
         vars:
