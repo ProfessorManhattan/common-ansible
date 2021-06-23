@@ -2,10 +2,10 @@
 version: '3'
 
 env:
-  GALAXY_NAME:
-    sh: yq e '.galaxy_info.role_name' meta/main.yml
-  GALAXY_NAMESPACE:
-    sh: yq e '.galaxy_info.namespace' meta/main.yml
+  PROJECT_NAME:
+    sh: if [ -f meta/main.yml ]; then yq e '.galaxy_info.role_name' meta/main.yml; else jq -r '.name' package.json | sed 's/.*\///'; fi
+  PROJECT_NAMESPACE:
+    sh: if [ -f meta/main.yml ]; then yq e '.galaxy_info.namespace' meta/main.yml; else jq -r '.name' package.json | sed 's/\/.*//' | sed 's/@//'; fi
   REPOSITORY_SUBTYPE: role
   REPOSITORY_TYPE: ansible
 
@@ -15,3 +15,11 @@ includes:
   fix: ./.common/taskfiles-role/Taskfile-fix.yml
   lint: ./.common/taskfiles-role/Taskfile-lint.yml
   ansible: ./.common/taskfiles-role/Taskfile-ansible.yml
+
+tasks:
+  fix:
+    desc: Apply automatic code formatting techniques
+    deps: [fix-formatting, fix-python, fix-scripts]
+  lint:
+    desc: Lint the project by running all the linters in parallel
+    deps: [lint-ansible, lint-dockerfiles, lint-python, lint-yaml]

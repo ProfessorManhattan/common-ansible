@@ -7,7 +7,7 @@ tasks:
     deps: [lint:formatting, lint:ansible, lint:docker, lint-python]
 
   ansible:
-    deps: [symlink]
+    deps: [:ansible:symlink]
     desc: Lint Ansible projects using Ansible Lint
     cmds:
       - ansible-lint
@@ -29,9 +29,9 @@ tasks:
   docker:
     desc: Lint Dockerfiles using Hadolint (requires Docker)
     cmds:
-      - find . -type d \\( -name .cache -o -name .common -o -name .git -o -name .modules \
-        -o -name node_modules -o -name .husky -o -name .task -o -name test \\) -prune -o \
-        -type f \\( -name Dockerfile -o -name Dockerfile.j2 \\) -print0 | xargs -0 -r -n1 \
+      - find . -type d \( -name .cache -o -name .common -o -name .git -o -name .modules
+        -o -name node_modules -o -name .husky -o -name .task -o -name test \) -prune -o
+        -type f \( -name Dockerfile -o -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1
         docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
     sources:
       - ./**Dockerfile

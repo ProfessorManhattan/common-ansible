@@ -4,7 +4,8 @@ version: '3'
 tasks:
   all:
     desc: Lint the project by running all the linters in parallel
-    deps: [lint:formatting, lint:ansible, lint:docker, lint-python]
+    deps: [lint:formatting{{#if hbs.ansible}} ,lint:ansible{{/if}}{{#if hbs.dockerfile}}, lint:docker{{/if}}{{#if hbs.python}}, lint-python{{/if}}{{#if hbs.yaml}}, lint-yaml{{/if}}]
+{{#if hbs.ansible}}
 
   ansible:
     deps: [:ansible:symlink]
@@ -25,6 +26,8 @@ tasks:
       - vars/**/*
       - ./*.yml
     method: checksum
+{{/if}}
+{{#if hbs.dockerfile}}
 
   docker:
     desc: Lint Dockerfiles using Hadolint (requires Docker)
@@ -37,11 +40,22 @@ tasks:
       - ./**Dockerfile
       - ./**Dockerfile.j2
     method: checksum
+{{/if}}
+{{#if hbs.python}}
 
   python:
     desc: Lint Python files using Flake8
     cmds:
       - flake8 .
+{{/if}}
+{{#if hbs.yaml}}
+
+  yaml:
+    desc: Lint .yml files using YAML Lint
+    cmds:
+      - yamllint -s .
+{{/if}}
+{{#if hbs.ansible}}
 
   yaml:
     desc: Lint .yml files using YAML Lint
@@ -61,3 +75,5 @@ tasks:
       - vars/**/*
       - ./*.yml
     method: checksum
+
+{{/if}}
