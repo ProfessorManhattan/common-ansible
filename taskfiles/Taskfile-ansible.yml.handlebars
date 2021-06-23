@@ -24,7 +24,7 @@ tasks:
               echo "Skipping environments/\{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
             else
               rm -f $ITEM
-              ln -s ./environments/\{{.CLI_ARGS}}/$ITEM $ITEM
+              ln -s "./environments/\{{.CLI_ARGS}}/$ITEM" "$ITEM"
             fi
           done
         else
