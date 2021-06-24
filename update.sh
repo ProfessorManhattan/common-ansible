@@ -36,8 +36,8 @@ else
 fi
 
 cp ".common/files-$REPO_SUBTYPE/Taskfile.yml" Taskfile.yml
-task common:update
 task common:requirements
+task common:update
 
 if [ "${container:=}" != 'docker' ]; then
   missingDockerNotice
