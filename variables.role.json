@@ -30,7 +30,7 @@
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
   "github_prefix": "",
-  "group": "ansible",
+  "group": "generic",
   "hbs": {
     "ansible": false,
     "dockerfile": false,

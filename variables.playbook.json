@@ -28,7 +28,7 @@
     "role_name": "install-doctor"
   },
   "github_prefix": "",
-  "group": "ansible",
+  "group": "generic",
   "hbs": {
     "ansible": false,
     "dockerfile": false,
