@@ -30,10 +30,10 @@
   "github_prefix": "",
   "group": "ansible",
   "hbs": {
-    "ansible": true,
-    "dockerfile": true,
-    "playbook": true,
-    "python": true,
+    "ansible": false,
+    "dockerfile": false,
+    "playbook": false,
+    "python": false,
     "yaml": false
   },
   "header_description_post": "",
@@ -146,6 +146,6 @@
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
-  "subgroup": "playbook",
+  "subgroup": "[[ Needs to be setup. Set this in the common repository for this type of project ]]",
   "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]"
 }

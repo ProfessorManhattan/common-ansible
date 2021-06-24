@@ -57,16 +57,7 @@ tasks:
       then install the Python requirements by running `pip3 install -r requirements` after
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
-    deps: [dependencies-nodejs, requirements-python, requirements-galaxy]
-
-  requirements-galaxy:
-    cmds:
-      - ansible-galaxy install -r requirements.yml --ignore-errors
-    sources:
-      - requirements.yml
-    preconditions:
-      - sh: 'test -f requirements.yml'
-        msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
+    deps: [dependencies-nodejs, requirements-python]
 
   dependencies-nodejs:
     cmds:
@@ -269,7 +260,7 @@ tasks:
 
   update-readme:
     vars:
-      README_TEMPLATE: blueprint-readme-{{.REPOSITORY_SUBTYPE}}.md
+      README_TEMPLATE: blueprint-readme.md
     cmds:
       - readme generate --config .variables.json --input ".common/docs/{{.README_TEMPLATE}}"
       - rm -f ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.md ansible_variables.json dependency-chart.json
