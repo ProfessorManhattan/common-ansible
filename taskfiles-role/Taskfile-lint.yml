@@ -7,7 +7,7 @@ tasks:
     deps: [lint:formatting, lint:ansible, lint:docker, lint-python]
 
   ansible:
-    deps: [ansible:symlink]
+    deps: [ansible:symlink, common:galaxy-requirements]
     desc: Lint Ansible projects using Ansible Lint
     cmds:
       - ansible-lint
@@ -24,7 +24,6 @@ tasks:
       - tests/**/*
       - vars/**/*
       - ./*.yml
-    method: checksum
 
   docker:
     desc: Lint Dockerfiles using Hadolint (requires Docker)
@@ -34,16 +33,20 @@ tasks:
         -type f \( -name Dockerfile -o -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1
         docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
     sources:
-      - ./**Dockerfile
-      - ./**Dockerfile.j2
+      - ./Dockerfile
+      - ./**/Dockerfile
+      - ./Dockerfile.j2
+      - ./**/Dockerfile.j2
     method: checksum
 
   python:
+    deps: [common:python-requirements]
     desc: Lint Python files using Flake8
     cmds:
       - flake8 .
 
   yaml:
+    deps: [common:python-requirements]
     desc: Lint .yml files using YAML Lint
     cmds:
       - yamllint -s .
@@ -60,4 +63,3 @@ tasks:
       - tests/**/*
       - vars/**/*
       - ./*.yml
-    method: checksum

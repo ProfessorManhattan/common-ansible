@@ -5,9 +5,9 @@ tasks:
 {{#if hbs.ansible}}
 
   local:
+    deps: [common:python-requirements]
     desc: Run the Ansible play on the local machine
     cmds:
-      -
       - cp tests/inventory inventory
       - if [ ! -f main.yml.bak ]; then mv main.yml main.yml.bak; fi
       - cp tests/test.yml main.yml
@@ -16,8 +16,12 @@ tasks:
       - ansible-playbook --ask-sudo-pass main.yml
       - mv main.yml.bak main.yml
       - mv ansible.cfg.bak ansible.cfg
+    preconditions:
+      - sh: typeof ansible &> /dev/null
+        msg: "Ansible is not available. Install the dependencies by running `task common:requirements`."
 
   molecule-desktop:
+    deps: [common:python-requirements]
     desc: Provisions a desktop VirtualBox VM and then runs a Molecule test
     summary: |
       This task opens a VM with an operating system of your choosing and then tests
@@ -33,6 +37,7 @@ tasks:
       - molecule converge -s \{{.CLI_ARGS}}-desktop
 
   molecule-docker:
+    deps: [common:python-requirements]
     desc: Performs a full test, including a test for idempotency, on all available Linux systems using Docker
     summary: |
       This task runs the project's Molecule tests using Docker. It only tests against
@@ -49,6 +54,7 @@ tasks:
       - if [ "$SNAP_REFS" ]; then molecule test -s docker-snap; else molecule test -s docker; fi
 
   molecule-e2e:
+    deps: [common:python-requirements]
     desc: Runs a full E2E Molecule test for all supported operating systems
     summary: |
       This task uses VirtualBox to run tests for all of our supported operating
