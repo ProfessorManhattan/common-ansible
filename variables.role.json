@@ -29,20 +29,20 @@
     "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing.",
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
-  "github_prefix": "",
+  "github_prefix": "ansible-",
   "group": "ansible",
   "hbs": {
-    "ansible": false,
-    "dockerfile": false,
+    "ansible": true,
+    "dockerfile": true,
     "playbook": false,
-    "python": false,
+    "python": true,
     "role": true,
     "yaml": false
   },
   "header_description_post": "",
-  "header_description_pre": "",
+  "header_description_pre": "An Ansible role brought to you by ",
   "header_title_post": "",
-  "header_title_pre": "",
+  "header_title_pre": "Ansible Role: ",
   "license": "MIT",
   "link": {
     "chat": "https://app.slack.com/client/T01ABCG4NK1/C01NN74H0LW/details/",
@@ -149,6 +149,6 @@
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
-  "subgroup": "[[ Needs to be setup. Set this in the common repository for this type of project ]]",
+  "subgroup": "role",
   "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]"
 }
