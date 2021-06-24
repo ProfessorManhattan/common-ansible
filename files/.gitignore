@@ -1,8 +1,4 @@
 __pycache__/
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/settings.json
-!.vscode/tasks.json
 ._*
 .apdisk
 .AppleDB
@@ -36,7 +32,6 @@ __pycache__/
 .vault_pass
 .venv
 .VolumeIcon.icns
-.vscode/*
 *.box
 *.code-workspace
 *.cover
