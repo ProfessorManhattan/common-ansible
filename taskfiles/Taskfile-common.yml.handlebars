@@ -58,6 +58,7 @@ tasks:
 {{#if hbs.ansible}}
 
   galaxy-requirements:
+    deps: [python-requirements]
     cmds:
       - ansible-galaxy install -r requirements.yml --ignore-errors
     sources:
@@ -68,6 +69,7 @@ tasks:
 {{/if}}
 
   nodejs-dependencies:
+    deps: [nodejs-dependencies]
     cmds:
       - npm install
     sources:

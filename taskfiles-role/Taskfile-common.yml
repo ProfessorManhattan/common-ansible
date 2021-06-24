@@ -57,6 +57,7 @@ tasks:
     deps: [nodejs-dependencies, nodejs-global-dependencies, python-requirements, galaxy-requirements]
 
   galaxy-requirements:
+    deps: [python-requirements]
     cmds:
       - ansible-galaxy install -r requirements.yml --ignore-errors
     sources:
@@ -66,6 +67,7 @@ tasks:
         msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
 
   nodejs-dependencies:
+    deps: [nodejs-dependencies]
     cmds:
       - npm install
     sources:
