@@ -36,7 +36,8 @@ else
 fi
 
 cp ".common/files-$REPO_SUBTYPE/Taskfile.yml" Taskfile.yml
-task common:requirements common:update
+task common:update
+task common:requirements
 
 if [ "${container:=}" != 'docker' ]; then
   missingDockerNotice
@@ -50,5 +51,7 @@ fi
 #populate_common_missing_ansible_dependencies
 #install_requirements
 #misc_fixes
-stop "Completed the bootstrap process in "
+stop "Completed the bootstrap process"
 success "Bootstrap process complete!"
+
+cp .common/.start.sh .start.sh &
