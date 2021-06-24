@@ -62,6 +62,8 @@ tasks:
   requirements-galaxy:
     cmds:
       - ansible-galaxy install -r requirements.yml
+    sources:
+      - requirements.yml
     preconditions:
       - sh: 'test -f requirements.yml'
         msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
@@ -70,16 +72,18 @@ tasks:
     cmds:
       - npm install
     sources:
-      - .common/files-{{.REPOSITORY_SUBTYPE}}/package.json
+      - package.json
+      - package-lock.json
     preconditions:
       - sh: 'test -f package.json'
         msg: 'The package.json file appears to be missing!'
 
   requirements-python:
     cmds:
+      - if ! type virtualenv &> /dev/null; then pip3 install virtualenv; fi
       - virtualenv venv
       - source venv/bin/activate
-      - pip3 install requirements.txt
+      - pip3 install -r requirements.txt
     sources:
       - requirements.txt
     preconditions:

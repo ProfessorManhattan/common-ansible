@@ -10,16 +10,22 @@ export SCRIPT_PATH
 cd "$START_PATH" || exit
 export TMP_DIR=/tmp/megabytelabs
 export USER_BIN_FOLDER="$HOME/.local/bin"
-if [ "$(uname)" == "Darwin" ]; then
+if [[ "$OSTYPE" == 'darwin'* ]]; then
   BASH_PROFILE="$HOME/.bash_profile"
   SYSTEM="Darwin"
-elif [ "$( (substr "$(uname -s)" 1 5))" == "Linux" ]; then
+elif [[ "$OSTYPE" == 'linux-gnu'* ]]; then
   BASH_PROFILE="$HOME/.bashrc"
   SYSTEM="Linux"
-elif [ "$( (substr "$(uname -s)" 1 10))" == "MINGW32_NT" ]; then
-  SYSTEM="Win32"
-elif [ "$( (substr "$(uname -s)" 1 10))" == "MINGW64_NT" ]; then
+elif [[ "$OSTYPE" == 'cygwin' ]]; then
   SYSTEM="Win64"
+elif [[ "$OSTYPE" == 'msys' ]]; then
+  SYSTEM="Win64"
+elif [[ "$OSTYPE" == 'win32' ]]; then
+  SYSTEM="Win32"
+elif [[ "$OSTYPE" == 'freebsd'* ]]; then
+  SYSTEM="FreeBSD"
+else
+  SYSTEM="Unknown"
 fi
 export BASH_PROFILE
 export SYSTEM
@@ -37,10 +43,8 @@ function sha256() {
     echo "$2 $1" | sha256sum --check
   elif [ "$SYSTEM" == "Linux" ]; then
     echo "$1  $2" | shasum -s -a 256 -c
-  elif [ "$SYSTEM" == "MINGW32_NT" ]; then
-    error "Windows support not added yet"
-  elif [ "$SYSTEM" == "MINGW64_NT" ]; then
-    error "Windows support not added yet"
+  else
+    echo "Support for this system type has not been added yet"
   fi
 }
 
