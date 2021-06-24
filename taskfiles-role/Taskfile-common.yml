@@ -252,8 +252,8 @@ tasks:
       # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
       # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
       - jq --arg deps "$PKG_DEPS" --arg devDeps "$PKG_DEV_DEPS" --arg scripts "$PKG_SCRIPTS" --arg version "$PKG_VERSION" \
-        '.dependencies = (($deps | fromjson) + .dependencies) | .devDependencies = (($devDeps | fromjson) + .devDependencies)
-        | .scripts = (($scripts | fromjson) + .scripts) | .version = $version'
+        '.dependencies = (($deps | fromjson) * .dependencies) | .devDependencies = (($devDeps | fromjson) * .devDependencies)
+        | .scripts = (($scripts | fromjson) * .scripts) | .version = $version'
         package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
