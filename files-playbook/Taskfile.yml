@@ -7,7 +7,7 @@ env:
   REPOSITORY_TYPE: ansible
 
 includes:
-  system: ./.common/taskfiles-playbook/Taskfile-{{OS}}.yml
+  software: ./.common/taskfiles-playbook/Taskfile-{{OS}}.yml
   common: ./.common/taskfiles-playbook/Taskfile-common.yml
   fix: ./.common/taskfiles-playbook/Taskfile-fix.yml
   lint: ./.common/taskfiles-playbook/Taskfile-lint.yml

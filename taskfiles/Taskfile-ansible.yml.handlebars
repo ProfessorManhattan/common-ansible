@@ -5,6 +5,8 @@ tasks:
 {{#if hbs.playbook}}
 
   environment:
+    deps:
+      - task: common:nodejs-dependencies
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
       $ Switch environments using an interactive dialogue
@@ -32,9 +34,9 @@ tasks:
         fi
     preconditions:
       - sh: "test -d node_modules"
-        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:requirements` or `bash .start.sh`"
+        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
       - sh: "type node &> /dev/null"
-        msg: "Node.js is required. Install it by running `task software:node` or by running `bash .start.sh`."
+        msg: "Node.js is required. Install it by running `task software:node`."
 
   find-missing-files:
     desc: Find roles that are missing files
@@ -72,9 +74,6 @@ tasks:
             ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.PATH_BASENAME}}"
           fi
         done
-    sources:
-      - roles/*/*/
-    method: timestamp
     preconditions:
       - sh: "test -d roles"
         msg: "The roles folder is missing. Is the project set up right?"
@@ -82,6 +81,8 @@ tasks:
 {{#if hbs.role}}
 
   populate-dependencies:
+    deps:
+      - software:yq
     desc: Attempt to automatically populate meta/main.yml and requirements.yml
     summary: |
       $ Automatically populate meta/main.yml and requirements.yml
@@ -130,12 +131,13 @@ tasks:
           MODULE: community.general.snap
           ROLE: "\{{.GALAXY_NAMESPACE}}.snapd"
           VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.snapd\", \"when\": \"ansible_system == 'Linux'\"}"
-
     preconditions:
       - sh: "type yq &> /dev/null"
         msg: "yq is not installed! yq is required for interacting with YML files. Install it by running `bash .start.sh`."
 
   _populate-collection:
+    deps:
+      - software:yq
     vars:
       REFERENCES:
         sh: grep -Ril "\{{.COLLECTION}}" ./tasks
@@ -151,6 +153,8 @@ tasks:
         fi
 
   _populate-meta:
+    deps:
+      - software:yq
     vars:
       REFERENCES:
         sh: grep -Ril "\{{.MODULE}}" ./tasks
