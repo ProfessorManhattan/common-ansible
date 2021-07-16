@@ -20,11 +20,11 @@ tasks:
       - |
         if [ -z "{{.CLI_ARGS}}" ]; then
           for ITEM in environments/{{.CLI_ARGS}}/*; do
-            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              echo "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
-            else
+            if [ ! -e "$ITEM" ] || [ -L "$ITEM" ]; then
               rm -f $ITEM
               ln -s "./environments/{{.CLI_ARGS}}/$ITEM" "$ITEM"
+            else
+              echo "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a non-symbolic file/folder in the root of the project."
             fi
           done
         else
