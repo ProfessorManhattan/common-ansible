@@ -2,6 +2,18 @@
 version: '3'
 
 tasks:
+  clean:
+    desc: Removes optional folders that are cached during various tasks
+    summary: |
+      $ Clean the project and remove all optional caches
+
+      This task will remove all the unnecessary files that are downloaded, generated, and
+      cached during various build steps. This task is used by the `task common:reset` task
+      which will re-generate the project from scratch. Ideally, this task and the reset task
+      should never be necessary. The `common:update` task should be used instead.
+    cmds:
+      - rm -rf .autodoc .task .variables.json node_modules venv
+
   commit:
     deps: [nodejs-dependencies, python-requirements]
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
@@ -73,6 +85,37 @@ tasks:
     preconditions:
       - sh: 'test -f requirements.yml'
         msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
+
+  reset:
+    desc: Resets the project by removing all caches and updating the project
+    summary: |
+      $ Reset the project and then update it
+
+      This task is intended to be used when the `common:update` task is having trouble
+      or when breaking changes are made to the build tools. Use this task if you are
+      having trouble with other tasks that are dependent on stale caches. Unlike
+      `task common:hard-reset`, this will not remove uncommitted work (assuming your
+      work does not reside in folders ignored by the `.gitignore` file).
+    cmds:
+      - task: clean
+      - task: update
+
+  hard-reset:
+    deps:
+      - software:git
+    desc: 'Aggressively reset the project (WARNING: This will wipe uncommitted work)'
+    summary: |
+      $ Aggressively reset the project
+
+      If using `task common:reset` does not fix your issues, you can run this task
+      to completely wipe out uncommitted work, clear all the caches, and sync
+      with the master branch of both this project and its upstream repositories.
+    cmds:
+      - git reset --hard HEAD
+      - git clean -fxd :/
+      - git checkout master
+      - git pull origin master
+      - bash .start.sh
 
   nodejs-dependencies:
     deps:
