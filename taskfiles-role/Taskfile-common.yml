@@ -103,7 +103,7 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - if [ "${container:=}" != 'docker' ]; then; npm install -g hbs-cli; fi
+      - if [ "${container:=}" != 'docker' ]; then npm install -g hbs-cli; fi
     status:
       - type hbs &> /dev/null
 
