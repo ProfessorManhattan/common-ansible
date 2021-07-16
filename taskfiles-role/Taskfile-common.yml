@@ -67,7 +67,7 @@ tasks:
   galaxy-requirements:
     deps: [python-requirements]
     cmds:
-      - ansible-galaxy install -r requirements.yml --ignore-errors
+      - if [ "${container:=}" != 'docker' ]; then ansible-galaxy install -r requirements.yml --ignore-errors; fi
     sources:
       - requirements.yml
     preconditions:
@@ -78,7 +78,7 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - npm install
+      - if [ "${container:=}" != 'docker' ]; then npm install; fi
     sources:
       - package.json
       - package-lock.json
@@ -88,12 +88,14 @@ tasks:
 
   nodejs-global-dependencies:
     deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme, npm-ansibler]
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
 
   npm-ansibler:
     deps:
       - :software:node
     cmds:
-      - npm install -g ansibler
+      - if [ "${container:=}" != 'docker' ]; then npm install -g ansibler; fi
     status:
       - type ansibler &> /dev/null
 
@@ -101,7 +103,7 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - npm install -g hbs-cli
+      - if [ "${container:=}" != 'docker' ]; then; npm install -g hbs-cli; fi
     status:
       - type hbs &> /dev/null
 
@@ -109,7 +111,10 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - npm install -g prettier prettier-plugin-sh @megabytelabs/prettier-config @megabytelabs/prettier-config-ansible
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          npm install -g prettier prettier-plugin-sh @megabytelabs/prettier-config @megabytelabs/prettier-config-ansible
+        fi
     status:
       - type prettier &> /dev/null
 
@@ -117,7 +122,7 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - npm install -g prettier-package-json
+      - if [ "${container:=}" != 'docker' ]; then npm install -g prettier-package-json; fi
     status:
       - type prettier-package-json &> /dev/null
 
@@ -125,7 +130,7 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - npm install -g @appnest/readme
+      - if [ "${container:=}" != 'docker' ]; then npm install -g @appnest/readme; fi
     status:
       - type readme &> /dev/null
 
@@ -140,8 +145,8 @@ tasks:
           fi
           virtualenv venv
           . venv/bin/activate
+          pip3 install -r requirements.txt
         fi
-      - pip3 install -r requirements.txt
     sources:
       - requirements.txt
     preconditions:
