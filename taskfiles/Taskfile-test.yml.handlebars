@@ -40,7 +40,10 @@ tasks:
       This task opens a VM with an operating system of your choosing and then tests
       the project's play against it. It then leaves the VM open for inspection.
 
-      Example usage:
+      Example with interactive prompt for VM type:
+      > task test:molecule
+
+      Example usage bypassing prompt:
       > task test:molecule -- archlinux
 
       Available scenarios:
@@ -49,7 +52,13 @@ tasks:
         * debian       * ubuntu
     cmds:
       - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-      - molecule converge -s \{{.CLI_ARGS}}-desktop
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          molecule converge -s \{{.CLI_ARGS}}-desktop
+        else
+          OPERATING_SYSTEM=$(node .common/scripts/molecule-desktop.js)
+          molecule converge -s "${OPERATING_SYSTEM}-desktop"
+        fi
 
   molecule-docker:
     deps:

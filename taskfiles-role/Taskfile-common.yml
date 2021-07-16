@@ -133,9 +133,14 @@ tasks:
     deps:
       - :software:python
     cmds:
-      - if ! type virtualenv &> /dev/null; then pip3 install virtualenv; fi
-      - virtualenv venv
-      - . venv/bin/activate
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          if ! type virtualenv &> /dev/null; then
+            pip3 install virtualenv
+          fi
+          virtualenv venv
+          . venv/bin/activate
+        fi
       - pip3 install -r requirements.txt
     sources:
       - requirements.txt
