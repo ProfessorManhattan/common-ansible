@@ -206,7 +206,7 @@ tasks:
       - task: requirements
       - task: update-variables
       - task: update-all
-      - . .common/scripts/log.sh
+      - . .common/scripts/log-min.sh
       - success "Successfully updated the project with the latest upstream changes"
 
   update-variables:
@@ -355,8 +355,8 @@ tasks:
             hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
           fi
         done
-      - rm -rf ".common/files-\{{.REPOSITORY_SUBTYPE}}/**/*.handlebars"
-      - rsync -aP ".common/files-\{{.REPOSITORY_SUBTYPE}}/" ./
+      - find .common/files-\{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
+      - rsync -aPq ".common/files-\{{.REPOSITORY_SUBTYPE}}/" ./
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
       # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
@@ -366,9 +366,6 @@ tasks:
         | .scripts = (($scripts | fromjson) * .scripts) | .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
-      - cd ".common/files-\{{.REPOSITORY_SUBTYPE}}/"
-      - git reset --hard HEAD
-      - cd ../..
     sources:
       - .variables.json
     preconditions:
