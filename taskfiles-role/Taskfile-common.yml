@@ -214,6 +214,12 @@ tasks:
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
+      DESCRIPTION:
+        sh: yq e '.galaxy_info.description' meta/main.yml
+      DESCRIPTION_FIRST_LETTER:
+        sh: echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]'
+      GALAXY_INFO:
+        sh: yq e -j '.galaxy_info' meta/main.yml
       TMP_JQ:
         sh: mktemp
       TMP_VARS:
@@ -223,11 +229,9 @@ tasks:
     cmds:
       - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP_VARS"
       - mv "$TMP_VARS" .variables.json
-      - DESCRIPTION=$(yq e '.galaxy_info.description' meta/main.yml)
-      - LOWERCASE_DESC=$(echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]')${DESCRIPTION:1}
-      - SUBHEADER_DESCRIPTION="An Ansible role that ${LOWERCASE_DESC}"
+      - LOWERCASE_DESCRIPTION="${DESCRIPTION_FIRST_LETTER}${DESCRIPTION:1}"
+      - SUBHEADER_DESCRIPTION="An Ansible role that ${LOWERCASE_DESCRIPTION}"
       - ALT_DESCRIPTION="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
-      - GALAXY_INFO=$(yq e -j '.galaxy_info' meta/main.yml)
       - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION" --arg galaxyinfo "$GALAXY_INFO"
         '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP_JQ"
       - mv "$TMP_JQ" .variables.json
