@@ -348,10 +348,7 @@ tasks:
           fi
         done
       - rm -rf ".common/files-{{.REPOSITORY_SUBTYPE}}/**/*.handlebars"
-      - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
-      - cd .common
-      - git reset --hard HEAD
-      - cd ..
+      - rsync -aP ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
       # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
@@ -361,6 +358,9 @@ tasks:
         | .scripts = (($scripts | fromjson) * .scripts) | .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
+      - cd ".common/files-{{.REPOSITORY_SUBTYPE}}/"
+      - git reset --hard HEAD
+      - cd ../..
     sources:
       - .variables.json
     preconditions:

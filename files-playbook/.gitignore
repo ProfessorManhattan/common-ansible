@@ -1,6 +1,7 @@
 __pycache__/
 ._*
 .apdisk
+.autodoc/
 .AppleDB
 .AppleDesktop
 .AppleDouble
@@ -24,6 +25,7 @@ __pycache__/
 .nyc_output/
 .pytest_cache/
 .Spotlight-V100
+.task/
 .TemporaryItems
 .tox/
 .Trash-*
