@@ -418,7 +418,7 @@ tasks:
         | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) | .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
-      - cd .common && git reset --hard HEAD && cd ..
+      - cd .common && git reset --hard HEAD && git clean -fd && cd ..
     sources:
       - .variables.json
     preconditions:
