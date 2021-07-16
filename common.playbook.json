@@ -7,7 +7,7 @@
     "dockerfile": true,
     "playbook": true,
     "python": true,
-    "yaml": false
+    "yaml": true
   },
   "subgroup": "playbook"
 }
