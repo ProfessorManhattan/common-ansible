@@ -232,7 +232,7 @@ tasks:
       - ALT_DESCRIPTION="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
       - GALAXY_INFO=$(yq e -j '.galaxy_info' meta/main.yml)
       - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION" --arg galaxyinfo "$GALAXY_INFO"
-          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = $galaxyinfo' .variables.json > "$TMP_JQ"
+          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP_JQ"
       - mv "$TMP_JQ" .variables.json
 {{/if}}
     sources:

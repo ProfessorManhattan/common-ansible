@@ -26,7 +26,7 @@
     "help": "help@megabyte.space"
   },
   "galaxy_info": {
-    "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing. ]]",
+    "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing.",
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
   "github_prefix": "ansible-",
@@ -37,7 +37,7 @@
     "playbook": false,
     "python": true,
     "role": true,
-    "yaml": false
+    "yaml": true
   },
   "header_description_post": "",
   "header_description_pre": "An Ansible role brought to you by ",

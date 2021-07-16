@@ -4,7 +4,7 @@ version: '3'
 tasks:
   all:
     desc: Lint the project by running all the linters in parallel
-    deps: [formatting, ansible, docker, python]
+    deps: [formatting, ansible, docker, python, yaml]
 
   ansible:
     deps:
@@ -129,3 +129,26 @@ tasks:
       - npm run fix:shellcheck
     sources:
       - '**/*.(sh|sh.j2)'
+
+  yaml:
+    deps:
+      - :common:python-requirements
+    desc: Lint .yml files using YAML Lint
+    summary: |
+      $ Lint YML files using YAML Lint
+
+      YAML Lint is a general purpose linter tool that reports suggestions for `.yml`
+      files. It checks for syntax validity as well as cosmetic problems like line
+      lengths, trailing spaces, and indentation. The configuration file is in the root
+      of the repository in the file named `.yamllint`. The `.yamllint` file is shared
+      across all of our projects so if you need to make changes to get rid of warnings
+      it will generally make more sense to disable YAML Lint for a single line using the
+      method described here: https://github.com/adrienverge/yamllint#features.
+
+      NOTE: Disabling YAML Lint rules should only be done when absolutely necessary.
+
+      For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
+    cmds:
+      - yamllint -s .
+    sources:
+      - '**/*.yml'
