@@ -48,8 +48,22 @@
     "standard-version": "^9.3.0"
   },
   "keywords": [
+    "ansible",
+    "archlinux",
+    "centos",
+    "debian",
+    "doctor",
+    "fedora",
+    "install",
+    "installdoctor",
+    "macos",
     "megabytelabs",
-    "professormanhattan"
+    "molecule",
+    "professormanhattan",
+    "role",
+    "ubuntu",
+    "windows",
+    "{{galaxy_info.role_name}}"
   ],
   "engines": {
     "node": ">=10"
@@ -99,9 +113,13 @@
     ],
     ".gitlab-ci.yml": [
       "npx gitlab-ci-lint"
+    ],
+    "**/*.{py}": [
+      "black",
+      "flake8"
     ]
   },
-  "prettier": "@megabytelabs/prettier-config",
+  "prettier": "@megabytelabs/prettier-config-ansible",
   "standard-version": {
     "scripts": {
       "prerelease": "git add --all"
