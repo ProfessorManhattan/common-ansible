@@ -7,7 +7,9 @@ tasks:
     deps: [formatting, ansible, docker, python]
 
   ansible:
-    deps: [:ansible:symlink, :common:galaxy-requirements]
+    deps:
+      - task: ansible:symlink
+      - task: common:galaxy-requirements
     desc: Lint Ansible projects using Ansible Lint
     summary: |
       $ Lint an Ansible project using Ansible Lint
@@ -25,11 +27,11 @@ tasks:
     cmds:
       - ansible-lint
     sources:
-      - ./*.yml
-      - ./**/*.yml
+      - '**/*.yml'
 
   formatting:
-    deps: [:common:nodejs-dependencies]
+    deps:
+      - task: common:nodejs-dependencies
     desc: Lint formatting using Prettier
     summary: |
       $ Report formatting errors with Prettier
@@ -45,8 +47,12 @@ tasks:
       For more information on Prettier, see: https://prettier.io/
     cmds:
       - npm run lint:prettier
+    sources:
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   docker:
+    deps:
+      - software:docker
     desc: Lint Dockerfiles using Hadolint (requires Docker)
     summary: |
       $ Lint Dockerfiles using Hadolint
@@ -75,14 +81,11 @@ tasks:
         -prune -o -type f \( -name Dockerfile -o -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1
         docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
     sources:
-      - ./Dockerfile
-      - ./**/Dockerfile
-      - ./Dockerfile.j2
-      - ./**/Dockerfile.j2
-    method: checksum
+      - '**/(Dockerfile|Dockerfile.j2)'
 
   python:
-    deps: [:common:python-requirements]
+    deps:
+      - task: common:python-requirements
     desc: Lint Python files using Flake8
     summary: |
       $ Lint Python files using Flake8
@@ -103,9 +106,12 @@ tasks:
       For more information on Flake8, see: https://github.com/PyCQA/flake8
     cmds:
       - flake8 .
+    sources:
+      - '**/*.py'
 
   scripts:
-    deps: [:common:nodejs-dependencies]
+    deps:
+      - task: common:nodejs-dependencies
     desc: Report possible errors in shell scripts
     summary: |
       $ Report possible errors in shell scripts using Shellcheck
@@ -121,3 +127,5 @@ tasks:
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
       - npm run fix:shellcheck
+    sources:
+      - '**/*.(sh|sh.j2)'

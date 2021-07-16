@@ -3,6 +3,7 @@ version: '3'
 
 tasks:
   commit:
+    deps: [nodejs-dependencies, python-requirements]
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
     summary: |
       $ Commit code
@@ -22,6 +23,7 @@ tasks:
       - npm run commit -- --no-verify
 
   markdown-link-check:
+    deps: [nodejs-dependencies]
     desc: Scan markdown files for broken links
     summary: |
       $ Report any broken links in the files that end with .md
@@ -35,6 +37,7 @@ tasks:
       - npm run misc:markdown-links
 
   prepare-release:
+    deps: [nodejs-dependencies]
     desc: Ensure the project has upstream changes, lint, and then update the version
     summary: |
       $ Prepare a new release
@@ -72,6 +75,8 @@ tasks:
         msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
 
   nodejs-dependencies:
+    deps:
+      - task: software:node
     cmds:
       - npm install
     sources:
@@ -82,16 +87,51 @@ tasks:
         msg: 'The package.json file appears to be missing!'
 
   nodejs-global-dependencies:
-    deps: [_npm-hbs, _npm-prettier, _npm-prettier-package-json, _npm-readme, _npm-ansibler]
+    deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme, npm-ansibler]
 
-  _npm-ansibler: if ! type ansibler &> /dev/null; then npm install -g ansibler; fi
-  _npm-hbs: if ! type hbs &> /dev/null; then npm install -g hbs-cli; fi
-  _npm-prettier: if ! type prettier &> /dev/null; then npm install -g prettier prettier-plugin-sh
-    @megabytelabs/prettier-config @megabytelabs/prettier-config-ansible; fi
-  _npm-prettier-package-json: if ! type prettier-package-json &> /dev/null; then npm install -g prettier-package-json; fi
-  _npm-readme: if ! type readme &> /dev/null; then npm install -g @appnest/readme; fi
+  npm-ansibler:
+    deps:
+      - software:node
+    cmds:
+      - npm install -g ansibler
+    status:
+      - type ansibler &> /dev/null
+
+  npm-hbs:
+    deps:
+      - software:node
+    cmds:
+      - npm install -g hbs-cli
+    status:
+      - type hbs &> /dev/null
+
+  npm-prettier:
+    deps:
+      - software:node
+    cmds:
+      - npm install -g prettier prettier-plugin-sh @megabytelabs/prettier-config @megabytelabs/prettier-config-ansible
+    status:
+      - type prettier &> /dev/null
+
+  npm-prettier-package-json:
+    deps:
+      - software:node
+    cmds:
+      - npm install -g prettier-package-json
+    status:
+      - type prettier-package-json &> /dev/null
+
+  npm-readme:
+    deps:
+      - software: node
+    cmds:
+      - npm install -g @appnest/readme
+    status:
+      - type readme &> /dev/null
 
   python-requirements:
+    deps:
+      - task: software:python
     cmds:
       - if ! type virtualenv &> /dev/null; then pip3 install virtualenv; fi
       - virtualenv venv
@@ -104,6 +144,8 @@ tasks:
         msg: 'The requirements.txt file is missing!'
 
   shell:
+    deps:
+      - task: software:docker
     desc: Start a terminal session using Docker with any Linux operating system
     summary: |
       $ Start a Docker terminal session
@@ -118,8 +160,9 @@ tasks:
       > task shell -- ubuntu-21.04
 
       Available operating systems:
-      archlinux, centos-7, centos-8, debian-9, debian-10, fedora-33, fedora-34,
-      ubuntu-18.04, ubuntu-20.04, ubuntu-21.04
+        * archlinux.  * debian-9     * fedora-34      * ubuntu-21.04
+        * centos-7    * debian-10    * ubuntu-18.04
+        * centos-8    * fedora-33    * ubuntu-20.04
     vars:
       WORKDIR:
         sh: basename $PWD
@@ -130,6 +173,9 @@ tasks:
         msg: 'Docker is not installed! Install it to use this feature.'
 
   spelling:
+    deps:
+      - task: software:git
+      - task: software:node
     desc: Checks for spelling errors in staged files
     summary: |
       $ Check for spelling errors in staged files
@@ -160,6 +206,9 @@ tasks:
       - task: update-all
 
   update-variables:
+    deps:
+      - software:jq
+      - software:yq
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
@@ -176,26 +225,26 @@ tasks:
       - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
     preconditions:
       - sh: 'type jq &> /dev/null'
-        msg: 'jq is not installed! You can install it by running `bash .start.sh`.'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
       - sh: 'type yq &> /dev/null'
-        msg: 'yq is not installed! You can install it by running `bash .start.sh`.'
-      - sh: 'test -f meta/main.yml'
-        msg: 'The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
-          example of one at https://github.com/ProfessorManhattan/ansible-snapd.'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
 
   update-all:
     deps: [update-contributing, update-readme, update-files]
 
   update-readme-role:
-    deps: [_npm-ansibler, _mod-ansible-autodoc]
+    deps: [npm-ansibler, _mod-ansible-autodoc]
     cmds:
+      - task: _ansibler
       - task: update-readme
 
   _mod-ansible-autodoc:
-    deps: [python-requirements]
+    deps:
+      - task: python-requirements
+      - task: software:jq
     env:
       ACTIONS_DESCRIPTION:
-        sh: jq -r '.autodoc_actions_description'
+        sh: jq -r '.autodoc_actions_description' .variables.json
       TMP:
         sh: mktemp
     cmds:
@@ -205,16 +254,17 @@ tasks:
       - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     sources:
-      - tasks/**.yml
-      - tasks/**/*.yml
+      - 'tasks**/*.yml'
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
         msg:
           'The Python package `mod-ansible-autodoc` is missing. Ensure the Python requirements are installed by running
-          `pip3 install -r requirements.txt` or `bash .start.sh`.'
+          `pip3 install -r requirements.txt`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
 
   _ansibler:
-    deps: [_npm-ansibler]
+    deps:
+      - task: npm-ansibler
+      - task: software:jq
     env:
       TMP:
         sh: mktemp
@@ -230,7 +280,7 @@ tasks:
         msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
 
   update-contributing:
-    deps: [_npm-prettier, _npm-readme]
+    deps: [npm-prettier, npm-readme]
     vars:
       CONTRIB_TEMPLATE: .common/docs/blueprint-contributing.md
     cmds:
@@ -250,7 +300,12 @@ tasks:
         msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
 
   update-files:
-    deps: [_npm-hbs, _npm-prettier-package-json]
+    deps:
+      - task: npm-hbs
+      - task: npm-prettier-package-json
+      - task: software:git
+      - task: software:jq
+      - task: software:rsync
     env:
       FILES:
         sh: find .common/files-{{.REPOSITORY_SUBTYPE}}
@@ -293,12 +348,12 @@ tasks:
       - sh: 'type rsync &> /dev/null'
         msg: '`rsync` is not installed!'
       - sh: 'type hbs &> /dev/null'
-        msg: '`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
+        msg: '`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`.'
       - sh: 'type prettier-package-json &> /dev/null'
-        msg: '`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
+        msg: '`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   update-readme:
-    deps: [_npm-prettier, _npm-readme]
+    deps: [npm-prettier, npm-readme]
     vars:
       README_TEMPLATE: blueprint-readme-{{.REPOSITORY_SUBTYPE}}.md
     cmds:
@@ -316,9 +371,9 @@ tasks:
       - sh: 'test -f .variables.json'
         msg: 'The `.variables.json` file is not present. Generate it by running `task common:update`.'
       - sh: type readme &> /dev/null
-        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
+        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
       - sh: type prettier &> /dev/null
-        msg: '`prettier` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
+        msg: '`prettier` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   _markdown-scrub:
     vars:

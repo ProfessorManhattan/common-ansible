@@ -3,7 +3,9 @@ version: '3'
 
 tasks:
   local:
-    deps: [:common:python-requirements]
+    deps:
+      - task: ansible:symlink
+      - task: common:python-requirements
     desc: Run the Ansible play on the local machine
     summary: |
       $ Run the Ansible play on the local machine
@@ -26,7 +28,9 @@ tasks:
         msg: 'Ansible is not available. Install the dependencies by running `task common:requirements`.'
 
   molecule-desktop:
-    deps: [:common:python-requirements]
+    deps:
+      - task: common:python-requirements
+      - task: software:virtualbox
     desc: Provisions a desktop VirtualBox VM and then runs a Molecule test
     summary: |
       $ Provision a desktop VirtualBox VM and then run a Molecule test
@@ -38,13 +42,17 @@ tasks:
       > task test:molecule -- archlinux
 
       Available scenarios:
-      archlinux, centos, debian, fedora, macos, ubuntu, windows
+        * archlinux    * fedora    * windows
+        * centos       * macos
+        * debian       * ubuntu
     cmds:
       - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
       - molecule converge -s {{.CLI_ARGS}}-desktop
 
   molecule-docker:
-    deps: [:common:python-requirements]
+    deps:
+      - task: common:python-requirements
+      - task: software:docker
     desc: Performs a full test, including a test for idempotency, on all available Linux systems using Docker
     summary: |
       $ Perform a full test, including an idempotency test, on all available Linux systems using Docker
@@ -63,7 +71,9 @@ tasks:
       - if [ "$SNAP_REFS" ]; then molecule test -s docker-snap; else molecule test -s docker; fi
 
   molecule-e2e:
-    deps: [:common:python-requirements]
+    deps:
+      - task: common:python-requirements
+      - task: software:virtualbox
     desc: Runs a full E2E Molecule test for all supported operating systems
     summary: |
       $ Run a full E2E Molecule test for all supported operating systems

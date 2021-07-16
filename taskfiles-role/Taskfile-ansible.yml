@@ -3,6 +3,8 @@ version: '3'
 
 tasks:
   populate-dependencies:
+    deps:
+      - software:yq
     desc: Attempt to automatically populate meta/main.yml and requirements.yml
     summary: |
       $ Automatically populate meta/main.yml and requirements.yml
@@ -51,12 +53,13 @@ tasks:
           MODULE: community.general.snap
           ROLE: '{{.GALAXY_NAMESPACE}}.snapd'
           VAL: '{"role": "{{.GALAXY_NAMESPACE}}.snapd", "when": "ansible_system == ''Linux''"}'
-
     preconditions:
       - sh: 'type yq &> /dev/null'
         msg: 'yq is not installed! yq is required for interacting with YML files. Install it by running `bash .start.sh`.'
 
   _populate-collection:
+    deps:
+      - software:yq
     vars:
       REFERENCES:
         sh: grep -Ril "{{.COLLECTION}}" ./tasks
@@ -72,6 +75,8 @@ tasks:
         fi
 
   _populate-meta:
+    deps:
+      - software:yq
     vars:
       REFERENCES:
         sh: grep -Ril "{{.MODULE}}" ./tasks

@@ -7,7 +7,8 @@ tasks:
     deps: [formatting, python, scripts]
 
   formatting:
-    deps: [:common:nodejs-dependencies]
+    deps:
+      - task: common:nodejs-dependencies
     desc: Automatically format most files using Prettier
     summary: |
       $ Automatically format most files using Prettier
@@ -23,9 +24,12 @@ tasks:
       For more information on Prettier, see: https://prettier.io/
     cmds:
       - npm run fix:prettier
+    sources:
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   python:
-    deps: [:common:python-requirements]
+    deps:
+      - task: common:python-requirements
     desc: Automatically format Python files using Black
     summary: |
       $ Automatically format Python files using Black
@@ -41,11 +45,11 @@ tasks:
     cmds:
       - black --exclude '\.cache/|.*\.cache/|\.common/|.*\.common/|.git/|.*\.git/|node_modules/|.*node_modules/|roles/|.*venv/' .
     sources:
-      - ./*.py
-      - ./**/*.py
+      - '**/*.py'
 
   scripts:
-    deps: [:common:nodejs-dependencies]
+    deps:
+      - task: common:nodejs-dependencies
     desc: (Experimental) Automatically apply fixes to .sh and .sh.j2 files using Shellcheck
     summary: |
       $ Automatically apply fixes to shell scripts using Shellcheck
@@ -56,7 +60,7 @@ tasks:
       that end with .sh or .sh.j2 files that are NOT in the following folders:
         * .cache        * .husky
         * .git          * node_modules
-        * .husky.       * slim_test
+        * .husky        * slim_test
 
       This task is experimental. It may work to get rid of the Shellcheck lint errors but the code
       should still be tested since it might break things. Ideally, you should apply Shellcheck's
@@ -72,3 +76,5 @@ tasks:
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
       - npm run fix:shellcheck
+    sources:
+      - '**/*.(sh|sh.j2)'
