@@ -170,7 +170,7 @@ tasks:
       - docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm megabytelabs/ansible-molecule-{{.CLI_ARGS}}:latest /bin/bash
     preconditions:
       - sh: 'type docker &> /dev/null'
-        msg: 'Docker is not installed! Install it to use this feature.'
+        msg: 'Docker is not installed! Install it by running `task software:docker`.'
 
   spelling:
     deps:
@@ -266,9 +266,7 @@ tasks:
       - test -f .autodoc/ansible_variables.md
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
-        msg:
-          'The Python package `mod-ansible-autodoc` is missing. Ensure the Python requirements are installed by running
-          `pip3 install -r requirements.txt`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
+        msg: 'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
 
   _ansibler:
     deps:
@@ -286,7 +284,7 @@ tasks:
       - dependency-chart.json
     preconditions:
       - sh: 'type ansibler &> /dev/null'
-        msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
+        msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   update-contributing:
     deps: [npm-prettier, npm-readme]
@@ -306,7 +304,7 @@ tasks:
       - sh: 'test -f .variables.json'
         msg: 'The .variables.json file is not present. Generate it by running `task common:update`.'
       - sh: type readme &> /dev/null
-        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements` or run `bash .start.sh`.'
+        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   update-files:
     deps:
@@ -316,8 +314,6 @@ tasks:
       - :software:jq
       - :software:rsync
     env:
-      FILES:
-        sh: find .common/files-{{.REPOSITORY_SUBTYPE}}
       PKG_DEPS:
         sh: jq -r '.dependencies' package.json
       PKG_DEV_DEPS:
@@ -332,12 +328,13 @@ tasks:
       - |
         find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f | while read FILE; do
           if [ "${FILE##*.}" == 'handlebars' ]; then
-            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE%.*}"
+            FILE_BASENAME=$(basename $FILE)
+            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
           fi
         done
       - rm -rf ".common/files-{{.REPOSITORY_SUBTYPE}}/**.handlebars"
       - rm -rf ".common/files-{{.REPOSITORY_SUBTYPE}}/**/*.handlebars"
-      - rsync -aP ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
+      - rsync -aP -q ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
       - cd ".common/files-{{.REPOSITORY_SUBTYPE}}/"
       - git reset --hard HEAD
       - cd ../..
