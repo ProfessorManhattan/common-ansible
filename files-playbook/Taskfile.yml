@@ -1,6 +1,8 @@
 ---
 version: '3'
 
+output: prefixed
+
 env:
   GALAXY_NAMESPACE: professormanhattan
   REPOSITORY_SUBTYPE: playbook
