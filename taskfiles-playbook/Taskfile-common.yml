@@ -5,7 +5,7 @@ tasks:
   clean:
     desc: Removes optional folders that are cached during various tasks
     summary: |
-      $ Clean the project and remove all optional caches
+      $ \e[38;5;82mClean the project and remove all optional caches
 
       This task will remove all the unnecessary files that are downloaded, generated, and
       cached during various build steps. This task is used by the `task common:reset` task
