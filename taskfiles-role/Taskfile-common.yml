@@ -279,7 +279,9 @@ tasks:
       - test -f .autodoc/ansible_variables.md
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
-        msg: 'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
+        msg:
+          'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
+          Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
 
   _ansibler:
     deps:
