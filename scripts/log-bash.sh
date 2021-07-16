@@ -79,4 +79,4 @@ function warn() {
   fi
 }
 
-$1 $2
+$1 "$2"
