@@ -227,8 +227,9 @@ tasks:
       - LOWERCASE_DESC=$(echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]')${DESCRIPTION:1}
       - SUBHEADER_DESCRIPTION="An Ansible role that ${LOWERCASE_DESC}"
       - ALT_DESCRIPTION="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
-      - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION"
-        '.subheader_description = $subheader | .alternative_description = $alt' .variables.json > "$TMP_JQ"
+      - GALAXY_INFO=$(yq e -j '.galaxy_info' meta/main.yml)
+      - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION" --arg galaxyinfo "$GALAXY_INFO"
+        '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = $galaxyinfo' .variables.json > "$TMP_JQ"
       - mv "$TMP_JQ" .variables.json
     sources:
       - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
