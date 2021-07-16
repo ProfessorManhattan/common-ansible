@@ -264,8 +264,17 @@ tasks:
       - ROLE_VARIABLES="$(jq -r '.role_variables' ansible_variables.json)"
       - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
+      - mkdir -p .autodoc
+      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
       - 'tasks**/*.yml'
+    status:
+      - test -d .autodoc
+      - test -f .autodoc/ansible_actions.md
+      - test -f .autodoc/ansible_tags.md
+      - test -f .autodoc/ansible_todo.md
+      - test -f .autodoc/ansible_variables.json
+      - test -f .autodoc/ansible_variables.md
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
         msg:
@@ -369,7 +378,6 @@ tasks:
       README_TEMPLATE: blueprint-readme-{{.REPOSITORY_SUBTYPE}}.md
     cmds:
       - readme generate --config .variables.json --input ".common/docs/{{.README_TEMPLATE}}"
-      - rm -f ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.md ansible_variables.json dependency-chart.json
       - task: _markdown-scrub
         vars:
           SCRUB_FILE: README.md
