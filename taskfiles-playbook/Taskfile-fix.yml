@@ -8,7 +8,7 @@ tasks:
 
   formatting:
     deps:
-      - task: common:nodejs-dependencies
+      - :common:nodejs-dependencies
     desc: Automatically format most files using Prettier
     summary: |
       $ Automatically format most files using Prettier
@@ -29,7 +29,7 @@ tasks:
 
   python:
     deps:
-      - task: common:python-requirements
+      - :common:python-requirements
     desc: Automatically format Python files using Black
     summary: |
       $ Automatically format Python files using Black
@@ -49,7 +49,7 @@ tasks:
 
   scripts:
     deps:
-      - task: common:nodejs-dependencies
+      - :common:nodejs-dependencies
     desc: (Experimental) Automatically apply fixes to .sh and .sh.j2 files using Shellcheck
     summary: |
       $ Automatically apply fixes to shell scripts using Shellcheck

@@ -4,7 +4,7 @@ version: '3'
 tasks:
   environment:
     deps:
-      - task: common:nodejs-dependencies
+      - :common:nodejs-dependencies
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
       $ Switch environments using an interactive dialogue

@@ -8,8 +8,8 @@ tasks:
 
   ansible:
     deps:
-      - task: ansible:symlink
-      - task: common:galaxy-requirements
+      - :ansible:symlink
+      - :common:galaxy-requirements
     desc: Lint Ansible projects using Ansible Lint
     summary: |
       $ Lint an Ansible project using Ansible Lint
@@ -31,7 +31,7 @@ tasks:
 
   formatting:
     deps:
-      - task: common:nodejs-dependencies
+      - :common:nodejs-dependencies
     desc: Lint formatting using Prettier
     summary: |
       $ Report formatting errors with Prettier
@@ -52,7 +52,7 @@ tasks:
 
   docker:
     deps:
-      - software:docker
+      - :software:docker
     desc: Lint Dockerfiles using Hadolint (requires Docker)
     summary: |
       $ Lint Dockerfiles using Hadolint
@@ -85,7 +85,7 @@ tasks:
 
   python:
     deps:
-      - task: common:python-requirements
+      - :common:python-requirements
     desc: Lint Python files using Flake8
     summary: |
       $ Lint Python files using Flake8
@@ -111,7 +111,7 @@ tasks:
 
   scripts:
     deps:
-      - task: common:nodejs-dependencies
+      - :common:nodejs-dependencies
     desc: Report possible errors in shell scripts
     summary: |
       $ Report possible errors in shell scripts using Shellcheck

@@ -6,8 +6,8 @@ tasks:
 
   local:
     deps:
-      - task: ansible:symlink
-      - task: common:python-requirements
+      - :ansible:symlink
+      - :common:python-requirements
     desc: Run the Ansible play on the local machine
     summary: |
       $ Run the Ansible play on the local machine
@@ -31,8 +31,8 @@ tasks:
 
   molecule-desktop:
     deps:
-      - task: common:python-requirements
-      - task: software:virtualbox
+      - :common:python-requirements
+      - :software:virtualbox
     desc: Provisions a desktop VirtualBox VM and then runs a Molecule test
     summary: |
       $ Provision a desktop VirtualBox VM and then run a Molecule test
@@ -53,8 +53,8 @@ tasks:
 
   molecule-docker:
     deps:
-      - task: common:python-requirements
-      - task: software:docker
+      - :common:python-requirements
+      - :software:docker
     desc: Performs a full test, including a test for idempotency, on all available Linux systems using Docker
     summary: |
       $ Perform a full test, including an idempotency test, on all available Linux systems using Docker
@@ -74,8 +74,8 @@ tasks:
 
   molecule-e2e:
     deps:
-      - task: common:python-requirements
-      - task: software:virtualbox
+      - :common:python-requirements
+      - :software:virtualbox
     desc: Runs a full E2E Molecule test for all supported operating systems
     summary: |
       $ Run a full E2E Molecule test for all supported operating systems
@@ -106,8 +106,8 @@ tasks:
 
     vagrant:
       deps:
-        - task: common:python-requirements
-        - software:vagrant
+        - :common:python-requirements
+        - :software:vagrant
       desc: Runs the playbook using Vagrant
       summary: |
         $ Run the playbook using Vagrant
