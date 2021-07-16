@@ -3,8 +3,15 @@ version: '3'
 
 tasks:
   local:
-    deps: [common:python-requirements]
+    deps: [:common:python-requirements]
     desc: Run the Ansible play on the local machine
+    summary: |
+      $ Run the Ansible play on the local machine
+
+      This task will use the inventory stored in `tests/inventory`, the playbook
+      file stored in `tests/test.yml`, and the Ansible configuration file stored in
+      `tests/ansible.cfg` to run the play. At the beginning of the play, you will
+      be prompted for the sudo password.
     cmds:
       - cp tests/inventory inventory
       - if [ ! -f main.yml.bak ]; then mv main.yml main.yml.bak; fi
@@ -19,9 +26,11 @@ tasks:
         msg: 'Ansible is not available. Install the dependencies by running `task common:requirements`.'
 
   molecule-desktop:
-    deps: [common:python-requirements]
+    deps: [:common:python-requirements]
     desc: Provisions a desktop VirtualBox VM and then runs a Molecule test
     summary: |
+      $ Provision a desktop VirtualBox VM and then run a Molecule test
+
       This task opens a VM with an operating system of your choosing and then tests
       the project's play against it. It then leaves the VM open for inspection.
 
@@ -35,9 +44,11 @@ tasks:
       - molecule converge -s {{.CLI_ARGS}}-desktop
 
   molecule-docker:
-    deps: [common:python-requirements]
+    deps: [:common:python-requirements]
     desc: Performs a full test, including a test for idempotency, on all available Linux systems using Docker
     summary: |
+      $ Perform a full test, including an idempotency test, on all available Linux systems using Docker
+
       This task runs the project's Molecule tests using Docker. It only tests against
       Linux systems. If the role/project contains any steps that use the
       community.general.snap plugin, then only the operating systems that support that
@@ -52,9 +63,11 @@ tasks:
       - if [ "$SNAP_REFS" ]; then molecule test -s docker-snap; else molecule test -s docker; fi
 
   molecule-e2e:
-    deps: [common:python-requirements]
+    deps: [:common:python-requirements]
     desc: Runs a full E2E Molecule test for all supported operating systems
     summary: |
+      $ Run a full E2E Molecule test for all supported operating systems
+
       This task uses VirtualBox to run tests for all of our supported operating
       systems in parallel. It is very RAM intensive so, if you want to run this,
       your computer should have at least 32GB of RAM.
@@ -80,14 +93,20 @@ tasks:
     vagrant:
       desc: Runs the playbook using Vagrant
       summary: |
+        $ Run the playbook using Vagrant
+
         Using Vagrant, you can pick and choose which operating system and
         virtualization provider you want to use to test the playbook.
 
         Possible virtualization providers:
-        hyperv, libvirt, parallels, virtualbox, vmware_fusion, vmware_workstation
+          * hyperv       * virtualbox
+          * libvirt      * vmware_fusion
+          * parallels    * vmware_workstation
 
         Possible operating systems:
-        archlinux, centos, debian, fedora, macos, ubuntu, windows
+          * archlinux    * fedora    * windows
+          * centos       * macos
+          * debian       * ubuntu
 
         Example:
         > task test:vagrant -- --provider=vmware_workstation windows

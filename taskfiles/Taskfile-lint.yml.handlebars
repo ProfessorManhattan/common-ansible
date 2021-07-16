@@ -4,36 +4,78 @@ version: '3'
 tasks:
   all:
     desc: Lint the project by running all the linters in parallel
-    deps: [lint:formatting{{#if hbs.ansible}} ,lint:ansible{{/if}}{{#if hbs.dockerfile}}, lint:docker{{/if}}{{#if hbs.python}}, lint-python{{/if}}{{#if hbs.yaml}}, lint-yaml{{/if}}]
+    deps: [formatting{{#if hbs.ansible}}, ansible{{/if}}{{#if hbs.dockerfile}}, docker{{/if}}{{#if hbs.python}}, python{{/if}}{{#if hbs.yaml}}, yaml{{/if}}]
 {{#if hbs.ansible}}
 
   ansible:
-    deps: [ansible:symlink, common:galaxy-requirements]
+    deps: [:ansible:symlink, :common:galaxy-requirements]
     desc: Lint Ansible projects using Ansible Lint
+    summary: |
+      $ Lint an Ansible project using Ansible Lint
+
+      This task lints the project using Ansible Lint which will scan the project and report design
+      patterns that can possibly be improved. It can be used on both playbooks and roles. The
+      configuration for Ansible Lint is stored in the root of the project in a file titled
+      `.ansible-lint`. This configuration file is shared between all of our Ansible projects
+      so any changes to it need to be made to the upstream Ansible common file repository. Because of
+      this, it probably makes more sense to to disable rules (when absolutely necessary) using the
+      syntax described in this link:
+      https://ansible-lint.readthedocs.io/en/latest/rules.html#false-positives-skipping-rules
+
+      For more information on Ansible Lint, see: https://github.com/ansible-community/ansible-lint
     cmds:
       - ansible-lint
     sources:
-      - defaults/**/*
-      - environments/**/*
-      - group_vars/**/*
-      - host_vars/**/*
-      - inventories/**/*
-      - meta/**/*
-      - molecule/**/*
-      - playbooks/**/*
-      - tasks/**/*
-      - tests/**/*
-      - vars/**/*
       - ./*.yml
+      - ./**/*.yml
 {{/if}}
+
+  formatting:
+    deps: [:common:nodejs-dependencies]
+    desc: Lint formatting using Prettier
+    summary: |
+      $ Report formatting errors with Prettier
+
+      This task will run Prettier on the project and list the possible fixes without automatically
+      applying the fixes. It will report mistakes like inconsistent indent lengths, trailing spaces,
+      and more. This task is a wrapper for the `npm run lint:prettier` command. It will use the configuration
+      specified in the `package.json` file under the `prettier` key.
+
+      If this command is incompatible with a file then you can add the file to the `.prettierignore`
+      file.
+
+      For more information on Prettier, see: https://prettier.io/
+    cmds:
+      - npm run lint:prettier
 {{#if hbs.dockerfile}}
 
   docker:
     desc: Lint Dockerfiles using Hadolint (requires Docker)
+    summary: |
+      $ Lint Dockerfiles using Hadolint
+
+      Hadolint is a linter for Dockerfiles. This task uses Hadolint to report warnings
+      and suggestions so that the project is using best practices and is less likely to
+      have errors. The task uses Docker to run an ultra-compact container that includes
+      Hadolint. Installing Hadolint is done at runtime. The task scans for all files that
+      are named either `Dockerfile` or `Dockerfile.j2`. On top of reporting suggestions
+      for adhereing to Docker best-practices, Hadolint also leverages Shellcheck to report
+      possible errors in the shell logic used by the Dockerfile.
+
+      If the Dockerfile is named something other than `Dockerfile` or `Dockerfile.j2`, you
+      can manually run Hadolint by running:
+      > docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim CustomDockerfileName
+
+      This task will ignore files in the following directories:
+        * .cache        * .husky        * node_modules
+        * .common       * .modules      * test
+        * .git          * .task         * venv
+
+      For more information on Hadolint, see: https://github.com/hadolint/hadolint
     cmds:
       - find . -type d \( -name .cache -o -name .common -o -name .git -o -name .modules
-        -o -name node_modules -o -name .husky -o -name .task -o -name test \) -prune -o
-        -type f \( -name Dockerfile -o -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1
+        -o -name node_modules -o -name .husky -o -name .task -o -name test -o -name venv \)
+        -prune -o -type f \( -name Dockerfile -o -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1
         docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
     sources:
       - ./Dockerfile
@@ -45,37 +87,68 @@ tasks:
 {{#if hbs.python}}
 
   python:
-    deps: [common:python-requirements]
+    deps: [:common:python-requirements]
     desc: Lint Python files using Flake8
+    summary: |
+      $ Lint Python files using Flake8
+
+      Flake8 is a Python library that lints Python projects (or projects that may include Python files).
+      It is a combination of several Python linters like PyFlakes and pycodestyle. This task will run
+      `flake8` using the configuration found in the `.flake8` file in the root of this project.
+
+      The `.flake8` file is a common file shared across many of our repositories so if changes are made to
+      it then the changes need to be made to the appropriate common file repository here:
+      https://gitlab.com/megabyte-labs/common. Because of this, it might make more sense to add a comment
+      to lines that you wish to be ignored by flake8. For instance, you can ignore rule E234 by adding
+      a comment at the end of the line that looks like, "# noqa: E234".
+
+      NOTE: In order to maintain our strict quality standards, disabling Flake8 rules should only be done
+      when absolutely necessary.
+
+      For more information on Flake8, see: https://github.com/PyCQA/flake8
     cmds:
       - flake8 .
 {{/if}}
+
+  scripts:
+    deps: [:common:nodejs-dependencies]
+    desc: Report possible errors in shell scripts
+    summary: |
+      $ Report possible errors in shell scripts using Shellcheck
+
+      Shellcheck is a tool that reports warnings and suggestions for shell (e.g. bash) scripts. This
+      task is a wrapper for the `npm run lint:shellcheck` command. The npm command scans the project
+      for files ending with `.sh` or `.sh.j2` and runs Shellcheck on them. Files in the following folders
+      are ignored:
+        * .cache        * .husky
+        * .git          * node_modules
+        * .husky        * slim_test
+
+      For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
+    cmds:
+      - npm run fix:shellcheck
 {{#if hbs.yaml}}
 
   yaml:
-    deps: [common:python-requirements]
+    deps: [:common:python-requirements]
     desc: Lint .yml files using YAML Lint
-    cmds:
-      - yamllint -s .
-{{/if}}
-{{#if hbs.ansible}}
+    summary: |
+      $ Lint YML files using YAML Lint
 
-  yaml:
-    deps: [common:python-requirements]
-    desc: Lint .yml files using YAML Lint
+      YAML Lint is a general purpose linter tool that reports suggestions for `.yml`
+      files. It checks for syntax validity as well as cosmetic problems like line
+      lengths, trailing spaces, and indentation. The configuration file is in the root
+      of the repository in the file named `.yamllint`. The `.yamllint` file is shared
+      across all of our projects so if you need to make changes to get rid of warnings
+      it will generally make more sense to disable YAML Lint for a single line using the
+      method described here: https://github.com/adrienverge/yamllint#features.
+
+      NOTE: Disabling YAML Lint rules should only be done when absolutely necessary.
+
+      For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
     cmds:
       - yamllint -s .
     sources:
-      - defaults/**/*
-      - environments/**/*
-      - group_vars/**/*
-      - host_vars/**/*
-      - inventories/**/*
-      - meta/**/*
-      - molecule/**/*
-      - playbooks/**/*
-      - tasks/**/*
-      - tests/**/*
-      - vars/**/*
       - ./*.yml
+      - ./**/*.yml
 {{/if}}

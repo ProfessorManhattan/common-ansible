@@ -7,22 +7,68 @@ tasks:
     deps: [formatting, python, scripts]
 
   formatting:
-    deps: [nodejs-dependencies]
+    deps: [:common:nodejs-dependencies]
     desc: Automatically format most files using Prettier
+    summary: |
+      $ Automatically format most files using Prettier
+
+      This task will run Prettier on the project. Prettier will automatically fix formatting
+      mistakes like inconsistent indent lengths, trailing spaces, and more. This task is a wrapper
+      for the `npm run fix:prettier` command. It will use the configuration specified in the
+      `package.json` file under the `prettier` key.
+
+      If this command is incompatible with a file then you can add the file to the `.prettierignore`
+      file.
+
+      For more information on Prettier, see: https://prettier.io/
     cmds:
       - npm run fix:prettier
 
   python:
-    deps: [python-requirements]
+    deps: [:common:python-requirements]
     desc: Automatically format Python files using Black
+    summary: |
+      $ Automatically format Python files using Black
+
+      Black is the defacto standard when it comes to autoformatting Python files. This task will
+      automatically format files that end with the `.py` extension. It currently excludes `.py` files
+      that are in the folders with the following names:
+        * .cache        * node_modules
+        * .common       * roles
+        * .git          * venv
+
+      For more information on Black, see: https://github.com/psf/black
     cmds:
-      - black --exclude '\.cache/|.*\.cache/|\.common/|.*\.common/|.git/|.*\.git/|node_modules/|.*node_modules/|roles/' .
+      - black --exclude '\.cache/|.*\.cache/|\.common/|.*\.common/|.git/|.*\.git/|node_modules/|.*node_modules/|roles/|.*venv/' .
     sources:
       - ./*.py
       - ./**/*.py
 
   scripts:
-    deps: [nodejs-dependencies]
-    desc: (Experimental) Automatically apply fixes to .sh files using Shellcheck
+    deps: [:common:nodejs-dependencies]
+    desc: (Experimental) Automatically apply fixes to .sh and .sh.j2 files using Shellcheck
+    summary: |
+      $ Automatically apply fixes to shell scripts using Shellcheck
+
+      Shellcheck is generally used to lint shell scripts. It makes This task is a wrapper for the
+      `npm run fix:shellcheck` command which uses Shellcheck and `git apply` to automatically
+      apply Shellcheck's recommendations. The npm command is configured to apply the fixes to files
+      that end with .sh or .sh.j2 files that are NOT in the following folders:
+        * .cache        * .husky
+        * .git          * node_modules
+        * .husky.       * slim_test
+
+      This task is experimental. It may work to get rid of the Shellcheck lint errors but the code
+      should still be tested since it might break things. Ideally, you should apply Shellcheck's
+      recommendations manually.
+
+      To see what changes Shellcheck will make to a file named `test.sh`, for example, you can run:
+      > npx shellcheck -f diff test.sh
+
+      To see the changes Shellcheck will make when you run this task, you can copy the line from
+      the `package.json` file that corresponds to the `npm run fix:shellcheck` task, remove
+      the ` | git apply` ending, and then run the command.
+
+      For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
       - npm run fix:shellcheck

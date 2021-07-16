@@ -28,6 +28,9 @@ tasks:
 
       This task uses the npm package called `markdown-link-check` to scan all the links
       and then report which ones are broken.
+
+      For more information on `markdown-link-check`, see the following page:
+      https://github.com/tcort/markdown-link-check
     cmds:
       - npm run misc:markdown-links
 
@@ -36,9 +39,11 @@ tasks:
     summary: |
       $ Prepare a new release
 
-      This task (1) ensures the project is up-to-date with the latest upstream changes, (2) lints
-      the project with all available linters, and then (3) updates the version of the project in
-      the `package.json` file. It also will add the appropriate details to the CHANGELOG.md file.
+      This task performs the following tasks in order:
+      (1) Ensures the project is up-to-date with the latest upstream changes
+      (2) Lints the project with all available linters
+      (3) Updates the version of the project in the `package.json` file
+      (4) Add the appropriate details to the CHANGELOG.md file
     cmds:
       - task: update
       - task: lint
@@ -128,6 +133,17 @@ tasks:
 
   spelling:
     desc: Checks for spelling errors in staged files
+    summary: |
+      $ Check for spelling errors in staged files
+
+      Use cspell to check for possible spelling errors using the configuration stored in `.common/.cspell.json`.
+
+      This task is utilized by the pre-commit hook. For more information about cspell, see:
+      https://www.npmjs.com/package/cspell
+
+      Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
+      files by running:
+      > npx cspell '**/*.js'
     env:
       STAGED_FILES:
         sh: git diff --cached --name-only
@@ -136,14 +152,6 @@ tasks:
     preconditions:
       - sh: "git diff --cached --name-only"
         msg: "Cannot perform a spell check because there are no staged files"
-
-  start:
-    desc: This is an alias for `bash .start.sh` - this is the first command you should run
-    cmds:
-      - bash .start.sh
-    preconditions:
-      - sh: "test -f .start.sh"
-        msg: "The .start.sh file is missing! It is required to bootstrap the project."
 
   update:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
