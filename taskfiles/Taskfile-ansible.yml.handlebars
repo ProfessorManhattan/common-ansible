@@ -6,7 +6,7 @@ tasks:
 
   environment:
     deps:
-      - task: common:nodejs-dependencies
+      - :common:nodejs-dependencies
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
       $ Switch environments using an interactive dialogue
@@ -82,7 +82,7 @@ tasks:
 
   populate-dependencies:
     deps:
-      - software:yq
+      - :software:yq
     desc: Attempt to automatically populate meta/main.yml and requirements.yml
     summary: |
       $ Automatically populate meta/main.yml and requirements.yml
@@ -137,7 +137,7 @@ tasks:
 
   _populate-collection:
     deps:
-      - software:yq
+      - :software:yq
     vars:
       REFERENCES:
         sh: grep -Ril "\{{.COLLECTION}}" ./tasks
@@ -154,7 +154,7 @@ tasks:
 
   _populate-meta:
     deps:
-      - software:yq
+      - :software:yq
     vars:
       REFERENCES:
         sh: grep -Ril "\{{.MODULE}}" ./tasks

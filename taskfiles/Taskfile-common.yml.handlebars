@@ -78,7 +78,7 @@ tasks:
 
   nodejs-dependencies:
     deps:
-      - task: software:node
+      - :software:node
     cmds:
       - npm install
     sources:
@@ -93,7 +93,7 @@ tasks:
 
   npm-ansibler:
     deps:
-      - software:node
+      - :software:node
     cmds:
       - npm install -g ansibler
     status:
@@ -101,7 +101,7 @@ tasks:
 
   npm-hbs:
     deps:
-      - software:node
+      - :software:node
     cmds:
       - npm install -g hbs-cli
     status:
@@ -109,7 +109,7 @@ tasks:
 
   npm-prettier:
     deps:
-      - software:node
+      - :software:node
     cmds:
       - npm install -g prettier prettier-plugin-sh @megabytelabs/prettier-config{{#if hbs.ansible}} @megabytelabs/prettier-config-ansible{{/if}}
     status:
@@ -117,7 +117,7 @@ tasks:
 
   npm-prettier-package-json:
     deps:
-      - software:node
+      - :software:node
     cmds:
       - npm install -g prettier-package-json
     status:
@@ -125,7 +125,7 @@ tasks:
 
   npm-readme:
     deps:
-      - software: node
+      - :software:node
     cmds:
       - npm install -g @appnest/readme
     status:
@@ -133,7 +133,7 @@ tasks:
 
   python-requirements:
     deps:
-      - task: software:python
+      - :software:python
     cmds:
       - if ! type virtualenv &> /dev/null; then pip3 install virtualenv; fi
       - virtualenv venv
@@ -147,7 +147,7 @@ tasks:
 
   shell:
     deps:
-      - task: software:docker
+      - :software:docker
     desc: Start a terminal session using Docker with any Linux operating system
     summary: |
       $ Start a Docker terminal session
@@ -176,8 +176,8 @@ tasks:
 
   spelling:
     deps:
-      - task: software:git
-      - task: software:node
+      - :software:git
+      - :software:node
     desc: Checks for spelling errors in staged files
     summary: |
       $ Check for spelling errors in staged files
@@ -209,8 +209,8 @@ tasks:
 
   update-variables:
     deps:
-      - software:jq
-      - software:yq
+      - :software:jq
+      - :software:yq
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
@@ -259,8 +259,8 @@ tasks:
 
   _mod-ansible-autodoc:
     deps:
-      - task: python-requirements
-      - task: software:jq
+      - python-requirements
+      - :software:jq
     env:
       ACTIONS_DESCRIPTION:
         sh: jq -r '.autodoc_actions_description' .variables.json
@@ -281,8 +281,8 @@ tasks:
 
   _ansibler:
     deps:
-      - task: npm-ansibler
-      - task: software:jq
+      - npm-ansibler
+      - :software:jq
     env:
       TMP:
         sh: mktemp
@@ -319,11 +319,11 @@ tasks:
 
   update-files:
     deps:
-      - task: npm-hbs
-      - task: npm-prettier-package-json
-      - task: software:git
-      - task: software:jq
-      - task: software:rsync
+      - npm-hbs
+      - npm-prettier-package-json
+      - :software:git
+      - :software:jq
+      - :software:rsync
     env:
       FILES:
         sh: find .common/files-\{{.REPOSITORY_SUBTYPE}}
