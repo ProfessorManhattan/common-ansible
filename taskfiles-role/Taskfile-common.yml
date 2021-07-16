@@ -201,11 +201,11 @@ tasks:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
       - cp ./.common/.start.sh .start.sh
+      - if [ ! -f .variables.json ]; then echo '{}' > .variables.json; fi
       - task: requirements
       - task: update-variables
       - task: update-all
-      - . .common/scripts/log-min.sh
-      - success "Successfully updated the project with the latest upstream changes"
+      - bash .common/scripts/log-bash.sh success "Successfully updated the project with the latest upstream changes"
 
   update-variables:
     deps:
@@ -229,7 +229,7 @@ tasks:
       - ALT_DESCRIPTION="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
       - GALAXY_INFO=$(yq e -j '.galaxy_info' meta/main.yml)
       - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION" --arg galaxyinfo "$GALAXY_INFO"
-        '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = $galaxyinfo' .variables.json > "$TMP_JQ"
+        '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP_JQ"
       - mv "$TMP_JQ" .variables.json
     sources:
       - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
@@ -358,7 +358,7 @@ tasks:
       # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
       - jq --arg blueprint "$PKG_BLUEPRINT" --arg deps "$PKG_DEPS" --arg devDeps "$PKG_DEV_DEPS" --arg scripts "$PKG_SCRIPTS" --arg version "$PKG_VERSION"
         '.dependencies = (($deps | fromjson) * .dependencies) | .devDependencies = (($devDeps | fromjson) * .devDependencies)
-        | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = $blueprint | .version = $version' package.json > "$TMP"
+        | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) | .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
       - cd .common && git reset --hard HEAD && cd ..
