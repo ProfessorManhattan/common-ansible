@@ -193,7 +193,7 @@ tasks:
 
   python-requirements-venv:
     cmds:
-      - if ! type virtualenv &> /dev/null; then pip3 install virtualenv fi
+      - if ! type virtualenv &> /dev/null; then pip3 install virtualenv; fi
       - virtualenv venv
     status:
       - test -d venv
