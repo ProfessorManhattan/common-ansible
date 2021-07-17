@@ -1,5 +1,5 @@
 ---
-version: '3'
+version: "3"
 
 tasks:
   populate-dependencies:
@@ -36,26 +36,26 @@ tasks:
       - task: _populate-meta
         vars:
           MODULE: community.general.homebrew
-          ROLE: '{{.GALAXY_NAMESPACE}}.homebrew'
+          ROLE: "{{.GALAXY_NAMESPACE}}.homebrew"
           VAL: '{"role": "{{.GALAXY_NAMESPACE}}.homebrew", "when": "ansible_os_family == ''Darwin''"}'
       - task: _populate-meta
         vars:
           MODULE: community.general.npm
-          ROLE: '{{.GALAXY_NAMESPACE}}.nodejs'
+          ROLE: "{{.GALAXY_NAMESPACE}}.nodejs"
           VAL: '{"role": "{{.GALAXY_NAMESPACE}}.nodejs"}'
       - task: _populate-meta
         vars:
           MODULE: community.general.gem
-          ROLE: '{{.GALAXY_NAMESPACE}}.ruby'
+          ROLE: "{{.GALAXY_NAMESPACE}}.ruby"
           VAL: '{"role": "{{.GALAXY_NAMESPACE}}.ruby"}'
       - task: _populate-meta
         vars:
           MODULE: community.general.snap
-          ROLE: '{{.GALAXY_NAMESPACE}}.snapd'
+          ROLE: "{{.GALAXY_NAMESPACE}}.snapd"
           VAL: '{"role": "{{.GALAXY_NAMESPACE}}.snapd", "when": "ansible_system == ''Linux''"}'
     preconditions:
-      - sh: 'type yq &> /dev/null'
-        msg: 'yq is not installed! yq is required for interacting with YML files. Install it by running `bash .start.sh`.'
+      - sh: "type yq &> /dev/null"
+        msg: "yq is not installed! yq is required for interacting with YML files. Install it by running `bash .start.sh`."
 
   _populate-collection:
     deps:
