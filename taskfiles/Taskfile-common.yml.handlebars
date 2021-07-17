@@ -127,6 +127,8 @@ tasks:
     sources:
       - package.json
       - package-lock.json
+    status:
+      - test -d node_modules
     preconditions:
       - sh: "test -f package.json"
         msg: "The package.json file appears to be missing!"
@@ -194,6 +196,8 @@ tasks:
         fi
     sources:
       - requirements.txt
+    status:
+      - test -d venv
     preconditions:
       - sh: "test -f requirements.txt"
         msg: "The requirements.txt file is missing!"
@@ -431,6 +435,7 @@ tasks:
       - cd .common && git reset --hard HEAD && git clean -fd && cd ..
     sources:
       - .variables.json
+      - package.json
     preconditions:
       - sh: "type rsync &> /dev/null"
         msg: "`rsync` is not installed!"
