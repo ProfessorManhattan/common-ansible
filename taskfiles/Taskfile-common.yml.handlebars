@@ -318,26 +318,22 @@ tasks:
     deps: [update-contributing, update-readme{{#if hbs.role}}-role{{/if}}, update-files]
 
   update-readme-role:
-    deps: [npm-ansibler, _mod-ansible-autodoc]
+    deps: [npm-ansibler, mod-ansible-autodoc]
     cmds:
-      - task: _ansibler
+      - task: ansibler
       - task: update-readme
 
-  _mod-ansible-autodoc:
+  mod-ansible-autodoc:
     deps:
       - python-requirements
       - :software:jq
     env:
       ACTIONS_DESCRIPTION:
         sh: jq -r '.autodoc_actions_description' .variables.json
-      TMP:
-        sh: mktemp
     cmds:
       - mod-ansible-autodoc --todo-title "### TODO" --actions-title "## Features" --actions-description "$ACTIONS_DESCRIPTION"
           --tags-title "### Tags" --variables-title "## Variables"
-      - ROLE_VARIABLES="$(jq -r '.role_variables' ansible_variables.json)"
-      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
-      - mv "$TMP" .variables.json
+      - task: _mod-ansible-autodoc
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
@@ -355,23 +351,38 @@ tasks:
           'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
           Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
 
-  _ansibler:
-    deps:
-      - npm-ansibler
-      - :software:jq
+  _mod-ansible-autodoc:
     env:
+      ROLE_VARIABLES:
+        sh: jq -r '.role_variables' ansible_variables.json
       TMP:
         sh: mktemp
     cmds:
-      - ansibler
-      - ROLE_DEPS="$(jq -r '.role_dependencies' dependency-chart.json)"
-      - jq --arg deps "$ROLE_DEPS" '.role_dependencies = $deps' .variables.json > "$TMP"
+      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
+
+  ansibler:
+    deps:
+      - npm-ansibler
+      - :software:jq
+    cmds:
+      - ansibler
+      - task: _ansibler
     sources:
       - dependency-chart.json
     preconditions:
       - sh: "type ansibler &> /dev/null"
         msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+
+  _ansibler:
+    env:
+      ROLE_DEPS:
+        sh: jq -r '.role_dependencies' dependency-chart.json
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq --arg deps "$ROLE_DEPS" '.role_dependencies = $deps' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
 
   update-contributing:
     deps: [npm-prettier, npm-readme]
@@ -395,7 +406,6 @@ tasks:
 
   update-files:
     deps:
-      - npm-hbs
       - npm-prettier-package-json
       - :software:git
       - :software:jq
@@ -414,13 +424,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - |
-        find ./.common/files-\{{.REPOSITORY_SUBTYPE}} -type f | while read FILE; do
-          if [ "${FILE##*.}" == 'handlebars' ]; then
-            FILE_BASENAME=$(basename $FILE)
-            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
-          fi
-        done
+      - task: _update-files
       - find .common/files-\{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
       - rsync -aPq ".common/files-\{{.REPOSITORY_SUBTYPE}}/" ./
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
@@ -434,15 +438,29 @@ tasks:
       - prettier-package-json --write
       - cd .common && git reset --hard HEAD && git clean -fd && cd ..
     sources:
-      - .variables.json
       - package.json
     preconditions:
       - sh: "type rsync &> /dev/null"
         msg: "`rsync` is not installed!"
-      - sh: "type hbs &> /dev/null"
-        msg: "`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`."
       - sh: "type prettier-package-json &> /dev/null"
         msg: "`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`."
+
+  _update-files:
+    deps:
+      - npm-hbs
+    cmds:
+      - |
+        find ./.common/files-\{{.REPOSITORY_SUBTYPE}} -type f | while read FILE; do
+          if [ "${FILE##*.}" == 'handlebars' ]; then
+            FILE_BASENAME=$(basename $FILE)
+            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
+          fi
+        done
+    sources:
+      - .variables.json
+    preconditions:
+      - sh: "type hbs &> /dev/null"
+        msg: "`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`."
 
   update-readme:
     deps: [npm-prettier, npm-readme]
