@@ -185,19 +185,25 @@ tasks:
     deps:
       - :software:python
     cmds:
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          if ! type virtualenv &> /dev/null; then
-            pip3 install virtualenv
-          fi
-          virtualenv venv
-          . venv/bin/activate
-          pip3 install -r requirements.txt
-        fi
-    sources:
-      - requirements.txt
+      - task: python-requirements-venv
+      - . venv/bin/activate
+      - task: python-requirements-pip
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
+
+  python-requirements-venv:
+    cmds:
+      - if ! type virtualenv &> /dev/null; then pip3 install virtualenv fi
+      - virtualenv venv
     status:
       - test -d venv
+      - test -d venv/bin
+
+  python-requirements-pip:
+    cmds:
+      - pip3 install -r requirements.txt
+    sources:
+      - requirements.txt
     preconditions:
       - sh: "test -f requirements.txt"
         msg: "The requirements.txt file is missing!"
