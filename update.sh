@@ -29,11 +29,7 @@ if [ "${container:=}" != 'docker' ]; then
   success "Node.js, Task, jq, and yq are all installed"
 fi
 
-if [ -f meta/main.yml ]; then
-  export REPO_SUBTYPE=role
-else
-  export REPO_SUBTYPE=playbook
-fi
+export REPO_SUBTYPE=$(yq e '.vars.REPOSITORY_SUBTYPE' Taskfile.yml)
 
 cp ".common/files-$REPO_SUBTYPE/Taskfile.yml" Taskfile.yml
 task common:update
