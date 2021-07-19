@@ -518,6 +518,7 @@ tasks:
           SCRUB_FILE: README.md
       - prettier --write README.md
     sources:
+      - .autodoc/*
       - .variables.json
     preconditions:
       - sh: "test -f .common/docs/\{{.README_TEMPLATE}}"
