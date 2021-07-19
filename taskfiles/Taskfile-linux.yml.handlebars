@@ -4,25 +4,25 @@ version: '3'
 tasks:
   docker:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/docker | bash
     status:
       - type docker &> /dev/null
 
   git:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/git | bash
     status:
       - type git &> /dev/null
 
   jq:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/jq | bash
     status:
       - type jq &> /dev/null
 
   node:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/node | bash
     status:
       - type node &> /dev/null
       - type npm &> /dev/null
@@ -30,30 +30,30 @@ tasks:
 
   python:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86.sh | bash -b -p "$MINICONDA_PATH"
     status:
       - type python &> /dev/null
 
   rsync:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/rsync | bash
     status:
       - type rsync &> /dev/null
 
   vagrant:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/vagrant | bash
     status:
       - type vagrant &> /dev/null
 
   virtualbox:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/virtualbox | bash
     status:
       - type virtualbox &> /dev/null
 
   yq:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS https://install.doctor/yq | bash
     status:
       - type yq &> /dev/null

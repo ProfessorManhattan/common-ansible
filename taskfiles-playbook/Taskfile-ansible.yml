@@ -1,10 +1,8 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   environment:
-    deps:
-      - :common:nodejs-dependencies
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
       $ Switch environments using an interactive dialogue
@@ -18,7 +16,7 @@ tasks:
       > task ansible:environment -- prod
     cmds:
       - |
-        if [ -z "{{.CLI_ARGS}}" ]; then
+        if [ ! -z "{{.CLI_ARGS}}" ]; then
           for ITEM in environments/{{.CLI_ARGS}}/*; do
             if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
               echo "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
@@ -27,14 +25,32 @@ tasks:
               ln -s "./environments/{{.CLI_ARGS}}/$ITEM" "$ITEM"
             fi
           done
-        else
-          node .common/scripts/environment.js
+        fi
+      - task: environment-prompt
+
+  environment-prompt:
+    deps:
+      - :common:nodejs-dependencies
+    env:
+      ENVIRONMENT:
+        sh: node .common/scripts/prompts/environment.js
+    cmds:
+      - |
+        if [ ! -z "$ENVIRONMENT" ]; then
+          for ITEM in "environments/$ENVIRONMENT/*"; do
+            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+              echo "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
+            else
+              rm -f $ITEM
+              ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
+            fi
+          done
         fi
     preconditions:
-      - sh: "test -d node_modules"
-        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
-      - sh: "type node &> /dev/null"
-        msg: "Node.js is required. Install it by running `task software:node`."
+      - sh: 'test -d node_modules'
+        msg: 'This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`.'
+    status:
+      - '[[ -z "{{.CLI_ARGS}}" ]]'
 
   find-missing-files:
     desc: Find roles that are missing files
@@ -52,8 +68,8 @@ tasks:
     cmds:
       - find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print
     preconditions:
-      - sh: "test -d roles"
-        msg: "The roles folder is missing. Is the project set up right?"
+      - sh: 'test -d roles'
+        msg: 'The roles folder is missing. Is the project set up right?'
 
   symlink:
     desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
@@ -68,10 +84,10 @@ tasks:
       - |
         find ./roles -mindepth 2 -maxdepth 2 -type d -print0 | while read -d $'\0' ROLE_PATH; do;
           PATH_BASENAME=$(basename "$ROLE_PATH");
-          if [ ! -d "~/.ansible/roles/$GALAXY_NAMESPACE.$PATH_BASENAME" ]; then
-            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/{{.GALAXY_NAMESPACE}}.{{.PATH_BASENAME}}"
+          if [ ! -d "~/.ansible/roles/{{.GALAXY_NAMESPACE}}.$PATH_BASENAME" ]; then
+            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/{{.GALAXY_NAMESPACE}}.$PATH_BASENAME"
           fi
         done
     preconditions:
-      - sh: "test -d roles"
-        msg: "The roles folder is missing. Is the project set up right?"
+      - sh: 'test -d roles'
+        msg: 'The roles folder is missing. Is the project set up right?'

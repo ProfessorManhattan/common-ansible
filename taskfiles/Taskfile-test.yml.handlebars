@@ -52,13 +52,19 @@ tasks:
         * debian       * ubuntu
     cmds:
       - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-      - |
-        if [ -z "\{{.CLI_ARGS}}" ]; then
-          molecule converge -s \{{.CLI_ARGS}}-desktop
-        else
-          OPERATING_SYSTEM=$(node .common/scripts/molecule-desktop.js)
-          molecule converge -s "${OPERATING_SYSTEM}-desktop"
-        fi
+      - if [ ! -z "\{{.CLI_ARGS}}" ]; then molecule converge -s \{{.CLI_ARGS}}-desktop; fi
+      - task: molecule-desktop-prompt
+
+  molecule-desktop-prompt:
+    deps:
+      - :software:node
+    env:
+      OPERATING_SYSTEM:
+        sh: node .common/scripts/prompts/molecule-desktop.js
+    cmds:
+        - if [ ! -z "$OPERATING_SYSTEM" ]; then molecule converge -s "${OPERATING_SYSTEM}-desktop"; fi
+    status:
+      - '[[ -z "\{{.CLI_ARGS}}" ]]'
 
   molecule-docker:
     deps:
@@ -79,7 +85,7 @@ tasks:
       SNAP_REFS:
         sh: grep -Ril \"community.general.snap:\" ./tasks
     cmds:
-      - if [ "$SNAP_REFS" ]; then molecule test -s docker-snap; else molecule test -s docker; fi
+      - if [ "\{{.SNAP_REFS}}" ]; then molecule test -s docker-snap; else molecule test -s docker; fi
 
   molecule-e2e:
     deps:
@@ -101,11 +107,15 @@ tasks:
     env:
       # yamllint disable-line rule:truthy
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: YES
+    vars:
+      MOLECULE_DATE:
+        sh: date '+%Y-%m-%d'
     cmds:
       - |
         if [ "\{{.CLI_ARGS}}" ]; then
           if [ "\{{.CLI_ARGS}}" == 'matrix']; then
-            PY_COLORS=0 molecule test > molecule-test-output.txt
+            mkdir -p .molecule-results
+            PY_COLORS=0 molecule test > .molecule-results/\{{.MOLECULE_DATE}}-default.txt
           fi
         else
           molecule test
@@ -134,9 +144,23 @@ tasks:
           * centos       * macos
           * debian       * ubuntu
 
-        Example:
+        Example opening interactive prompt:
+        > task test:vagrant
+
+        Example bypassing interactive prompt:
         > task test:vagrant -- --provider=vmware_workstation windows
       cmds:
-        - echo "TODO: Check if provider is installed and prompt for install if it is not"
-        - vagrant up \{{.CLI_ARGS}}
+        - if [ ! -z "\{{.CLI_ARGS}}" ]; then vagrant up \{{.CLI_ARGS}}; fi
+        - task: vagrant-prompt
+
+    vagrant-prompt:
+      deps:
+        - :software:node
+      env:
+        VAGRANT_COMMAND:
+          sh: node .common/scripts/prompts/vagrant-up.js
+      cmds:
+        - if [ ! -z "$VAGRANT_COMMAND" ]; then vagrant up "$VAGRANT_COMMAND"; fi
+      status:
+        - '[[ -z "\{{.CLI_ARGS}}" ]]'
 {{/if}}

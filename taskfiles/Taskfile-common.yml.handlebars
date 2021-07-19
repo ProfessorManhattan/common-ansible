@@ -4,8 +4,9 @@ version: '3'
 tasks:
   clean:
     desc: Removes optional folders that are cached during various tasks
+    label: clean
     summary: |
-      $ \e[38;5;82mClean the project and remove all optional caches
+      $ Clean the project and remove all optional caches
 
       This task will remove all the unnecessary files that are downloaded, generated, and
       cached during various build steps. This task is used by the `task common:reset` task
@@ -17,6 +18,7 @@ tasks:
   commit:
     deps: [nodejs-dependencies, python-requirements]
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
+    label: commit
     summary: |
       $ Commit code
 
@@ -37,6 +39,7 @@ tasks:
   markdown-link-check:
     deps: [nodejs-dependencies]
     desc: Scan markdown files for broken links
+    label: markdown-link-check
     summary: |
       $ Report any broken links in the files that end with .md
 
@@ -51,6 +54,7 @@ tasks:
   prepare-release:
     deps: [nodejs-dependencies]
     desc: Ensure the project has upstream changes, lint, and then update the version
+    label: prepare-release
     summary: |
       $ Prepare a new release
 
@@ -66,6 +70,7 @@ tasks:
 
   requirements:
     desc: Ensure all the dependencies are installed (Node.js, Python, etc.)
+    label: requirements
     summary: |
       $ Ensure dependencies are installed
 
@@ -90,6 +95,7 @@ tasks:
 
   reset:
     desc: Resets the project by removing all caches and updating the project
+    label: reset
     summary: |
       $ Reset the project and then update it
 
@@ -102,10 +108,11 @@ tasks:
       - task: clean
       - task: update
 
-  hard-reset:
+  reset-force:
     deps:
       - software:git
     desc: "Aggressively reset the project (WARNING: This will wipe uncommitted work)"
+    label: reset-force
     summary: |
       $ Aggressively reset the project
 
@@ -178,7 +185,7 @@ tasks:
       - :software:python
     cmds:
       - task: python-requirements-venv
-      - . venv/bin/activate
+      - task: python-requirements-venv-activate
       - task: python-requirements-pip
     status:
       - '[[ "${container:=}" == "docker" ]]'
@@ -188,9 +195,13 @@ tasks:
       - if ! type virtualenv &> /dev/null; then pip3 install virtualenv; fi
       - virtualenv venv
     status:
-      - test -d venv
-      - test -d venv/bin
       - test -f venv/bin/activate
+
+  python-requirements-venv-activate:
+    cmds:
+      - . venv/bin/activate
+    status:
+      - '[[ "$PATH" =~ "$PWD/venv/bin" ]]'
 
   python-requirements-pip:
     cmds:
@@ -205,36 +216,53 @@ tasks:
     deps:
       - :software:docker
     desc: Start a terminal session using Docker with any Linux operating system
+    label: shell
     summary: |
       $ Start a Docker terminal session
 
       Use Docker to run commands on nearly any operating system. The operating
       systems are all stock distros with systemd added.
 
-      Example of opening an interactive prompt:
+      Example opening an interactive prompt:
       > task shell
 
       Example of directly shelling into a container:
       > task shell -- ubuntu-21.04
 
       Available operating systems:
-        * archlinux.  * debian-9     * fedora-34      * ubuntu-21.04
+        * archlinux   * debian-9     * fedora-34      * ubuntu-21.04
         * centos-7    * debian-10    * ubuntu-18.04
         * centos-8    * fedora-33    * ubuntu-20.04
     vars:
       WORKDIR:
         sh: basename $PWD
     cmds:
-      - docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}} --rm megabytelabs/ansible-molecule-\{{.CLI_ARGS}}:latest /bin/bash
+      - if [ ! -z "\{{.CLI_ARGS}}" ]; then docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}} --rm megabytelabs/ansible-molecule-\{{.CLI_ARGS}}:latest /bin/bash; fi
+      - task: shell-prompt
     preconditions:
       - sh: "type docker &> /dev/null"
         msg: "Docker is not installed! Install it by running `task software:docker`."
+
+    shell-prompt:
+      deps:
+        - :software:node
+      env:
+        OPERATING_SYSTEM:
+          sh: node .common/scripts/prompts/shell.js
+      cmds:
+        - if [ ! -z "$OPERATING_SYSTEM" ]; then docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}} --rm "megabytelabs/ansible-molecule-${OPERATING_SYSTEM}:latest" /bin/bash; fi
+      preconditions:
+        - sh: "type node &> /dev/null"
+          msg: "Node.js is not installed! Install it by running `task software:node`."
+      status:
+        - '[[ -z "\{{.CLI_ARGS}}" ]]'
 
   spelling:
     deps:
       - :software:git
       - :software:node
     desc: Checks for spelling errors in staged files
+    label: spelling
     summary: |
       $ Check for spelling errors in staged files
 
@@ -257,6 +285,7 @@ tasks:
 
   update:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
+    label: update
     cmds:
       - cp ./.common/.start.sh .start.sh
       - if [ ! -f .variables.json ]; then echo '{}' > .variables.json; fi
@@ -361,12 +390,14 @@ tasks:
   ansibler:
     deps:
       - python-requirements
-    #cmds:
-    #  - task: ansibler-compatibility-chart
-    #  - task: _ansibler
-    #preconditions:
-    #  - sh: "type ansibler &> /dev/null"
-    #    msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+    cmds:
+      - task: ansibler-compatibility-chart
+      - task: _ansibler
+    preconditions:
+      - sh: "type ansibler &> /dev/null"
+        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+    status:
+      - true
 
   _ansibler:
     deps: [{{#if hbs.role}}ansibler-populate-platforms, {{/if}}ansibler-role-dependencies]
