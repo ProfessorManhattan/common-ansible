@@ -1,13 +1,15 @@
-"use strict"
+'use strict'
 
 /* eslint-disable space-before-function-paren */
 
-import { execSync } from "child_process"
-import { readdirSync } from "fs"
-import inquirer from "inquirer"
-import signale from "signale"
+import { execSync } from 'child_process'
+import { readdirSync } from 'fs'
+import inquirer from 'inquirer'
+import signale from 'signale'
 
-signale.info("Use the following prompts to select the type of operating system and the virtualization platform you wish to use with Vagrant.")
+signale.info(
+  'Use the following prompts to select the type of operating system and the virtualization platform you wish to use with Vagrant.'
+)
 
 /**
  * Prompts the user for the operating system they wish to launch and test the
@@ -16,11 +18,11 @@ signale.info("Use the following prompts to select the type of operating system a
 async function promptForDesktop() {
   const response = await inquirer.prompt([
     {
-      type: "list",
-      name: "operatingSystem",
-      message: "Which desktop operating system would you like to provision?",
-      choices: ["Archlinux", "CentOS", "Debian", "Fedora", "macOS", "Ubuntu", "Windows"],
-    },
+      type: 'list',
+      name: 'operatingSystem',
+      message: 'Which desktop operating system would you like to provision?',
+      choices: ['Archlinux', 'CentOS', 'Debian', 'Fedora', 'macOS', 'Ubuntu', 'Windows']
+    }
   ])
   return response.operatingSystem.toLowerCase()
 }
@@ -32,16 +34,16 @@ async function promptForDesktop() {
  */
 async function promptForPlatform() {
   const platformMap = {
-    "Hyper-V": "hyperv",
-    KVM: "libvirt",
-    Parallels: "parallels",
-    VirtualBox: "virtualbox",
-    "VMWare Fusion": "vmware_fusion",
-    "VMWare Workstation": "vmware_workstation",
+    'Hyper-V': 'hyperv',
+    KVM: 'libvirt',
+    Parallels: 'parallels',
+    VirtualBox: 'virtualbox',
+    'VMWare Fusion': 'vmware_fusion',
+    'VMWare Workstation': 'vmware_workstation'
   }
   // Source: https://github.com/zacanger/is-program-installed/blob/master/index.js
   const opts = {
-    stdio: "ignore",
+    stdio: 'ignore'
   }
 
   const exec = (cmd) => execSync(cmd, opts)
@@ -66,18 +68,18 @@ async function promptForPlatform() {
 
   const isDotDesktopInstalled = (program) => {
     const dirs = [
-      process.env.XDG_DATA_HOME && process.env.XDG_DATA_HOME + "/applications",
-      process.env.HOME && process.env.HOME + "/.local/share/applications",
-      "/usr/share/applications",
-      "/usr/local/share/applications",
+      process.env.XDG_DATA_HOME && process.env.XDG_DATA_HOME + '/applications',
+      process.env.HOME && process.env.HOME + '/.local/share/applications',
+      '/usr/share/applications',
+      '/usr/local/share/applications'
     ]
       .filter(Boolean)
       .filter(isDirectory)
 
-    const trimExtension = (x) => x.replace(/\.desktop$/, "")
+    const trimExtension = (x) => x.replace(/\.desktop$/, '')
     const desktopFiles = dirs
       .flatMap((x) => readdirSync(x))
-      .filter((x) => x.endsWith(".desktop"))
+      .filter((x) => x.endsWith('.desktop'))
       .map(trimExtension)
 
     const programTrimmed = trimExtension(program)
@@ -109,34 +111,35 @@ async function promptForPlatform() {
     return success
   }
 
-  const isInstalled = (program) => [isUnixInstalled, isMacInstalled, isWindowsInstalled, isDotDesktopInstalled].some((f) => f(program))
+  const isInstalled = (program) =>
+    [isUnixInstalled, isMacInstalled, isWindowsInstalled, isDotDesktopInstalled].some((f) => f(program))
   const choices = []
-  if (process.platform === "win32") {
+  if (process.platform === 'win32') {
     // TODO: Check if Hyper-V is enabled instead of just assuming that all Windows computers have Hyper-V enabled
-    choices.push("Hyper-V")
+    choices.push('Hyper-V')
   }
-  if ((process.platform === "darwin" || process.platform === "linux") && isInstalled("kvm")) {
-    choices.push("KVM")
+  if ((process.platform === 'darwin' || process.platform === 'linux') && isInstalled('kvm')) {
+    choices.push('KVM')
   }
-  if (process.platform === "darwin" && isInstalled("Parallels Desktop.app")) {
-    choices.push("Parallels")
+  if (process.platform === 'darwin' && isInstalled('Parallels Desktop.app')) {
+    choices.push('Parallels')
   }
-  if (isInstalled("virtualbox")) {
-    choices.push("VirtualBox")
+  if (isInstalled('virtualbox')) {
+    choices.push('VirtualBox')
   }
-  if (process.platform === "darwin" && isInstalled("VMware Fusion.app")) {
-    choices.push("VMWare Fusion")
+  if (process.platform === 'darwin' && isInstalled('VMware Fusion.app')) {
+    choices.push('VMWare Fusion')
   }
-  if (process.platform !== "darwin" && isInstalled("vmware")) {
-    choices.push("VMWare Workstation")
+  if (process.platform !== 'darwin' && isInstalled('vmware')) {
+    choices.push('VMWare Workstation')
   }
   const response = await inquirer.prompt([
     {
-      type: "list",
-      name: "virtualizationPlatform",
-      message: "Which virtualization platform would you like to use?",
-      choices,
-    },
+      type: 'list',
+      name: 'virtualizationPlatform',
+      message: 'Which virtualization platform would you like to use?',
+      choices
+    }
   ])
   return platformMap[response.virtualizationPlatform]
 }
@@ -144,7 +147,7 @@ async function promptForPlatform() {
 async function run() {
   const operatingSystem = await promptForDesktop()
   const virtualizationPlatform = await promptForPlatform()
-  console.log("--provider=" + virtualizationPlatform + " " + operatingSystem)
+  console.log('--provider=' + virtualizationPlatform + ' ' + operatingSystem)
 }
 
 run()
