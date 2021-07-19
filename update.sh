@@ -12,9 +12,9 @@
 #   3. Notifies the user about missing software dependencies that require root priviledges to install
 
 if [ "${container:=}" != 'docker' ]; then
-  set -ex
-else
   set -e
+else
+  set -ex
 fi
 
 source "./.common/scripts/common.sh"

@@ -4,7 +4,7 @@
 # @brief Contains various functions unique to this repository type.
 
 if [ "${container:=}" != 'docker' ]; then
-  set -ex
-else
   set -e
+else
+  set -ex
 fi

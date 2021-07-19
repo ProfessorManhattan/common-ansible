@@ -10,9 +10,9 @@
 #   bootstrapped. `bash .start.sh` is the first command you should run when working with this project.
 
 if [ "${container:=}" != 'docker' ]; then
-  set -ex
-else
   set -e
+else
+  set -ex
 fi
 
 export REPO_TYPE=ansible
