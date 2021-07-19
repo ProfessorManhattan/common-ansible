@@ -75,7 +75,6 @@ tasks:
 
   symlink:
     desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
-    label: symlink
     summary: |
       $ Symlink each role to ~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\role_name
 
@@ -187,7 +186,6 @@ tasks:
 
   symlink:
     desc: Symlink the current role to ~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}
-    label: symlink
     summary: |
       $ Symlink this role to ~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}
 
