@@ -11,7 +11,11 @@
 #   2. Bootstraps the project by using Task to run initialization tasks which bootstrap the project
 #   3. Notifies the user about missing software dependencies that require root priviledges to install
 
-set -e
+if [ "${container:=}" != 'docker' ]; then
+  set -ex
+else
+  set -e
+fi
 
 source "./.common/scripts/common.sh"
 source "./.common/scripts/log.sh"
