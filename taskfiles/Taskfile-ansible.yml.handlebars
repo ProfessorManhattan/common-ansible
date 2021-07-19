@@ -5,8 +5,6 @@ tasks:
 {{#if hbs.playbook}}
 
   environment:
-    deps:
-      - :common:nodejs-dependencies
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
       $ Switch environments using an interactive dialogue
@@ -20,7 +18,7 @@ tasks:
       > task ansible:environment -- prod
     cmds:
       - |
-        if [ -z "\{{.CLI_ARGS}}" ]; then
+        if [ ! -z "\{{.CLI_ARGS}}" ]; then
           for ITEM in environments/\{{.CLI_ARGS}}/*; do
             if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
               echo "Skipping environments/\{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
@@ -29,14 +27,32 @@ tasks:
               ln -s "./environments/\{{.CLI_ARGS}}/$ITEM" "$ITEM"
             fi
           done
-        else
-          node .common/scripts/environment.js
         fi
+      - task: environment-prompt
+
+  environment-prompt:
+    deps:
+      - :common:nodejs-dependencies
+    env:
+      ENVIRONMENT:
+        sh: node .common/scripts/prompts/environment.js
+    cmds:
+        - |
+          if [ ! -z "$ENVIRONMENT" ]; then
+            for ITEM in "environments/$ENVIRONMENT/*"; do
+              if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+                echo "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
+              else
+                rm -f $ITEM
+                ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
+              fi
+            done
+          fi
     preconditions:
       - sh: "test -d node_modules"
         msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
-      - sh: "type node &> /dev/null"
-        msg: "Node.js is required. Install it by running `task software:node`."
+    status:
+      - '[[ -z "\{{.CLI_ARGS}}" ]]'
 
   find-missing-files:
     desc: Find roles that are missing files
@@ -70,8 +86,8 @@ tasks:
       - |
         find ./roles -mindepth 2 -maxdepth 2 -type d -print0 | while read -d $'\0' ROLE_PATH; do;
           PATH_BASENAME=$(basename "$ROLE_PATH");
-          if [ ! -d "~/.ansible/roles/$GALAXY_NAMESPACE.$PATH_BASENAME" ]; then
-            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.PATH_BASENAME}}"
+          if [ ! -d "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.$PATH_BASENAME" ]; then
+            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.$PATH_BASENAME"
           fi
         done
     preconditions:
@@ -94,9 +110,10 @@ tasks:
       search for a handful of common strings. It will then attempt to automatically populate
       `meta/main.yml` and the `requirements.yml`.
 
-      Comma-seperated text items it attempts to auto-populate for:
-      chocolatey.chocolatey, community.general, community.general.homebrew, community.general.npm,
-      community.general.gem, community.general.snap
+      Items it attempts to auto-populate for:
+        * chocolatey.chocolatey        * community.general.gem
+        * community.general            * community.general.npm
+        * community.general.homebrew   * community.general.snap
     vars:
       COLLECTIONS:
         sh: yq eval '.collections' requirements.yml
