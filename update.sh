@@ -27,7 +27,7 @@ if [ "${container:=}" != 'docker' ]; then
   success "Node.js, Task, jq, and yq are all installed"
 fi
 
-REPO_SUBTYPE=$(cat Taskfile.yml | grep REPOSITORY_SUBTYPE | sed 's/.*REPOSITORY_SUBTYPE: \(.*\)/\1/')
+REPO_SUBTYPE=$(grep REPOSITORY_SUBTYPE Taskfile.yml | sed 's/.*REPOSITORY_SUBTYPE: \(.*\)/\1/')
 export REPO_SUBTYPE
 
 cp ".common/files-$REPO_SUBTYPE/Taskfile.yml" Taskfile.yml
