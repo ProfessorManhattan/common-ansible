@@ -134,17 +134,9 @@ tasks:
         msg: "The package.json file appears to be missing!"
 
   nodejs-global-dependencies:
-    deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme{{#if hbs.ansible}}, npm-ansibler{{/if}}]
+    deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme]
     status:
       - '[[ "${container:=}" == "docker" ]]'
-
-  npm-ansibler:
-    deps:
-      - :software:node
-    cmds:
-      - if [ "${container:=}" != 'docker' ]; then npm install -g ansibler; fi
-    status:
-      - type ansibler &> /dev/null
 
   npm-hbs:
     deps:
@@ -277,6 +269,9 @@ tasks:
     deps:
       - :software:jq
       - :software:yq
+{{#if hbs.ansible}}
+      - ansibler
+{{/if}}
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
@@ -324,12 +319,14 @@ tasks:
   update-all:
     deps: [update-contributing, update-readme{{#if hbs.role}}-role{{/if}}, update-files]
 
+{{#if hbs.role}}
   update-readme-role:
-    deps: [npm-ansibler, mod-ansible-autodoc]
+    deps: [mod-ansible-autodoc]
     cmds:
-      - task: ansibler
       - task: update-readme
+{{/if}}
 
+{{#if hbs.ansible}}
   mod-ansible-autodoc:
     deps:
       - python-requirements
@@ -345,13 +342,6 @@ tasks:
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
       - "tasks**/*.yml"
-    status:
-      - test -d .autodoc
-      - test -f .autodoc/ansible_actions.md
-      - test -f .autodoc/ansible_tags.md
-      - test -f .autodoc/ansible_todo.md
-      - test -f .autodoc/ansible_variables.json
-      - test -f .autodoc/ansible_variables.md
     preconditions:
       - sh: "type mod-ansible-autodoc &> /dev/null"
         msg:
@@ -370,26 +360,38 @@ tasks:
 
   ansibler:
     deps:
-      - npm-ansibler
-      - :software:jq
-    cmds:
-      - ansibler
-      - task: _ansibler
-    sources:
-      - dependency-chart.json
-    preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - python-requirements
+    #cmds:
+    #  - task: ansibler-compatibility-chart
+    #  - task: _ansibler
+    #preconditions:
+    #  - sh: "type ansibler &> /dev/null"
+    #    msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
 
   _ansibler:
-    env:
-      ROLE_DEPS:
-        sh: jq -r '.role_dependencies' dependency-chart.json
-      TMP:
-        sh: mktemp
+    deps: [{{#if hbs.role}}ansibler-populate-platforms, {{/if}}ansibler-role-dependencies]
+
+  ansibler-compatibility-chart:
     cmds:
-      - jq --arg deps "$ROLE_DEPS" '.role_dependencies = $deps' .variables.json > "$TMP"
-      - mv "$TMP" .variables.json
+      - ansibler --generate-compatibility-chart
+    sources:
+      - .molecule-results/*.txt
+
+{{#if hbs.role}}
+  ansibler-populate-platforms:
+    cmds:
+      - ansibler --populate-platforms
+    sources:
+      - tasks/main.yml
+      - .molecule-results/*.txt
+{{/if}}
+
+  ansibler-role-dependencies:
+    cmds:
+      - ansibler --role-dependencies
+    sources:
+      - requirements.yml
+{{/if}}
 
   update-contributing:
     deps: [npm-prettier, npm-readme]
