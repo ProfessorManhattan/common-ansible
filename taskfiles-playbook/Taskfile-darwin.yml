@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   docker:
@@ -42,11 +42,11 @@ tasks:
 
   python:
     vars:
-      BASH_PROFILE: $HOME/.bash_profile
+      BASH_PROFILE: '$HOME/.bash_profile'
       MINICONDA_DOWNLOAD_CHECKSUM: b3bf77cbb81ee235ec6858146a2a84d20f8ecdeb614678030c39baacb5acbed1
       MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-MacOSX-x86_64.sh
-      MINICONDA_PATH: $HOME/.local/miniconda
-      PATH_STRING: \nexport PATH=$HOME/.local/miniconda/bin:$PATH
+      MINICONDA_PATH: '$HOME/.local/miniconda'
+      PATH_STRING: '\nexport PATH=$HOME/.local/miniconda/bin:$PATH'
     cmds:
       - curl -sS {{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
       - echo "{{.MINICONDA_DOWNLOAD_CHECKSUM}} miniconda.sh" | sha256sum --check
