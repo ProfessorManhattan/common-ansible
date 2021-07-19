@@ -4,7 +4,6 @@ version: '3'
 tasks:
   clean:
     desc: Removes optional folders that are cached during various tasks
-    label: clean
     summary: |
       $ Clean the project and remove all optional caches
 
@@ -18,7 +17,6 @@ tasks:
   commit:
     deps: [nodejs-dependencies, python-requirements]
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
-    label: commit
     summary: |
       $ Commit code
 
@@ -39,7 +37,6 @@ tasks:
   markdown-link-check:
     deps: [nodejs-dependencies]
     desc: Scan markdown files for broken links
-    label: markdown-link-check
     summary: |
       $ Report any broken links in the files that end with .md
 
@@ -54,7 +51,6 @@ tasks:
   prepare-release:
     deps: [nodejs-dependencies]
     desc: Ensure the project has upstream changes, lint, and then update the version
-    label: prepare-release
     summary: |
       $ Prepare a new release
 
@@ -70,7 +66,6 @@ tasks:
 
   requirements:
     desc: Ensure all the dependencies are installed (Node.js, Python, etc.)
-    label: requirements
     summary: |
       $ Ensure dependencies are installed
 
@@ -95,7 +90,6 @@ tasks:
 
   reset:
     desc: Resets the project by removing all caches and updating the project
-    label: reset
     summary: |
       $ Reset the project and then update it
 
@@ -112,7 +106,6 @@ tasks:
     deps:
       - software:git
     desc: "Aggressively reset the project (WARNING: This will wipe uncommitted work)"
-    label: reset-force
     summary: |
       $ Aggressively reset the project
 
@@ -216,7 +209,6 @@ tasks:
     deps:
       - :software:docker
     desc: Start a terminal session using Docker with any Linux operating system
-    label: shell
     summary: |
       $ Start a Docker terminal session
 
@@ -264,7 +256,6 @@ tasks:
       - :software:git
       - :software:node
     desc: Checks for spelling errors in staged files
-    label: spelling
     summary: |
       $ Check for spelling errors in staged files
 
@@ -287,7 +278,6 @@ tasks:
 
   update:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
-    label: update
     cmds:
       - cp ./.common/.start.sh .start.sh
       - if [ ! -f .variables.json ]; then echo '{}' > .variables.json; fi
