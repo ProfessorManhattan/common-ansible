@@ -279,12 +279,25 @@ tasks:
   update:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
-      - cp ./.common/.start.sh .start.sh
+      - task: update-start-sh
+      - task: update-taskfile
       - if [ ! -f .variables.json ]; then echo '{}' > .variables.json; fi
       - task: requirements
       - task: update-variables
       - task: update-all
       - bash .common/scripts/log-bash.sh success "Successfully updated the project with the latest upstream changes"
+
+  update-start-sh:
+    cmds:
+      - cp .common/.start.sh .start.sh
+    sources:
+      - .common/start.sh
+
+  update-taskfile:
+    cmds:
+      - cp .common/files-\{{.REPOSITORY_SUBTYPE}}/Taskfile.yml Taskfile.yml
+    sources:
+      - .common/files-\{{.REPOSITORY_SUBTYPE}}/Taskfile.yml
 
   update-variables:
     deps:
