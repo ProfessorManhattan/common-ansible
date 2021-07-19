@@ -4,56 +4,88 @@ version: '3'
 tasks:
   docker:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: docker
     status:
       - type docker &> /dev/null
 
   git:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: git
     status:
       - type git &> /dev/null
 
+  install-doctor:
+    cmds:
+      - curl -sS https://install.doctor/\{{.SOFTWARE}} | bash
+
   jq:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: jq
     status:
       - type jq &> /dev/null
 
   node:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: node
     status:
       - type node &> /dev/null
       - type npm &> /dev/null
       - type npx &> /dev/null
 
   python:
+    vars:
+      BASH_PROFILE: $HOME/.bash_profile
+      MINICONDA_DOWNLOAD_CHECKSUM: b3bf77cbb81ee235ec6858146a2a84d20f8ecdeb614678030c39baacb5acbed1
+      MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-MacOSX-x86_64.sh
+      MINICONDA_PATH: $HOME/.local/miniconda
+      PATH_STRING: \nexport PATH=$HOME/.local/miniconda/bin:$PATH
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - curl -sS \{{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
+      - echo "\{{.MINICONDA_DOWNLOAD_CHECKSUM}} miniconda.sh" | sha256sum --check
+      - mkdir -p "$HOME/.local"
+      - bash miniconda.sh -b -p "\{{.MINICONDA_PATH}}"
+      - rm miniconda.sh
+      - export PATH="\{{.MINICONDA_PATH}}/bin:$PATH"
+      - if grep -L '\{{.PATH_STRING}}' "\{{.BASH_PROFILE}}"; then echo -e '\{{.PATH_STRING}}' >> "\{{.BASH_PROFILE}}"
     status:
-      - type python &> /dev/null
+      - type python3 &> /dev/null
 
   rsync:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: rsync
     status:
       - type rsync &> /dev/null
 
   vagrant:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: vagrant
     status:
       - type vagrant &> /dev/null
 
   virtualbox:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: virtualbox
     status:
       - type virtualbox &> /dev/null
 
   yq:
     cmds:
-      - echo "TODO: https://install.doctor script"
+      - task: install-doctor
+        vars:
+          SOFTWARE: yq
     status:
       - type yq &> /dev/null
