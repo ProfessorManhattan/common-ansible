@@ -80,7 +80,10 @@ tasks:
   galaxy-requirements:
     deps: [python-requirements]
     cmds:
-      - if [ "${container:=}" != 'docker' ]; then ansible-galaxy install -r requirements.yml --ignore-errors; fi
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          ansible-galaxy install -r requirements.yml --ignore-errors
+        fi
     sources:
       - requirements.yml
     preconditions:
@@ -186,6 +189,7 @@ tasks:
   python-requirements-venv:
     cmds:
       - task: python-virtualenv
+      - rm -rf .venv
       - virtualenv .venv
     status:
       - test -f .venv/bin/activate
@@ -297,7 +301,10 @@ tasks:
     deps:
       - :software:git
     cmds:
-      - cd .common && git pull origin master --no-rebase && cd ..
+      - cd .common
+      - git reset --hard HEAD
+      - git pull origin master --ff-only
+      - cd ..
     preconditions:
       - sh: "type git &> /dev/null"
         msg: "git is not installed! You can install it by running `task software:git`."
