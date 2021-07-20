@@ -1,4 +1,4 @@
 [flake8]
-exclude = .autodoc, .cache, .common, .git, node_modules, .task, venv
+exclude = .cache, .common, .git, node_modules, roles/misc/freeipa
 ignore = E402
 max-line-length = 120
