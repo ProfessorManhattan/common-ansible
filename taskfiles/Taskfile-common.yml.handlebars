@@ -382,14 +382,38 @@ tasks:
   update-all:
     deps: [update-contributing, update-readme{{#if hbs.role}}-role{{/if}}, update-files]
 
+  update-modules:
+    deps:
+      - :software:git
+    desc: Ensure all submodules in the `.modules/` folder are updated
+    summary: |
+      $ Ensure all submodules in `.modules/` are updated
+
+      Some of our projects include submodules. These submodules are generally
+      stored in the `.modules/` folder in the root of the project. Some projects
+      might symlink files to one of the submodules stored in the `.modules/` folder.
+      If you are ok with the risk, you can use this task to update all the submodules
+      to the latest on the remote's master branch.
+    cmds:
+      - |
+        for SUBMODULE_PATH in .modules/*; do
+          cd $SUBMODULE_PATH
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+          git reset --hard HEAD
+          git checkout "$DEFAULT_BRANCH"
+          git pull origin "$DEFAULT_BRANCH" --ff-only
+        done
+    status:
+      - test -d .modules
 {{#if hbs.role}}
+
   update-readme-role:
     deps: [mod-ansible-autodoc]
     cmds:
       - task: update-readme
 {{/if}}
-
 {{#if hbs.ansible}}
+
   mod-ansible-autodoc:
     deps:
       - python-requirements
