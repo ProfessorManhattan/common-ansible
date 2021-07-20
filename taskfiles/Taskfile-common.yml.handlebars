@@ -288,7 +288,6 @@ tasks:
       - task: update-common
       - task: update-start-sh
       - task: update-taskfile
-      - if [ ! -f .variables.json ]; then echo '{}' > .variables.json; fi
       - task: requirements
       - task: update-variables
       - task: update-all
