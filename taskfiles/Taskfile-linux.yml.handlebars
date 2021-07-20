@@ -20,8 +20,10 @@ tasks:
 
   install-doctor:
     cmds:
-      - if type \{{.SOFTWARE}} &> /dev/null; then exit 0; fi # Prevent --force from reinstalling software
-      - curl -sS https://install.doctor/\{{.SOFTWARE}} | bash
+      - |
+        if ! type \{{.SOFTWARE}} &> /dev/null; then # Prevent --force from reinstalling software
+          curl -sS https://install.doctor/\{{.SOFTWARE}} | bash
+        fi
 
   jq:
     cmds:
@@ -46,14 +48,16 @@ tasks:
       MINICONDA_DOWNLOAD_CHECKSUM: 536817d1b14cb1ada88900f5be51ce0a5e042bae178b5550e62f61e223deae7c
       MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
     cmds:
-      - if type python3 &> /dev/null; then exit 0; fi # Prevent --force from trying to reinstall Miniconda/Python 3
-      - curl -sS \{{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
-      - echo "miniconda.sh  \{{.MINICONDA_DOWNLOAD_CHECKSUM}}" | shasum -s -a 256 -c
-      - mkdir -p "$HOME/.local"
-      - bash miniconda.sh -b -p "$HOME/.local/miniconda"
-      - rm miniconda.sh
-      - export PATH="$HOME/.local/miniconda/bin:$PATH"
-      - if grep -L '.local/miniconda/bin' "$HOME/.bashrc"; then echo -e "\nexport PATH=$HOME/.local/miniconda/bin:$PATH" >> "$HOME/.bashrc"
+      - |
+        if ! type python3 &> /dev/null; then # Prevent --force from trying to reinstall Miniconda/Python 3
+          curl -sS \{{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
+          echo "miniconda.sh  \{{.MINICONDA_DOWNLOAD_CHECKSUM}}" | shasum -s -a 256 -c
+          mkdir -p "$HOME/.local"
+          bash miniconda.sh -b -p "$HOME/.local/miniconda"
+          rm miniconda.sh
+          export PATH="$HOME/.local/miniconda/bin:$PATH"
+          if grep -L '.local/miniconda/bin' "$HOME/.bashrc"; then echo -e "\nexport PATH=$HOME/.local/miniconda/bin:$PATH" >> "$HOME/.bashrc"
+        fi
     status:
       - type python3 &> /dev/null
 

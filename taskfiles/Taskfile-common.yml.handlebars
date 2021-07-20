@@ -532,10 +532,13 @@ tasks:
 
   _markdown-scrub:
     vars:
-      # yamllint disable-line rule:line-length
-      DIVIDER_SRC: '<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>'
-      REGEX: '.*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)]$'
+      DIVIDER_SRC: '<a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
+        src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>'
+      REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
     cmds:
-      - echo \{{.SCRUB_FILE}}
-      - if [[ '\{{OS}}' == 'darwin' ]]; then sed -i .bak 's^\{{.REGEX}}^\{{.DIVIDER_SRC}}^g' \{{.SCRUB_FILE}} && rm \{{.SCRUB_FILE}}.bak; fi
-      - if [[ '\{{OS}}' == 'linux' ]]; then sed -i 's^\{{.REGEX}}^\{{.DIVIDER_SRC}}^g' \{{.SCRUB_FILE}}; fi
+      - |
+        if [[ '{{OS}}' == 'darwin' ]]; then
+          sed -i .bak 's^\{{.REGEX}}^\{{.DIVIDER_SRC}}^g' \{{.SCRUB_FILE}} && rm \{{.SCRUB_FILE}}.bak
+        else
+          sed -i 's^\{{.REGEX}}^\{{.DIVIDER_SRC}}^g' \{{.SCRUB_FILE}}
+        fi
