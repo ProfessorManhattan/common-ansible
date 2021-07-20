@@ -164,3 +164,39 @@ tasks:
       status:
         - '[[ -z "\{{.CLI_ARGS}}" ]]'
 {{/if}}
+{{#if hbs.packer}}
+
+    packer:
+      deps:
+        - :software:packer
+      desc: Validate the Packer templates ending with `template.json`
+      summary: |
+        $ Validate Packer templates
+
+        This task will loop through all the Packer templates ending with `template.json`
+        in the root of this project and report any errors that the templates might have.
+
+        For more information on `packer validate`, see: https://www.packer.io/docs/commands/validate
+      cmds:
+        - |
+          for TEMPLATE in *template.json; do
+            packer validate "$TEMPLATE"
+          done
+{{/if}}
+{{#if hbs.vagrant}}
+
+    vagrant:
+      deps:
+        - :software:vagrant
+      desc: Validate the Vagrantfile
+      summary: |
+        $ Validate the Vagrantfile
+
+        This task is an alias for `vagrant validate`. Vagrant's `validate` command
+        will ensure the Vagrantfile in the root of this repository has no errors and
+        is using valid syntax.
+
+        For more information on `vagrant validate`, see: https://www.vagrantup.com/docs/cli/validate
+      cmds:
+        - vagrant validate
+{{/if}}

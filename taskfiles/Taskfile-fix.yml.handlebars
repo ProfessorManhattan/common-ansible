@@ -31,6 +31,29 @@ tasks:
       - task: formatting
     sources:
       - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
+{{#if hbs.packer}}
+
+  packer:
+    deps:
+      - :software:packer
+    desc: Automatically fix and format Packer templates
+    summary: |
+      $ Automatically fix and format Packer templates
+
+      Packer has the ability to fix old templates that are using outdated methods. This task
+      loops through all the files in the root of this repository that end with `template.json`.
+      For each template, the task runs `packer fix`.
+
+      For more information on `packer fix`, see: https://www.packer.io/docs/commands/fix
+    cmds:
+      # TODO: Figure out how to spawn new process for each `packer fix` process instead of looping
+      # synchronously
+      - |
+        for TEMPLATE in *template.json; do
+          packer fix "$TEMPLATE" > tmp-template.json
+          mv tmp-template.json "$TEMPLATE"
+        done
+{{/if}}
 {{#if hbs.python}}
 
   python:

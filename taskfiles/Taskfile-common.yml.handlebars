@@ -61,7 +61,13 @@ tasks:
       (4) Add the appropriate details to the CHANGELOG.md file
     cmds:
       - task: update
-      - task: lint
+      - task: :lint:all
+{{#if hbs.packer}}
+      - task: :test:packer
+{{/if}}
+{{#if hbs.vagrant}}
+      - task: :test:vagrant
+{{/if}}
       - npm run version
 
   requirements:
