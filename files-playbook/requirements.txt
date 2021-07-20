@@ -6,4 +6,5 @@ molecule-docker
 molecule-vagrant
 pre-commit-hooks
 python-vagrant
+pywinrm>=0.3.0
 yamllint
