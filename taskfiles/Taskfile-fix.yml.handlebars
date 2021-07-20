@@ -5,7 +5,7 @@ tasks:
 
   all:
     desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
-    deps: [formatting, {{#if hbs.python}}python, {{/if}}scripts]
+    deps: [formatting, {{#if hbs.packer}}packer, {{/if}}{{#if hbs.python}}python, {{/if}}scripts]
 
   formatting:
     deps:
