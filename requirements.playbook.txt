@@ -5,3 +5,4 @@ flake8
 molecule-docker
 molecule-vagrant
 python-vagrant
+pywinrm>=0.3.0
