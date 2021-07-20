@@ -12,7 +12,7 @@ tasks:
       which will re-generate the project from scratch. Ideally, this task and the reset task
       should never be necessary. The `common:update` task should be used instead.
     cmds:
-      - rm -rf .autodoc .task .variables.json node_modules venv
+      - rm -rf .autodoc .task .variables.json .venv node_modules venv
 
   commit:
     deps: [nodejs-dependencies, python-requirements]
@@ -186,15 +186,15 @@ tasks:
   python-requirements-venv:
     cmds:
       - task: python-virtualenv
-      - virtualenv venv
+      - virtualenv .venv
     status:
-      - test -f venv/bin/activate
+      - test -f .venv/bin/activate
 
   python-requirements-venv-activate:
     cmds:
-      - . venv/bin/activate
+      - . .venv/bin/activate
     status:
-      - '[[ "$PATH" =~ "$PWD/venv/bin" ]]'
+      - '[[ "$PATH" =~ "$PWD/.venv/bin" ]]'
 
   python-requirements-pip:
     cmds:
