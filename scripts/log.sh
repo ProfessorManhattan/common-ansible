@@ -86,7 +86,7 @@ function success() {
 
 function warn() {
   if [ "$ENHANCED_LOGGING" ]; then
-    signale warning "$1"
+    signale warn "$1"
   else
     echo "WARNING: $1"
   fi
