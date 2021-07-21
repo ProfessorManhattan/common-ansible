@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   clean:
@@ -99,8 +99,8 @@ tasks:
     sources:
       - requirements.yml
     preconditions:
-      - sh: "test -f requirements.yml"
-        msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
+      - sh: 'test -f requirements.yml'
+        msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
 
   reset:
     desc: Resets the project by removing all caches and updating the project
@@ -119,7 +119,7 @@ tasks:
   reset-force:
     deps:
       - software:git
-    desc: "Aggressively reset the project (WARNING: This will wipe uncommitted work)"
+    desc: 'Aggressively reset the project (WARNING: This will wipe uncommitted work)'
     summary: |
       $ Aggressively reset the project
 
@@ -147,8 +147,8 @@ tasks:
     status:
       - test -d node_modules
     preconditions:
-      - sh: "test -f package.json"
-        msg: "The package.json file appears to be missing!"
+      - sh: 'test -f package.json'
+        msg: 'The package.json file appears to be missing!'
 
   nodejs-global-dependencies:
     deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme]
@@ -230,7 +230,7 @@ tasks:
       - . .venv/bin/activate
     preconditions:
       - sh: test -f .venv/bin/activate
-        msg: "`.venv/bin/activate` is missing!"
+        msg: '`.venv/bin/activate` is missing!'
 
   python-requirements-pip:
     cmds:
@@ -238,8 +238,8 @@ tasks:
     sources:
       - requirements.txt
     preconditions:
-      - sh: "test -f requirements.txt"
-        msg: "The requirements.txt file is missing!"
+      - sh: 'test -f requirements.txt'
+        msg: 'The requirements.txt file is missing!'
 
   python-virtualenv:
     cmds:
@@ -277,8 +277,8 @@ tasks:
         fi
       - task: shell-prompt
     preconditions:
-      - sh: "type docker &> /dev/null"
-        msg: "Docker is not installed! Install it by running `task software:docker`."
+      - sh: 'type docker &> /dev/null'
+        msg: 'Docker is not installed! Install it by running `task software:docker`.'
 
     shell-prompt:
       deps:
@@ -292,8 +292,8 @@ tasks:
             docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm "megabytelabs/ansible-molecule-${OS_CHOICE}:latest" /bin/bash
           fi
       preconditions:
-        - sh: "type node &> /dev/null"
-          msg: "Node.js is not installed! Install it by running `task software:node`."
+        - sh: 'type node &> /dev/null'
+          msg: 'Node.js is not installed! Install it by running `task software:node`.'
       status:
         - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
@@ -319,8 +319,8 @@ tasks:
     cmds:
       - npx cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
     preconditions:
-      - sh: "git diff --cached --name-only"
-        msg: "Cannot perform a spell check because there are no staged files"
+      - sh: 'git diff --cached --name-only'
+        msg: 'Cannot perform a spell check because there are no staged files'
 
   update:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
@@ -343,8 +343,8 @@ tasks:
       - git pull origin master --ff-only
       - cd ..
     preconditions:
-      - sh: "type git &> /dev/null"
-        msg: "git is not installed! You can install it by running `task software:git`."
+      - sh: 'type git &> /dev/null'
+        msg: 'git is not installed! You can install it by running `task software:git`.'
 
   update-start-sh:
     cmds:
@@ -367,19 +367,19 @@ tasks:
       TMP:
         sh: mktemp
     vars:
-      COMMON_JSON: ".common/common.{{.REPOSITORY_SUBTYPE}}.json"
+      COMMON_JSON: '.common/common.{{.REPOSITORY_SUBTYPE}}.json'
     cmds:
       - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
       - mv "$TMP" .variables.json
       - task: update-variables-role
     sources:
-      - ".common/variables.{{.REPOSITORY_SUBTYPE}}.json"
+      - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
       - package.json
     preconditions:
-      - sh: "type jq &> /dev/null"
-        msg: "jq is not installed! You can install it by running `task software:jq`."
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! You can install it by running `task software:yq`."
+      - sh: 'type jq &> /dev/null'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+      - sh: 'type yq &> /dev/null'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
 
   update-variables-role:
     deps:
@@ -405,17 +405,17 @@ tasks:
         '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     preconditions:
-      - sh: "type jq &> /dev/null"
-        msg: "jq is not installed! You can install it by running `task software:jq`."
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! You can install it by running `task software:yq`."
-      - sh: "test -f meta/main.yml"
-        msg: "The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
-          example of one at https://github.com/ProfessorManhattan/ansible-snapd."
+      - sh: 'type jq &> /dev/null'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+      - sh: 'type yq &> /dev/null'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
+      - sh: 'test -f meta/main.yml'
+        msg: 'The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
+          example of one at https://github.com/ProfessorManhattan/ansible-snapd.'
       - sh: test -f .variables.json
-        msg: "The `.variables.json` file is missing!"
+        msg: 'The `.variables.json` file is missing!'
     sources:
-      - ".common/variables.{{.REPOSITORY_SUBTYPE}}.json"
+      - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
       - meta/main.yml
       - package.json
 
@@ -464,12 +464,13 @@ tasks:
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
-      - "tasks**/*.yml"
-      - ".autodoc/*"
+      - 'tasks**/*.yml'
+      - '.autodoc/*'
     preconditions:
-      - sh: "type mod-ansible-autodoc &> /dev/null"
-        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
-          Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file."
+      - sh: 'type mod-ansible-autodoc &> /dev/null'
+        msg:
+          'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
+          Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
 
   _mod-ansible-autodoc:
     env:
@@ -488,8 +489,8 @@ tasks:
       - task: ansibler-compatibility-chart
       - task: _ansibler
     preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type ansibler &> /dev/null'
+        msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`.'
     status:
       - true
 
@@ -528,12 +529,12 @@ tasks:
     sources:
       - .variables.json
     preconditions:
-      - sh: "test -f .common/docs/blueprint-contributing.md"
-        msg: "The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`"
-      - sh: "test -f .variables.json"
-        msg: "The .variables.json file is not present. Generate it by running `task common:update`."
+      - sh: 'test -f .common/docs/blueprint-contributing.md'
+        msg: 'The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`'
+      - sh: 'test -f .variables.json'
+        msg: 'The .variables.json file is not present. Generate it by running `task common:update`.'
       - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
+        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   update-files:
     deps:
@@ -571,10 +572,10 @@ tasks:
     sources:
       - package.json
     preconditions:
-      - sh: "type rsync &> /dev/null"
-        msg: "`rsync` is not installed!"
-      - sh: "type prettier-package-json &> /dev/null"
-        msg: "`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type rsync &> /dev/null'
+        msg: '`rsync` is not installed!'
+      - sh: 'type prettier-package-json &> /dev/null'
+        msg: '`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   _update-files:
     deps:
@@ -590,8 +591,8 @@ tasks:
     sources:
       - .variables.json
     preconditions:
-      - sh: "type hbs &> /dev/null"
-        msg: "`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type hbs &> /dev/null'
+        msg: '`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   update-readme:
     deps: [npm-prettier, npm-readme]
@@ -607,18 +608,19 @@ tasks:
       - .autodoc/*
       - .variables.json
     preconditions:
-      - sh: "test -f .common/docs/{{.README_TEMPLATE}}"
-        msg: "The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`."
-      - sh: "test -f .variables.json"
-        msg: "The `.variables.json` file is not present. Generate it by running `task common:update`."
+      - sh: 'test -f .common/docs/{{.README_TEMPLATE}}'
+        msg: 'The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`.'
+      - sh: 'test -f .variables.json'
+        msg: 'The `.variables.json` file is not present. Generate it by running `task common:update`.'
       - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
+        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
       - sh: type prettier &> /dev/null
-        msg: "`prettier` is not installed globally. Install all the requirements by running `task common:requirements`."
+        msg: '`prettier` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   _markdown-scrub:
     vars:
-      DIVIDER_SRC: <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
+      DIVIDER_SRC:
+        <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
         src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
       REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
     cmds:
