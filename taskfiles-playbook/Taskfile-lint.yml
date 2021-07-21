@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   all:
@@ -34,7 +34,7 @@ tasks:
     cmds:
       - task: ansible
     sources:
-      - "**/*.yml"
+      - '**/*.yml'
 
   formatting:
     deps:
@@ -59,7 +59,7 @@ tasks:
     cmds:
       - task: formatting
     sources:
-      - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   docker:
     deps:
@@ -95,7 +95,7 @@ tasks:
     cmds:
       - task: docker
     sources:
-      - "**/(Dockerfile|Dockerfile.j2)"
+      - '**/(Dockerfile|Dockerfile.j2)'
 
   python:
     deps:
@@ -125,7 +125,7 @@ tasks:
     cmds:
       - task: python
     sources:
-      - "**/*.py"
+      - '**/*.py'
 
   scripts:
     deps:
@@ -150,7 +150,7 @@ tasks:
     cmds:
       - task: scripts
     sources:
-      - "**/*.(sh|sh.j2)"
+      - '**/*.(sh|sh.j2)'
 
   yaml:
     deps:
@@ -177,4 +177,4 @@ tasks:
     cmds:
       - task: yaml
     sources:
-      - "**/*.yml"
+      - '**/*.yml'
