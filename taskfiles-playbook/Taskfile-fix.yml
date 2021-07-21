@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   all:
@@ -26,13 +26,14 @@ tasks:
 
       For more information on Prettier, see: https://prettier.io/
     cmds:
+      - bash .common/log log "Running `npm run fix:prettier` to automatically format code"
       - npm run fix:prettier
 
   _formatting:
     cmds:
       - task: formatting
     sources:
-      - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   python:
     deps:
@@ -50,13 +51,14 @@ tasks:
 
       For more information on Black, see: https://github.com/psf/black
     cmds:
+      - bash .common/log log "Automatically formatting Python code with `black`"
       - black --force-exclude '\.common\/|\.modules\/|node_modules\/' .
 
   _python:
     cmds:
       - task: python
     sources:
-      - "**/*.py"
+      - '**/*.py'
 
   scripts:
     deps:
@@ -86,10 +88,12 @@ tasks:
 
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
+      - bash .common/log warn "Autoformatting with shellcheck is an experimental feature. You must test the files after the auto-formatting."
+      - bash .common/log log "Running `npm run fix:shellcheck` to automatically fix shell scripts"
       - npm run fix:shellcheck
 
   _scripts:
     cmds:
       - task: scripts
     sources:
-      - "**/*.(sh|sh.j2)"
+      - '**/*.(sh|sh.j2)'

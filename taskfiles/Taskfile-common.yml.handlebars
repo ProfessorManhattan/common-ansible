@@ -15,7 +15,7 @@ tasks:
       RANDOM_STRING:
         sh: openssl rand -hex 14
     cmds:
-      - bash .common/log info "Cleaning up the project by removing caches etc."
+      - bash .common/log log "Cleaning up the project by removing caches etc."
       - rm .variables.json 2> /dev/null
       - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc 2> /dev/null
       - mv .task /tmp/\{{.RANDOM_STRING}}-task 2> /dev/null
@@ -45,7 +45,9 @@ tasks:
       using `git commit -m`. However, if you really need to, you can add the flag `--no-verify`
       to your regular `git commit -m` command to bypass the pre-commit hook.
     cmds:
+      - bash .common/log log "Running pre-commit hook"
       - . ./.husky/pre-commit
+      - bash .common/log log "Initiating the commit dialog"
       - npm run commit -- --no-verify
 
   markdown-link-check:
@@ -60,7 +62,7 @@ tasks:
       For more information on `markdown-link-check`, see the following page:
       https://github.com/tcort/markdown-link-check
     cmds:
-      - bash .common/log info "Checking for broken links in markdown files"
+      - bash .common/log log "Checking for broken links in markdown files"
       - npm run misc:markdown-links
 
   prepare-release:
@@ -103,7 +105,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Installing Ansible Galaxy requirements"
+          bash .common/log log "Running `ansible-galaxy install -r requirements.yml --ignore-errors`"
           ansible-galaxy install -r requirements.yml --ignore-errors
           bash .common/log success "Successfully installed Ansible Galaxy requirements"
         fi
@@ -165,57 +167,57 @@ tasks:
         msg: "The package.json file appears to be missing!"
 
   nodejs-global-dependencies:
-    deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme]
+    deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme{{#if hbs.dockerfile}}, snyk{{/if}}]
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
-  npm-hbs:
+  npm-install:
     deps:
       - :software:node
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running `npm install -g hbs-cli`"
-          npm install -g hbs-cli
+          bash .common/log info "Running `npm install -g \{{.NPM_PACKAGE}}`"
+          npm install -g \{{.NPM_PACKAGE}}
+          bash .common/log success "`The npm \{{.NPM_PACKAGE}}` package is globally installed"
         fi
     status:
-      - type hbs &> /dev/null
+      - type \{{.NPM_PACKAGE_BIN}} &> /dev/null
+
+  npm-hbs:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: hbs-cli
+          NPM_PACKAGE_BIN: hbs
 
   npm-prettier:
-    deps:
-      - :software:node
     cmds:
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Installing Prettier and supporting plugins globally with `npm install -g`"
-          npm install -g prettier prettier-plugin-sh @megabytelabs/prettier-config{{#if hbs.ansible}} @megabytelabs/prettier-config-ansible{{/if}}
-        fi
-    status:
-      - type prettier &> /dev/null
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: prettier
+          NPM_PACKAGE_BIN: prettier
 
   npm-prettier-package-json:
-    deps:
-      - :software:node
     cmds:
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running `npm install -g prettier-package-json`"
-          npm install -g prettier-package-json
-        fi
-    status:
-      - type prettier-package-json &> /dev/null
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: prettier-package-json
+          NPM_PACKAGE_BIN: prettier-package-json
 
   npm-readme:
-    deps:
-      - :software:node
     cmds:
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running `npm install -g @appnest/readme`"
-          npm install -g @appnest/readme
-        fi
-    status:
-      - type readme &> /dev/null
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: '@appnest/readme'
+          NPM_PACKAGE_BIN: readme
+
+  npm-snyk:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: snyk
+          NPM_PACKAGE_BIN: snyk
 
   python-requirements:
     deps:

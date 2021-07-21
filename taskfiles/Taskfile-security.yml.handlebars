@@ -1,0 +1,71 @@
+---
+version: '3'
+
+tasks:
+  snyk-login:
+    deps:
+      - :common:npm-snyk
+    env:
+      SNYK_API_TOKEN:
+        sh: snyk config get api
+    cmds:
+      - |
+        if [ -z "$SNYK_API_TOKEN" ]; then
+          bash .common/log warn "You are not currently authenticated with Snyk. Sign in by running `snyk auth`."
+          bash .common/log info "Initiating the sign-in process for Snyk by running `snyk auth`.."
+          snyk auth
+        fi
+
+{{#if dockerfile}}
+  snyk:
+    deps:
+      - :common:npm-snyk
+      - :software:jq
+    desc: Analyze the Docker container for security vulnerabilities with Snyk (requires login)
+    summary: |
+      $ Analyze the Docker container with Snyk
+
+      One of the services Snyk provides is the capability to identify Docker container vulnerabilities. These
+      vulnerabilities can potentially be used by bad actors. Normally, care should be taken to fix
+      the vulnerabilities Snyk reports whenever possible. To use Snyk, you must be authenticated with their
+      service. Signing up is free and easy (albeit, there is a limit to the number of scans you can run for free).
+      All you have to do is run `snyk auth` with the `snyk` NPM package installed.
+
+      For more information on Snyk, see: https://snyk.io/what-is-snyk/
+    vars:
+      DOCKER_IMAGE:
+        sh: jq -r '.slug' .variables.json
+    cmds:
+      - task: snyk-login
+      - bash .common/log info "Scanning {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest for vulnerabilities with Snyk"
+      - bash .common/log log "Running `snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile`"
+      - snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile
+      - bash .common/log info "Scanning {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim for vulnerabilities with Snyk"
+      - bash .common/log log "Running `snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile`"
+      - snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile
+
+  trivy:
+    deps:
+      - :software:jq
+      - :software:trivy
+    desc: Analyze the Docker container for security vulnerabilities with Trivy
+    summary: |
+      $ Analyze the Docker container with Trivy
+
+      Trivy is a simple and comprehensive vulnerability and misconfiguration scanner for containers
+      and other artifacts. This task leverages Trivy's ability to report possible vulnerabilities in
+      the Docker container.
+
+      For more information on Trivy, see: https://aquasecurity.github.io/trivy/
+    vars:
+      DOCKER_IMAGE:
+        sh: jq -r '.slug' .variables.json
+    cmds:
+      - bash .common/log info "Scanning `{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest` for vulnerabilities with Trivy"
+      - bash .common/log log "Running `trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest`"
+      - trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
+      - bash .common/log info "Scanning `{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim` for vulnerabilities with Trivy"
+      - bash .common/log log "Running `trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim`"
+      - trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
+
+{{/if}}

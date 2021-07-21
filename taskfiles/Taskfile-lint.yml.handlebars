@@ -29,6 +29,7 @@ tasks:
 
       For more information on Ansible Lint, see: https://github.com/ansible-community/ansible-lint
     cmds:
+      - bash .common/log log "Running `ansible-lint` to find Ansible-related code violations"
       - ansible-lint
 
   _ansible:
@@ -55,6 +56,7 @@ tasks:
 
       For more information on Prettier, see: https://prettier.io/
     cmds:
+      - bash .common/log log "Running `npm run lint:prettier` to check for potentially misformatted files"
       - npm run lint:prettier
 
   _formatting:
@@ -90,6 +92,7 @@ tasks:
 
       For more information on Hadolint, see: https://github.com/hadolint/hadolint
     cmds:
+      - bash .common/log log "Using Hadolint via Docker to lint Dockerfiles"
       - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky -o -name .modules
         -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune -o -type f \( -name Dockerfile -o -name Dockerfile.j2 \)
         -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
@@ -114,6 +117,7 @@ tasks:
 
       For more information on `packer validate`, see: https://www.packer.io/docs/commands/validate
     cmds:
+      - bash .common/log log "Validating Packer templates matching the pattern `*template.json` with the `packer validate` command"
       - |
         for TEMPLATE in *template.json; do
           packer validate "$TEMPLATE"
@@ -143,6 +147,7 @@ tasks:
 
       For more information on Flake8, see: https://github.com/PyCQA/flake8
     cmds:
+      - bash .common/log log "Running `flake8 .` to lint Python files"
       - flake8 .
 
   _python:
@@ -169,6 +174,7 @@ tasks:
 
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
+      - bash .common/log log "Running `npm run lint:shellcheck` to identify possible shell script code violations"
       - npm run lint:shellcheck
 
   _scripts:
@@ -191,6 +197,7 @@ tasks:
 
       For more information on `vagrant validate`, see: https://www.vagrantup.com/docs/cli/validate
     cmds:
+      - bash .common/log log "Running `vagrant validate` to validate the Vagrantfile"
       - vagrant validate
 
 {{/if}}
@@ -214,6 +221,7 @@ tasks:
 
       For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
     cmds:
+      - bash .common/log "Running `yamllint -s .` to lint YML files"
       - yamllint -s .
 
   _yaml:

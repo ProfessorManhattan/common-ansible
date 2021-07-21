@@ -20,9 +20,9 @@ tasks:
 
   install-doctor:
     cmds:
-      # Prevent --force from reinstalling software
       - |
         if type \{{.SOFTWARE}} &> /dev/null; then
+          bash .common/log info "Using https://install.doctor to install `\{{.SOFTWARE}}`"
           curl -sS https://install.doctor/\{{.SOFTWARE}} | bash
         fi
 
@@ -52,13 +52,18 @@ tasks:
       # Prevent --force from trying to reinstall Miniconda/Python 3
       - |
         if type python3 &> /dev/null; then
+          bash .common/log warn "Python 3 is missing from your computer"
+          bash .common/log log "Installing Python 3 rootlessly using Miniconda"
           curl -sS \{{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
           echo "\{{.MINICONDA_DOWNLOAD_CHECKSUM}} miniconda.sh" | sha256sum --check
           mkdir -p "$HOME/.local"
           bash miniconda.sh -b -p "$HOME/.local/miniconda"
           rm miniconda.sh
           export PATH="$HOME/.local/miniconda/bin:$PATH"
-          if grep -L '.local/miniconda/bin' "$HOME/.bash_profile"; then echo -e '\nexport PATH=$HOME/.local/miniconda/bin:$PATH' >> "$HOME/.bash_profile"
+          if grep -L '.local/miniconda/bin' "$HOME/.bash_profile"; then
+            bash .common/log info "Updating the `.bashrc` file to include Miniconda Python 3 in the PATH environment variable"
+            echo -e '\nexport PATH=$HOME/.local/miniconda/bin:$PATH' >> "$HOME/.bash_profile"
+          fi
         fi
     status:
       - type python3 &> /dev/null
@@ -70,6 +75,14 @@ tasks:
           SOFTWARE: rsync
     status:
       - type rsync &> /dev/null
+
+  trivy:
+    cmds:
+      - task: install-doctor
+        vars:
+          SOFTWARE: trivy
+    status:
+      - type trivy &> /dev/null
 
   vagrant:
     cmds:
