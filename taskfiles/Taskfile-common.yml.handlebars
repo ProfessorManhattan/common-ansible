@@ -11,8 +11,20 @@ tasks:
       cached during various build steps. This task is used by the `task common:reset` task
       which will re-generate the project from scratch. Ideally, this task and the reset task
       should never be necessary. The `common:update` task should be used instead.
+    vars:
+      RANDOM_STRING:
+        sh: openssl rand -hex 14
     cmds:
-      - rm -rf .autodoc .task .variables.json .venv node_modules venv
+      - rm .variables.json
+      - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc
+      - mv .task /tmp/\{{.RANDOM_STRING}}-task
+      - mv .venv /tmp/\{{.RANDOM_STRING}}-venv
+      - mv node_modules /tmp/\{{.RANDOM_STRING}}-node_modules
+      - mkdir /tmp/\{{.RANDOM_STRING}}-empty
+      - |
+        for TMP_FILE in autodoc task venv node_modules; do
+          rsync -a --delete /tmp/\{{.RANDOM_STRING}}-empty "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" &
+        done
 
   commit:
     deps: [nodejs-dependencies, python-requirements]
