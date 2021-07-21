@@ -229,9 +229,9 @@ tasks:
             done
           fi
       preconditions:
-        - sh: [[ "$(docker images -q megabytelabs/\{{.SLUG}}:slim 2> /dev/null)" != "" ]]
+        - sh: '[[ "$(docker images -q megabytelabs/\{{.SLUG}}:slim 2> /dev/null)" != "" ]]'
           msg: "The slim image has not been built yet. Try running `task build`."
-        - sh: [[ "$(docker images -q megabytelabs/\{{.SLUG}}:latest 2>/dev/null)" == "" ]]
+        - sh: '[[ "$(docker images -q megabytelabs/\{{.SLUG}}:latest 2>/dev/null)" == "" ]]'
           msg: "The regular image has not been built yet. Try running `task build`."
       status:
         - test ! -d slim_test
