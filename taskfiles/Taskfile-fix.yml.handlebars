@@ -6,6 +6,9 @@ tasks:
     desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
     deps: [formatting, {{#if hbs.packer}}packer, {{/if}}{{#if hbs.python}}python, {{/if}}scripts]
 
+  _all:
+    deps: [_formatting, {{#if hbs.packer}}_packer, {{/if}}{{#if hbs.python}}_python, {{/if}}_scripts]
+
   formatting:
     deps:
       - :common:nodejs-dependencies

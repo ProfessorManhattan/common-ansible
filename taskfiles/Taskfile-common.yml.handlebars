@@ -15,15 +15,17 @@ tasks:
       RANDOM_STRING:
         sh: openssl rand -hex 14
     cmds:
-      - rm .variables.json
-      - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc
-      - mv .task /tmp/\{{.RANDOM_STRING}}-task
-      - mv .venv /tmp/\{{.RANDOM_STRING}}-venv
-      - mv node_modules /tmp/\{{.RANDOM_STRING}}-node_modules
+      - rm .variables.json 2> /dev/null
+      - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc 2> /dev/null
+      - mv .task /tmp/\{{.RANDOM_STRING}}-task 2> /dev/null
+      - mv .venv /tmp/\{{.RANDOM_STRING}}-venv 2> /dev/null
+      - mv node_modules /tmp/\{{.RANDOM_STRING}}-node_modules 2> /dev/null
       - mkdir /tmp/\{{.RANDOM_STRING}}-empty
       - |
         for TMP_FILE in autodoc task venv node_modules; do
-          rsync -a --delete /tmp/\{{.RANDOM_STRING}}-empty "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" &
+          if [ -f "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ] || [ -d "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ]; then
+            rsync -a --delete /tmp/\{{.RANDOM_STRING}}-empty "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" &
+          fi
         done
 
   commit:
@@ -42,8 +44,7 @@ tasks:
       using `git commit -m`. However, if you really need to, you can add the flag `--no-verify`
       to your regular `git commit -m` command to bypass the pre-commit hook.
     cmds:
-      - npm run lint-staged
-      - task: spelling
+      - . ./.husky/pre-commit
       - npm run commit -- --no-verify
 
   markdown-link-check:
@@ -93,6 +94,7 @@ tasks:
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
     deps: [nodejs-dependencies, nodejs-global-dependencies, python-requirements{{#if hbs.ansible}}, galaxy-requirements{{/if}}]
+
 {{#if hbs.ansible}}
   galaxy-requirements:
     deps: [python-requirements]
@@ -143,7 +145,10 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - if [ "${container:=}" != 'docker' ]; then npm install; fi
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          npm install
+        fi
     sources:
       - package.json
       - package-lock.json
@@ -162,7 +167,10 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - if [ "${container:=}" != 'docker' ]; then npm install -g hbs-cli; fi
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          npm install -g hbs-cli
+        fi
     status:
       - type hbs &> /dev/null
 
@@ -181,7 +189,10 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - if [ "${container:=}" != 'docker' ]; then npm install -g prettier-package-json; fi
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          npm install -g prettier-package-json
+        fi
     status:
       - type prettier-package-json &> /dev/null
 
@@ -189,7 +200,10 @@ tasks:
     deps:
       - :software:node
     cmds:
-      - if [ "${container:=}" != 'docker' ]; then npm install -g @appnest/readme; fi
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          npm install -g @appnest/readme
+        fi
     status:
       - type readme &> /dev/null
 
@@ -204,9 +218,17 @@ tasks:
       - '[[ "${container:=}" == "docker" ]]'
 
   python-requirements-venv:
+    vars:
+      RANDOM_STRING:
+        sh: openssl rand -hex 14
     cmds:
       - task: python-virtualenv
-      - rm -rf .venv
+      - |
+        if [ -d .venv ]; then
+          mv .venv /tmp/\{{.RANDOM_STRING}}-venv2 2> /dev/null
+          mkdir /tmp/\{{.RANDOM_STRING}}-empty
+          rsync -a --delete /tmp/\{{.RANDOM_STRING}}-empty /tmp/\{{.RANDOM_STRING}}-venv2 &
+        fi
       - virtualenv .venv
     status:
       - test -f .venv/bin/activate
@@ -214,8 +236,9 @@ tasks:
   python-requirements-venv-activate:
     cmds:
       - . .venv/bin/activate
-    status:
-      - '[[ "$PATH" =~ "$PWD/.venv/bin" ]]'
+    preconditions:
+      - sh: test -f .venv/bin/activate
+        msg: "`.venv/bin/activate` is missing!"
 
   python-requirements-pip:
     cmds:
@@ -256,8 +279,10 @@ tasks:
       WORKDIR:
         sh: basename $PWD
     cmds:
-      - if [ ! -z "\{{.CLI_ARGS}}" ]; then docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}}
-          --rm megabytelabs/ansible-molecule-\{{.CLI_ARGS}}:latest /bin/bash; fi
+      - |
+        if [ ! -z "\{{.CLI_ARGS}}" ]; then
+          docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}} --rm megabytelabs/ansible-molecule-\{{.CLI_ARGS}}:latest /bin/bash
+        fi
       - task: shell-prompt
     preconditions:
       - sh: "type docker &> /dev/null"
@@ -267,16 +292,18 @@ tasks:
       deps:
         - :software:node
       env:
-        OPERATING_SYSTEM:
+        OS_CHOICE:
           sh: node .common/scripts/prompts/shell.js
       cmds:
-        - if [ ! -z "$OPERATING_SYSTEM" ]; then docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}}
-            --rm "megabytelabs/ansible-molecule-${OPERATING_SYSTEM}:latest" /bin/bash; fi
+        - |
+          if [ -z "\{{.CLI_ARGS}}" ] && [ ! -z "$OS_CHOICE" ]; then
+            docker run --cap-drop=ALL -it -v "$PWD:/\{{.WORKDIR}}" -w /\{{.WORKDIR}} --rm "megabytelabs/ansible-molecule-${OS_CHOICE}:latest" /bin/bash
+          fi
       preconditions:
         - sh: "type node &> /dev/null"
           msg: "Node.js is not installed! Install it by running `task software:node`."
       status:
-        - '[[ -z "\{{.CLI_ARGS}}" ]]'
+        - '[[ ! -z "\{{.CLI_ARGS}}" ]]'
 
   spelling:
     deps:
@@ -306,13 +333,14 @@ tasks:
   update:
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
+      - git pull origin master
       - task: update-common
       - task: update-start-sh
       - task: update-taskfile
       - task: requirements
       - task: update-variables
       - task: update-all
-      - bash .common/scripts/log-bash.sh success "Successfully updated the project with the latest upstream changes"
+      - bash .common/log success "Successfully updated the project with the latest upstream changes"
 
   update-common:
     deps:
@@ -476,6 +504,7 @@ tasks:
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
       - "tasks**/*.yml"
+      - ".autodoc/*"
     preconditions:
       - sh: "type mod-ansible-autodoc &> /dev/null"
         msg:

@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   local:
@@ -25,7 +25,7 @@ tasks:
       - mv ansible.cfg.bak ansible.cfg
     preconditions:
       - sh: typeof ansible &> /dev/null
-        msg: "Ansible is not available. Install the dependencies by running `task common:requirements`."
+        msg: 'Ansible is not available. Install the dependencies by running `task common:requirements`.'
 
   molecule-desktop:
     deps:
@@ -60,9 +60,12 @@ tasks:
       OPERATING_SYSTEM:
         sh: node .common/scripts/prompts/molecule-desktop.js
     cmds:
-      - if [ ! -z "$OPERATING_SYSTEM" ]; then molecule converge -s "${OPERATING_SYSTEM}-desktop"; fi
+      - |
+        if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$OPERATING_SYSTEM" ]; then
+          molecule converge -s "${OPERATING_SYSTEM}-desktop"
+        fi
     status:
-      - '[[ -z "{{.CLI_ARGS}}" ]]'
+      - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
   molecule-docker:
     deps:
@@ -114,7 +117,8 @@ tasks:
           if [ "{{.CLI_ARGS}}" == 'matrix']; then
             mkdir -p .molecule-results
             PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt
-          fi
+          else
+            echo "Unhandled CLI option. See `task test:molecule-e2e --summary`."
         else
           molecule test
         fi
@@ -156,6 +160,9 @@ tasks:
         VAGRANT_COMMAND:
           sh: node .common/scripts/prompts/vagrant-up.js
       cmds:
-        - if [ ! -z "$VAGRANT_COMMAND" ]; then vagrant up "$VAGRANT_COMMAND"; fi
+        - |
+          if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$VAGRANT_COMMAND" ]; then
+            vagrant up "$VAGRANT_COMMAND"
+          fi
       status:
-        - '[[ -z "{{.CLI_ARGS}}" ]]'
+        - '[[ ! -z "{{.CLI_ARGS}}" ]]'

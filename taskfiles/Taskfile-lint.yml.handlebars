@@ -6,6 +6,9 @@ tasks:
     desc: Lint the project by running all the linters in parallel
     deps: [formatting{{#if hbs.ansible}}, ansible{{/if}}{{#if hbs.dockerfile}}, docker{{/if}}{{#if hbs.packer}}, packer{{/if}}{{#if hbs.python}}, python{{/if}}{{#if hbs.vagrant}}, vagrant{{/if}}{{#if hbs.yaml}}, yaml{{/if}}]
 
+  _all:
+    deps: [_formatting{{#if hbs.ansible}}, _ansible{{/if}}{{#if hbs.dockerfile}}, _docker{{/if}}{{#if hbs.packer}}, _packer{{/if}}{{#if hbs.python}}, _python{{/if}}{{#if hbs.vagrant}}, _vagrant{{/if}}{{#if hbs.yaml}}, _yaml{{/if}}]
+
 {{#if hbs.ansible}}
   ansible:
     deps:
