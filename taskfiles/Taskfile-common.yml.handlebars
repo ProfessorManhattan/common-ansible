@@ -628,7 +628,7 @@ tasks:
           echo 'LABEL space.megabyte.type="\{{.REPOSITORY_SUBTYPE}}"' >> Dockerfile
           echo '' >> Dockerfile
         fi
-      # yamllint disable-line rule:line-length
+      # yamllint disable rule:line-length
       - |
         if [[ '\{{OS}}' == 'darwin' ]]; then
           sed -i .bak "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile && rm Dockerfile.bak
@@ -639,6 +639,7 @@ tasks:
           sed -i "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation=\{{.GROUP_URL}}/\{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile
           sed -i "s^.*org.opencontainers.image.source.\*^LABEL org.opencontainers.image.source=\{{.GROUP_URL}}/\{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile
         fi
+      # yamllint enable rule:line-length
     sources:
       - .variables.json
       - Dockerfile
