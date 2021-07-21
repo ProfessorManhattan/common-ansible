@@ -1,7 +1,83 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
+  autopopulate-ansible-dependencies:
+    env:
+      COLLECTIONS:
+        sh: yq eval '.collections' requirements.yml
+      DEPENDENCIES:
+        sh: yq eval '.dependencies' meta/main.yml
+    cmds:
+      - task: autopopulate-ansible-collection
+        vars:
+          KEY: chocolatey.chocolatey
+          VAL: '{"name": "chocolatey.chocolatey", "source": "https://galaxy.ansible.com"}'
+      - task: autopopulate-ansible-collection
+        vars:
+          KEY: community.general
+          VAL: '{"name": "community.general", "source": "https://galaxy.ansible.com"}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.homebrew
+          VAL: '{"role": "professormanhattan.homebrew", "when": "ansible_os_family == \"Darwin\""}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.npm
+          VAL: '{"role": "professormanhattan.nodejs"}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.gem
+          VAL: '{"role": "professormanhattan.ruby"}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.snap
+          VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
+
+  autopopulate-ansible-collection:
+    env:
+      REFS:
+        sh: grep -Ril "{{.KEY}}" ./tasks
+      TMP:
+        sh: mktemp
+    cmds:
+      - |
+        if [ "$REFS" ] && [[ ! "$COLLECTIONS" =~ "{{.KEY}}" ]]; then
+          yq eval -i -P '.collections = .collections + {{.VAL}}' requirements.yml
+          (echo "---" && cat requirements.yml) > "$TMP"
+          mv "$TMP" requirements.yml
+        fi
+
+  autopopulate-ansible-dependency:
+    env:
+      REFS:
+        sh: grep -Ril "{{.KEY}}" ./tasks
+      TMP:
+        sh: mktemp
+    cmds:
+      - |
+        if [ "$REFS" ] && [[ ! "$DEPENDENCIES" =~ "{{.KEY}}" ]]; then
+          yq eval -i -P '.dependencies = .dependencies + {{.VAL}}' meta/main.yml
+          (echo "---" && cat meta/main.yml) > "$TMP"
+          mv "$TMP" meta/main.yml
+        fi
+
+  autopopulate-ansible-requirements:
+    env:
+      REFS:
+        sh: yq eval '.roles' requirements.yml
+      TMP:
+        sh: mktemp
+    cmds:
+      - yq eval -j '.dependencies' meta/main.yml > "$TMP"
+      - |
+        jq -rc '.[] .role' "$TMP" | while read ROLE_NAME; do
+          if [[ ! "$REFS" =~ "$ROLE_NAME" ]]; then
+            yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
+            (echo "---" && cat requirements.yml) > requirements.yml
+          fi
+        done
+
   clean:
     desc: Removes optional folders that are cached during various tasks
     summary: |
@@ -105,8 +181,8 @@ tasks:
     sources:
       - requirements.yml
     preconditions:
-      - sh: "test -f requirements.yml"
-        msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
+      - sh: 'test -f requirements.yml'
+        msg: 'The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).'
 
   reset:
     desc: Resets the project by removing all caches and updating the project
@@ -125,7 +201,7 @@ tasks:
   reset-force:
     deps:
       - software:git
-    desc: "Aggressively reset the project (WARNING: This will wipe uncommitted work)"
+    desc: 'Aggressively reset the project (WARNING: This will wipe uncommitted work)'
     summary: |
       $ Aggressively reset the project
 
@@ -147,6 +223,7 @@ tasks:
         if [ "${container:=}" != 'docker' ]; then
           bash .common/log info "Running `npm install`"
           npm install
+          npm audit fix --force
           bash .common/log success "Successfully ran `npm install`"
         fi
     sources:
@@ -155,8 +232,8 @@ tasks:
     status:
       - test -d node_modules
     preconditions:
-      - sh: "test -f package.json"
-        msg: "The package.json file appears to be missing!"
+      - sh: 'test -f package.json'
+        msg: 'The package.json file appears to be missing!'
 
   nodejs-global-dependencies:
     deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme, snyk]
@@ -201,7 +278,7 @@ tasks:
     cmds:
       - task: npm-install
         vars:
-          NPM_PACKAGE: "@appnest/readme"
+          NPM_PACKAGE: '@appnest/readme'
           NPM_PACKAGE_BIN: readme
 
   npm-snyk:
@@ -242,7 +319,7 @@ tasks:
       - . .venv/bin/activate
     preconditions:
       - sh: test -f .venv/bin/activate
-        msg: "`.venv/bin/activate` is missing!"
+        msg: '`.venv/bin/activate` is missing!'
 
   python-requirements-pip:
     cmds:
@@ -250,8 +327,8 @@ tasks:
     sources:
       - requirements.txt
     preconditions:
-      - sh: "test -f requirements.txt"
-        msg: "The requirements.txt file is missing!"
+      - sh: 'test -f requirements.txt'
+        msg: 'The requirements.txt file is missing!'
 
   python-virtualenv:
     cmds:
@@ -289,8 +366,8 @@ tasks:
         fi
       - task: shell-prompt
     preconditions:
-      - sh: "type docker &> /dev/null"
-        msg: "Docker is not installed! Install it by running `task software:docker`."
+      - sh: 'type docker &> /dev/null'
+        msg: 'Docker is not installed! Install it by running `task software:docker`.'
 
     shell-prompt:
       deps:
@@ -304,8 +381,8 @@ tasks:
             docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm "megabytelabs/ansible-molecule-${OS_CHOICE}:latest" /bin/bash
           fi
       preconditions:
-        - sh: "type node &> /dev/null"
-          msg: "Node.js is not installed! Install it by running `task software:node`."
+        - sh: 'type node &> /dev/null'
+          msg: 'Node.js is not installed! Install it by running `task software:node`.'
       status:
         - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
@@ -331,20 +408,20 @@ tasks:
     cmds:
       - npx cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
     preconditions:
-      - sh: "git diff --cached --name-only"
-        msg: "Cannot perform a spell check because there are no staged files"
+      - sh: 'git diff --cached --name-only'
+        msg: 'Cannot perform a spell check because there are no staged files'
 
   update:
+    deps: [update-common, update-ansible-galaxy-id, autopopulate-ansible-dependencies, update-project]
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
-      - git pull origin master
-      - task: update-common
-      - task: update-start-sh
-      - task: update-taskfile
-      - task: requirements
-      - task: update-variables
+      - task: update-start
       - task: update-all
+      - task: update-finish
       - bash .common/log success "Successfully updated the project with the latest upstream changes"
+
+  update-start:
+    deps: [requirements, update-start-sh, update-taskfile, update-variables]
 
   update-common:
     deps:
@@ -355,8 +432,15 @@ tasks:
       - git pull origin master --ff-only
       - cd ..
     preconditions:
-      - sh: "type git &> /dev/null"
-        msg: "git is not installed! You can install it by running `task software:git`."
+      - sh: 'type git &> /dev/null'
+        msg: 'git is not installed! You can install it by running `task software:git`.'
+
+  update-finish:
+    deps: [update-docker-labels]
+
+  update-project:
+    cmds:
+      - git pull origin master
 
   update-start-sh:
     cmds:
@@ -379,19 +463,19 @@ tasks:
       TMP:
         sh: mktemp
     vars:
-      COMMON_JSON: ".common/common.{{.REPOSITORY_SUBTYPE}}.json"
+      COMMON_JSON: '.common/common.{{.REPOSITORY_SUBTYPE}}.json'
     cmds:
       - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
       - mv "$TMP" .variables.json
       - task: update-variables-role
     sources:
-      - ".common/variables.{{.REPOSITORY_SUBTYPE}}.json"
+      - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
       - package.json
     preconditions:
-      - sh: "type jq &> /dev/null"
-        msg: "jq is not installed! You can install it by running `task software:jq`."
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! You can install it by running `task software:yq`."
+      - sh: 'type jq &> /dev/null'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+      - sh: 'type yq &> /dev/null'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
 
   update-variables-role:
     deps:
@@ -417,22 +501,75 @@ tasks:
         '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     preconditions:
-      - sh: "type jq &> /dev/null"
-        msg: "jq is not installed! You can install it by running `task software:jq`."
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! You can install it by running `task software:yq`."
-      - sh: "test -f meta/main.yml"
-        msg: "The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
-          example of one at https://github.com/ProfessorManhattan/ansible-snapd."
+      - sh: 'type jq &> /dev/null'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+      - sh: 'type yq &> /dev/null'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
+      - sh: 'test -f meta/main.yml'
+        msg: 'The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
+          example of one at https://github.com/ProfessorManhattan/ansible-snapd.'
       - sh: test -f .variables.json
-        msg: "The `.variables.json` file is missing!"
+        msg: 'The `.variables.json` file is missing!'
     sources:
-      - ".common/variables.{{.REPOSITORY_SUBTYPE}}.json"
+      - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
       - meta/main.yml
       - package.json
 
   update-all:
     deps: [update-contributing, update-readme-role, update-files]
+
+  update-docker-labels:
+    deps:
+      - :software:jq
+    vars:
+      GROUP_URL: https://gitlab.com/megabyte-labs/dockerfile
+    env:
+      DESCRIPTION:
+        sh: jq -r '.description' package.json
+      SLUG:
+        sh: jq -r '.slug' .variables.json
+    cmds:
+      - |
+        if ! grep 'org.opencontainers.image.documentation' Dockerfile; then
+          echo 'ARG BUILD_DATE' >> Dockerfile
+          echo 'ARG REVISION' >> Dockerfile
+          echo 'ARG VERSION' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'LABEL maintainer="Megabyte Labs <help@megabyte.space>"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.authors=""' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.created=$BUILD_DATE' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.description="[[ Injected by running `task update` ]]"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.documentation="[[ Injected by running `task update` ]]"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.licenses="MIT"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.revision=$REVISION' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.source="[[ Injected by running `task update` ]]"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.url="https://megabyte.space"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.vendor="Megabyte Labs"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.version=$VERSION' >> Dockerfile
+          echo 'LABEL space.megabyte.type="{{.REPOSITORY_SUBTYPE}}"' >> Dockerfile
+          echo '' >> Dockerfile
+        fi
+      - |
+        if [[ '{{OS}}' == 'darwin' ]]; then
+          sed -i .bak "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile && rm Dockerfile.bak
+          sed -i .bak "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation=\"{{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile && rm Dockerfile.bak
+          sed -i .bak "s^.*org.opencontainers.image.source.*^LABEL org.opencontainers.image.source=\"{{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile && rm Dockerfile.bak
+        elif [[ '{{OS}}' == 'linux' ]]; then
+          sed -i "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile
+          sed -i "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation={{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile
+          sed -i "s^.*org.opencontainers.image.source.\*^LABEL org.opencontainers.image.source={{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile
+        fi
+    sources:
+      - .variables.json
+      - Dockerfile
+      - package.json
+    preconditions:
+      - sh: test -f Dockerfile
+        msg: 'A `Dockerfile` is not present in the root of this project!'
+      - sh: test -f .variables.json
+        msg: 'The `.variables.json` file is not present in the root of this project!'
+      - sh: test -f package.json
+        msg: 'The `package.json` file is not present in the root of this project!'
 
   update-modules:
     deps:
@@ -474,24 +611,33 @@ tasks:
         --tags-title "### Tags" --variables-title "## Variables"
       - task: _mod-ansible-autodoc
       - mkdir -p .autodoc
-      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
+      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md ansible_variables_header.md .autodoc
     sources:
-      - "tasks**/*.yml"
-      - ".autodoc/*"
+      - 'tasks**/*.yml'
+      - '.autodoc/*'
     preconditions:
-      - sh: "type mod-ansible-autodoc &> /dev/null"
-        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
-          Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file."
+      - sh: 'type mod-ansible-autodoc &> /dev/null'
+        msg:
+          'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
+          Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file.'
 
   _mod-ansible-autodoc:
     env:
       ROLE_VARIABLES:
         sh: jq -r '.role_variables' ansible_variables.json
+      ROLE_VARIABLES_LENGTH:
+        sh: jq -r '.role_variables | length' ansible_variables.json
       TMP:
         sh: mktemp
     cmds:
       - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
+      - |
+        if [[ "$ROLE_VARIABLES_LENGTH" == '0' ]]; then
+          echo '## Variables\n\nThis role contains variables that you can customize. The variables you can customize are located in `defaults/main.yml`. By default, the variables use sensible defaults but you may want to customize the role depending on your use case. The variables, along with descriptions and examples, are listed in the chart below:\n\n{{ ansible_variables }}\n\n' > ansible_variables_header.md
+        else
+          echo '' > ansible_variables_header.md
+        fi
 
   ansibler:
     deps:
@@ -500,8 +646,8 @@ tasks:
       - task: ansibler-compatibility-chart
       - task: _ansibler
     preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type ansibler &> /dev/null'
+        msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`.'
     status:
       - true
 
@@ -540,12 +686,12 @@ tasks:
     sources:
       - .variables.json
     preconditions:
-      - sh: "test -f .common/docs/blueprint-contributing.md"
-        msg: "The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`"
-      - sh: "test -f .variables.json"
-        msg: "The .variables.json file is not present. Generate it by running `task common:update`."
+      - sh: 'test -f .common/docs/blueprint-contributing.md'
+        msg: 'The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`'
+      - sh: 'test -f .variables.json'
+        msg: 'The .variables.json file is not present. Generate it by running `task common:update`.'
       - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
+        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
 
   update-files:
     deps:
@@ -554,6 +700,8 @@ tasks:
       - :software:jq
       - :software:rsync
     env:
+      FIRSTLINE:
+        sh: head -n 1 Dockerfile
       PKG_BLUEPRINT:
         sh: jq -r '.blueprint' package.json
       PKG_DEPS:
@@ -569,7 +717,13 @@ tasks:
     cmds:
       - task: _update-files
       - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
+      - |
+        if [[ '{{.REPOSITORY_SUBTYPE}}' == 'ansible-molecule' ]] && ([[ "$FIRSTLINE" == *"debian"* ]] || [[ "$FIRSTLINE" == *"ubuntu"* ]]); then
+          cp .common/initctl initctl
+        fi
       - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
+      - chmod 755 .husky/pre-commit
+      - task: update-sort
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
       # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
@@ -582,11 +736,30 @@ tasks:
       - cd .common && git reset --hard HEAD && git clean -fd && cd ..
     sources:
       - package.json
+      - .variables.json
     preconditions:
-      - sh: "type rsync &> /dev/null"
-        msg: "`rsync` is not installed!"
-      - sh: "type prettier-package-json &> /dev/null"
-        msg: "`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type rsync &> /dev/null'
+        msg: '`rsync` is not installed!'
+      - sh: 'type prettier-package-json &> /dev/null'
+        msg: '`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`.'
+
+  update-ansible-galaxy-id:
+    vars:
+      HAS_PROJECT_ID:
+        sh: jq -e 'has("blueprint.ansible_galaxy_project_id")' package.json
+    env:
+      PROJECT_ID:
+        sh: 'ansible-galaxy info "{{.GALAXY_NAMESPACE}}.{{.GALAXY_ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}'
+      TMP:
+        sh: mktemp
+    cmds:
+      - |
+        if [ "$PROJECT_ID" ]; then
+          jq --arg a "${PROJECT_ID}" '.blueprint.ansible_galaxy_project_id = $a' package.json > "$TMP"
+          mv "$TMP" package.json
+        fi
+    status:
+      - '[[ "{{.HAS_PROJECT_ID}}" == "true" ]]'
 
   _update-files:
     deps:
@@ -602,8 +775,28 @@ tasks:
     sources:
       - .variables.json
     preconditions:
-      - sh: "type hbs &> /dev/null"
-        msg: "`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type hbs &> /dev/null'
+        msg: '`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`.'
+
+  update-latestos:
+    deps:
+      - python-requirements
+      - :software:jq
+    vars:
+      TAG:
+        sh: jq -r '.variables.vagrant_tag' template.json
+    cmds:
+      - |
+        if [[ '{{.TAG}}' != 'macos' ]]; then
+          latestos {{.TAG}}
+        fi
+    status:
+      - '[[ "{{.TAG}}}" == "macos" ]]'
+    preconditions:
+      - sh: test -f template.json
+        msg: 'The `template.json` file is missing from the root of this project.'
+      - sh: type latestos &> /dev/null
+        msg: 'The `latestos` pip package is not installed. Try running `task common:python-requirements`.'
 
   update-readme:
     deps: [npm-prettier, npm-readme]
@@ -619,18 +812,56 @@ tasks:
       - .autodoc/*
       - .variables.json
     preconditions:
-      - sh: "test -f .common/docs/{{.README_TEMPLATE}}"
-        msg: "The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`."
-      - sh: "test -f .variables.json"
-        msg: "The `.variables.json` file is not present. Generate it by running `task common:update`."
+      - sh: 'test -f .common/docs/{{.README_TEMPLATE}}'
+        msg: 'The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`.'
+      - sh: 'test -f .variables.json'
+        msg: 'The `.variables.json` file is not present. Generate it by running `task common:update`.'
       - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
+        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
       - sh: type prettier &> /dev/null
-        msg: "`prettier` is not installed globally. Install all the requirements by running `task common:requirements`."
+        msg: '`prettier` is not installed globally. Install all the requirements by running `task common:requirements`.'
+
+  update-readme-packer:
+    cmds:
+      - task: _update-readme-packer
+        vars:
+          TYPE: hyperv-iso
+      - task: _update-readme-packer
+        vars:
+          TYPE: parallels-iso
+      - task: _update-readme-packer
+        vars:
+          TYPE: qemu
+      - task: _update-readme-packer
+        vars:
+          TYPE: virtualbox-iso
+      - task: _update-readme-packer
+        vars:
+          TYPE: vmware-iso
+
+  _update-readme-packer:
+    cmds:
+      - |
+        if ! grep -q '"type": "{{.TYPE}}"' template.json; then
+          if [[ '' == 'darwin' ]]; then
+            sed -i .bak '/SUPPORTED_OS_{{.TYPE}}/d' README.md && rm README.md.bak
+          elif [[ '' == 'linux' ]]; then
+            sed -i '/SUPPORTED_OS_{{.TYPE}}/d' README.md
+          fi
+        fi
+
+  update-sort:
+    cmds:
+      - if [ -f paths.txt ]; then sort paths.txt -o paths.txt; fi
+      - if [ -f requirements.txt ]; then sort requirements.txt -o requirements.txt; fi
+    sources:
+      - paths.txt
+      - requirements.txt
 
   _markdown-scrub:
     vars:
-      DIVIDER_SRC: <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
+      DIVIDER_SRC:
+        <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
         src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
       REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
     cmds:
