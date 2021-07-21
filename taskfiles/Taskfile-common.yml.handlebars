@@ -15,6 +15,7 @@ tasks:
       RANDOM_STRING:
         sh: openssl rand -hex 14
     cmds:
+      - bash .common/log info "Cleaning up the project by removing caches etc."
       - rm .variables.json 2> /dev/null
       - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc 2> /dev/null
       - mv .task /tmp/\{{.RANDOM_STRING}}-task 2> /dev/null
@@ -59,6 +60,7 @@ tasks:
       For more information on `markdown-link-check`, see the following page:
       https://github.com/tcort/markdown-link-check
     cmds:
+      - bash .common/log info "Checking for broken links in markdown files"
       - npm run misc:markdown-links
 
   prepare-release:
@@ -101,7 +103,9 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
+          bash .common/log info "Installing Ansible Galaxy requirements"
           ansible-galaxy install -r requirements.yml --ignore-errors
+          bash .common/log success "Successfully installed Ansible Galaxy requirements"
         fi
     sources:
       - requirements.yml
@@ -147,7 +151,9 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
+          bash .common/log info "Running `npm install`"
           npm install
+          bash .common/log success "Successfully ran `npm install`"
         fi
     sources:
       - package.json
@@ -169,6 +175,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
+          bash .common/log info "Running `npm install -g hbs-cli`"
           npm install -g hbs-cli
         fi
     status:
@@ -180,6 +187,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
+          bash .common/log info "Installing Prettier and supporting plugins globally with `npm install -g`"
           npm install -g prettier prettier-plugin-sh @megabytelabs/prettier-config{{#if hbs.ansible}} @megabytelabs/prettier-config-ansible{{/if}}
         fi
     status:
@@ -191,6 +199,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
+          bash .common/log info "Running `npm install -g prettier-package-json`"
           npm install -g prettier-package-json
         fi
     status:
@@ -202,6 +211,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
+          bash .common/log info "Running `npm install -g @appnest/readme`"
           npm install -g @appnest/readme
         fi
     status:
