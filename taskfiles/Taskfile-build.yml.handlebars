@@ -8,7 +8,8 @@ tasks:
 
   slim:
     cmds:
-      - COMPRESSED_SIZE=$(docker manifest inspect -v "megabytelabs/$PACKAGE_NAME:slim" | grep size | awk -F ':' '{sum+=$NF} END {print sum}' | awk '{$1=$1/(1024^2); print $1,"MB";}')
+      - COMPRESSED_SIZE=$(docker manifest inspect -v "megabytelabs/$PACKAGE_NAME:slim" | grep size | awk -F ':' '{sum+=$NF} END {print sum}'
+          | awk '{$1=$1/(1024^2); print $1,"MB";}')
       - sed -i "s^IMAGE_SIZE_PLACEHOLDER^ \(only ${COMPRESSED_SIZE} compressed!)^g" package.json
       - SLIM_IMAGE_SIZE=$(jq -r '.minified_image_size_human' slim.report.json)
       - sed -i "s^IMAGE_SIZE_PLACEHOLDER^ \(only ${SLIM_IMAGE_SIZE}!)^g" package.json

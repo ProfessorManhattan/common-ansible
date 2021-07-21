@@ -628,18 +628,15 @@ tasks:
           echo 'LABEL space.megabyte.type="\{{.REPOSITORY_SUBTYPE}}"' >> Dockerfile
           echo '' >> Dockerfile
         fi
+      # yamllint disable-line rule:line-length
       - |
         if [[ '\{{OS}}' == 'darwin' ]]; then
           sed -i .bak "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile && rm Dockerfile.bak
-          # yamllint disable-line rule:line-length
           sed -i .bak "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation=\"\{{.GROUP_URL}}/\{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile && rm Dockerfile.bak
-          # yamllint disable-line rule:line-length
           sed -i .bak "s^.*org.opencontainers.image.source.*^LABEL org.opencontainers.image.source=\"\{{.GROUP_URL}}/\{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile && rm Dockerfile.bak
         elif [[ '\{{OS}}' == 'linux' ]]; then
           sed -i "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile
-          # yamllint disable-line rule:line-length
           sed -i "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation=\{{.GROUP_URL}}/\{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile
-          # yamllint disable-line rule:line-length
           sed -i "s^.*org.opencontainers.image.source.\*^LABEL org.opencontainers.image.source=\{{.GROUP_URL}}/\{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile
         fi
     sources:
@@ -719,9 +716,9 @@ tasks:
     cmds:
       - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
+      # yamllint disable-line rule:line-length
       - |
         if [[ "$ROLE_VARIABLES_LENGTH" == '0' ]]; then
-          # yamllint disable-line rule:line-length
           echo '## Variables\n\nThis role contains variables that you can customize. The variables you can customize are located in `defaults/main.yml`. By default, the variables use sensible defaults but you may want to customize the role depending on your use case. The variables, along with descriptions and examples, are listed in the chart below:\n\n\{{ ansible_variables }}\n\n' > ansible_variables_header.md
         else
           echo '' > ansible_variables_header.md
