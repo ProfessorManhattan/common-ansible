@@ -39,29 +39,21 @@ tasks:
     env:
       REFS:
         sh: grep -Ril "\{{.KEY}}" ./tasks
-      TMP:
-        sh: mktemp
     cmds:
-      - |
-        if [ "$REFS" ] && [[ ! "$COLLECTIONS" =~ "\{{.KEY}}" ]]; then
-          yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
-          (echo "---" && cat requirements.yml) > "$TMP"
-          mv "$TMP" requirements.yml
-        fi
+      - yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
+    status:
+      - '[ ! "$REFS" ]'
+      - '[[ ! "$COLLECTIONS" =~ "\{{.KEY}}" ]]'
 
   autopopulate-ansible-dependency:
     env:
       REFS:
         sh: grep -Ril "\{{.KEY}}" ./tasks
-      TMP:
-        sh: mktemp
     cmds:
-      - |
-        if [ "$REFS" ] && [[ ! "$DEPENDENCIES" =~ "\{{.KEY}}" ]]; then
-          yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
-          (echo "---" && cat meta/main.yml) > "$TMP"
-          mv "$TMP" meta/main.yml
-        fi
+      - yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
+    status:
+      - '[ ! "$REFS" ]'
+      - '[[ ! "$DEPENDENCIES" =~ "\{{.KEY}}" ]]'
 
   autopopulate-ansible-requirements:
     env:
