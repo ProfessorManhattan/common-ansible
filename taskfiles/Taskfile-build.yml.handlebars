@@ -16,7 +16,7 @@ tasks:
     summary: |
       $ Build a Docker container from the Dockerfile
 
-      This task will build a normal Docker container. It expects the Dockerfile to be
+      This task builds a normal Docker container. It expects the Dockerfile to be
       named `Dockerfile` and for it to be in the root of the repository.
 
       For more information on building Docker containers, see: https://docs.docker.com/engine/reference/commandline/build/
@@ -103,5 +103,36 @@ tasks:
       - task: :common:update
     status:
       - '[[ "\{{.PREVIOUS_SLIM_SIZE}}" == "\{{.SLIM_SIZE}}" ]]'
+
+{{/if}}
+{{#if hbs.npm}}
+  all:
+    deps: [main, module]
+
+  clean:
+    desc: Remove temporary folders that might conflicts with builds
+    vars:
+      RANDOM_STRING:
+        sh: openssl rand -hex 14
+    cmds:
+      - mv build /tmp/\{{.RANDOM_STRING}}-build
+      - mv test /tmp/\{{.TEST_TMP}}-test
+      - mkdir /tmp/\{{.RANDOM_STRING}}-empty
+      - |
+        for TMP_FILE in build test; do
+          if [ -f "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ] || [ -d "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ]; then
+            (rsync -a --delete /tmp/\{{.RANDOM_STRING}}-empty "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" && rm -rf "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE") &
+          fi
+        done
+
+  main:
+    desc: Build `main` using `tsconfig.json`
+    cmds:
+      - tsc -p tsconfig.json
+
+  module:
+    desc: Build `module` using `tsconfig.module.json`
+    cmds:
+      - tsc -p tsconfig.module.json
 
 {{/if}}
