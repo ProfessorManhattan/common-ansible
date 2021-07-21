@@ -330,55 +330,92 @@ tasks:
   update-variables:
     deps:
       - :software:jq
-      - :software:yq
-{{#if hbs.ansible}}
-      - ansibler
-{{/if}}
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
-{{#if hbs.role}}
-      DESCRIPTION:
-        sh: yq e '.galaxy_info.description' meta/main.yml
-      DESCRIPTION_FIRST_LETTER:
-        sh: echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]'
-      GALAXY_INFO:
-        sh: yq e -j '.galaxy_info' meta/main.yml
-{{/if}}
-      TMP_JQ:
-        sh: mktemp
-      TMP_VARS:
+      TMP:
         sh: mktemp
     vars:
       COMMON_JSON: ".common/common.\{{.REPOSITORY_SUBTYPE}}.json"
     cmds:
-      - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.\{{.REPOSITORY_SUBTYPE}}.json" > "$TMP_VARS"
-      - mv "$TMP_VARS" .variables.json
+      - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.\{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
+      - mv "$TMP" .variables.json
+{{#if hbs.packer}}
+      - task: update-variables-packer
+{{/if}}
 {{#if hbs.role}}
-      - LOWERCASE_DESCRIPTION="${DESCRIPTION_FIRST_LETTER}${DESCRIPTION:1}"
-      - SUBHEADER_DESCRIPTION="An Ansible role that ${LOWERCASE_DESCRIPTION}"
-      - ALT_DESCRIPTION="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
-      - jq -S --arg subheader "$SUBHEADER_DESCRIPTION" --arg alt "$ALT_DESCRIPTION" --arg galaxyinfo "$GALAXY_INFO"
-          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP_JQ"
-      - mv "$TMP_JQ" .variables.json
+      - task: update-variables-role
 {{/if}}
     sources:
       - ".common/variables.\{{.REPOSITORY_SUBTYPE}}.json"
       - package.json
-{{#if hbs.role}}
-      -  meta/main.yml
-{{/if}}
     preconditions:
       - sh: "type jq &> /dev/null"
         msg: "jq is not installed! You can install it by running `task software:jq`."
       - sh: "type yq &> /dev/null"
         msg: "yq is not installed! You can install it by running `task software:yq`."
+
+{{#if hbs.packer}}
+  update-variables-packer:
+    deps:
+      - :software:jq
+    env:
+      TEMPLATE_JSON:
+        sh: jq -r '.' template.json
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq -S --arg templatejson "$TEMPLATE_JSON" '.template_json = ($templatejson | fromjson)' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
+    preconditions:
+      - sh: test -f template.json
+        msg: "A `template.json` file is not present. This project uses values stored in `template.json` to generate certain
+          meta artifacts. Please add a `template.json`. You can find an example of one in this repository:
+          https://gitlab.com/megabyte-labs/packer/ubuntu-desktop"
+      - sh: test -f .variables.json
+        msg: "The `.variables.json` file is missing!"
+
+{{/if}}
 {{#if hbs.role}}
+  update-variables-role:
+    deps:
+      - :software:jq
+      - :software:yq
+    env:
+      DESCRIPTION:
+        sh: yq e '.galaxy_info.description' meta/main.yml
+      DESCRIPTION_FIRST_LETTER:
+        sh: echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]'
+      DESCRIPTION_LOWERCASE:
+        sh: echo "${DESCRIPTION_FIRST_LETTER}${DESCRIPTION:1}"
+      DESCRIPTION_SUBHEADER:
+        sh: echo "An Ansible role that ${LOWERCASE_DESCRIPTION}"
+      DESCRIPTION_ALT:
+        sh: echo "This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
+      GALAXY_INFO:
+        sh: yq e -j '.galaxy_info' meta/main.yml
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO"
+          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
+    preconditions:
+      - sh: "type jq &> /dev/null"
+        msg: "jq is not installed! You can install it by running `task software:jq`."
+      - sh: "type yq &> /dev/null"
+        msg: "yq is not installed! You can install it by running `task software:yq`."
       - sh: "test -f meta/main.yml"
         msg: "The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
           example of one at https://github.com/ProfessorManhattan/ansible-snapd."
-{{/if}}
+      - sh: test -f .variables.json
+        msg: "The `.variables.json` file is missing!"
+    sources:
+      - ".common/variables.\{{.REPOSITORY_SUBTYPE}}.json"
+      - meta/main.yml
+      - package.json
 
+{{/if}}
   update-all:
     deps: [update-contributing, update-readme{{#if hbs.role}}-role{{/if}}, update-files]
 
@@ -473,15 +510,15 @@ tasks:
     sources:
       - tasks/main.yml
       - .molecule-results/*.txt
-{{/if}}
 
+{{/if}}
   ansibler-role-dependencies:
     cmds:
       - ansibler --role-dependencies
     sources:
       - requirements.yml
-{{/if}}
 
+{{/if}}
   update-contributing:
     deps: [npm-prettier, npm-readme]
     vars:
