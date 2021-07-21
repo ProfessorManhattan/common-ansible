@@ -3,7 +3,6 @@ version: '3'
 
 tasks:
 {{#if hbs.ansible}}
-
   local:
     deps:
       - :ansible:symlink
@@ -120,9 +119,9 @@ tasks:
         else
           molecule test
         fi
+
 {{/if}}
 {{#if hbs.playbook}}
-
     vagrant:
       deps:
         - :common:python-requirements
@@ -163,4 +162,5 @@ tasks:
         - if [ ! -z "$VAGRANT_COMMAND" ]; then vagrant up "$VAGRANT_COMMAND"; fi
       status:
         - '[[ -z "\{{.CLI_ARGS}}" ]]'
+
 {{/if}}

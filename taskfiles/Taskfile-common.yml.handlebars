@@ -94,7 +94,6 @@ tasks:
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
     deps: [nodejs-dependencies, nodejs-global-dependencies, python-requirements{{#if hbs.ansible}}, galaxy-requirements{{/if}}]
 {{#if hbs.ansible}}
-
   galaxy-requirements:
     deps: [python-requirements]
     cmds:
@@ -107,8 +106,8 @@ tasks:
     preconditions:
       - sh: "test -f requirements.yml"
         msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
-{{/if}}
 
+{{/if}}
   reset:
     desc: Resets the project by removing all caches and updating the project
     summary: |
@@ -455,14 +454,13 @@ tasks:
     status:
       - test -d .modules
 {{#if hbs.role}}
-
   update-readme-role:
     deps: [mod-ansible-autodoc]
     cmds:
       - task: update-readme
+
 {{/if}}
 {{#if hbs.ansible}}
-
   mod-ansible-autodoc:
     deps:
       - python-requirements

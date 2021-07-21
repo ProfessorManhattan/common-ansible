@@ -5,8 +5,8 @@ tasks:
   all:
     desc: Lint the project by running all the linters in parallel
     deps: [formatting{{#if hbs.ansible}}, ansible{{/if}}{{#if hbs.dockerfile}}, docker{{/if}}{{#if hbs.packer}}, packer{{/if}}{{#if hbs.python}}, python{{/if}}{{#if hbs.vagrant}}, vagrant{{/if}}{{#if hbs.yaml}}, yaml{{/if}}]
-{{#if hbs.ansible}}
 
+{{#if hbs.ansible}}
   ansible:
     deps:
       - :ansible:symlink
@@ -33,8 +33,8 @@ tasks:
       - task: ansible
     sources:
       - "**/*.yml"
-{{/if}}
 
+{{/if}}
   formatting:
     deps:
       - :common:nodejs-dependencies
@@ -59,8 +59,8 @@ tasks:
       - task: formatting
     sources:
       - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
-{{#if hbs.dockerfile}}
 
+{{#if hbs.dockerfile}}
   docker:
     deps:
       - :software:docker
@@ -96,9 +96,9 @@ tasks:
       - task: docker
     sources:
       - "**/(Dockerfile|Dockerfile.j2)"
+
 {{/if}}
 {{#if hbs.packer}}
-
   packer:
     deps:
       - :software:packer
@@ -115,9 +115,9 @@ tasks:
         for TEMPLATE in *template.json; do
           packer validate "$TEMPLATE"
         done
+
 {{/if}}
 {{#if hbs.python}}
-
   python:
     deps:
       - :common:python-requirements
@@ -147,8 +147,8 @@ tasks:
       - task: python
     sources:
       - "**/*.py"
-{{/if}}
 
+{{/if}}
   scripts:
     deps:
       - :common:nodejs-dependencies
@@ -173,8 +173,8 @@ tasks:
       - task: scripts
     sources:
       - "**/*.(sh|sh.j2)"
-{{#if hbs.vagrant}}
 
+{{#if hbs.vagrant}}
   vagrant:
     deps:
       - :software:vagrant
@@ -189,9 +189,9 @@ tasks:
       For more information on `vagrant validate`, see: https://www.vagrantup.com/docs/cli/validate
     cmds:
       - vagrant validate
+
 {{/if}}
 {{#if hbs.yaml}}
-
   yaml:
     deps:
       - :common:python-requirements
@@ -218,4 +218,5 @@ tasks:
       - task: yaml
     sources:
       - "**/*.yml"
+
 {{/if}}

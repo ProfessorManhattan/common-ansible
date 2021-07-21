@@ -2,7 +2,6 @@
 version: '3'
 
 tasks:
-
   all:
     desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
     deps: [formatting, {{#if hbs.packer}}packer, {{/if}}{{#if hbs.python}}python, {{/if}}scripts]
@@ -31,8 +30,8 @@ tasks:
       - task: formatting
     sources:
       - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
-{{#if hbs.packer}}
 
+{{#if hbs.packer}}
   packer:
     deps:
       - :software:packer
@@ -53,9 +52,9 @@ tasks:
           packer fix "$TEMPLATE" > tmp-template.json
           mv tmp-template.json "$TEMPLATE"
         done
+
 {{/if}}
 {{#if hbs.python}}
-
   python:
     deps:
       - :common:python-requirements
@@ -79,8 +78,8 @@ tasks:
       - task: python
     sources:
       - "**/*.py"
-{{/if}}
 
+{{/if}}
   scripts:
     deps:
       - :common:nodejs-dependencies
