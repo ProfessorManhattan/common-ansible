@@ -879,16 +879,14 @@ tasks:
         sh: jq -r '.variables.vagrant_tag' template.json
     cmds:
       - |
-        if [[ '\{{.TAG}}' != 'macos' ]]; then
+        if [ "${container:=}" != 'docker' ] && [[ '\{{.TAG}}' != 'macos' ]]; then
           latestos \{{.TAG}}
         fi
     status:
-      - '[[ "\{{.TAG}}}" == "macos" ]]'
+      - '[[ "\{{.TAG}}}" == "macos" ]] || [ "${container:=}" == "docker" ]'
     preconditions:
       - sh: test -f template.json
         msg: "The `template.json` file is missing from the root of this project."
-      - sh: type latestos &> /dev/null
-        msg: "The `latestos` pip package is not installed. Try running `task common:python-requirements`."
 
   update-readme:
     deps: [npm-prettier, npm-readme]
