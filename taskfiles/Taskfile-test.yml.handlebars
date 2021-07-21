@@ -237,3 +237,9 @@ tasks:
         - test ! -d slim_test
 
 {{/if}}
+{{#if hbs.npm}}
+  unit:
+    cmds:
+      - npm run test:unit
+
+{{/if}}
