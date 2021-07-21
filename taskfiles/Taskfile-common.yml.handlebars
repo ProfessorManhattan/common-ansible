@@ -717,13 +717,14 @@ tasks:
     cmds:
       - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
-      # yamllint disable-line rule:line-length
+      # yamllint disable rule:line-length
       - |
         if [[ "$ROLE_VARIABLES_LENGTH" == '0' ]]; then
           echo '## Variables\n\nThis role contains variables that you can customize. The variables you can customize are located in `defaults/main.yml`. By default, the variables use sensible defaults but you may want to customize the role depending on your use case. The variables, along with descriptions and examples, are listed in the chart below:\n\n\{{ ansible_variables }}\n\n' > ansible_variables_header.md
         else
           echo '' > ansible_variables_header.md
         fi
+      # yamllint enable rule:line-length
 
   ansibler:
     deps:
