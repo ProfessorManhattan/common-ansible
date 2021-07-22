@@ -16,18 +16,22 @@ tasks:
       - task: autopopulate-ansible-dependency
         vars:
           KEY: community.general.homebrew
+          ROLE: professormanhattan.homebrew
           VAL: '{"role": "professormanhattan.homebrew", "when": "ansible_os_family == \"Darwin\""}'
       - task: autopopulate-ansible-dependency
         vars:
           KEY: community.general.npm
+          ROLE: professormanhattan.nodejs
           VAL: '{"role": "professormanhattan.nodejs"}'
       - task: autopopulate-ansible-dependency
         vars:
           KEY: community.general.gem
+          ROLE: professormanhattan.ruby
           VAL: '{"role": "professormanhattan.ruby"}'
       - task: autopopulate-ansible-dependency
         vars:
           KEY: community.general.snap
+          ROLE: professormanhattan.snapd
           VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
 
   autopopulate-ansible-collection:
@@ -52,11 +56,11 @@ tasks:
         sh: grep -Ril "\{{.KEY}}" ./tasks || true
     cmds:
       - |
-        if [[ ! "$DEPENDENCIES" =~ "\{{.KEY}}" ]] && [ "$REFERENCES" ]; then
+        if [[ ! "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
         fi
     status:
-      - '[[ "$DEPENDENCIES" =~ "\{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
+      - '[[ "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
 
   autopopulate-ansible-requirements:
     env:
