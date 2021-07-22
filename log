@@ -36,7 +36,7 @@ if commandExists node; then
 fi
 
 function signale() {
-  node -e 'const { Signale } = require("signale"); const logger = new Signale({scope: "'"${SCOPE:=}"'", types: { log: { badge: "●", color: "gray", label: "info" } } }); logger.'"$1"'({prefix: "'"${LOG_PREFIX:=}"'", message:"'"$2"'", suffix: "'"${LOG_SUFFIX:=}"'"})'
+  node -e 'const { Signale } = require("signale"); const logger = new Signale({scope: "'"${SCOPE:=}"'", types: { log: { badge: "●", color: "white", label: "info" } } }); logger.'"$1"'({prefix: "'"${LOG_PREFIX:=}"'", message:"'"$2"'", suffix: "'"${LOG_SUFFIX:=}"'"})'
 }
 
 function error() {

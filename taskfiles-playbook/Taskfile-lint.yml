@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   all:
@@ -28,14 +28,14 @@ tasks:
 
       For more information on Ansible Lint, see: https://github.com/ansible-community/ansible-lint
     cmds:
-      - bash .common/log log "Running `ansible-lint` to find Ansible-related code violations"
+      - bash .common/log log "Running \`ansible-lint\` to find Ansible-related code violations"
       - ansible-lint
 
   _ansible:
     cmds:
       - task: ansible
     sources:
-      - "**/*.yml"
+      - '**/*.yml'
 
   formatting:
     deps:
@@ -54,14 +54,14 @@ tasks:
 
       For more information on Prettier, see: https://prettier.io/
     cmds:
-      - bash .common/log log "Running `npm run lint:prettier` to check for potentially misformatted files"
+      - bash .common/log log "Running \`npm run lint:prettier\` to check for potentially misformatted files"
       - npm run lint:prettier
 
   _formatting:
     cmds:
       - task: formatting
     sources:
-      - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   docker:
     deps:
@@ -98,7 +98,7 @@ tasks:
     cmds:
       - task: docker
     sources:
-      - "**/(Dockerfile|Dockerfile.j2)"
+      - '**/(Dockerfile|Dockerfile.j2)'
 
   python:
     deps:
@@ -122,14 +122,14 @@ tasks:
 
       For more information on Flake8, see: https://github.com/PyCQA/flake8
     cmds:
-      - bash .common/log log "Running `flake8 .` to lint Python files"
+      - bash .common/log log "Running \`flake8 .\` to lint Python files"
       - flake8 .
 
   _python:
     cmds:
       - task: python
     sources:
-      - "**/*.py"
+      - '**/*.py'
 
   scripts:
     deps:
@@ -148,14 +148,14 @@ tasks:
 
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
-      - bash .common/log log "Running `npm run lint:shellcheck` to identify possible shell script code violations"
+      - bash .common/log log "Running \`npm run lint:shellcheck\` to identify possible shell script code violations"
       - npm run lint:shellcheck
 
   _scripts:
     cmds:
       - task: scripts
     sources:
-      - "**/*.(sh|sh.j2)"
+      - '**/*.(sh|sh.j2)'
 
   yaml:
     deps:
@@ -176,11 +176,11 @@ tasks:
 
       For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
     cmds:
-      - bash .common/log "Running `yamllint -s .` to lint YML files"
+      - bash .common/log "Running \`yamllint -s .\` to lint YML files"
       - yamllint -s .
 
   _yaml:
     cmds:
       - task: yaml
     sources:
-      - "**/*.yml"
+      - '**/*.yml'

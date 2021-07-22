@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   local:
@@ -32,7 +32,7 @@ tasks:
       - mv ansible.cfg.bak ansible.cfg
     preconditions:
       - sh: typeof ansible &> /dev/null
-        msg: "Ansible is not available. Install the dependencies by running `task common:requirements`."
+        msg: 'Ansible is not available. Install the dependencies by running `task common:requirements`.'
 
   molecule-desktop:
     deps:
@@ -60,7 +60,7 @@ tasks:
       - |
         if [ ! -z "{{.CLI_ARGS}}" ]; then
           bash .common/log info "The VM used for this test will be left open for inspection after the Molecule test completes."
-          bash .common/log log "Running `molecule converge -s {{.CLI_ARGS}}-desktop`"
+          bash .common/log log "Running \`molecule converge -s {{.CLI_ARGS}}-desktop\`"
           molecule converge -s {{.CLI_ARGS}}-desktop
         fi
       - task: molecule-desktop-prompt
@@ -74,7 +74,7 @@ tasks:
     cmds:
       - |
         if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$OPERATING_SYSTEM" ]; then
-          bash .common/log log "Running `molecule converge -s ${OPERATING_SYSTEM}-desktop`"
+          bash .common/log log "Running \`molecule converge -s ${OPERATING_SYSTEM}-desktop\`"
           molecule converge -s "${OPERATING_SYSTEM}-desktop"
         fi
     status:
@@ -101,11 +101,11 @@ tasks:
     cmds:
       - |
         if [ "{{.SNAP_REFS}}" ]; then
-          bash .common/log info "Degrading test scenario to `docker-snap` which only tests Docker containers that support `snap`."
-          bash .common/log log "Running `molecule test -s docker-snap`"
+          bash .common/log info "Degrading test scenario to \`docker-snap\` which only tests Docker containers that support \`snap\`."
+          bash .common/log log "Running \`molecule test -s docker-snap\`"
           molecule test -s docker-snap
         else
-          bash .common/log log "Running `molecule test -s docker`"
+          bash .common/log log "Running \`molecule test -s docker\`"
           molecule test -s docker
         fi
 
@@ -137,13 +137,13 @@ tasks:
         if [ "{{.CLI_ARGS}}" ]; then
           if [ "{{.CLI_ARGS}}" == 'matrix']; then
             mkdir -p .molecule-results
-            bash .common/log info "Storing full E2E test results to `.molecule-results/{{.MOLECULE_DATE}}-default.txt`, this can take awhile.."
-            bash .common/log log "Running `PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt`"
+            bash .common/log info "Storing full E2E test results to \`.molecule-results/{{.MOLECULE_DATE}}-default.txt\`, this can take awhile.."
+            bash .common/log log "Running \`PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt\`"
             PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt
           else
-            bash .common/log error "Invalid CLI arguments passed in. See `task test:molecule-e2e --summary`."
+            bash .common/log error "Invalid CLI arguments passed in. See \`task test:molecule-e2e --summary\`."
         else
           bash .common/log info "This is a full E2E test and can take awhile.."
-          bash .common/log log "Running `molecule test`"
+          bash .common/log log "Running \`molecule test\`"
           molecule test
         fi

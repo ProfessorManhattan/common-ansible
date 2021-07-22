@@ -11,8 +11,8 @@ tasks:
     cmds:
       - |
         if [ -z "$SNYK_API_TOKEN" ]; then
-          bash .common/log warn "You are not currently authenticated with Snyk. Sign in by running `snyk auth`."
-          bash .common/log info "Initiating the sign-in process for Snyk by running `snyk auth`.."
+          bash .common/log warn "You are not currently authenticated with Snyk. Sign in by running \`snyk auth\`."
+          bash .common/log info "Initiating the sign-in process for Snyk by running \`snyk auth\`.."
           snyk auth
         fi
 
@@ -37,11 +37,11 @@ tasks:
         sh: jq -r '.slug' .variables.json
     cmds:
       - task: snyk-login
-      - bash .common/log info "Scanning {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest for vulnerabilities with Snyk"
-      - bash .common/log log "Running `snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile`"
+      - bash .common/log info "Scanning \`{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest\` for vulnerabilities with Snyk"
+      - bash .common/log log "Running \`snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile\`"
       - snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile
-      - bash .common/log info "Scanning {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim for vulnerabilities with Snyk"
-      - bash .common/log log "Running `snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile`"
+      - bash .common/log info "Scanning \`{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim\` for vulnerabilities with Snyk"
+      - bash .common/log log "Running \`snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile\`"
       - snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile
 
   trivy:
@@ -61,11 +61,11 @@ tasks:
       DOCKER_IMAGE:
         sh: jq -r '.slug' .variables.json
     cmds:
-      - bash .common/log info "Scanning `{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest` for vulnerabilities with Trivy"
-      - bash .common/log log "Running `trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest`"
+      - bash .common/log info "Scanning \`{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest\` for vulnerabilities with Trivy"
+      - bash .common/log log "Running \`trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest\`"
       - trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
-      - bash .common/log info "Scanning `{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim` for vulnerabilities with Trivy"
-      - bash .common/log log "Running `trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim`"
+      - bash .common/log info "Scanning \`{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim\` for vulnerabilities with Trivy"
+      - bash .common/log log "Running \`trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim\`"
       - trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
 
 {{/if}}
