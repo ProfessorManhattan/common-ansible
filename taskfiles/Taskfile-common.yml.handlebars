@@ -441,13 +441,19 @@ tasks:
         msg: "Cannot perform a spell check because there are no staged files"
 
   update:
-    deps: [update-common, {{#if hbs.packer}}update-latestos, {{/if}}{{#if hbs.role}}update-ansible-galaxy-id, autopopulate-ansible-dependencies, {{/if}}update-project]
+    deps: [{{#if hbs.packer}}update-latestos, {{/if}}{{#if hbs.role}}update-ansible-galaxy-id, autopopulate-ansible-dependencies, {{/if}} update-repositories]
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
       - task: update-start
       - task: update-all
       - task: update-finish
       - bash .common/log success "Successfully updated the project with the latest upstream changes"
+
+  update-repositories:
+    cmds:
+      #- task: update-common
+      - task: update-modules
+      - task: update-project
 
   update-start:
     deps: [requirements, update-start-sh, update-taskfile, update-variables]
@@ -458,7 +464,7 @@ tasks:
     cmds:
       - cd .common
       - git reset --hard HEAD
-      - git pull origin master --ff-only
+      - git pull origin master --ff-only || true
       - cd ..
     preconditions:
       - sh: "type git &> /dev/null"
@@ -469,7 +475,7 @@ tasks:
 
   update-project:
     cmds:
-      - git pull origin master --no-rebase
+      - git pull origin master --no-rebase || true
 
   update-start-sh:
     cmds:
@@ -666,15 +672,18 @@ tasks:
       to the latest on the remote's master branch.
     cmds:
       - |
-        for SUBMODULE_PATH in .modules/*; do
-          cd $SUBMODULE_PATH
-          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
-          git reset --hard HEAD
-          git checkout "$DEFAULT_BRANCH"
-          git pull origin "$DEFAULT_BRANCH" --ff-only
-        done
+        if ls .modules/*/ > /dev/null 2>&1; then
+          for SUBMODULE_PATH in .modules/*; do
+            cd $SUBMODULE_PATH
+            DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+            git reset --hard HEAD
+            git checkout "$DEFAULT_BRANCH"
+            git pull origin "$DEFAULT_BRANCH" --ff-only || true
+          done
+        fi
     status:
-      - test -d .modules
+      - '! ls .modules/*/ > /dev/null 2>&1'
+
 {{#if hbs.role}}
   update-readme-role:
     deps: [mod-ansible-autodoc]

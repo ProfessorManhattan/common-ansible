@@ -21,7 +21,7 @@ tasks:
   install-doctor:
     cmds:
       - |
-        if type \{{.SOFTWARE}} &> /dev/null; then
+        if ! type \{{.SOFTWARE}} &> /dev/null; then
           bash .common/log info "Using https://install.doctor to install `\{{.SOFTWARE}}`"
           curl -sS https://install.doctor/\{{.SOFTWARE}} | bash
         fi

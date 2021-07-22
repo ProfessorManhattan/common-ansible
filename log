@@ -36,7 +36,7 @@ if commandExists node; then
 fi
 
 function signale() {
-  node -e 'require("signale").'"$1"'({prefix: "'"${LOG_PREFIX:=}"'", message:"'"$2"'", suffix: "'"${LOG_SUFFIX:=}"'"})'
+  node -e 'const { Signale } = require("signale"); const logger = new Signale({scope: "'"${SCOPE:=}"'", types: { log: { badge: "●", color: "gray", label: "info" } } }); logger.'"$1"'({prefix: "'"${LOG_PREFIX:=}"'", message:"'"$2"'", suffix: "'"${LOG_SUFFIX:=}"'"})'
 }
 
 function error() {
@@ -52,6 +52,14 @@ function info() {
     signale note "$1"
   else
     echo "INFO: $1"
+  fi
+}
+
+function log() {
+  if [ "$ENHANCED_LOGGING" ]; then
+    signale log "$1"
+  else
+    echo "LOG: $1"
   fi
 }
 
