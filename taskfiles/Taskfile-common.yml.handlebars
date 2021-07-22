@@ -782,8 +782,10 @@ tasks:
       - :software:jq
       - :software:rsync
     env:
+{{#if hbs.ansible-molecule}}
       FIRSTLINE:
         sh: head -n 1 Dockerfile
+{{/if}}
       PKG_BLUEPRINT:
         sh: jq -r '.blueprint' package.json
       PKG_DEPS:
