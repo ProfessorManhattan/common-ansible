@@ -1,5 +1,5 @@
 ---
-version: '3'
+version: "3"
 
 tasks:
   all:
@@ -33,7 +33,7 @@ tasks:
     cmds:
       - task: formatting
     sources:
-      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
+      - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
 
   python:
     deps:
@@ -58,7 +58,7 @@ tasks:
     cmds:
       - task: python
     sources:
-      - '**/*.py'
+      - "**/*.py"
 
   scripts:
     deps:
@@ -96,4 +96,4 @@ tasks:
     cmds:
       - task: scripts
     sources:
-      - '**/*.(sh|sh.j2)'
+      - "**/*.(sh|sh.j2)"
