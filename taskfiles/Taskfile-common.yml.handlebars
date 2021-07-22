@@ -868,7 +868,7 @@ tasks:
       - :software:jq
     vars:
       TAG:
-        sh: jq -r '.variables.vagrant_tag' template.json
+        sh: jq -r '.variables.latestos_tag' template.json
     cmds:
       - |
         if [ "${container:=}" != 'docker' ] && [[ '\{{.TAG}}' != 'macos' ]]; then
