@@ -14,3 +14,4 @@ includes:
   fix: ./.common/taskfiles-playbook/Taskfile-fix.yml
   lint: ./.common/taskfiles-playbook/Taskfile-lint.yml
   software: ./.common/taskfiles-playbook/Taskfile-{{OS}}.yml
+  test: ./.common/taskfiles-playbook/Taskfile-test.yml
