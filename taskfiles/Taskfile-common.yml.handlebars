@@ -471,7 +471,7 @@ tasks:
         msg: "git is not installed! You can install it by running `task software:git`."
 
   update-finish:
-    deps: [{{#if hbs.dockerfile}}update-docker-labels{{/if}}]
+    deps: [{{#if hbs.docker}}update-docker-labels{{/if}}]
 
   update-project:
     cmds:
@@ -601,7 +601,7 @@ tasks:
   update-all:
     deps: [{{#if hbs.packer}}populate-packer-descriptions, {{/if}}update-contributing, update-readme{{#if hbs.role}}-role{{/if}}, update-files]
 
-{{#if hbs.dockerfile}}
+{{#if hbs.docker}}
   update-docker-labels:
     deps:
       - :software:jq
