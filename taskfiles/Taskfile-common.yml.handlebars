@@ -174,7 +174,7 @@ tasks:
       then install the Python requirements by running `pip3 install -r requirements` after
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
-    deps: [nodejs-dependencies, nodejs-global-dependencies, python-requirements{{#if hbs.ansible}}, galaxy-requirements{{/if}}]
+    deps: [nodejs-dependencies, nodejs-global-dependencies, python-requirements]
 
 {{#if hbs.ansible}}
   galaxy-requirements:
@@ -182,7 +182,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log log "Running \`ansible-galaxy install -r requirements.yml --ignore-errors\`"
+          bash .common/log log "Running \"ansible-galaxy install -r requirements.yml --ignore-errors\""
           ansible-galaxy install -r requirements.yml --ignore-errors
           bash .common/log success "Successfully installed Ansible Galaxy requirements"
         fi
@@ -250,10 +250,10 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running \`npm install\`"
+          bash .common/log info "Running \"npm install\""
           npm install
-          npm audit fix --force
-          bash .common/log success "Successfully ran \`npm install\`"
+          npm audit fix --force || true
+          bash .common/log success "Successfully ran \"npm install\""
         fi
     sources:
       - package.json
@@ -275,7 +275,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running \`npm install -g \{{.NPM_PACKAGE}}\`"
+          bash .common/log info "Running \"npm install -g \{{.NPM_PACKAGE}}\""
           npm install -g \{{.NPM_PACKAGE}}
           bash .common/log success "`The npm \{{.NPM_PACKAGE}}` package is globally installed"
         fi
@@ -324,6 +324,9 @@ tasks:
       - task: python-requirements-venv
       - task: python-requirements-venv-activate
       - task: python-requirements-pip
+{{#if hbs.ansible}}
+      - task: galaxy-requirements
+{{/if}}
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
@@ -451,7 +454,7 @@ tasks:
 
   update-repositories:
     cmds:
-      # - task: update-common
+      - task: update-common
       - task: update-modules
       - task: update-project
 

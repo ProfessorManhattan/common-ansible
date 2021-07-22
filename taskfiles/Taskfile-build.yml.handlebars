@@ -35,7 +35,7 @@ tasks:
       VERSION:
         sh: jq -r '.version' package.json
     cmds:
-      - bash .common/log log "Building regular image named \`\{{.IMAGE_NAME}}\`"
+      - bash .common/log log "Building regular image named \"\{{.IMAGE_NAME}}\""
       - docker build --build-arg BUILD_DATE="\{{.BUILD_DATE}}" --build-arg REVISION="\{{.REVISION}}" --build-arg VERSION="\{{.VERSION}}"
           --tag \{{.IMAGE_NAME}}:latest --tag \{{.IMAGE_NAME}}:\{{.VERSION}} .
     sources:
@@ -69,7 +69,7 @@ tasks:
           bash .common/log log "Building regular image first"
           task build:normal
         fi
-      - bash .common/log log "Building slim image named \`\{{.IMAGE_NAME}}\`"
+      - bash .common/log log "Building slim image named \"\{{.IMAGE_NAME}}\""
       - docker-slim build --tag \{{.IMAGE_NAME}}:slim \{{.SLIM_COMMAND}} \{{.IMAGE_NAME}}:latest
       - prettier --write slim.report.json
       - task: slim-sizes
@@ -103,7 +103,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - bash .common/log info "The slim build was compressed to \`\{{.SLIM_SIZE}}\` (\`\{{.REGULAR_SIZE}}\` originally)."
+      - bash .common/log info "The slim build was compressed to \"\{{.SLIM_SIZE}}\" (\"\{{.REGULAR_SIZE}}\" originally)."
       - jq --arg a "\{{.SLIM_SIZE}}" '.blueprint.slim_size = $a' package.json > "$TMP"
       - mv "$TMP" package.json
       - task: :common:update

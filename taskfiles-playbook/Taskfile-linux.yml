@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   docker:
@@ -22,7 +22,7 @@ tasks:
     cmds:
       - |
         if ! type {{.SOFTWARE}} &> /dev/null; then # Prevent --force from reinstalling software
-          bash .common/log info "Using https://install.doctor to install \`{{.SOFTWARE}}\`"
+          bash .common/log info "Using https://install.doctor to install \"{{.SOFTWARE}}\""
           curl -sS https://install.doctor/{{.SOFTWARE}} | bash
         fi
 
@@ -60,7 +60,7 @@ tasks:
           rm miniconda.sh
           export PATH="$HOME/.local/miniconda/bin:$PATH"
           if grep -L '.local/miniconda/bin' "$HOME/.bashrc"; then
-            bash .common/log info "Updating the \`.bashrc\` file to include Miniconda Python 3 in the PATH environment variable"
+            bash .common/log info "Updating the \".bashrc\" file to include Miniconda Python 3 in the PATH environment variable"
             echo -e "\nexport PATH=$HOME/.local/miniconda/bin:$PATH" >> "$HOME/.bashrc"
           fi
         fi
