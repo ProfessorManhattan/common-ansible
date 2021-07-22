@@ -782,7 +782,7 @@ tasks:
       - :software:jq
       - :software:rsync
     env:
-{{#if hbs.ansible-molecule}}
+{{#if hbs.ansible_molecule}}
       FIRSTLINE:
         sh: head -n 1 Dockerfile
 {{/if}}
@@ -801,10 +801,12 @@ tasks:
     cmds:
       - task: _update-files
       - find .common/files-\{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
+{{#if hbs.ansible_molecule}}
       - |
-        if [[ '\{{.REPOSITORY_SUBTYPE}}' == 'ansible-molecule' ]] && ([[ "$FIRSTLINE" == *"debian"* ]] || [[ "$FIRSTLINE" == *"ubuntu"* ]]); then
+        if [[ "$FIRSTLINE" == *"debian"* ]] || [[ "$FIRSTLINE" == *"ubuntu"* ]]; then
           cp .common/initctl initctl
         fi
+{{/if}}
       - rsync -aPq ".common/files-\{{.REPOSITORY_SUBTYPE}}/" ./
       - chmod 755 .husky/pre-commit
       - task: update-sort
