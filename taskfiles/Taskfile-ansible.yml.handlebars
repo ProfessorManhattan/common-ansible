@@ -112,41 +112,41 @@ tasks:
         * community.general            * community.general.npm
         * community.general.homebrew   * community.general.snap
     cmds:
-      - task: autopopulate-ansible-collection
+      - task: populate-collection
         vars:
           KEY: chocolatey.chocolatey
           VAL: '{"name": "chocolatey.chocolatey", "source": "https://galaxy.ansible.com"}'
-      - task: autopopulate-ansible-collection
+      - task: populate-collection
         vars:
           KEY: community.general
           VAL: '{"name": "community.general", "source": "https://galaxy.ansible.com"}'
-      - task: autopopulate-ansible-dependency
+      - task: populate-dependency
         vars:
           KEY: community.general.homebrew
           ROLE: professormanhattan.homebrew
           VAL: '{"role": "professormanhattan.homebrew", "when": "ansible_os_family == \"Darwin\""}'
-      - task: autopopulate-ansible-dependency
+      - task: populate-dependency
         vars:
           KEY: community.general.npm
           ROLE: professormanhattan.nodejs
           VAL: '{"role": "professormanhattan.nodejs"}'
-      - task: autopopulate-ansible-dependency
+      - task: populate-dependency
         vars:
           KEY: community.general.gem
           ROLE: professormanhattan.ruby
           VAL: '{"role": "professormanhattan.ruby"}'
-      - task: autopopulate-ansible-dependency
+      - task: populate-dependency
         vars:
           KEY: community.general.snap
           ROLE: professormanhattan.snapd
           VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
-      - task: autopopulate-ansible-requirements
+      - task: sync-requirements
     sources:
       - meta/main.yml
       - requirements.yml
       - tasks/**/*.yml
 
-  autopopulate-ansible-collection:
+  populate-collection:
     env:
       COLLECTIONS:
         sh: yq eval '.collections' requirements.yml
@@ -160,7 +160,7 @@ tasks:
     status:
       - '[[ "$COLLECTIONS" =~ "\{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
 
-  autopopulate-ansible-dependency:
+  populate-dependency:
     env:
       DEPENDENCIES:
         sh: yq eval '.dependencies' meta/main.yml
@@ -174,7 +174,7 @@ tasks:
     status:
       - '[[ "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
 
-  autopopulate-ansible-requirements:
+  sync-requirements:
     env:
       ROLES:
         sh: yq eval '.roles' requirements.yml
