@@ -2,83 +2,6 @@
 version: '3'
 
 tasks:
-{{#if hbs.role}}
-  autopopulate-ansible-dependencies:
-    cmds:
-      - task: autopopulate-ansible-collection
-        vars:
-          KEY: chocolatey.chocolatey
-          VAL: '{"name": "chocolatey.chocolatey", "source": "https://galaxy.ansible.com"}'
-      - task: autopopulate-ansible-collection
-        vars:
-          KEY: community.general
-          VAL: '{"name": "community.general", "source": "https://galaxy.ansible.com"}'
-      - task: autopopulate-ansible-dependency
-        vars:
-          KEY: community.general.homebrew
-          ROLE: professormanhattan.homebrew
-          VAL: '{"role": "professormanhattan.homebrew", "when": "ansible_os_family == \"Darwin\""}'
-      - task: autopopulate-ansible-dependency
-        vars:
-          KEY: community.general.npm
-          ROLE: professormanhattan.nodejs
-          VAL: '{"role": "professormanhattan.nodejs"}'
-      - task: autopopulate-ansible-dependency
-        vars:
-          KEY: community.general.gem
-          ROLE: professormanhattan.ruby
-          VAL: '{"role": "professormanhattan.ruby"}'
-      - task: autopopulate-ansible-dependency
-        vars:
-          KEY: community.general.snap
-          ROLE: professormanhattan.snapd
-          VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
-
-  autopopulate-ansible-collection:
-    env:
-      COLLECTIONS:
-        sh: yq eval '.collections' requirements.yml
-      REFERENCES:
-        sh: grep -Ril "\{{.KEY}}" ./tasks || true
-    cmds:
-      - |
-        if [[ ! "$COLLECTIONS" =~ "\{{.KEY}}" ]] && [ "$REFERENCES" ]; then
-          yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
-        fi
-    status:
-      - '[[ "$COLLECTIONS" =~ "\{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
-
-  autopopulate-ansible-dependency:
-    env:
-      DEPENDENCIES:
-        sh: yq eval '.dependencies' meta/main.yml
-      REFERENCES:
-        sh: grep -Ril "\{{.KEY}}" ./tasks || true
-    cmds:
-      - |
-        if [[ ! "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] && [ "$REFERENCES" ]; then
-          yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
-        fi
-    status:
-      - '[[ "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
-
-  autopopulate-ansible-requirements:
-    env:
-      REFS:
-        sh: yq eval '.roles' requirements.yml
-      TMP:
-        sh: mktemp
-    cmds:
-      - yq eval -j '.dependencies' meta/main.yml > "$TMP"
-      - |
-        jq -rc '.[] .role' "$TMP" | while read ROLE_NAME; do
-          if [[ ! "$REFS" =~ "$ROLE_NAME" ]]; then
-            yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
-            (echo "---" && cat requirements.yml) > requirements.yml
-          fi
-        done
-
-{{/if}}
   clean:
     desc: Removes optional folders that are cached during various tasks
     summary: |
@@ -93,15 +16,15 @@ tasks:
         sh: openssl rand -hex 14
     cmds:
       - bash .common/log log "Cleaning up the project by removing caches etc."
-      - rm .variables.json 2> /dev/null
-      - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc 2> /dev/null
-      - mv .task /tmp/\{{.RANDOM_STRING}}-task 2> /dev/null
-      - mv .venv /tmp/\{{.RANDOM_STRING}}-venv 2> /dev/null
-      - mv node_modules /tmp/\{{.RANDOM_STRING}}-node_modules 2> /dev/null
+      - rm -f .variables.json
+      - mv .autodoc /tmp/\{{.RANDOM_STRING}}-autodoc 2> /dev/null || true
+      - mv .task /tmp/\{{.RANDOM_STRING}}-task 2> /dev/null || true
+      - mv .venv /tmp/\{{.RANDOM_STRING}}-venv 2> /dev/null || true
+      - mv node_modules /tmp/\{{.RANDOM_STRING}}-node_modules 2> /dev/null || true
       - mkdir -p /tmp/\{{.RANDOM_STRING}}-empty
       - |
         for TMP_FILE in autodoc task venv node_modules; do
-          if [ -f "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ] || [ -d "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ]; then
+          if [ -d "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" ]; then
             rsync -a --delete /tmp/\{{.RANDOM_STRING}}-empty "/tmp/\{{.RANDOM_STRING}}-$TMP_FILE" &
           fi
         done
@@ -453,7 +376,15 @@ tasks:
         msg: "Cannot perform a spell check because there are no staged files"
 
   update:
-    deps: [{{#if hbs.packer}}update-latestos, {{/if}}{{#if hbs.role}}update-ansible-galaxy-id, autopopulate-ansible-dependencies, {{/if}} update-repositories]
+    deps:
+      - task: update-repositories
+{{#if hbs.packer}}
+      - task: update-latestos
+{{/if}}
+{{#if hbs.role}}
+      - task: update-ansible-galaxy-id
+      - task: :ansible:populate-dependencies
+{{/if}}
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
       - task: update-start

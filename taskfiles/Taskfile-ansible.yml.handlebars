@@ -95,10 +95,7 @@ tasks:
         msg: "The roles folder is missing. Is the project set up right?"
 {{/if}}
 {{#if hbs.role}}
-
   populate-dependencies:
-    deps:
-      - :software:yq
     desc: Attempt to automatically populate meta/main.yml and requirements.yml
     summary: |
       $ Automatically populate meta/main.yml and requirements.yml
@@ -114,75 +111,83 @@ tasks:
         * chocolatey.chocolatey        * community.general.gem
         * community.general            * community.general.npm
         * community.general.homebrew   * community.general.snap
-    vars:
+    cmds:
+      - task: autopopulate-ansible-collection
+        vars:
+          KEY: chocolatey.chocolatey
+          VAL: '{"name": "chocolatey.chocolatey", "source": "https://galaxy.ansible.com"}'
+      - task: autopopulate-ansible-collection
+        vars:
+          KEY: community.general
+          VAL: '{"name": "community.general", "source": "https://galaxy.ansible.com"}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.homebrew
+          ROLE: professormanhattan.homebrew
+          VAL: '{"role": "professormanhattan.homebrew", "when": "ansible_os_family == \"Darwin\""}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.npm
+          ROLE: professormanhattan.nodejs
+          VAL: '{"role": "professormanhattan.nodejs"}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.gem
+          ROLE: professormanhattan.ruby
+          VAL: '{"role": "professormanhattan.ruby"}'
+      - task: autopopulate-ansible-dependency
+        vars:
+          KEY: community.general.snap
+          ROLE: professormanhattan.snapd
+          VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
+      - task: autopopulate-ansible-requirements
+    sources:
+      - meta/main.yml
+      - requirements.yml
+      - tasks/**/*.yml
+
+  autopopulate-ansible-collection:
+    env:
       COLLECTIONS:
         sh: yq eval '.collections' requirements.yml
+      REFERENCES:
+        sh: grep -Ril "\{{.KEY}}" ./tasks || true
+    cmds:
+      - |
+        if [[ ! "$COLLECTIONS" =~ "\{{.KEY}}" ]] && [ "$REFERENCES" ]; then
+          yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
+        fi
+    status:
+      - '[[ "$COLLECTIONS" =~ "\{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
+
+  autopopulate-ansible-dependency:
+    env:
       DEPENDENCIES:
         sh: yq eval '.dependencies' meta/main.yml
-      IS_SNAP:
-        sh: "grep -Ril 'role_name: snapd' meta/main.yml"
-    cmds:
-      - task: _populate-collection
-        vars:
-          COLLECTION: chocolatey.chocolatey
-      - task: _populate-collection
-        vars:
-          COLLECTION: community.general
-      - task: _populate-meta
-        vars:
-          MODULE: community.general.homebrew
-          ROLE: "\{{.GALAXY_NAMESPACE}}.homebrew"
-          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.homebrew\", \"when\": \"ansible_os_family == 'Darwin'\"}"
-      - task: _populate-meta
-        vars:
-          MODULE: community.general.npm
-          ROLE: "\{{.GALAXY_NAMESPACE}}.nodejs"
-          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.nodejs\"}"
-      - task: _populate-meta
-        vars:
-          MODULE: community.general.gem
-          ROLE: "\{{.GALAXY_NAMESPACE}}.ruby"
-          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.ruby\"}"
-      - task: _populate-meta
-        vars:
-          MODULE: community.general.snap
-          ROLE: "\{{.GALAXY_NAMESPACE}}.snapd"
-          VAL: "{\"role\": \"\{{.GALAXY_NAMESPACE}}.snapd\", \"when\": \"ansible_system == 'Linux'\"}"
-    preconditions:
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! yq is required for interacting with YML files. Install it by running `bash .start.sh`."
-
-  _populate-collection:
-    deps:
-      - :software:yq
-    vars:
       REFERENCES:
-        sh: grep -Ril "\{{.COLLECTION}}" ./tasks
+        sh: grep -Ril "\{{.KEY}}" ./tasks || true
     cmds:
       - |
-        if [ "\{{.REFERENCES}}" ]
-        && [[ ! "\{{.COLLECTIONS}}" =~ "\{{.COLLECTION}}" ]]
-        && [ ! ("\{{.IS_SNAP}}" && "\{{.ROLE}}" == "\{{.GALAXY_NAMESPACE}}.snapd") ]; then
-          yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
-          TMP=$(mktemp)
-          (echo "---" && cat requirements.yml) > $TMP
-          mv $TMP requirements.yml
-        fi
-
-  _populate-meta:
-    deps:
-      - :software:yq
-    vars:
-      REFERENCES:
-        sh: grep -Ril "\{{.MODULE}}" ./tasks
-    cmds:
-      - |
-        if [ "\{{.REFERENCES}}" ] && [[ ! "\{{.DEPENDENCIES}}" =~ "\{{.ROLE}}" ]]; then
+        if [[ ! "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
-          TMP=$(mktemp)
-          (echo "---" && cat meta/main.yml) > $TMP
-          mv $TMP meta/main.yml
         fi
+    status:
+      - '[[ "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
+
+  autopopulate-ansible-requirements:
+    env:
+      ROLES:
+        sh: yq eval '.roles' requirements.yml
+      TMP:
+        sh: mktemp
+    cmds:
+      - yq eval -j '.dependencies' meta/main.yml > "$TMP"
+      - |
+        jq -rc '.[] .role' "$TMP" | while read ROLE_NAME; do
+          if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
+            ROLE_NAME="$ROLE_NAME" yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
+          fi
+        done
 
   symlink:
     desc: Symlink the current role to ~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}
@@ -194,8 +199,15 @@ tasks:
       has the namespace prepended (e.g. \{{.GALAXY_NAMESPACE}}.role_name). In order to make sure Ansible
       can find the role in both cases, a symlink in ~/.ansible/roles that points to the folder needs
       to be created.
+    vars:
+      SYMLINK:
+        sh: readlink "$HOME/.ansible/roles/professormanhattan.androidstudio"
     cmds:
       - mkdir -p "$HOME/.ansible/roles"
       - rm -f "$HOME/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}"
       - ln -s "$PWD" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}"
+    status:
+      - test -d "$HOME/.ansible/roles/professormanhattan.androidstudio"
+      - '[ "{{.SYMLINK}}" == "$PWD" ]'
+
 {{/if}}
