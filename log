@@ -30,7 +30,7 @@ function commandExists() {
 }
 
 if commandExists node; then
-  if [ "${container:=}" != 'docker' ]; then
+  if [ "${container:=}" != 'docker' ] && [ -d node_modules/signale ]; then
     ENHANCED_LOGGING=true
   fi
 fi

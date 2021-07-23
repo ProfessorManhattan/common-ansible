@@ -21,7 +21,7 @@ tasks:
       - mv .task /tmp/{{.RANDOM_STRING}}-task 2> /dev/null
       - mv .venv /tmp/{{.RANDOM_STRING}}-venv 2> /dev/null
       - mv node_modules /tmp/{{.RANDOM_STRING}}-node_modules 2> /dev/null
-      - mkdir /tmp/{{.RANDOM_STRING}}-empty
+      - mkdir -p /tmp/{{.RANDOM_STRING}}-empty
       - |
         for TMP_FILE in autodoc task venv node_modules; do
           if [ -f "/tmp/{{.RANDOM_STRING}}-$TMP_FILE" ] || [ -d "/tmp/{{.RANDOM_STRING}}-$TMP_FILE" ]; then
@@ -111,8 +111,8 @@ tasks:
     preconditions:
       - sh: "test -f requirements.yml"
         msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
-      - sh: "type ansible-galaxy &> /dev/null"
-        msg: "'ansible-galaxy' is missing from the PATH"
+      # - sh: "type ansible-galaxy &> /dev/null"
+      #   msg: "'ansible-galaxy' is missing from the PATH"
 
   reset:
     desc: Resets the project by removing all caches and updating the project
@@ -223,7 +223,7 @@ tasks:
       - :software:python
     cmds:
       - task: python-requirements-venv
-      - task: python-requirements-venv-activate
+      # - task: python-requirements-venv-activate
       - task: python-requirements-pip
       - task: galaxy-requirements
     status:
@@ -236,9 +236,9 @@ tasks:
     cmds:
       - task: python-virtualenv
       - |
-        if [ -d .venv ]; then
+        if [ -d .venv ] && [ ! -f .venv/bin/activate ]; then
           mv .venv /tmp/{{.RANDOM_STRING}}-venv2 2> /dev/null
-          mkdir /tmp/{{.RANDOM_STRING}}-empty
+          mkdir -p /tmp/{{.RANDOM_STRING}}-empty
           rsync -a --delete /tmp/{{.RANDOM_STRING}}-empty /tmp/{{.RANDOM_STRING}}-venv2 &
         fi
       - virtualenv .venv
@@ -431,7 +431,7 @@ tasks:
     cmds:
       - |
         if ls .modules/*/ > /dev/null 2>&1; then
-          for SUBMODULE_PATH in .modules/*; do
+          for SUBMODULE_PATH in .modules/*/; do
             cd $SUBMODULE_PATH
             DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
             git reset --hard HEAD
