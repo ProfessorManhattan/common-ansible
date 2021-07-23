@@ -33,7 +33,7 @@ export SYSTEM
 # @description Determines whether or not an executable is accessible
 # @example commandExists node
 function commandExists() {
-  type "$1" &> /dev/null
+  type "$1" &>/dev/null
 }
 
 # @description Verifies the SHA256 checksum of a file

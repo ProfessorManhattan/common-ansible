@@ -19,8 +19,8 @@ async function promptForShell() {
       type: "list",
       name: "operatingSystem",
       message: "Which operating system would you like to open up a terminal session with?",
-      choices: ["Archlinux", "CentOS 7", "CentOS 8", "Debian 9", "Debian 10", "Fedora 33", "Fedora 34", "Ubuntu 18.04", "Ubuntu 20.04", "Ubuntu 21.04"]
-    }
+      choices: ["Archlinux", "CentOS 7", "CentOS 8", "Debian 9", "Debian 10", "Fedora 33", "Fedora 34", "Ubuntu 18.04", "Ubuntu 20.04", "Ubuntu 21.04"],
+    },
   ])
   const choice = response.operatingSystem.toLowerCase().replace(" ", "-")
   console.log(choice)

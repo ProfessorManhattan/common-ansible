@@ -19,8 +19,8 @@ async function promptForDesktop() {
       type: "list",
       name: "operatingSystem",
       message: "Which desktop operating system would you like to provision?",
-      choices: ["Archlinux", "CentOS", "Debian", "Fedora", "macOS", "Ubuntu", "Windows"]
-    }
+      choices: ["Archlinux", "CentOS", "Debian", "Fedora", "macOS", "Ubuntu", "Windows"],
+    },
   ])
   return response.operatingSystem.toLowerCase()
 }
@@ -37,11 +37,11 @@ async function promptForPlatform() {
     Parallels: "parallels",
     VirtualBox: "virtualbox",
     "VMWare Fusion": "vmware_fusion",
-    "VMWare Workstation": "vmware_workstation"
+    "VMWare Workstation": "vmware_workstation",
   }
   // Source: https://github.com/zacanger/is-program-installed/blob/master/index.js
   const opts = {
-    stdio: "ignore"
+    stdio: "ignore",
   }
 
   const exec = (cmd) => execSync(cmd, opts)
@@ -69,7 +69,7 @@ async function promptForPlatform() {
       process.env.XDG_DATA_HOME && process.env.XDG_DATA_HOME + "/applications",
       process.env.HOME && process.env.HOME + "/.local/share/applications",
       "/usr/share/applications",
-      "/usr/local/share/applications"
+      "/usr/local/share/applications",
     ]
       .filter(Boolean)
       .filter(isDirectory)
@@ -135,8 +135,8 @@ async function promptForPlatform() {
       type: "list",
       name: "virtualizationPlatform",
       message: "Which virtualization platform would you like to use?",
-      choices
-    }
+      choices,
+    },
   ])
   return platformMap[response.virtualizationPlatform]
 }
