@@ -173,7 +173,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log log "Running \"ansible-galaxy install -r requirements.yml --ignore-errors\""
+          bash .common/log log "Running 'ansible-galaxy install -r requirements.yml --ignore-errors'"
           ansible-galaxy install -r requirements.yml --ignore-errors
           bash .common/log success "Successfully installed Ansible Galaxy requirements"
         fi
@@ -220,10 +220,10 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running \"npm install\""
+          bash .common/log info "Running 'npm install'"
           npm install
           npm audit fix --force || true
-          bash .common/log success "Successfully ran \"npm install\""
+          bash .common/log success "Successfully ran 'npm install'"
         fi
     sources:
       - package.json
@@ -245,7 +245,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running \"npm install -g {{.NPM_PACKAGE}}\""
+          bash .common/log info "Running 'npm install -g {{.NPM_PACKAGE}}'"
           npm install -g {{.NPM_PACKAGE}}
           bash .common/log success "`The npm {{.NPM_PACKAGE}}` package is globally installed"
         fi

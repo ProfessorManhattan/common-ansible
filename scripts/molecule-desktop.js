@@ -20,8 +20,8 @@ async function promptForDesktop() {
       type: "list",
       name: "operatingSystem",
       message: "Which desktop operating system would you like to test the Ansible play against?",
-      choices: ["Archlinux", "CentOS", "Debian", "Fedora", "macOS", "Ubuntu", "Windows"],
-    },
+      choices: ["Archlinux", "CentOS", "Debian", "Fedora", "macOS", "Ubuntu", "Windows"]
+    }
   ])
   const env = response.operatingSystem.toLowerCase()
   console.log(env)

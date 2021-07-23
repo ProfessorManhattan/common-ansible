@@ -11,7 +11,7 @@ tasks:
     cmds:
       - |
         if [ -z "$SNYK_API_TOKEN" ]; then
-          bash .common/log warn "You are not currently authenticated with Snyk. Sign in by running \"snyk auth\"."
-          bash .common/log info "Initiating the sign-in process for Snyk by running \"snyk auth\".."
+          bash .common/log warn "You are not currently authenticated with Snyk. Sign in by running 'snyk auth'."
+          bash .common/log info "Initiating the sign-in process for Snyk by running 'snyk auth'.."
           snyk auth
         fi
