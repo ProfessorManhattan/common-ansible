@@ -178,19 +178,25 @@ tasks:
 
 {{#if hbs.ansible}}
   galaxy-requirements:
-    deps: [python-requirements]
     cmds:
+      - . .venv/bin/activate
       - |
         if [ "${container:=}" != 'docker' ]; then
           bash .common/log log "Running 'ansible-galaxy install -r requirements.yml --ignore-errors'"
-          ansible-galaxy install -r requirements.yml --ignore-errors
-          bash .common/log success "Successfully installed Ansible Galaxy requirements"
+          if type ansible-galaxy &> /dev/null; then
+            ansible-galaxy install -r requirements.yml --ignore-errors || true
+            bash .common/log success "Successfully installed Ansible Galaxy requirements"
+          else
+            bash .common/log warn "Ansible Galaxy requirements were not installed because 'ansible-galaxy' is not available in the PATH"
+          fi
         fi
     sources:
       - requirements.yml
     preconditions:
       - sh: "test -f requirements.yml"
         msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
+      - sh: "type ansible-galaxy &> /dev/null"
+        msg: "'ansible-galaxy' is missing from the PATH"
 
 {{/if}}
 {{#if hbs.packer}}
@@ -277,7 +283,7 @@ tasks:
         if [ "${container:=}" != 'docker' ]; then
           bash .common/log info "Running 'npm install -g \{{.NPM_PACKAGE}}'"
           npm install -g \{{.NPM_PACKAGE}}
-          bash .common/log success "`The npm \{{.NPM_PACKAGE}}` package is globally installed"
+          bash .common/log success "The npm '\{{.NPM_PACKAGE}}' package is globally installed"
         fi
     status:
       - type \{{.NPM_PACKAGE_BIN}} &> /dev/null
@@ -703,6 +709,7 @@ tasks:
       ACTIONS_DESCRIPTION:
         sh: jq -r '.autodoc_actions_description' .variables.json
     cmds:
+      - . .venv/bin/activate
       - mod-ansible-autodoc --todo-title "### TODO" --actions-title "## Features" --actions-description "$ACTIONS_DESCRIPTION"
           --tags-title "### Tags" --variables-title "## Variables"
       - task: _mod-ansible-autodoc
@@ -895,6 +902,7 @@ tasks:
       TAG:
         sh: jq -r '.variables.latestos_tag' template.json
     cmds:
+      - . .venv/bin/activate
       - |
         if [ "${container:=}" != 'docker' ] && [[ '\{{.TAG}}' != 'macos' ]]; then
           latestos \{{.TAG}}

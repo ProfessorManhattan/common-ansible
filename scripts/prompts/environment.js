@@ -22,8 +22,8 @@ async function promptForEnv() {
       type: "list",
       name: "environment",
       message: "Which environment would you like to use?",
-      choices: getDirectories("environments/"),
-    },
+      choices: getDirectories("environments/")
+    }
   ])
   const env = response.environment
   const elements = fs.readdirSync("environments/" + env + "/")

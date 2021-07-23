@@ -25,7 +25,7 @@ function ensureLocalPath() {
   # shellcheck disable=SC2016
   PATH_STRING='\nexport PATH=$HOME/.local/bin:$PATH'
   if grep -L "$PATH_STRING" "$BASH_PROFILE"; then
-    echo -e "$PATH_STRING" >>"$BASH_PROFILE"
+    echo -e "$PATH_STRING" >> "$BASH_PROFILE"
     success "Updated the PATH variable to include ~/.local/bin in the $BASH_PROFILE file"
   fi
 }
@@ -222,7 +222,7 @@ function ensurePythonInstalled() {
       # shellcheck disable=SC2016
       PATH_STRING='\nexport PATH=$HOME/.local/miniconda/bin:$PATH'
       if grep -L "$PATH_STRING" "$BASH_PROFILE"; then
-        echo -e "$PATH_STRING" >>"$BASH_PROFILE"
+        echo -e "$PATH_STRING" >> "$BASH_PROFILE"
         success "Updated the PATH variable to include ~/.local/miniconda/bin in the $BASH_PROFILE file"
       else
         info "The ~/.local/miniconda/bin folder is already included in the PATH variable"
