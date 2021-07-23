@@ -184,7 +184,7 @@ tasks:
         if [ "${container:=}" != 'docker' ]; then
           bash .common/log log "Running 'ansible-galaxy install -r requirements.yml --ignore-errors'"
           if type ansible-galaxy &> /dev/null; then
-            ansible-galaxy install -r requirements.yml --ignore-errors || true
+            ansible-galaxy install -r requirements.yml --ignore-errors || true # TODO: Remove
             bash .common/log success "Successfully installed Ansible Galaxy requirements"
           else
             bash .common/log warn "Ansible Galaxy requirements were not installed because 'ansible-galaxy' is not available in the PATH"
@@ -361,12 +361,15 @@ tasks:
 
   python-requirements-pip:
     cmds:
+      - . .venv/bin/activate
       - pip3 install -r requirements.txt
     sources:
       - requirements.txt
     preconditions:
       - sh: "test -f requirements.txt"
         msg: "The requirements.txt file is missing!"
+      - sh: "test -f .venv/bin/activate"
+        msg: "The Python virtualenv '.venv/bin/activate' file is missing!"
 
   python-virtualenv:
     cmds:
