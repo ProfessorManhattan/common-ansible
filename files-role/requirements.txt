@@ -6,5 +6,6 @@ mod-ansible-autodoc
 molecule-docker
 molecule-vagrant
 pre-commit-hooks
+proselint
 python-vagrant
 yamllint

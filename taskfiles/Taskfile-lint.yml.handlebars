@@ -1,6 +1,12 @@
 ---
 version: '3'
 
+vars:
+  IGNORE_FOLDERS:
+    sh: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+      -o -name .modules -o -name .npm -o -name .task -o -name .venv -o -name node_modules
+      -o -name venv
+
 tasks:
   all:
     desc: Lint the project by running all the linters in parallel
@@ -100,13 +106,19 @@ tasks:
 
       For more information on Hadolint, see: https://github.com/hadolint/hadolint
     cmds:
-      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky -o -name .modules
-          -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune -o -type f \( -name Dockerfile -o -name Dockerfile.j2 \)
-          -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
+      - find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name Dockerfile -o
+          -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work
+          megabytelabs/hadolint:slim
     sources:
       - "**/(Dockerfile|Dockerfile.j2)"
 
 {{/if}}
+  lint-staged:
+    deps:
+      - :npm:lint-staged
+    cmds:
+      - lint-staged
+
   markdown-broken-links:
     deps:
       - :npm:markdown-link-check
@@ -120,9 +132,8 @@ tasks:
       For more information on `markdown-link-check`, see the following page:
       https://github.com/tcort/markdown-link-check
     cmds:
-      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name
-          .husky -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name
-          venv \) -prune -o -type f \( -name \*.md \) -print0 | xargs -0 -r -n1 markdown-link-check
+      - find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
+          xargs -0 -r -n1 markdown-link-check
     sources:
       - "**/*.md"
 
@@ -144,9 +155,33 @@ tasks:
           packer validate "$TEMPLATE"
         done
     sources:
-      - "**/*template.json"
+      - "*template.json"
 
 {{/if}}
+  private-keys:
+    deps:
+      - :common:python-requirements
+    desc: Scan for private keys
+    summary: |
+      $ Scan for private keys
+
+      This task will scan the project for private keys that might not belong where they are. You
+      can pass this task a single file or let it loop through the project. If you loop through
+      the project, common folders like 'node_modules/' and 'venv/' will be ignored.
+
+      Example scanning the whole project:
+      > task lint:private-keys
+
+      Example scanning single file:
+      > task lint:private-keys -- filename.ext
+    cmds:
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f -print0 | xargs -0 -r -n1 detect-private-key
+        else
+          detect-private-key \{{.CLI_ARGS}}
+        fi
+
 {{#if hbs.python}}
   python:
     deps:
@@ -192,11 +227,36 @@ tasks:
 
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
-      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
-          -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune
-          -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 | xargs -0 -r -n1 shellcheck
+      - find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 |
+          xargs -0 -r -n1 shellcheck
     sources:
       - "**/*.(sh|sh.j2)"
+
+  spelling:
+    deps:
+      - :npm:cspell
+      - :software:git
+      - :software:node
+    desc: Checks for spelling errors in staged files
+    summary: |
+      $ Check for spelling errors in staged files
+
+      Use cspell to check for possible spelling errors using the configuration stored in `.common/.cspell.json`.
+
+      This task is utilized by the pre-commit hook. For more information about cspell, see:
+      https://www.npmjs.com/package/cspell
+
+      Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
+      files by running:
+      > npx cspell '**/*.js'
+    env:
+      STAGED_FILES:
+        sh: git diff --cached --name-only
+    cmds:
+      - cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
+    preconditions:
+      - sh: "git diff --cached --name-only"
+        msg: "Cannot perform a spell check because there are no staged files"
 
 {{#if hbs.vagrant}}
   vagrant:

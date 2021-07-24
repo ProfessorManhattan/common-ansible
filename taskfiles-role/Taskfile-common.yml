@@ -113,6 +113,12 @@ tasks:
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
+  precommit:
+    deps:
+      - :fix:json
+      - :fix:misc
+      - :lint:private-keys
+
   prepare-release:
     deps:
       - :npm:standard-version
@@ -274,32 +280,6 @@ tasks:
       - sh: "type docker &> /dev/null"
         msg: "Docker is not installed! Install it by running `task software:docker`."
 
-  spelling:
-    deps:
-      - :npm:cspell
-      - :software:git
-      - :software:node
-    desc: Checks for spelling errors in staged files
-    summary: |
-      $ Check for spelling errors in staged files
-
-      Use cspell to check for possible spelling errors using the configuration stored in `.common/.cspell.json`.
-
-      This task is utilized by the pre-commit hook. For more information about cspell, see:
-      https://www.npmjs.com/package/cspell
-
-      Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
-      files by running:
-      > npx cspell '**/*.js'
-    env:
-      STAGED_FILES:
-        sh: git diff --cached --name-only
-    cmds:
-      - cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
-    preconditions:
-      - sh: "git diff --cached --name-only"
-        msg: "Cannot perform a spell check because there are no staged files"
-
   update-all:
     deps:
       - update-contributing
@@ -352,7 +332,7 @@ tasks:
         find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" | while read FILE; do
           hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}" &
         done
-      - wait
+        wait
     sources:
       - .common/**/*.handlebars
       - .variables.json

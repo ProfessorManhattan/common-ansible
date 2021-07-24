@@ -5,6 +5,7 @@ flake8
 molecule-docker
 molecule-vagrant
 pre-commit-hooks
+proselint
 python-vagrant
 pywinrm>=0.3.0
 yamllint
