@@ -9,7 +9,7 @@ tasks:
       - ansible
       - docker
       - python
-      - shellcheck
+      - scripts
       - yaml
 
   ansible:

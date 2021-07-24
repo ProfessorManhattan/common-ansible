@@ -10,6 +10,6 @@ info "Linting and fixing the staged files"
 lint-staged
 
 info "Reporting possible spelling errors in the staged files"
-task common:spelling
+task spelling
 
 success "Successfully validated the commit"
