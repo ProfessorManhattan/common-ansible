@@ -17,6 +17,7 @@
   "scripts": {
     "commit": "git-cz",
     "postinstall": "if [ -d .git ]; then husky install; fi && if [ -f .husky/pre-commit ]; then chmod 755 .husky/pre-commit; fi",
+    "prepare-release": "task prepare-release",
     "version": "standard-version --no-verify"
   },
   "config": {
