@@ -2,6 +2,58 @@
 version: "3"
 
 tasks:
+  ansibler-compatibility-chart:
+    cmds:
+      - ansibler --generate-compatibility-chart
+    sources:
+      - .molecule-results/*.txt
+
+  ansibler-role-dependencies:
+    cmds:
+      - ansibler --role-dependencies
+    sources:
+      - requirements.yml
+
+  ansibler-tasks:
+    deps:
+      - ansibler-role-dependencies
+
+  ansibler:
+    deps:
+      - :common:python-requirements
+    cmds:
+      - task: ansibler-compatibility-chart
+      - task: ansibler-tasks
+    preconditions:
+      - sh: "type ansibler &> /dev/null"
+        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+    status:
+      - true
+
+  environment-prompt:
+    deps:
+      - :common:nodejs-dependencies
+    env:
+      ENVIRONMENT:
+        sh: node .common/scripts/prompts/environment.js
+    cmds:
+      - |
+        if [ ! -z "$ENVIRONMENT" ]; then
+          for ITEM in "environments/$ENVIRONMENT/*"; do
+            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+              t info "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
+            else
+              rm -f $ITEM
+              ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
+            fi
+          done
+        fi
+    preconditions:
+      - sh: "test -d node_modules"
+        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
+    status:
+      - '[[ -z "{{.CLI_ARGS}}" ]]'
+
   environment:
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
@@ -19,7 +71,7 @@ tasks:
         if [ ! -z "{{.CLI_ARGS}}" ]; then
           for ITEM in environments/{{.CLI_ARGS}}/*; do
             if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              echo "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
+              t info "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
             else
               rm -f $ITEM
               ln -s "./environments/{{.CLI_ARGS}}/$ITEM" "$ITEM"
@@ -27,30 +79,6 @@ tasks:
           done
         fi
       - task: environment-prompt
-
-  environment-prompt:
-    deps:
-      - :common:nodejs-dependencies
-    env:
-      ENVIRONMENT:
-        sh: node .common/scripts/prompts/environment.js
-    cmds:
-      - |
-        if [ ! -z "$ENVIRONMENT" ]; then
-          for ITEM in "environments/$ENVIRONMENT/*"; do
-            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              echo "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
-            else
-              rm -f $ITEM
-              ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
-            fi
-          done
-        fi
-    preconditions:
-      - sh: "test -d node_modules"
-        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
-    status:
-      - '[[ -z "{{.CLI_ARGS}}" ]]'
 
   find-missing-files:
     desc: Find roles that are missing files

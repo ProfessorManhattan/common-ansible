@@ -4,14 +4,15 @@ version: "3"
 tasks:
   all:
     desc: Apply automatic code formatting techniques (Prettier, Black, and Shellcheck)
-    deps: [formatting, python, scripts]
-
-  _all:
-    deps: [_formatting, _python, _scripts]
+    deps:
+      - formatting
+      - python
+      - scripts
 
   formatting:
     deps:
-      - :common:nodejs-dependencies
+      - :npm:prettier
+      - :npm:prettier-package-json
     desc: Automatically format most files using Prettier
     summary: |
       $ Automatically format most files using Prettier
@@ -26,12 +27,8 @@ tasks:
 
       For more information on Prettier, see: https://prettier.io/
     cmds:
-      - bash .common/log log "Running 'npm run fix:prettier' to automatically format code"
-      - npm run fix:prettier
-
-  _formatting:
-    cmds:
-      - task: formatting
+      - prettier --write .
+      - prettier-package-json --write package.json
     sources:
       - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
 
@@ -51,18 +48,13 @@ tasks:
 
       For more information on Black, see: https://github.com/psf/black
     cmds:
-      - bash .common/log log "Automatically formatting Python code with 'black'"
       - black --force-exclude '\.common\/|\.modules\/|node_modules\/' .
-
-  _python:
-    cmds:
-      - task: python
     sources:
       - "**/*.py"
 
   scripts:
     deps:
-      - :common:nodejs-dependencies
+      - :npm:shellcheck
     desc: (Experimental) Automatically apply fixes to .sh and .sh.j2 files using Shellcheck
     summary: |
       $ Automatically apply fixes to shell scripts using Shellcheck
@@ -88,12 +80,8 @@ tasks:
 
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
-      - bash .common/log warn "Autoformatting with shellcheck is an experimental feature. You must test the files after the auto-formatting."
-      - bash .common/log log "Running 'npm run fix:shellcheck' to automatically fix shell scripts"
-      - npm run fix:shellcheck
-
-  _scripts:
-    cmds:
-      - task: scripts
+      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+        -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune
+        -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 | xargs -0 shellcheck -f diff | git apply
     sources:
       - "**/*.(sh|sh.j2)"

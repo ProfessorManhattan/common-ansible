@@ -15,7 +15,7 @@ tasks:
       `tests/ansible.cfg` to run the play. At the beginning of the play, you will
       be prompted for the sudo password.
     cmds:
-      - bash .common/log info "Running the Ansible play locally"
+      - t info "Running the Ansible play locally"
       - cp tests/inventory inventory
       - if [ ! -f main.yml.bak ]; then cp main.yml main.yml.bak; fi
       - cp tests/test.yml main.yml
@@ -24,15 +24,29 @@ tasks:
       - ansible-playbook --ask-sudo-pass main.yml
       - |
         if [ $? -eq 0 ]; then
-          bash .common/log success "Local testing of the Ansible play was successful!"
+          t success "Local testing of the Ansible play was successful!"
         else
-          bash .common/log error "Finished local testing of the Ansible play with error(s)"
+          t error "Finished local testing of the Ansible play with error(s)"
         fi
       - mv main.yml.bak main.yml
       - mv ansible.cfg.bak ansible.cfg
     preconditions:
       - sh: typeof ansible &> /dev/null
         msg: "Ansible is not available. Install the dependencies by running `task common:requirements`."
+
+  molecule-desktop-prompt:
+    deps:
+      - :software:node
+    env:
+      OPERATING_SYSTEM:
+        sh: node .common/scripts/prompts/molecule-desktop.js
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$OPERATING_SYSTEM" ]; then
+          molecule converge -s "${OPERATING_SYSTEM}-desktop"
+        fi
+    status:
+      - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
   molecule-desktop:
     deps:
@@ -59,26 +73,10 @@ tasks:
       - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
       - |
         if [ ! -z "{{.CLI_ARGS}}" ]; then
-          bash .common/log info "The VM used for this test will be left open for inspection after the Molecule test completes."
-          bash .common/log log "Running 'molecule converge -s {{.CLI_ARGS}}-desktop'"
+          t info "The VM used for this test will be left open for inspection after the Molecule test completes."
           molecule converge -s {{.CLI_ARGS}}-desktop
         fi
       - task: molecule-desktop-prompt
-
-  molecule-desktop-prompt:
-    deps:
-      - :software:node
-    env:
-      OPERATING_SYSTEM:
-        sh: node .common/scripts/prompts/molecule-desktop.js
-    cmds:
-      - |
-        if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$OPERATING_SYSTEM" ]; then
-          bash .common/log log "Running 'molecule converge -s ${OPERATING_SYSTEM}-desktop'"
-          molecule converge -s "${OPERATING_SYSTEM}-desktop"
-        fi
-    status:
-      - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
   molecule-docker:
     deps:
@@ -101,11 +99,9 @@ tasks:
     cmds:
       - |
         if [ "{{.SNAP_REFS}}" ]; then
-          bash .common/log info "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap'."
-          bash .common/log log "Running 'molecule test -s docker-snap'"
+          t warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap'."
           molecule test -s docker-snap
         else
-          bash .common/log log "Running 'molecule test -s docker'"
           molecule test -s docker
         fi
 
@@ -137,16 +133,28 @@ tasks:
         if [ "{{.CLI_ARGS}}" ]; then
           if [ "{{.CLI_ARGS}}" == 'matrix']; then
             mkdir -p .molecule-results
-            bash .common/log info "Storing full E2E test results to '.molecule-results/{{.MOLECULE_DATE}}-default.txt', this can take awhile.."
-            bash .common/log log "Running 'PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt'"
+            t info "Storing full E2E test results to '.molecule-results/{{.MOLECULE_DATE}}-default.txt', this can take awhile.."
             PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt
           else
-            bash .common/log error "Invalid CLI arguments passed in. See 'task test:molecule-e2e --summary'."
+            t error "Invalid CLI arguments passed in. See 'task test:molecule-e2e --summary'."
         else
-          bash .common/log info "This is a full E2E test and can take awhile.."
-          bash .common/log log "Running 'molecule test'"
+          t info "This is a full E2E test and can take awhile.."
           molecule test
         fi
+
+    vagrant-prompt:
+      deps:
+        - :software:node
+      env:
+        VAGRANT_COMMAND:
+          sh: node .common/scripts/prompts/vagrant-up.js
+      cmds:
+        - |
+          if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$VAGRANT_COMMAND" ]; then
+            vagrant up "$VAGRANT_COMMAND"
+          fi
+      status:
+        - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
     vagrant:
       deps:
@@ -177,22 +185,6 @@ tasks:
       cmds:
         - |
           if [ ! -z "{{.CLI_ARGS}}" ]; then
-            bash .common/log log "Running 'vagrant up {{.CLI_ARGS}}'"
             vagrant up {{.CLI_ARGS}}
           fi
         - task: vagrant-prompt
-
-    vagrant-prompt:
-      deps:
-        - :software:node
-      env:
-        VAGRANT_COMMAND:
-          sh: node .common/scripts/prompts/vagrant-up.js
-      cmds:
-        - |
-          if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$VAGRANT_COMMAND" ]; then
-            bash .common/log log "Running 'vagrant up $VAGRANT_COMMAND'"
-            vagrant up "$VAGRANT_COMMAND"
-          fi
-      status:
-        - '[[ ! -z "{{.CLI_ARGS}}" ]]'

@@ -1,0 +1,108 @@
+---
+version: '3'
+
+tasks:
+  latestos:
+    deps:
+      - :common:python-requirements
+      - :software:jq
+    vars:
+      TAG:
+        sh: jq -r '.variables.latestos_tag' template.json
+    cmds:
+      - . .venv/bin/activate
+      - |
+        if [ "${container:=}" != 'docker' ] && [[ '\{{.TAG}}' != 'macos' ]]; then
+          latestos \{{.TAG}}
+        fi
+    status:
+      - '[[ "\{{.TAG}}}" == "macos" ]] || [ "${container:=}" == "docker" ]'
+    preconditions:
+      - sh: test -f template.json
+        msg: "The `template.json` file is missing from the root of this project."
+
+  populate-descriptions:
+    deps:
+      - :software:jq
+    vars:
+      DESCRIPTION_TEMPLATE:
+        sh: jq -r '.description_template' .variables.json
+      VERSION_DESCRIPTION:
+        sh: jq -r '.version_description' .variables.json
+    env:
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq --arg a "\{{.DESCRIPTION_TEMPLATE}}" --arg b "\{{.VERSION_DESCRIPTION}}" '.variables.description = $a | .variables.version_description = $b'
+          template.json > "$TMP"
+      - mv "$TMP" template.json
+    sources:
+      - template.json
+
+  update-readme-platform:
+    cmds:
+      - |
+        if ! grep -q '"type": "\{{.TYPE}}"' template.json; then
+          if [[ '{{OS}}' == 'darwin' ]]; then
+            sed -i .bak '/SUPPORTED_OS_\{{.TYPE}}/d' README.md && rm README.md.bak
+          elif [[ '{{OS}}' == 'linux' ]]; then
+            sed -i '/SUPPORTED_OS_\{{.TYPE}}/d' README.md
+          fi
+        fi
+
+  update-readme:
+    cmds:
+      - task: update-readme-platform
+        vars:
+          TYPE: hyperv-iso
+      - task: update-readme-platform
+        vars:
+          TYPE: parallels-iso
+      - task: _update-readme-platform
+        vars:
+          TYPE: qemu
+      - task: _update-readme-platform
+        vars:
+          TYPE: virtualbox-iso
+      - task: _update-readme-platform
+        vars:
+          TYPE: vmware-iso
+
+  update-variables:
+    deps:
+      - :software:jq
+    vars:
+      ISO_VERSION:
+        sh: jq -r '.variables.iso_version' template.json
+      MAJOR_VERSION:
+        sh: cut -d '.' -f 1 <<< \{{.ISO_VERSION}}
+      MINOR_VERSION:
+        sh: cut -d '.' -f 2 <<< \{{.ISO_VERSION}}
+    env:
+      TEMPLATE_JSON:
+        sh: jq -r '.' template.json
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq -S --arg templatejson "$TEMPLATE_JSON" '.template_json = ($templatejson | fromjson)' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
+      - |
+        if [[ '\{{OS}}' == 'darwin' ]]; then
+          sed -i .bak "s^MAJOR_VERSION^\{{.MAJOR_VERSION}}^g" .variables.json && rm .variables.json.bak
+          sed -i .bak "s^MINOR_VERSION^\{{.MINOR_VERSION}}^g" .variables.json && rm .variables.json.bak
+          sed -i .bak "s^ISO_VERSION^\{{.ISO_VERSION}}^g" .variables.json && rm .variables.json.bak
+        elif [[ '\{{OS}}' == 'linux' ]]; then
+          sed -i "s^MAJOR_VERSION^\{{.MAJOR_VERSION}}^g" .variables.json
+          sed -i "s^MINOR_VERSION^\{{.MINOR_VERSION}}^g" .variables.json
+          sed -i "s^ISO_VERSION^\{{.ISO_VERSION}}^g" .variables.json
+        fi
+    sources:
+      - template.json
+      - .variables.json
+    preconditions:
+      - sh: test -f template.json
+        msg: "A `template.json` file is not present. This project uses values stored in `template.json` to generate certain
+          meta artifacts. Please add a `template.json`. You can find an example of one in this repository:
+          https://gitlab.com/megabyte-labs/packer/ubuntu-desktop"
+      - sh: test -f .variables.json
+        msg: "The `.variables.json` file is missing!"

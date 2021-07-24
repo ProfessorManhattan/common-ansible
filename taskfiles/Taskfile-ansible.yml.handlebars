@@ -2,6 +2,46 @@
 version: '3'
 
 tasks:
+  ansibler-compatibility-chart:
+    cmds:
+      - ansibler --generate-compatibility-chart
+    sources:
+      - .molecule-results/*.txt
+
+{{#if hbs.role}}
+  ansibler-populate-platforms:
+    cmds:
+      - ansibler --populate-platforms
+    sources:
+      - tasks/main.yml
+      - .molecule-results/*.txt
+
+{{/if}}
+  ansibler-role-dependencies:
+    cmds:
+      - ansibler --role-dependencies
+    sources:
+      - requirements.yml
+
+  ansibler-tasks:
+    deps:
+{{#if hbs.role}}
+      - ansibler-populate-platforms
+{{/if}}
+      - ansibler-role-dependencies
+
+  ansibler:
+    deps:
+      - :common:python-requirements
+    cmds:
+      - task: ansibler-compatibility-chart
+      - task: ansibler-tasks
+    preconditions:
+      - sh: "type ansibler &> /dev/null"
+        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+    status:
+      - true
+
 {{#if hbs.playbook}}
   environment-prompt:
     deps:
@@ -74,7 +114,51 @@ tasks:
 
 {{/if}}
 {{#if hbs.role}}
+  mod-ansible-autodoc-variables:
+    env:
+      ROLE_VARIABLES:
+        sh: jq -r '.role_variables' ansible_variables.json
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
+
+  mod-ansible-autodoc:
+    deps:
+      - :common:python-requirements
+      - :software:jq
+    env:
+      ACTIONS_DESCRIPTION:
+        sh: jq -r '.autodoc_actions_description' .variables.json
+      TAGS_DESCRIPTION:
+        sh: jq -r '.autodoc_tags_description' .variables.json
+      TODO_DESCRIPTION:
+        sh: jq -r '.autodoc_todo_description' .variables.json
+      VARIABLES_DESCRIPTION:
+        sh: jq -r '.autodoc_variables_description' .variables.json
+    cmds:
+      - . .venv/bin/activate
+      - mod-ansible-autodoc --actions-title "## Features" --actions-description "$ACTIONS_DESCRIPTION"
+          --tags-title "### Tags" --tags-description "$TAGS_DESCRIPTION" --todo-title "### TODO"
+          --todo-description "$TODO_DESCRIPTION" --variables-title "## Variables" --variables-description
+          "$VARIABLES_DESCRIPTION"
+      - task: _mod-ansible-autodoc
+      - mkdir -p .autodoc
+      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md
+          ansible_variables_header.md .autodoc
+    sources:
+      - "tasks**/*.yml"
+      - ".autodoc/*"
+    preconditions:
+      - sh: "type mod-ansible-autodoc &> /dev/null"
+        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
+          by running `task common:requirements`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt`
+          file."
+
   populate-collection:
+    deps:
+      - :software:yq
     env:
       COLLECTIONS:
         sh: yq eval '.collections' requirements.yml
@@ -140,6 +224,8 @@ tasks:
       - tasks/**/*.yml
 
   populate-dependency:
+    deps:
+      - :software:yq
     env:
       DEPENDENCIES:
         sh: yq eval '.dependencies' meta/main.yml
@@ -196,9 +282,12 @@ tasks:
       - ln -s "$PWD" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}"
     status:
       - test -d "$HOME/.ansible/roles/professormanhattan.androidstudio"
-      - '[ "{{.SYMLINK}}" == "$PWD" ]'
+      - '[ "\{{.SYMLINK}}" == "$PWD" ]'
 
   sync-requirements:
+    deps:
+      - :software:jq
+      - :software:yq
     env:
       ROLES:
         sh: yq eval '.roles' requirements.yml
@@ -212,5 +301,61 @@ tasks:
             ROLE_NAME="$ROLE_NAME" yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
           fi
         done
+
+  update-galaxy-id:
+    vars:
+      HAS_PROJECT_ID:
+        sh: jq -e 'has("blueprint.ansible_galaxy_project_id")' package.json || true
+    env:
+      PROJECT_ID:
+        sh: 'ansible-galaxy info "\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}'
+      TMP:
+        sh: mktemp
+    cmds:
+      - |
+        if [ "$PROJECT_ID" ]; then
+          jq --arg a "${PROJECT_ID}" '.blueprint.ansible_galaxy_project_id = $a' package.json > "$TMP"
+          mv "$TMP" package.json
+        fi
+    status:
+      - '[[ "\{{.HAS_PROJECT_ID}}" == "true" ]]'
+
+  update-variables:
+    deps:
+      - :software:jq
+      - :software:yq
+    env:
+      DESCRIPTION:
+        sh: yq e '.galaxy_info.description' meta/main.yml
+      DESCRIPTION_FIRST_LETTER:
+        sh: echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]'
+      DESCRIPTION_LOWERCASE:
+        sh: echo "${DESCRIPTION_FIRST_LETTER}${DESCRIPTION:1}"
+      DESCRIPTION_SUBHEADER:
+        sh: echo "An Ansible role that ${LOWERCASE_DESCRIPTION}"
+      DESCRIPTION_ALT:
+        sh: echo "This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
+      GALAXY_INFO:
+        sh: yq e -j '.galaxy_info' meta/main.yml
+      TMP:
+        sh: mktemp
+    cmds:
+      - jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO"
+          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
+    preconditions:
+      - sh: "type jq &> /dev/null"
+        msg: "jq is not installed! You can install it by running `task software:jq`."
+      - sh: "type yq &> /dev/null"
+        msg: "yq is not installed! You can install it by running `task software:yq`."
+      - sh: "test -f meta/main.yml"
+        msg: "The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
+          example of one at https://github.com/ProfessorManhattan/ansible-snapd."
+      - sh: test -f .variables.json
+        msg: "The `.variables.json` file is missing!"
+    sources:
+      - ".common/variables.\{{.REPOSITORY_SUBTYPE}}.json"
+      - meta/main.yml
+      - package.json
 
 {{/if}}

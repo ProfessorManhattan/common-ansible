@@ -1,0 +1,89 @@
+---
+version: '3'
+
+tasks:
+  cspell:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: cspell
+          NPM_PACKAGE_BIN: cspell
+
+  hbs:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: hbs-cli
+          NPM_PACKAGE_BIN: hbs
+
+  lint-staged:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: lint-staged
+          NPM_PACKAGE_BIN: lint-staged
+
+  markdown-link-check:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: markdown-link-check
+          NPM_PACKAGE_BIN: markdown-link-check
+
+  npm-install:
+    deps:
+      - :software:node
+    cmds:
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          npm install -g \{{.NPM_PACKAGE}}
+          t success "The npm '\{{.NPM_PACKAGE}}' package is globally installed"
+        fi
+    status:
+      - type \{{.NPM_PACKAGE_BIN}} &> /dev/null
+
+  prettier-package-json:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: prettier-package-json
+          NPM_PACKAGE_BIN: prettier-package-json
+
+  prettier:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: prettier-plugin-sh
+          NPM_PACKAGE_BIN: NO_BIN
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: prettier
+          NPM_PACKAGE_BIN: prettier
+
+  readme:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: '@appnest/readme'
+          NPM_PACKAGE_BIN: readme
+
+  shellcheck:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: shellcheck
+          NPM_PACKAGE_BIN: shellcheck
+
+  snyk:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: snyk
+          NPM_PACKAGE_BIN: snyk
+
+  standard-version:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: standard-version
+          NPM_PACKAGE_BIN: standard-version

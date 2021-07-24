@@ -1,0 +1,58 @@
+---
+version: "3"
+
+tasks:
+  update-labels:
+    deps:
+      - :software:jq
+    vars:
+      GROUP_URL: https://gitlab.com/megabyte-labs/dockerfile
+    env:
+      DESCRIPTION:
+        sh: jq -r '.description' package.json
+      SLUG:
+        sh: jq -r '.slug' .variables.json
+    cmds:
+      - |
+        if ! grep 'org.opencontainers.image.documentation' Dockerfile; then
+          echo 'ARG BUILD_DATE' >> Dockerfile
+          echo 'ARG REVISION' >> Dockerfile
+          echo 'ARG VERSION' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'LABEL maintainer="Megabyte Labs <help@megabyte.space>"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.authors="Brian Zalewski &lt;brian@megabyte.space&gt;"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.created=$BUILD_DATE' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.description="[[ Injected by running `task update` ]]"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.documentation="[[ Injected by running `task update` ]]"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.licenses="MIT"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.revision=$REVISION' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.source="[[ Injected by running `task update` ]]"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.url="https://megabyte.space"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.vendor="Megabyte Labs"' >> Dockerfile
+          echo 'LABEL org.opencontainers.image.version=$VERSION' >> Dockerfile
+          echo 'LABEL space.megabyte.type="{{.REPOSITORY_SUBTYPE}}"' >> Dockerfile
+          echo '' >> Dockerfile
+        fi
+      # yamllint disable rule:line-length
+      - |
+        if [[ '{{OS}}' == 'darwin' ]]; then
+          sed -i .bak "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile && rm Dockerfile.bak
+          sed -i .bak "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation=\"{{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile && rm Dockerfile.bak
+          sed -i .bak "s^.*org.opencontainers.image.source.*^LABEL org.opencontainers.image.source=\"{{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile && rm Dockerfile.bak
+        elif [[ '{{OS}}' == 'linux' ]]; then
+          sed -i "s^.*org.opencontainers.image.description.*^LABEL org.opencontainers.image.description=${DESCRIPTION}^g" Dockerfile
+          sed -i "s^.*org.opencontainers.image.documentation.*^LABEL org.opencontainers.image.documentation={{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}/-/blob/master/README.md\"^g" Dockerfile
+          sed -i "s^.*org.opencontainers.image.source.\*^LABEL org.opencontainers.image.source={{.GROUP_URL}}/{{.REPOSITORY_SUBTYPE}}/${SLUG}.git\"^g" Dockerfile
+        fi
+      # yamllint enable rule:line-length
+    sources:
+      - .variables.json
+      - Dockerfile
+      - package.json
+    preconditions:
+      - sh: test -f Dockerfile
+        msg: "A `Dockerfile` is not present in the root of this project!"
+      - sh: test -f .variables.json
+        msg: "The `.variables.json` file is not present in the root of this project!"
+      - sh: test -f package.json
+        msg: "The `package.json` file is not present in the root of this project!"

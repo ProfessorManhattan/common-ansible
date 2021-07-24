@@ -4,16 +4,33 @@ version: '3'
 tasks:
   all:
     desc: Lint the project by running all the linters in parallel
-    deps: [formatting{{#if hbs.ansible}}, ansible{{/if}}{{#if hbs.dockerfile}}, docker{{/if}}{{#if hbs.packer}}, packer{{/if}}{{#if hbs.python}}, python{{/if}}{{#if hbs.vagrant}}, vagrant{{/if}}{{#if hbs.yaml}}, yaml{{/if}}]
-
-  _all:
-    deps: [_formatting{{#if hbs.ansible}}, _ansible{{/if}}{{#if hbs.dockerfile}}, _docker{{/if}}{{#if hbs.packer}}, _packer{{/if}}{{#if hbs.python}}, _python{{/if}}{{#if hbs.vagrant}}, _vagrant{{/if}}{{#if hbs.yaml}}, _yaml{{/if}}]
+    deps:
+      - formatting
+{{#if hbs.ansible}}
+      - ansible
+{{/if}}
+{{#if hbs.dockerfile}}
+      - docker
+{{/if}}
+{{#if hbs.packer}}
+      - packer
+{{/if}}
+{{#if hbs.python}}
+      - python
+{{/if}}
+      - shellcheck
+{{#if hbs.vagrant}}
+      - vagrant
+{{/if}}
+{{#if hbs.yaml}}
+      - yaml
+{{/if}}
 
 {{#if hbs.ansible}}
   ansible:
     deps:
       - :ansible:symlink
-      - :common:galaxy-requirements
+      - :common:python-requirements
     desc: Lint Ansible projects using Ansible Lint
     summary: |
       $ Lint an Ansible project using Ansible Lint
@@ -29,19 +46,14 @@ tasks:
 
       For more information on Ansible Lint, see: https://github.com/ansible-community/ansible-lint
     cmds:
-      - bash .common/log log "Running 'ansible-lint' to find Ansible-related code violations"
       - ansible-lint
-
-  _ansible:
-    cmds:
-      - task: ansible
     sources:
       - "**/*.yml"
 
 {{/if}}
   formatting:
     deps:
-      - :common:nodejs-dependencies
+      - :npm:prettier
     desc: Lint formatting using Prettier
     summary: |
       $ Report formatting errors with Prettier
@@ -56,12 +68,8 @@ tasks:
 
       For more information on Prettier, see: https://prettier.io/
     cmds:
-      - bash .common/log log "Running 'npm run lint:prettier' to check for potentially misformatted files"
-      - npm run lint:prettier
-
-  _formatting:
-    cmds:
-      - task: formatting
+      - prettier --list-different .
+      - prettier-package-json --list-different package.json
     sources:
       - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
 
@@ -92,18 +100,32 @@ tasks:
 
       For more information on Hadolint, see: https://github.com/hadolint/hadolint
     cmds:
-      - bash .common/log log "Using Hadolint via Docker to lint Dockerfiles"
       - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky -o -name .modules
-        -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune -o -type f \( -name Dockerfile -o -name Dockerfile.j2 \)
-        -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
-
-  _docker:
-    cmds:
-      - task: docker
+          -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune -o -type f \( -name Dockerfile -o -name Dockerfile.j2 \)
+          -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim
     sources:
       - "**/(Dockerfile|Dockerfile.j2)"
 
 {{/if}}
+  markdown-broken-links:
+    deps:
+      - :npm:markdown-link-check
+    desc: Scan markdown files for broken links
+    summary: |
+      $ Report any broken links in the files that end with .md
+
+      This task uses the npm package called `markdown-link-check` to scan all the links
+      and then report which ones are broken.
+
+      For more information on `markdown-link-check`, see the following page:
+      https://github.com/tcort/markdown-link-check
+    cmds:
+      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name
+          .husky -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name
+          venv \) -prune -o -type f \( -name \*.md \) -print0 | xargs -0 -r -n1 markdown-link-check
+    sources:
+      - "**/*.md"
+
 {{#if hbs.packer}}
   packer:
     deps:
@@ -117,11 +139,12 @@ tasks:
 
       For more information on `packer validate`, see: https://www.packer.io/docs/commands/validate
     cmds:
-      - bash .common/log log "Validating Packer templates matching the pattern '*template.json' with the 'packer validate' command"
       - |
         for TEMPLATE in *template.json; do
           packer validate "$TEMPLATE"
         done
+    sources:
+      - "**/*template.json"
 
 {{/if}}
 {{#if hbs.python}}
@@ -147,19 +170,14 @@ tasks:
 
       For more information on Flake8, see: https://github.com/PyCQA/flake8
     cmds:
-      - bash .common/log log "Running 'flake8 .' to lint Python files"
       - flake8 .
-
-  _python:
-    cmds:
-      - task: python
     sources:
       - "**/*.py"
 
 {{/if}}
   scripts:
     deps:
-      - :common:nodejs-dependencies
+      - :npm:shellcheck
     desc: Report possible errors in shell scripts
     summary: |
       $ Report possible errors in shell scripts using Shellcheck
@@ -174,12 +192,9 @@ tasks:
 
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
-      - bash .common/log log "Running 'npm run lint:shellcheck' to identify possible shell script code violations"
-      - npm run lint:shellcheck
-
-  _scripts:
-    cmds:
-      - task: scripts
+      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+          -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune
+          -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 | xargs -0 -r -n1 shellcheck
     sources:
       - "**/*.(sh|sh.j2)"
 
@@ -197,8 +212,9 @@ tasks:
 
       For more information on `vagrant validate`, see: https://www.vagrantup.com/docs/cli/validate
     cmds:
-      - bash .common/log log "Running 'vagrant validate' to validate the Vagrantfile"
       - vagrant validate
+    sources:
+      - Vagrantfile
 
 {{/if}}
 {{#if hbs.yaml}}
@@ -221,12 +237,7 @@ tasks:
 
       For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
     cmds:
-      - bash .common/log "Running 'yamllint -s .' to lint YML files"
       - yamllint -s .
-
-  _yaml:
-    cmds:
-      - task: yaml
     sources:
       - "**/*.yml"
 

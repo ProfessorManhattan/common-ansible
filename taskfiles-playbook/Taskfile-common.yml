@@ -3,6 +3,8 @@ version: "3"
 
 tasks:
   clean:
+    deps:
+      - :software:rsync
     desc: Removes optional folders that are cached during various tasks
     summary: |
       $ Clean the project and remove all optional caches
@@ -15,7 +17,7 @@ tasks:
       RANDOM_STRING:
         sh: openssl rand -hex 14
     cmds:
-      - bash .common/log log "Cleaning up the project by removing caches etc."
+      - info: "Cleaning up the project by removing caches etc."
       - rm .variables.json 2> /dev/null
       - mv .autodoc /tmp/{{.RANDOM_STRING}}-autodoc 2> /dev/null
       - mv .task /tmp/{{.RANDOM_STRING}}-task 2> /dev/null
@@ -30,7 +32,9 @@ tasks:
         done
 
   commit:
-    deps: [nodejs-dependencies, python-requirements]
+    deps:
+      - nodejs-dependencies
+      - python-requirements
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
     summary: |
       $ Commit code
@@ -45,28 +49,73 @@ tasks:
       using `git commit -m`. However, if you really need to, you can add the flag `--no-verify`
       to your regular `git commit -m` command to bypass the pre-commit hook.
     cmds:
-      - bash .common/log log "Running pre-commit hook"
       - . ./.husky/pre-commit
-      - bash .common/log log "Initiating the commit dialog"
+      - t info "Initiating the commit dialog"
       - npm run commit -- --no-verify
 
-  markdown-link-check:
-    deps: [nodejs-dependencies]
-    desc: Scan markdown files for broken links
-    summary: |
-      $ Report any broken links in the files that end with .md
-
-      This task uses the npm package called `markdown-link-check` to scan all the links
-      and then report which ones are broken.
-
-      For more information on `markdown-link-check`, see the following page:
-      https://github.com/tcort/markdown-link-check
+  galaxy-requirements:
     cmds:
-      - bash .common/log log "Checking for broken links in markdown files"
-      - npm run misc:markdown-links
+      - . .venv/bin/activate
+      - cmd: |
+          if [ "${container:=}" != 'docker' ]; then
+            if type ansible-galaxy &> /dev/null; then
+              ansible-galaxy install -r requirements.yml --ignore-errors
+              if [[ $? == 0 ]]; then
+                t success "Successfully installed Ansible Galaxy requirements"
+              else
+                t error "Failed to install Ansible Galaxy requirements"
+              fi
+            else
+              t warn "Ansible Galaxy requirements were not installed because 'ansible-galaxy' is not available in the PATH"
+            fi
+          fi
+        ignore_error: true
+    sources:
+      - requirements.yml
+    preconditions:
+      - sh: "test -f requirements.yml"
+        msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
+      # - sh: "type ansible-galaxy &> /dev/null"
+      #   msg: "'ansible-galaxy' is missing from the PATH"
+
+  nodejs-dependencies:
+    deps:
+      - :software:node
+    cmds:
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          t info "Running 'npm install'"
+          npm install
+          npm audit fix --force || true
+          t success "Successfully ran 'npm install'"
+        fi
+    sources:
+      - package.json
+      - package-lock.json
+    status:
+      - test -d node_modules
+    preconditions:
+      - sh: "test -f package.json"
+        msg: "The package.json file appears to be missing!"
+
+  nodejs-global-dependencies:
+    deps:
+      - :npm:cspell
+      - :npm:hbs
+      - :npm:lint-staged
+      - :npm:markdown-link-check
+      - :npm:prettier
+      - :npm:prettier-package-json
+      - :npm:readme
+      - :npm:shellcheck
+      - :npm:snyk
+      - :npm:standard-version
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
 
   prepare-release:
-    deps: [nodejs-dependencies]
+    deps:
+      - :npm:standard-version
     desc: Ensure the project has upstream changes, lint, and then update the version
     summary: |
       $ Prepare a new release
@@ -79,9 +128,61 @@ tasks:
     cmds:
       - task: update
       - task: :lint:all
-      - npm run version
+      - standard-version --no-verify
+
+  python-requirements-pip:
+    cmds:
+      - . .venv/bin/activate
+      - pip3 install -r requirements.txt
+    sources:
+      - requirements.txt
+    preconditions:
+      - sh: "test -f requirements.txt"
+        msg: "The requirements.txt file is missing!"
+      - sh: "test -f .venv/bin/activate"
+        msg: "The Python virtualenv '.venv/bin/activate' file is missing!"
+
+  python-requirements-venv-activate:
+    cmds:
+      - . .venv/bin/activate
+    preconditions:
+      - sh: test -f .venv/bin/activate
+        msg: "`.venv/bin/activate` is missing!"
+
+  python-requirements-venv:
+    deps:
+      - :python:virtualenv
+      - :software:rsync
+    vars:
+      RANDOM_STRING:
+        sh: openssl rand -hex 14
+    cmds:
+      - |
+        if [ -d .venv ] && [ ! -f .venv/bin/activate ]; then
+          mv .venv /tmp/{{.RANDOM_STRING}}-venv2 2> /dev/null
+          mkdir -p /tmp/{{.RANDOM_STRING}}-empty
+          rsync -a --delete /tmp/{{.RANDOM_STRING}}-empty /tmp/{{.RANDOM_STRING}}-venv2 &
+        fi
+      - virtualenv .venv
+    status:
+      - test -f .venv/bin/activate
+
+  python-requirements:
+    deps:
+      - :software:python
+    cmds:
+      - task: python-requirements-venv
+      # - task: python-requirements-venv-activate
+      - task: python-requirements-pip
+      - task: galaxy-requirements
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
 
   requirements:
+    deps:
+      - nodejs-dependencies
+      - nodejs-global-dependencies
+      - python-requirements
     desc: Ensure all the dependencies are installed (Node.js, Python, etc.)
     summary: |
       $ Ensure dependencies are installed
@@ -91,42 +192,6 @@ tasks:
       then install the Python requirements by running `pip3 install -r requirements` after
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
-    deps: [nodejs-dependencies, nodejs-global-dependencies, python-requirements]
-
-  galaxy-requirements:
-    cmds:
-      - . .venv/bin/activate
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          bash .common/log log "Running 'ansible-galaxy install -r requirements.yml --ignore-errors'"
-          if type ansible-galaxy &> /dev/null; then
-            ansible-galaxy install -r requirements.yml --ignore-errors || true # TODO: Remove
-            bash .common/log success "Successfully installed Ansible Galaxy requirements"
-          else
-            bash .common/log warn "Ansible Galaxy requirements were not installed because 'ansible-galaxy' is not available in the PATH"
-          fi
-        fi
-    sources:
-      - requirements.yml
-    preconditions:
-      - sh: "test -f requirements.yml"
-        msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
-      # - sh: "type ansible-galaxy &> /dev/null"
-      #   msg: "'ansible-galaxy' is missing from the PATH"
-
-  reset:
-    desc: Resets the project by removing all caches and updating the project
-    summary: |
-      $ Reset the project and then update it
-
-      This task is intended to be used when the `common:update` task is having trouble
-      or when breaking changes are made to the build tools. Use this task if you are
-      having trouble with other tasks that are dependent on stale caches. Unlike
-      `task common:hard-reset`, this will not remove uncommitted work (assuming your
-      work does not reside in folders ignored by the `.gitignore` file).
-    cmds:
-      - task: clean
-      - task: update
 
   reset-force:
     deps:
@@ -145,130 +210,36 @@ tasks:
       - git pull origin master --no-rebase
       - bash .start.sh
 
-  nodejs-dependencies:
+  reset:
+    desc: Resets the project by removing all caches and updating the project
+    summary: |
+      $ Reset the project and then update it
+
+      This task is intended to be used when the `common:update` task is having trouble
+      or when breaking changes are made to the build tools. Use this task if you are
+      having trouble with other tasks that are dependent on stale caches. Unlike
+      `task common:hard-reset`, this will not remove uncommitted work (assuming your
+      work does not reside in folders ignored by the `.gitignore` file).
+    cmds:
+      - task: clean
+      - task: update
+
+  shell-prompt:
     deps:
       - :software:node
+    env:
+      OS_CHOICE:
+        sh: node .common/scripts/prompts/shell.js
     cmds:
       - |
-        if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running 'npm install'"
-          npm install
-          npm audit fix --force || true
-          bash .common/log success "Successfully ran 'npm install'"
+        if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$OS_CHOICE" ]; then
+          docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm "megabytelabs/ansible-molecule-${OS_CHOICE}:latest" /bin/bash
         fi
-    sources:
-      - package.json
-      - package-lock.json
-    status:
-      - test -d node_modules
     preconditions:
-      - sh: "test -f package.json"
-        msg: "The package.json file appears to be missing!"
-
-  nodejs-global-dependencies:
-    deps: [npm-hbs, npm-prettier, npm-prettier-package-json, npm-readme, npm-snyk]
+      - sh: "type node &> /dev/null"
+        msg: "Node.js is not installed! Install it by running `task software:node`."
     status:
-      - '[[ "${container:=}" == "docker" ]]'
-
-  npm-install:
-    deps:
-      - :software:node
-    cmds:
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          bash .common/log info "Running 'npm install -g {{.NPM_PACKAGE}}'"
-          npm install -g {{.NPM_PACKAGE}}
-          bash .common/log success "The npm '{{.NPM_PACKAGE}}' package is globally installed"
-        fi
-    status:
-      - type {{.NPM_PACKAGE_BIN}} &> /dev/null
-
-  npm-hbs:
-    cmds:
-      - task: npm-install
-        vars:
-          NPM_PACKAGE: hbs-cli
-          NPM_PACKAGE_BIN: hbs
-
-  npm-prettier:
-    cmds:
-      - task: npm-install
-        vars:
-          NPM_PACKAGE: prettier
-          NPM_PACKAGE_BIN: prettier
-
-  npm-prettier-package-json:
-    cmds:
-      - task: npm-install
-        vars:
-          NPM_PACKAGE: prettier-package-json
-          NPM_PACKAGE_BIN: prettier-package-json
-
-  npm-readme:
-    cmds:
-      - task: npm-install
-        vars:
-          NPM_PACKAGE: "@appnest/readme"
-          NPM_PACKAGE_BIN: readme
-
-  npm-snyk:
-    cmds:
-      - task: npm-install
-        vars:
-          NPM_PACKAGE: snyk
-          NPM_PACKAGE_BIN: snyk
-
-  python-requirements:
-    deps:
-      - :software:python
-    cmds:
-      - task: python-requirements-venv
-      # - task: python-requirements-venv-activate
-      - task: python-requirements-pip
-      - task: galaxy-requirements
-    status:
-      - '[[ "${container:=}" == "docker" ]]'
-
-  python-requirements-venv:
-    vars:
-      RANDOM_STRING:
-        sh: openssl rand -hex 14
-    cmds:
-      - task: python-virtualenv
-      - |
-        if [ -d .venv ] && [ ! -f .venv/bin/activate ]; then
-          mv .venv /tmp/{{.RANDOM_STRING}}-venv2 2> /dev/null
-          mkdir -p /tmp/{{.RANDOM_STRING}}-empty
-          rsync -a --delete /tmp/{{.RANDOM_STRING}}-empty /tmp/{{.RANDOM_STRING}}-venv2 &
-        fi
-      - virtualenv .venv
-    status:
-      - test -f .venv/bin/activate
-
-  python-requirements-venv-activate:
-    cmds:
-      - . .venv/bin/activate
-    preconditions:
-      - sh: test -f .venv/bin/activate
-        msg: "`.venv/bin/activate` is missing!"
-
-  python-requirements-pip:
-    cmds:
-      - . .venv/bin/activate
-      - pip3 install -r requirements.txt
-    sources:
-      - requirements.txt
-    preconditions:
-      - sh: "test -f requirements.txt"
-        msg: "The requirements.txt file is missing!"
-      - sh: "test -f .venv/bin/activate"
-        msg: "The Python virtualenv '.venv/bin/activate' file is missing!"
-
-  python-virtualenv:
-    cmds:
-      - pip3 install virtualenv
-    status:
-      - type virtualenv &> /dev/null
+      - '[[ ! -z "{{.CLI_ARGS}}" ]]'
 
   shell:
     deps:
@@ -303,25 +274,9 @@ tasks:
       - sh: "type docker &> /dev/null"
         msg: "Docker is not installed! Install it by running `task software:docker`."
 
-    shell-prompt:
-      deps:
-        - :software:node
-      env:
-        OS_CHOICE:
-          sh: node .common/scripts/prompts/shell.js
-      cmds:
-        - |
-          if [ -z "{{.CLI_ARGS}}" ] && [ ! -z "$OS_CHOICE" ]; then
-            docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm "megabytelabs/ansible-molecule-${OS_CHOICE}:latest" /bin/bash
-          fi
-      preconditions:
-        - sh: "type node &> /dev/null"
-          msg: "Node.js is not installed! Install it by running `task software:node`."
-      status:
-        - '[[ ! -z "{{.CLI_ARGS}}" ]]'
-
   spelling:
     deps:
+      - :npm:cspell
       - :software:git
       - :software:node
     desc: Checks for spelling errors in staged files
@@ -340,28 +295,16 @@ tasks:
       STAGED_FILES:
         sh: git diff --cached --name-only
     cmds:
-      - npx cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
+      - cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
     preconditions:
       - sh: "git diff --cached --name-only"
         msg: "Cannot perform a spell check because there are no staged files"
 
-  update:
-    deps: [update-repositories]
-    desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
-    cmds:
-      - task: update-start
-      - task: update-all
-      - task: update-finish
-      - bash .common/log success "Successfully updated the project with the latest upstream changes"
-
-  update-repositories:
-    cmds:
-      - task: update-common
-      - task: update-modules
-      - task: update-project
-
-  update-start:
-    deps: [requirements, update-start-sh, update-taskfile, update-variables]
+  update-all:
+    deps:
+      - update-contributing
+      - update-files
+      - update-readme
 
   update-common:
     deps:
@@ -369,24 +312,193 @@ tasks:
     cmds:
       - cd .common
       - git reset --hard HEAD
-      - git pull origin master --ff-only || true
+      - git pull origin master --no-rebase || true
       - cd ..
     preconditions:
       - sh: "type git &> /dev/null"
         msg: "git is not installed! You can install it by running `task software:git`."
 
-  update-finish:
-    deps: []
+  update-contributing:
+    deps:
+      - :npm:prettier
+      - :npm:readme
+    vars:
+      CONTRIB_TEMPLATE: .common/docs/blueprint-contributing.md
+    cmds:
+      - t log "Generating CONTRIBUTING.md"
+      - readme generate --config .variables.json --input "{{.CONTRIB_TEMPLATE}}" --output CONTRIBUTING.md
+      - task: update-markdown-scrub
+        vars:
+          SCRUB_FILE: CONTRIBUTING.md
+      - prettier --write CONTRIBUTING.md
+      - t success "Generated CONTRIBUTING.md"
+    sources:
+      - .variables.json
+    preconditions:
+      - sh: "test -f .common/docs/blueprint-contributing.md"
+        msg: "The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`"
+      - sh: "test -f .variables.json"
+        msg: "The .variables.json file is not present. Generate it by running `task common:update`."
+      - sh: type readme &> /dev/null
+        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
+
+  update-files-handlebars:
+    deps:
+      - :npm:hbs
+    cmds:
+      - |
+        find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f | while read FILE; do
+          if [ "${FILE##*.}" == 'handlebars' ]; then
+            FILE_BASENAME=$(basename $FILE)
+            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
+          fi
+        done
+    sources:
+      - .variables.json
+    preconditions:
+      - sh: "type hbs &> /dev/null"
+        msg: "`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`."
+
+  update-files:
+    deps:
+      - :npm:prettier-package-json
+      - :software:git
+      - :software:jq
+      - :software:rsync
+    env:
+      PKG_BLUEPRINT:
+        sh: jq -r '.blueprint' package.json | sed 's/^null$/{}/'
+      PKG_DEPS:
+        sh: jq -r '.dependencies' package.json | sed 's/^null$/{}/'
+      PKG_DEV_DEPS:
+        sh: jq -r '.devDependencies' package.json | sed 's/^null$/{}/'
+      PKG_SCRIPTS:
+        sh: jq -r '.scripts' package.json | sed 's/^null$/{}/'
+      PKG_VERSION:
+        sh: jq -r '.version' package.json
+      TMP:
+        sh: mktemp
+    cmds:
+      - task: update-files-handlebars
+      - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
+      - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
+      - chmod 755 .husky/pre-commit
+      - task: update-sort
+      # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
+      # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
+      # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
+      # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
+      - jq --arg blueprint "$PKG_BLUEPRINT" --arg deps "$PKG_DEPS" --arg devDeps "$PKG_DEV_DEPS" --arg scripts "$PKG_SCRIPTS" --arg version "$PKG_VERSION"
+        '.dependencies = (($deps | fromjson) * .dependencies) | .devDependencies = (($devDeps | fromjson) * .devDependencies)
+        | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) | .version = $version' package.json > "$TMP"
+      - mv "$TMP" package.json
+      - prettier-package-json --write
+      - cd .common && git reset --hard HEAD && git clean -fd && cd ..
+    sources:
+      - package.json
+      - .variables.json
+    preconditions:
+      - sh: "type rsync &> /dev/null"
+        msg: "`rsync` is not installed!"
+      - sh: "type prettier-package-json &> /dev/null"
+        msg: "`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`."
+
+  update-markdown-scrub:
+    vars:
+      DIVIDER_SRC: <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
+        src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+      REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
+    cmds:
+      - |
+        if [[ '{{OS}}' == 'darwin' ]]; then
+          sed -i .bak 's^{{.REGEX}}^{{.DIVIDER_SRC}}^g' {{.SCRUB_FILE}} && rm {{.SCRUB_FILE}}.bak
+        else
+          sed -i 's^{{.REGEX}}^{{.DIVIDER_SRC}}^g' {{.SCRUB_FILE}}
+        fi
+
+  update-modules:
+    deps:
+      - :software:git
+    desc: Ensure all submodules in the `.modules/` folder are updated
+    summary: |
+      $ Ensure all submodules in `.modules/` are updated
+
+      Some of our projects include submodules. These submodules are generally
+      stored in the `.modules/` folder in the root of the project. Some projects
+      might symlink files to one of the submodules stored in the `.modules/` folder.
+      If you are ok with the risk, you can use this task to update all the submodules
+      to the latest on the remote's master branch.
+    cmds:
+      - |
+        if ls .modules/*/ > /dev/null 2>&1; then
+          for SUBMODULE_PATH in .modules/*/; do
+            cd $SUBMODULE_PATH
+            DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+            git reset --hard HEAD
+            git checkout "$DEFAULT_BRANCH"
+            git pull origin "$DEFAULT_BRANCH" --ff-only || true
+          done
+        fi
+    status:
+      - "! ls .modules/*/ > /dev/null 2>&1"
 
   update-project:
     cmds:
       - git pull origin master --no-rebase || true
+
+  update-readme:
+    deps:
+      - :npm:prettier
+      - :npm:readme
+    vars:
+      README_TEMPLATE: blueprint-readme-{{.REPOSITORY_SUBTYPE}}.md
+    cmds:
+      - t info "Generating README.md"
+      - readme generate --config .variables.json --input ".common/docs/{{.README_TEMPLATE}}"
+      - task: update-markdown-scrub
+        vars:
+          SCRUB_FILE: README.md
+      - prettier --write README.md
+      - t success "Generated README.md"
+    sources:
+      - .autodoc/*
+      - .variables.json
+    preconditions:
+      - sh: "test -f .common/docs/{{.README_TEMPLATE}}"
+        msg: "The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`."
+      - sh: "test -f .variables.json"
+        msg: "The `.variables.json` file is not present. Generate it by running `task common:update`."
+      - sh: type readme &> /dev/null
+        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: type prettier &> /dev/null
+        msg: "`prettier` is not installed globally. Install all the requirements by running `task common:requirements`."
+
+  update-repositories:
+    cmds:
+      - task: update-common
+      - task: update-modules
+      - task: update-project
+
+  update-sort:
+    cmds:
+      - if [ -f paths.txt ]; then sort paths.txt -o paths.txt; fi
+      - if [ -f requirements.txt ]; then sort requirements.txt -o requirements.txt; fi
+    sources:
+      - paths.txt
+      - requirements.txt
 
   update-start-sh:
     cmds:
       - cp .common/.start.sh .start.sh
     sources:
       - .common/start.sh
+
+  update-start:
+    deps:
+      - requirements
+      - update-start-sh
+      - update-taskfile
+      - update-variables
 
   update-taskfile:
     cmds:
@@ -416,277 +528,11 @@ tasks:
       - sh: "type yq &> /dev/null"
         msg: "yq is not installed! You can install it by running `task software:yq`."
 
-  update-all:
-    deps: [update-contributing, update-readme, update-files]
-
-  update-modules:
+  update:
     deps:
-      - :software:git
-    desc: Ensure all submodules in the `.modules/` folder are updated
-    summary: |
-      $ Ensure all submodules in `.modules/` are updated
-
-      Some of our projects include submodules. These submodules are generally
-      stored in the `.modules/` folder in the root of the project. Some projects
-      might symlink files to one of the submodules stored in the `.modules/` folder.
-      If you are ok with the risk, you can use this task to update all the submodules
-      to the latest on the remote's master branch.
+      - update-repositories
+    desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
     cmds:
-      - |
-        if ls .modules/*/ > /dev/null 2>&1; then
-          for SUBMODULE_PATH in .modules/*/; do
-            cd $SUBMODULE_PATH
-            DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
-            git reset --hard HEAD
-            git checkout "$DEFAULT_BRANCH"
-            git pull origin "$DEFAULT_BRANCH" --ff-only || true
-          done
-        fi
-    status:
-      - "! ls .modules/*/ > /dev/null 2>&1"
-
-  mod-ansible-autodoc:
-    deps:
-      - python-requirements
-      - :software:jq
-    env:
-      ACTIONS_DESCRIPTION:
-        sh: jq -r '.autodoc_actions_description' .variables.json
-    cmds:
-      - . .venv/bin/activate
-      - mod-ansible-autodoc --todo-title "### TODO" --actions-title "## Features" --actions-description "$ACTIONS_DESCRIPTION"
-        --tags-title "### Tags" --variables-title "## Variables"
-      - task: _mod-ansible-autodoc
-      - mkdir -p .autodoc
-      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md ansible_variables_header.md .autodoc
-    sources:
-      - "tasks**/*.yml"
-      - ".autodoc/*"
-    preconditions:
-      - sh: "type mod-ansible-autodoc &> /dev/null"
-        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed by running `task common:requirements`.
-          Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt` file."
-
-  _mod-ansible-autodoc:
-    env:
-      ROLE_VARIABLES:
-        sh: jq -r '.role_variables' ansible_variables.json
-      ROLE_VARIABLES_LENGTH:
-        sh: jq -r '.role_variables | length' ansible_variables.json
-      TMP:
-        sh: mktemp
-    cmds:
-      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
-      - mv "$TMP" .variables.json
-      # yamllint disable rule:line-length
-      - |
-        if [[ "$ROLE_VARIABLES_LENGTH" == '0' ]]; then
-          echo '## Variables\n\nThis role contains variables that you can customize. The variables you can customize are located in `defaults/main.yml`. By default, the variables use sensible defaults but you may want to customize the role depending on your use case. The variables, along with descriptions and examples, are listed in the chart below:\n\n{{``}}\n\n' > ansible_variables_header.md
-        else
-          echo '' > ansible_variables_header.md
-        fi
-      # yamllint enable rule:line-length
-
-  ansibler:
-    deps:
-      - python-requirements
-    cmds:
-      - task: ansibler-compatibility-chart
-      - task: _ansibler
-    preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
-    status:
-      - true
-
-  _ansibler:
-    deps: [ansibler-role-dependencies]
-
-  ansibler-compatibility-chart:
-    cmds:
-      - ansibler --generate-compatibility-chart
-    sources:
-      - .molecule-results/*.txt
-
-  ansibler-role-dependencies:
-    cmds:
-      - ansibler --role-dependencies
-    sources:
-      - requirements.yml
-
-  update-contributing:
-    deps: [npm-prettier, npm-readme]
-    vars:
-      CONTRIB_TEMPLATE: .common/docs/blueprint-contributing.md
-    cmds:
-      - bash .common/log log "Generating CONTRIBUTING.md"
-      - readme generate --config .variables.json --input "{{.CONTRIB_TEMPLATE}}" --output CONTRIBUTING.md
-      - task: _markdown-scrub
-        vars:
-          SCRUB_FILE: CONTRIBUTING.md
-      - prettier --write CONTRIBUTING.md
-      - bash .common/log success "Generated CONTRIBUTING.md"
-    sources:
-      - .variables.json
-    preconditions:
-      - sh: "test -f .common/docs/blueprint-contributing.md"
-        msg: "The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`"
-      - sh: "test -f .variables.json"
-        msg: "The .variables.json file is not present. Generate it by running `task common:update`."
-      - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
-
-  update-files:
-    deps:
-      - npm-prettier-package-json
-      - :software:git
-      - :software:jq
-      - :software:rsync
-    env:
-      PKG_BLUEPRINT:
-        sh: jq -r '.blueprint' package.json
-      PKG_DEPS:
-        sh: jq -r '.dependencies' package.json
-      PKG_DEV_DEPS:
-        sh: jq -r '.devDependencies' package.json
-      PKG_SCRIPTS:
-        sh: jq -r '.scripts' package.json
-      PKG_VERSION:
-        sh: jq -r '.version' package.json
-      TMP:
-        sh: mktemp
-    cmds:
-      - task: _update-files
-      - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
-      - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
-      - chmod 755 .husky/pre-commit
-      - task: update-sort
-      # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
-      # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
-      # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
-      # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
-      - jq --arg blueprint "$PKG_BLUEPRINT" --arg deps "$PKG_DEPS" --arg devDeps "$PKG_DEV_DEPS" --arg scripts "$PKG_SCRIPTS" --arg version "$PKG_VERSION"
-        '.dependencies = (($deps | fromjson) * .dependencies) | .devDependencies = (($devDeps | fromjson) * .devDependencies)
-        | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) | .version = $version' package.json > "$TMP"
-      - mv "$TMP" package.json
-      - prettier-package-json --write
-      - cd .common && git reset --hard HEAD && git clean -fd && cd ..
-    sources:
-      - package.json
-      - .variables.json
-    preconditions:
-      - sh: "type rsync &> /dev/null"
-        msg: "`rsync` is not installed!"
-      - sh: "type prettier-package-json &> /dev/null"
-        msg: "`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`."
-
-  _update-files:
-    deps:
-      - npm-hbs
-    cmds:
-      - |
-        find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f | while read FILE; do
-          if [ "${FILE##*.}" == 'handlebars' ]; then
-            FILE_BASENAME=$(basename $FILE)
-            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
-          fi
-        done
-    sources:
-      - .variables.json
-    preconditions:
-      - sh: "type hbs &> /dev/null"
-        msg: "`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`."
-
-  update-latestos:
-    deps:
-      - python-requirements
-      - :software:jq
-    vars:
-      TAG:
-        sh: jq -r '.variables.latestos_tag' template.json
-    cmds:
-      - . .venv/bin/activate
-      - |
-        if [ "${container:=}" != 'docker' ] && [[ '{{.TAG}}' != 'macos' ]]; then
-          latestos {{.TAG}}
-        fi
-    status:
-      - '[[ "{{.TAG}}}" == "macos" ]] || [ "${container:=}" == "docker" ]'
-    preconditions:
-      - sh: test -f template.json
-        msg: "The `template.json` file is missing from the root of this project."
-
-  update-readme:
-    deps: [npm-prettier, npm-readme]
-    vars:
-      README_TEMPLATE: blueprint-readme-{{.REPOSITORY_SUBTYPE}}.md
-    cmds:
-      - bash .common/log log "Generating README.md"
-      - readme generate --config .variables.json --input ".common/docs/{{.README_TEMPLATE}}"
-      - task: _markdown-scrub
-        vars:
-          SCRUB_FILE: README.md
-      - prettier --write README.md
-      - bash .common/log success "Generated README.md"
-    sources:
-      - .autodoc/*
-      - .variables.json
-    preconditions:
-      - sh: "test -f .common/docs/{{.README_TEMPLATE}}"
-        msg: "The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`."
-      - sh: "test -f .variables.json"
-        msg: "The `.variables.json` file is not present. Generate it by running `task common:update`."
-      - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`."
-      - sh: type prettier &> /dev/null
-        msg: "`prettier` is not installed globally. Install all the requirements by running `task common:requirements`."
-
-  update-readme-packer:
-    cmds:
-      - task: _update-readme-packer
-        vars:
-          TYPE: hyperv-iso
-      - task: _update-readme-packer
-        vars:
-          TYPE: parallels-iso
-      - task: _update-readme-packer
-        vars:
-          TYPE: qemu
-      - task: _update-readme-packer
-        vars:
-          TYPE: virtualbox-iso
-      - task: _update-readme-packer
-        vars:
-          TYPE: vmware-iso
-
-  _update-readme-packer:
-    cmds:
-      - |
-        if ! grep -q '"type": "{{.TYPE}}"' template.json; then
-          if [[ '' == 'darwin' ]]; then
-            sed -i .bak '/SUPPORTED_OS_{{.TYPE}}/d' README.md && rm README.md.bak
-          elif [[ '' == 'linux' ]]; then
-            sed -i '/SUPPORTED_OS_{{.TYPE}}/d' README.md
-          fi
-        fi
-
-  update-sort:
-    cmds:
-      - if [ -f paths.txt ]; then sort paths.txt -o paths.txt; fi
-      - if [ -f requirements.txt ]; then sort requirements.txt -o requirements.txt; fi
-    sources:
-      - paths.txt
-      - requirements.txt
-
-  _markdown-scrub:
-    vars:
-      DIVIDER_SRC: <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
-        src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
-      REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
-    cmds:
-      - |
-        if [[ '{{OS}}' == 'darwin' ]]; then
-          sed -i .bak 's^{{.REGEX}}^{{.DIVIDER_SRC}}^g' {{.SCRUB_FILE}} && rm {{.SCRUB_FILE}}.bak
-        else
-          sed -i 's^{{.REGEX}}^{{.DIVIDER_SRC}}^g' {{.SCRUB_FILE}}
-        fi
+      - task: update-start
+      - task: update-all
+      - t success "Successfully updated the project with the latest upstream changes"

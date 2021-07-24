@@ -1,0 +1,9 @@
+---
+version: "3"
+
+tasks:
+  virtualenv:
+    cmds:
+      - pip3 install virtualenv
+    status:
+      - type virtualenv &> /dev/null

@@ -24,6 +24,12 @@
 #   equal to `NODE_PATH="$(npm root -g):$NODE_PATH"` to ensure the `signale` logging works
 #   as expected.
 
+# @description Determines whether or not an executable is accessible
+# @example commandExists node
+function commandExists() {
+  type "$1" &> /dev/null
+}
+
 if commandExists node; then
   NODE_PATH="$(npm root -g):$NODE_PATH"
   export NODE_PATH

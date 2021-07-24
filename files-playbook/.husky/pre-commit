@@ -3,7 +3,13 @@
 
 . "./.common/scripts/log.sh"
 
-info "Validating the commit"
-npm run lint-staged
+info "Checking for private keys in the repository"
+detect-private-key **/*(^/)
+
+info "Linting and fixing the staged files"
+lint-staged
+
+info "Reporting possible spelling errors in the staged files"
 task spelling
+
 success "Successfully validated the commit"
