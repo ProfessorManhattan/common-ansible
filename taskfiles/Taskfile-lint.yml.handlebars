@@ -104,11 +104,22 @@ tasks:
         * .common       * .modules      * test
         * .git          * .task         * venv
 
+      Example scanning the whole project:
+      > task lint:docker
+
+      Example scanning single file:
+      > task lint:docker -- CustomDockerfile
+
       For more information on Hadolint, see: https://github.com/hadolint/hadolint
     cmds:
-      - find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name Dockerfile -o
-          -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work
-          megabytelabs/hadolint:slim
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name Dockerfile -o
+            -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work
+            megabytelabs/hadolint:slim
+        else
+          docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim \{{.CLI_ARGS}}
+        fi
     sources:
       - "**/(Dockerfile|Dockerfile.j2)"
 
@@ -129,11 +140,22 @@ tasks:
       This task uses the npm package called `markdown-link-check` to scan all the links
       and then report which ones are broken.
 
+      Example scanning the whole project:
+      > task lint:markdown-broken-links
+
+      Example scanning single file:
+      > task lint:markdown-broken-links -- filename.md
+
       For more information on `markdown-link-check`, see the following page:
       https://github.com/tcort/markdown-link-check
     cmds:
-      - find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
-          xargs -0 -r -n1 markdown-link-check
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
+            xargs -0 -r -n1 markdown-link-check
+        else
+          markdown-link-check \{{.CLI_ARGS}}
+        fi
     sources:
       - "**/*.md"
 
@@ -147,13 +169,24 @@ tasks:
 
       This task will loop through all the Packer templates ending with `template.json`
       in the root of this project and report any errors that the templates might have.
+      Alternatively, you can scan a single file (see example below).
+
+      Example scanning for all files ending with 'template.json' in the root directory:
+      > task lint:packer
+
+      Example scanning single file:
+      > task lint:packer -- filename.json
 
       For more information on `packer validate`, see: https://www.packer.io/docs/commands/validate
     cmds:
       - |
-        for TEMPLATE in *template.json; do
-          packer validate "$TEMPLATE"
-        done
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          for TEMPLATE in *template.json; do
+            packer validate "$TEMPLATE"
+          done
+        else
+          packer validate \{{.CLI_ARGS}}
+        fi
     sources:
       - "*template.json"
 
@@ -181,6 +214,36 @@ tasks:
         else
           detect-private-key \{{.CLI_ARGS}}
         fi
+    sources:
+      - "**/*"
+
+  prose:
+    deps:
+      - :common:python-requirements
+    desc: Lint for English prose
+    summary: |
+      # Lint for English prose
+
+      This task uses 'proselint' to analyze markdown files for prose. It will generate recommendations
+      based on typography, grammar, and wording.
+
+      Example scanning all markdown files:
+      > task lint:prose
+
+      Example scanning specific file (markdown or not):
+      > task lint:prose -- myfile.js
+
+      For more information on proselint, see: https://github.com/amperser/proselint
+    cmds:
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
+            xargs -0 -r -n1 proselint --config .common/proselint.json
+        else
+          proselint --config .common/proselint.json \{{.CLI_ARGS}}
+        fi
+    sources:
+      - "**/*.md"
 
 {{#if hbs.python}}
   python:
@@ -203,9 +266,20 @@ tasks:
       NOTE: In order to maintain our strict quality standards, disabling Flake8 rules should only be done
       when absolutely necessary.
 
+      Example scanning all files:
+      > task lint:python
+
+      Example scanning specific file:
+      > task lint:python -- myfile.py
+
       For more information on Flake8, see: https://github.com/PyCQA/flake8
     cmds:
-      - flake8 .
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          flake8 .
+        else
+          flake8 \{{.CLI_ARGS}}
+        fi
     sources:
       - "**/*.py"
 
@@ -225,10 +299,21 @@ tasks:
         * .git          * node_modules
         * .husky        * slim_test
 
+      Example scanning all files:
+      > task lint:scripts
+
+      Example scanning specific file:
+      > task lint:scripts -- myfile.sh
+
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
-      - find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 |
-          xargs -0 -r -n1 shellcheck
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 |
+            xargs -0 -r -n1 shellcheck
+        else
+          shellcheck \{{.CLI_ARGS}}
+        fi
     sources:
       - "**/*.(sh|sh.j2)"
 
@@ -246,6 +331,12 @@ tasks:
       This task is utilized by the pre-commit hook. For more information about cspell, see:
       https://www.npmjs.com/package/cspell
 
+      Example scanning all staged files:
+      > task lint:spelling
+
+      Example scanning specific file:
+      > task lint:spelling -- myfile.sh
+
       Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
       files by running:
       > npx cspell '**/*.js'
@@ -253,7 +344,13 @@ tasks:
       STAGED_FILES:
         sh: git diff --cached --name-only
     cmds:
-      - cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json
+            "$STAGED_FILES" || true
+        else
+          cspell --no-progress --show-context --no-must-find-files --config .cspell.json \{{.CLI_ARGS}}
+        fi
     preconditions:
       - sh: "git diff --cached --name-only"
         msg: "Cannot perform a spell check because there are no staged files"
@@ -295,9 +392,20 @@ tasks:
 
       NOTE: Disabling YAML Lint rules should only be done when absolutely necessary.
 
+      Example scanning all '**/*.yml' files:
+      > task lint:yaml
+
+      Example scanning specific file':
+      > task lint:yaml -- myfile.sh
+
       For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
     cmds:
-      - yamllint -s .
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          yamllint -s .
+        else
+          yamllint \{{.CLI_ARGS}}
+        fi
     sources:
       - "**/*.yml"
 

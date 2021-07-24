@@ -21,7 +21,7 @@ tasks:
   install-doctor:
     cmds:
       - |
-        if ! type {{.SOFTWARE}} &> /dev/null; then # Prevent --force from reinstalling software
+        if ! type {{.SOFTWARE}} &> /dev/null; then
           t info "Using https://install.doctor to install '{{.SOFTWARE}}'"
           curl -sS https://install.doctor/{{.SOFTWARE}} | bash
         fi

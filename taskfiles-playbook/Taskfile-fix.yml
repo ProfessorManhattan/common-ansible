@@ -18,6 +18,7 @@ tasks:
 
   formatting:
     deps:
+      - :common:nodejs-dependencies
       - :npm:prettier
       - :npm:prettier-package-json
     desc: Automatically format most files using Prettier
@@ -118,10 +119,21 @@ tasks:
         * .common       * roles
         * .git          * venv
 
+      Example applying fixes to all Python files:
+      > task fix:python
+
+      Example applying fixes to single Python file:
+      > task fix:python -- myfile.py
+
       For more information on Black, see: https://github.com/psf/black
     cmds:
-      - find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.py \) -print0 |
-        xargs -0 -r -n1 black
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.py \) -print0 |
+            xargs -0 -r -n1 black
+        else
+          black {{.CLI_ARGS}}
+        fi
     sources:
       - "**/*.py"
 
@@ -151,10 +163,21 @@ tasks:
       the `package.json` file that corresponds to the `npm run fix:shellcheck` task, remove
       the ` | git apply` ending, and then run the command.
 
+      Example applying fixes to all shell scripts:
+      > task fix:scripts
+
+      Example applying fixes to a single shell script:
+      > task fix:scripts -- myfile.sh
+
       For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
     cmds:
-      - find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
-        -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune
-        -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 | xargs -0 shellcheck -f diff | git apply
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          find . -type d \( -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+            -o -name .modules -o -name .task -o -name .venv -o -name node_modules -o -name venv \) -prune
+            -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 | xargs -0 shellcheck -f diff | git apply
+        else
+          shellcheck -f diff {{.CLI_ARGS}} | git apply
+        fi
     sources:
       - "**/*.(sh|sh.j2)"
