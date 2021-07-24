@@ -69,8 +69,7 @@ tasks:
         "$VARIABLES_DESCRIPTION"
       - task: mod-ansible-autodoc-variables
       - mkdir -p .autodoc
-      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md
-        ansible_variables_header.md .autodoc
+      - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
       - "tasks**/*.yml"
       - ".autodoc/*"
