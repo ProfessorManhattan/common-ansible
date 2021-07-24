@@ -310,10 +310,7 @@ tasks:
     deps:
       - :software:git
     cmds:
-      - cd .common
-      - git reset --hard HEAD
-      - git pull origin master --no-rebase || true
-      - cd ..
+      - cd .common && git reset --hard HEAD && git pull origin master --no-rebase || true && cd ..
     preconditions:
       - sh: "type git &> /dev/null"
         msg: "git is not installed! You can install it by running `task software:git`."
