@@ -1,3 +1,4 @@
+.autodoc/
 .cache/
 .common/
 .git/
@@ -7,6 +8,7 @@
 .husky/_/husky.sh
 .modules/
 .nyc_output/
+.venv/
 **/.cache/
 **/.husky/_/husky.sh
 **/Dockerfile
