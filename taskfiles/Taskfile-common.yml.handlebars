@@ -360,15 +360,19 @@ tasks:
   update-files-handlebars:
     deps:
       - :npm:hbs
+    env:
+      TMP_BASENAME:
+        sh: mktemp
+      TMP_DIRNAME:
+        sh: mktemp
     cmds:
       - |
-        find ./.common/files-\{{.REPOSITORY_SUBTYPE}} -type f | while read FILE; do
-          if [ "${FILE##*.}" == 'handlebars' ]; then
-            FILE_BASENAME=$(basename $FILE)
-            hbs --data .variables.json "$FILE" --stdout > "$(dirname $FILE)/${FILE_BASENAME%.*}"
-          fi
+        find ./.common/files-\{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" | while read FILE; do
+          hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}" &
         done
+      - wait
     sources:
+      - .common/**/*.handlebars
       - .variables.json
     preconditions:
       - sh: "type hbs &> /dev/null"
