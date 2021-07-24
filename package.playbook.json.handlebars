@@ -24,6 +24,9 @@
     "./**/*.py": [
       "black",
       "flake8"
+    ],
+    "**/*vault.yml": [
+      "bash .common/scripts/ansible/vault.sh"
     ]
   },
   "prettier": "@megabytelabs/prettier-config-ansible"
