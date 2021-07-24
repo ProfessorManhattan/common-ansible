@@ -143,7 +143,7 @@ tasks:
           --tags-title "### Tags" --tags-description "$TAGS_DESCRIPTION" --todo-title "### TODO"
           --todo-description "$TODO_DESCRIPTION" --variables-title "## Variables" --variables-description
           "$VARIABLES_DESCRIPTION"
-      - task: _mod-ansible-autodoc
+      - task: mod-ansible-autodoc-variables
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md
           ansible_variables_header.md .autodoc
