@@ -4,14 +4,17 @@ version: "3"
 output: prefixed
 
 env:
-  GALAXY_NAMESPACE: professormanhattan
+  GALAXY_NAMESPACE: installdoctor
   REPOSITORY_SUBTYPE: playbook
   REPOSITORY_TYPE: ansible
 
 includes:
-  common: ./.common/taskfiles-playbook/Taskfile-common.yml
-  ansible: ./.common/taskfiles-playbook/Taskfile-ansible.yml
-  fix: ./.common/taskfiles-playbook/Taskfile-fix.yml
-  lint: ./.common/taskfiles-playbook/Taskfile-lint.yml
-  software: ./.common/taskfiles-playbook/Taskfile-{{OS}}.yml
-  test: ./.common/taskfiles-playbook/Taskfile-test.yml
+  ansible: ./.common/taskfiles-role/Taskfile-ansible.yml
+  common: ./.common/taskfiles-role/Taskfile-common.yml
+  fix: ./.common/taskfiles-role/Taskfile-fix.yml
+  lint: ./.common/taskfiles-role/Taskfile-lint.yml
+  npm: ./.common/taskfiles-role/Taskfile-npm.yml
+  python: ./.common/taskfiles-role/Taskfile-python.yml
+  security: ./.common/taskfiles-role/Taskfile-security.yml
+  software: ./.common/taskfiles-role/Taskfile-{{OS}}.yml
+  test: ./.common/taskfiles-role/Taskfile-test.yml
