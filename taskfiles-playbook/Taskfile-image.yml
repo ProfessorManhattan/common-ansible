@@ -2,10 +2,9 @@
 version: "3"
 
 vars:
-  IGNORE_FOLDERS:
-    sh: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
-      -o -name .modules -o -name .npm -o -name .task -o -name .venv -o -name node_modules
-      -o -name venv
+  IGNORE_FOLDERS: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+    -o -name .modules -o -name .npm -o -name .task -o -name .venv -o -name node_modules
+    -o -name venv
   TINYPNG_API_KEY: z4qhFBLRvNMG9rHmdkSLx1DR1FNZN5gc
 
 tasks:
