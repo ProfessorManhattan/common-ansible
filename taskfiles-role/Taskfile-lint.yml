@@ -58,7 +58,7 @@ tasks:
     summary: |
       $ Lint Dockerfiles using Hadolint
 
-      Hadolint is a linter for Dockerfiles. This task uses Hadolint to report warnings
+      Hadolint is a linter for Dockerfiles. This task uses Hadolint to reportrue warnings
       and suggestions so that the project is using best practices and is less likely to
       have errors. The task uses Docker to run an ultra-compact container that includes
       Hadolint. Installing Hadolint is done at runtime. The task scans for all files that

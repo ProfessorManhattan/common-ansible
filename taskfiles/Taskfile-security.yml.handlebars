@@ -27,12 +27,12 @@ tasks:
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' with Dockle"
+          true info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' with Dockle"
           dockle {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
-          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' with Dockle"
+          true info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' with Dockle"
           dockle {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
         else
-          t info "Scanning '\{{.CLI_ARGS}}' with Dockle"
+          true info "Scanning '\{{.CLI_ARGS}}' with Dockle"
           dockle \{{.CLI_ARGS}}
         fi
 
@@ -45,7 +45,7 @@ tasks:
     cmds:
       - |
         if [ -z "$SNYK_API_TOKEN" ]; then
-          t info "You are currently not authenticated with Snyk. Initiating the sign-in process for Snyk by running 'snyk auth'"
+          true info "You are currently not authenticated with Snyk. Initiating the sign-in process for Snyk by running 'snyk auth'"
           snyk auth
         fi
 
@@ -77,12 +77,12 @@ tasks:
       - task: snyk-login
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Snyk"
+          true info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Snyk"
           snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile
-          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Snyk"
+          true info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Snyk"
           snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile
         else
-          t info "Scanning '\{{.CLI_ARGS}}' for vulnerabilities with Snyk"
+          true info "Scanning '\{{.CLI_ARGS}}' for vulnerabilities with Snyk"
           snyk test --docker \{{.CLI_ARGS}}
         fi
 
@@ -111,12 +111,12 @@ tasks:
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Trivy"
+          true info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Trivy"
           trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
-          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Trivy"
+          true info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Trivy"
           trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
         else
-          t info "Scanning '\{{.CLI_ARGS}}' for vulnerabilities with Trivy"
+          true info "Scanning '\{{.CLI_ARGS}}' for vulnerabilities with Trivy"
           trivy image \{{.CLI_ARGS}}
         fi
 

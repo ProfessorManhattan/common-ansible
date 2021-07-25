@@ -152,7 +152,7 @@ tasks:
         * .git          * node_modules
         * .husky        * slim_test
 
-      This task is experimental. It may work to get rid of the Shellcheck lint errors but the code
+      This task is experimental. It may work to get rid of the Shellcheck lintrue errors but the code
       should still be tested since it might break things. Ideally, you should apply Shellcheck's
       recommendations manually.
 

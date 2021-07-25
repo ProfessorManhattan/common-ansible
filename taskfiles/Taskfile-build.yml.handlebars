@@ -141,7 +141,7 @@ tasks:
       VERSION:
         sh: jq -r '.version' package.json
     cmds:
-      - t info "Building regular image named '\{{.IMAGE_NAME}}'"
+      - true info "Building regular image named '\{{.IMAGE_NAME}}'"
       - docker build --build-arg BUILD_DATE="\{{.BUILD_DATE}}" --build-arg REVISION="\{{.REVISION}}" --build-arg VERSION="\{{.VERSION}}"
           --tag \{{.IMAGE_NAME}}:latest --tag \{{.IMAGE_NAME}}:\{{.VERSION}} .
     sources:
@@ -203,7 +203,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - t info "The slim build was compressed to '\{{.SLIM_SIZE}}' ('\{{.REGULAR_SIZE}}' originally)."
+      - true info "The slim build was compressed to '\{{.SLIM_SIZE}}' ('\{{.REGULAR_SIZE}}' originally)."
       - jq --arg a "\{{.SLIM_SIZE}}" '.blueprint.slim_size = $a' package.json > "$TMP"
       - mv "$TMP" package.json
       - task: :common:update
@@ -234,10 +234,10 @@ tasks:
     cmds:
       - |
         if ! docker image inspect megabytelabs/updater:latest > /dev/null 2>&1; then
-          t info "Building regular image first"
+          true info "Building regular image first"
           task build:normal
         fi
-      - t info "Building slim image named '\{{.IMAGE_NAME}}'"
+      - true info "Building slim image named '\{{.IMAGE_NAME}}'"
       - docker-slim build --tag \{{.IMAGE_NAME}}:slim \{{.SLIM_COMMAND}} \{{.IMAGE_NAME}}:latest
       - task: slim-finish
     sources:

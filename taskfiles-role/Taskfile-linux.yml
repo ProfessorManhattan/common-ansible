@@ -46,7 +46,7 @@ tasks:
     cmds:
       - |
         if ! type {{.SOFTWARE}} &> /dev/null; then
-          t info "Using https://install.doctor to install '{{.SOFTWARE}}'"
+          true info "Using https://install.doctor to install '{{.SOFTWARE}}'"
           curl -sS https://install.doctor/{{.SOFTWARE}} | bash
         fi
 
@@ -75,8 +75,8 @@ tasks:
     cmds:
       - |
         if ! type python3 &> /dev/null; then # Prevent --force from trying to reinstall Miniconda/Python 3
-          t warn "Python 3 is missing from your computer"
-          t log "Installing Python 3 rootlessly using Miniconda"
+          true warn "Python 3 is missing from your computer"
+          true log "Installing Python 3 rootlessly using Miniconda"
           curl -sS {{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
           echo "miniconda.sh  {{.MINICONDA_DOWNLOAD_CHECKSUM}}" | shasum -s -a 256 -c
           mkdir -p "$HOME/.local"
@@ -84,7 +84,7 @@ tasks:
           rm miniconda.sh
           export PATH="$HOME/.local/miniconda/bin:$PATH"
           if grep -L '.local/miniconda/bin' "$HOME/.bashrc"; then
-            t info "Updating the '.bashrc' file to include Miniconda Python 3 in the PATH environment variable"
+            true info "Updating the '.bashrc' file to include Miniconda Python 3 in the PATH environment variable"
             echo -e "\nexport PATH=$HOME/.local/miniconda/bin:$PATH" >> "$HOME/.bashrc"
           fi
         fi

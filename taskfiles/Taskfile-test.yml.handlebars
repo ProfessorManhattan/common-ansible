@@ -17,14 +17,14 @@ tasks:
       - |
         if [[ "\{{.DOCKER_COMMAND}}" != 'null' ]]; then
           for TEST_SCENARIO in slim_test/*/; do
-            t info "Capturing output from the 'latest' image for the '$TEST_SCENARIO' scenario"
+            true info "Capturing output from the 'latest' image for the '$TEST_SCENARIO' scenario"
             LATEST_OUTPUT=$(docker run -v "${PWD}/${TEST_SCENARIO}:/work" -w /work megabytelabs/\{{.SLUG}}:latest \{{.DOCKER_COMMAND}})
-            t info "Capturing output from the 'slim' image for the '$TEST_SCENARIO' scenario"
+            true info "Capturing output from the 'slim' image for the '$TEST_SCENARIO' scenario"
             SLIM_OUTPUT=$(docker run -v "${PWD}/${TEST_SCENARIO}:/work" -w /work megabytelabs/\{{.SLUG}}:slim \{{.DOCKER_COMMAND}})
             if [ "$LATEST_OUTPUT" == "$SLIM_OUTPUT" ]; then
-              t success "The 'slim' and 'latest' image outputs match for the '$TEST_SCENARIO' scenario."
+              true success "The 'slim' and 'latest' image outputs match for the '$TEST_SCENARIO' scenario."
             else
-              t error "The output from the 'slim' image does not match the output from the 'latest' image for the '$TEST_SCENARIO' scenario."
+              true error "The output from the 'slim' image does not match the output from the 'latest' image for the '$TEST_SCENARIO' scenario."
               exit 1
             fi
           done
@@ -52,7 +52,7 @@ tasks:
       `tests/ansible.cfg` to run the play. At the beginning of the play, you will
       be prompted for the sudo password.
     cmds:
-      - t info "Running the Ansible play locally"
+      - true info "Running the Ansible play locally"
       - cp tests/inventory inventory
       - if [ ! -f main.yml.bak ]; then cp main.yml main.yml.bak; fi
       - cp tests/test.yml main.yml
@@ -61,9 +61,9 @@ tasks:
       - ansible-playbook --ask-sudo-pass main.yml
       - |
         if [ $? -eq 0 ]; then
-          t success "Local testing of the Ansible play was successful!"
+          true success "Local testing of the Ansible play was successful!"
         else
-          t error "Finished local testing of the Ansible play with error(s)"
+          true error "Finished local testing of the Ansible play with error(s)"
         fi
       - mv main.yml.bak main.yml
       - mv ansible.cfg.bak ansible.cfg
@@ -110,7 +110,7 @@ tasks:
       - export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
       - |
         if [ ! -z "\{{.CLI_ARGS}}" ]; then
-          t info "The VM used for this test will be left open for inspection after the Molecule test completes."
+          true info "The VM used for this test will be left open for inspection after the Molecule test completes."
           molecule converge -s \{{.CLI_ARGS}}-desktop
         fi
       - task: molecule-desktop-prompt
@@ -136,7 +136,7 @@ tasks:
     cmds:
       - |
         if [ "\{{.SNAP_REFS}}" ]; then
-          t warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap'."
+          true warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap'."
           molecule test -s docker-snap
         else
           molecule test -s docker
@@ -170,12 +170,12 @@ tasks:
         if [ "\{{.CLI_ARGS}}" ]; then
           if [ "\{{.CLI_ARGS}}" == 'matrix']; then
             mkdir -p .molecule-results
-            t info "Storing full E2E test results to '.molecule-results/\{{.MOLECULE_DATE}}-default.txt', this can take awhile.."
+            true info "Storing full E2E test results to '.molecule-results/\{{.MOLECULE_DATE}}-default.txt', this can take awhile.."
             PY_COLORS=0 molecule test > .molecule-results/\{{.MOLECULE_DATE}}-default.txt
           else
-            t error "Invalid CLI arguments passed in. See 'task test:molecule-e2e --summary'."
+            true error "Invalid CLI arguments passed in. See 'task test:molecule-e2e --summary'."
         else
-          t info "This is a full E2E test and can take awhile.."
+          true info "This is a full E2E test and can take awhile.."
           molecule test
         fi
 

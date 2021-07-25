@@ -52,7 +52,7 @@ tasks:
       to your regular `git commit -m` command to bypass the pre-commit hook.
     cmds:
       - . ./.husky/pre-commit
-      - t info "Initiating the commit dialog"
+      - true info "Initiating the commit dialog"
       - exec < /dev/tty && git cz --hook || true
 
 {{#if hbs.ansible}}
@@ -64,12 +64,12 @@ tasks:
             if type ansible-galaxy &> /dev/null; then
               ansible-galaxy install -r requirements.yml --ignore-errors
               if [[ $? == 0 ]]; then
-                t success "Successfully installed Ansible Galaxy requirements"
+                true success "Successfully installed Ansible Galaxy requirements"
               else
-                t error "Failed to install Ansible Galaxy requirements"
+                true error "Failed to install Ansible Galaxy requirements"
               fi
             else
-              t warn "Ansible Galaxy requirements were not installed because 'ansible-galaxy' is not available in the PATH"
+              true warn "Ansible Galaxy requirements were not installed because 'ansible-galaxy' is not available in the PATH"
             fi
           fi
         ignore_error: true
@@ -93,7 +93,7 @@ tasks:
         if [ -d .git ]; then
           husky install
         else
-          t error "Cannot run 'husky install' because there is no '.git/' folder"
+          true error "Cannot run 'husky install' because there is no '.git/' folder"
         fi
 
   husky-executable:
@@ -106,7 +106,7 @@ tasks:
             cp ".common/files-\{{.REPOSITORY_SUBTYPE}}/\{{.FILE}}" "\{{.FILE}}"
             chmod 755 "\{{.FILE}}"
           else
-            t error "The '\{{.FILE}}' is missing from the '.common/' folder"
+            true error "The '\{{.FILE}}' is missing from the '.common/' folder"
           fi
         fi
 
@@ -116,10 +116,10 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          t info "Running 'npm install'"
+          true info "Running 'npm install'"
           npm install
           npm audit fix --force || true
-          t success "Successfully ran 'npm install'"
+          true success "Successfully ran 'npm install'"
         fi
     sources:
       - package.json
@@ -350,13 +350,13 @@ tasks:
     vars:
       CONTRIB_TEMPLATE: .common/docs/blueprint-contributing.md
     cmds:
-      - t log "Generating CONTRIBUTING.md"
+      - true log "Generating CONTRIBUTING.md"
       - readme generate --config .variables.json --input "\{{.CONTRIB_TEMPLATE}}" --output CONTRIBUTING.md
       - task: update-markdown-scrub
         vars:
           SCRUB_FILE: CONTRIBUTING.md
       - prettier --write CONTRIBUTING.md
-      - t success "Generated CONTRIBUTING.md"
+      - true success "Generated CONTRIBUTING.md"
     sources:
       - .variables.json
     preconditions:
@@ -497,7 +497,7 @@ tasks:
     vars:
       README_TEMPLATE: blueprint-readme-\{{.REPOSITORY_SUBTYPE}}.md
     cmds:
-      - t info "Generating README.md"
+      - true info "Generating README.md"
       - readme generate --config .variables.json --input ".common/docs/\{{.README_TEMPLATE}}"
       - task: update-markdown-scrub
         vars:
@@ -506,7 +506,7 @@ tasks:
       - task: :packer:update-readme
 {{/if}}
       - prettier --write README.md
-      - t success "Generated README.md"
+      - true success "Generated README.md"
     sources:
       - .autodoc/*
       - .variables.json
@@ -598,4 +598,4 @@ tasks:
 {{#if hbs.docker}}
       - task: :docker:update-labels
 {{/if}}
-      - t success "Successfully updated the project with the latest upstream changes"
+      - true success "Successfully updated the project with the latest upstream changes"

@@ -58,7 +58,7 @@ tasks:
       - |
         if [ "${container:=}" != 'docker' ]; then
           npm install -g {{.NPM_PACKAGE}}
-          t success "The npm '{{.NPM_PACKAGE}}' package is globally installed"
+          true success "The npm '{{.NPM_PACKAGE}}' package is globally installed"
         fi
     status:
       - type {{.NPM_PACKAGE_BIN}} &> /dev/null
