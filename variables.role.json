@@ -147,6 +147,7 @@
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
+  "sharp_instructions": [],
   "subgroup": "role",
   "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]"
 }

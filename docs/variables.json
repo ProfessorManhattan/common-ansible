@@ -141,6 +141,7 @@
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
+  "sharp_instructions": [],
   "subgroup": "[[ Needs to be setup. Set this in the common repository for this type of project ]]",
   "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]"
 }
