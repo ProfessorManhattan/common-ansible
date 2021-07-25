@@ -1,14 +1,14 @@
-'use strict'
+'use strict';
 
 /* eslint-disable space-before-function-paren */
 
-import inquirer from 'inquirer'
-import signale from 'signale'
+import inquirer from 'inquirer';
+import signale from 'signale';
 
 signale.info(
   'Open a shell session quickly, safely, and easily using Docker. Select an option from the prompt below to download and shell into a Docker environment.'
-)
-promptForShell()
+);
+promptForShell();
 
 /**
  * Prompts the user for the operating system they wish to launch a shell session with.
@@ -32,7 +32,7 @@ async function promptForShell() {
         'Ubuntu 21.04'
       ]
     }
-  ])
-  const choice = response.operatingSystem.toLowerCase().replace(' ', '-')
-  console.log(choice)
+  ]);
+  const choice = response.operatingSystem.toLowerCase().replace(' ', '-');
+  console.log(choice);
 }
