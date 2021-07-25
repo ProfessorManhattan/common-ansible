@@ -58,3 +58,33 @@ tasks:
         fi
     sources:
       - "**/*.(jpg|png)"
+
+  resize:
+    deps:
+      - :npm:sharp
+      - :software:exiftool
+    desc: Resize an image
+    summary: |
+      $ Resize images
+
+      This task leverages the NPM package named 'sharp' to resize images. To use this task,
+      specify the width, followed by the height, and then the image path (or just the name
+      if it is in the same directory). Alternatively, you can open an interactive dialog
+      to walk you through the process.
+
+      Example opening an interactive dialog:
+      > task image:resize
+
+      Example changing the width to 200px and height to 240px of an image named 'image.png':
+      > task image:resize -- 200 240 image.png
+    cmds:
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          true info "Interactive dialog coming eventually.."
+        else
+          ARGS_ARRAY=(\{{.CLI_ARGS}})
+          if ! exiftool "${ARGS_ARRAY[2]}" | grep 'Image Size' | grep "${ARGS_ARRAY[0]}x${ARGS_ARRAY[1]}"; then
+            sharp -i "${ARGS_ARRAY[2]}" -o "${ARGS_ARRAY[2]}.resized" resize "${ARGS_ARRAY[0]}" "${ARGS_ARRAY[1]}"
+            mv "${ARGS_ARRAY[2]}.resized" "${ARGS_ARRAY[2]}"
+          fi
+        fi
