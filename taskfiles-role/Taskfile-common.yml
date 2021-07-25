@@ -124,9 +124,14 @@ tasks:
     deps:
       - :software:node
     cmds:
+      - task: nodejs-dependencies-install
+    status:
+      - 'test -d node_modules || [ "${container:=}" == "docker" ]'
+
+  nodejs-dependencies-install:
+    cmds:
       - |
         if [ "${container:=}" != 'docker' ]; then
-          true info "Running 'npm install'"
           npm install
           npm audit fix --force || true
           true success "Successfully ran 'npm install'"
@@ -134,8 +139,6 @@ tasks:
     sources:
       - package.json
       - package-lock.json
-    status:
-      - 'test -d node_modules || [ "${container:=}" == "docker" ]'
     preconditions:
       - sh: "test -f package.json"
         msg: "The package.json file appears to be missing!"
