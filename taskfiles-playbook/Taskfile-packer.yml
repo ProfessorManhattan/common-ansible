@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   latestos:
@@ -19,7 +19,7 @@ tasks:
       - '[[ "{{.TAG}}}" == "macos" ]] || [ "${container:=}" == "docker" ]'
     preconditions:
       - sh: test -f template.json
-        msg: "The `template.json` file is missing from the root of this project."
+        msg: 'The `template.json` file is missing from the root of this project.'
 
   populate-descriptions:
     deps:
@@ -101,8 +101,9 @@ tasks:
       - .variables.json
     preconditions:
       - sh: test -f template.json
-        msg: "A `template.json` file is not present. This project uses values stored in `template.json` to generate certain
+        msg:
+          'A `template.json` file is not present. This project uses values stored in `template.json` to generate certain
           meta artifacts. Please add a `template.json`. You can find an example of one in this repository:
-          https://gitlab.com/megabyte-labs/packer/ubuntu-desktop"
+          https://gitlab.com/megabyte-labs/packer/ubuntu-desktop'
       - sh: test -f .variables.json
-        msg: "The `.variables.json` file is missing!"
+        msg: 'The `.variables.json` file is missing!'

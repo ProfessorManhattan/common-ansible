@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 vars:
   IGNORE_FOLDERS: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
@@ -40,7 +40,7 @@ tasks:
     cmds:
       - ansible-lint
     sources:
-      - "**/*.yml"
+      - '**/*.yml'
 
   commit:
     deps:
@@ -92,7 +92,7 @@ tasks:
           docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim {{.CLI_ARGS}}
         fi
     sources:
-      - "**/(Dockerfile|Dockerfile.j2)"
+      - '**/(Dockerfile|Dockerfile.j2)'
 
   formatting:
     deps:
@@ -114,7 +114,7 @@ tasks:
       - prettier --list-different .
       - prettier-package-json --list-different package.json
     sources:
-      - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   lint-staged:
     deps:
@@ -175,7 +175,7 @@ tasks:
           remark {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.md"
+      - '**/*.md'
 
   markdown-broken-links:
     deps:
@@ -204,7 +204,7 @@ tasks:
           markdown-link-check {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.md"
+      - '**/*.md'
 
   private-keys:
     deps:
@@ -230,7 +230,7 @@ tasks:
           detect-private-key {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*"
+      - '**/*'
 
   prose:
     deps:
@@ -258,7 +258,7 @@ tasks:
           proselint --config .common/proselint.json {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.md"
+      - '**/*.md'
 
   python:
     deps:
@@ -295,7 +295,7 @@ tasks:
           flake8 {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.py"
+      - '**/*.py'
 
   scripts:
     deps:
@@ -328,7 +328,7 @@ tasks:
           shellcheck {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.(sh|sh.j2)"
+      - '**/*.(sh|sh.j2)'
 
   spelling:
     deps:
@@ -365,8 +365,8 @@ tasks:
           cspell --no-progress --show-context --no-must-find-files --config .cspell.json {{.CLI_ARGS}}
         fi
     preconditions:
-      - sh: "git diff --cached --name-only"
-        msg: "Cannot perform a spell check because there are no staged files"
+      - sh: 'git diff --cached --name-only'
+        msg: 'Cannot perform a spell check because there are no staged files'
 
   yaml:
     deps:
@@ -400,4 +400,4 @@ tasks:
           yamllint {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.yml"
+      - '**/*.yml'

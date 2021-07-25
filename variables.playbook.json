@@ -61,7 +61,10 @@
     ["Scenario", "Description"],
     ["`default`", "Uses VirtualBox to run tests for all platforms in parallel."],
     ["`docker`", "Uses Docker to run tests for all Linux platforms and versions in parallel."],
-    ["`docker-snap`", "The same as the `docker` scenario except it excludes platforms that have trouble installing snap packages on Docker."],
+    [
+      "`docker-snap`",
+      "The same as the `docker` scenario except it excludes platforms that have trouble installing snap packages on Docker."
+    ],
     ["`archlinux-desktop`", "Runs the test on the latest version of Archlinux desktop using VirtualBox."],
     ["`centos-desktop`", "Runs the test on the latest version of CentOS desktop using VirtualBox."],
     ["`debian-desktop`", "Runs the test on the latest version of Debian desktop using VirtualBox."],
@@ -72,7 +75,10 @@
     ["`ci-docker-archlinux`", "Uses Docker to test Archlinux."],
     ["`ci-docker-centos`", "Uses Docker to test multiple versions of CentOS."],
     ["`ci-docker-debian`", "Uses Docker to test multiple versions of Debian."],
-    ["`ci-docker-debian-snap`", "Uses Docker to test Debian just like `ci-docker-debian` except it excludes versions that cannot install snap packages."],
+    [
+      "`ci-docker-debian-snap`",
+      "Uses Docker to test Debian just like `ci-docker-debian` except it excludes versions that cannot install snap packages."
+    ],
     ["`ci-docker-fedora`", "Uses Docker to test multiple versions of Fedora."],
     ["`ci-docker-ubuntu`", "Uses Docker to test multiple versions of Ubuntu."]
   ],

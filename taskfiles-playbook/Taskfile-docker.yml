@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   update-labels:
@@ -51,8 +51,8 @@ tasks:
       - package.json
     preconditions:
       - sh: test -f Dockerfile
-        msg: "A `Dockerfile` is not present in the root of this project!"
+        msg: 'A `Dockerfile` is not present in the root of this project!'
       - sh: test -f .variables.json
-        msg: "The `.variables.json` file is not present in the root of this project!"
+        msg: 'The `.variables.json` file is not present in the root of this project!'
       - sh: test -f package.json
-        msg: "The `package.json` file is not present in the root of this project!"
+        msg: 'The `package.json` file is not present in the root of this project!'

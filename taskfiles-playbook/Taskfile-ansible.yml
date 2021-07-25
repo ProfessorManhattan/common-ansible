@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   ansibler-compatibility-chart:
@@ -25,8 +25,8 @@ tasks:
       - task: ansibler-compatibility-chart
       - task: ansibler-tasks
     preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type ansibler &> /dev/null'
+        msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`.'
     status:
       - true
 
@@ -49,8 +49,8 @@ tasks:
           done
         fi
     preconditions:
-      - sh: "test -d node_modules"
-        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
+      - sh: 'test -d node_modules'
+        msg: 'This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`.'
     status:
       - '[[ -z "{{.CLI_ARGS}}" ]]'
 
@@ -96,8 +96,8 @@ tasks:
     cmds:
       - find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print
     preconditions:
-      - sh: "test -d roles"
-        msg: "The roles folder is missing. Is the project set up right?"
+      - sh: 'test -d roles'
+        msg: 'The roles folder is missing. Is the project set up right?'
 
   symlink:
     desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
@@ -117,5 +117,5 @@ tasks:
           fi
         done
     preconditions:
-      - sh: "test -d roles"
-        msg: "The roles folder is missing. Is the project set up right?"
+      - sh: 'test -d roles'
+        msg: 'The roles folder is missing. Is the project set up right?'

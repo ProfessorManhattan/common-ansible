@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 vars:
   IGNORE_FOLDERS: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
@@ -38,7 +38,7 @@ tasks:
       - prettier --write .
       - prettier-package-json --write package.json
     sources:
-      - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
+      - '**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)'
 
   json:
     deps:
@@ -71,7 +71,7 @@ tasks:
           pretty-format-json --autofix --top-keys {{.TOP_KEYS}} {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.json"
+      - '**/*.json'
 
     misc:
       deps:
@@ -135,7 +135,7 @@ tasks:
           black {{.CLI_ARGS}}
         fi
     sources:
-      - "**/*.py"
+      - '**/*.py'
 
   scripts:
     deps:
@@ -180,4 +180,4 @@ tasks:
           shellcheck -f diff {{.CLI_ARGS}} | git apply
         fi
     sources:
-      - "**/*.(sh|sh.j2)"
+      - '**/*.(sh|sh.j2)'

@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 vars:
   IGNORE_FOLDERS: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
@@ -57,7 +57,7 @@ tasks:
           compressImage "{{.CLI_ARGS}}"
         fi
     sources:
-      - "**/*.(jpg|png)"
+      - '**/*.(jpg|png)'
 
   resize:
     deps:

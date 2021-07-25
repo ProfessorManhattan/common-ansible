@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   ansibler-compatibility-chart:
@@ -33,8 +33,8 @@ tasks:
       - task: ansibler-compatibility-chart
       - task: ansibler-tasks
     preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
+      - sh: 'type ansibler &> /dev/null'
+        msg: '`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`.'
     status:
       - true
 
@@ -70,13 +70,13 @@ tasks:
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     sources:
-      - "tasks**/*.yml"
-      - ".autodoc/*"
+      - 'tasks**/*.yml'
+      - '.autodoc/*'
     preconditions:
-      - sh: "type mod-ansible-autodoc &> /dev/null"
-        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
+      - sh: 'type mod-ansible-autodoc &> /dev/null'
+        msg: 'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
           by running `task common:requirements`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt`
-          file."
+          file.'
 
   populate-collection:
     deps:
@@ -242,16 +242,16 @@ tasks:
         '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     preconditions:
-      - sh: "type jq &> /dev/null"
-        msg: "jq is not installed! You can install it by running `task software:jq`."
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! You can install it by running `task software:yq`."
-      - sh: "test -f meta/main.yml"
-        msg: "The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
-          example of one at https://github.com/ProfessorManhattan/ansible-snapd."
+      - sh: 'type jq &> /dev/null'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+      - sh: 'type yq &> /dev/null'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
+      - sh: 'test -f meta/main.yml'
+        msg: 'The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
+          example of one at https://github.com/ProfessorManhattan/ansible-snapd.'
       - sh: test -f .variables.json
-        msg: "The `.variables.json` file is missing!"
+        msg: 'The `.variables.json` file is missing!'
     sources:
-      - ".common/variables.{{.REPOSITORY_SUBTYPE}}.json"
+      - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
       - meta/main.yml
       - package.json

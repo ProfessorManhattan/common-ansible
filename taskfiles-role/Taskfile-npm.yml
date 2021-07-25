@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   commitizen:
@@ -7,13 +7,13 @@ tasks:
       - task: npm-install
         vars:
           NPM_PACKAGE: commitizen
-          NPM_PACKAGE_BIN: "git-cz"
+          NPM_PACKAGE_BIN: 'git-cz'
 
   commitlint:
     cmds:
       - task: npm-install
         vars:
-          NPM_PACKAGE: "@commitlint/cli"
+          NPM_PACKAGE: '@commitlint/cli'
           NPM_PACKAGE_BIN: commitlint
 
   cspell:
@@ -85,7 +85,7 @@ tasks:
     cmds:
       - task: npm-install
         vars:
-          NPM_PACKAGE: "@appnest/readme"
+          NPM_PACKAGE: '@appnest/readme'
           NPM_PACKAGE_BIN: readme
 
   remark:
