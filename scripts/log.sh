@@ -31,17 +31,29 @@ function commandExists() {
 }
 
 if commandExists node; then
-  NODE_PATH="$(npm root -g):$NODE_PATH"
+  # npm root -g takes around 0.25s to run, so cache the value
+  if [ -f .cache/megabytelabs/NPM_ROOT ]; then
+    NODE_PATH="$(cat .common/NPM_ROOT):$NODE_PATH"
+  else
+    NPM_ROOT="$(npm root -g)"
+    NODE_PATH="$NPM_ROOT:$NODE_PATH"
+    mkdir -p .cache/megabytelabs
+    echo "$NPM_ROOT" > .cache/megabytelabs/NPM_ROOT
+  fi
   export NODE_PATH
   if [ "${container:=}" != 'docker' ]; then
     ENHANCED_LOGGING=true
   fi
 fi
 
+# @description Logs to the console by using the NPM 'signale' library
+# @example signale info "An informative log"
 function signale() {
   node -e 'require("signale").'"$1"'({prefix: "'"${LOG_PREFIX:=}"'", message:"'"$2"'", suffix: "'"${LOG_SUFFIX:=}"'"})'
 }
 
+# @description Logs an error message
+# @example signale error "Something happened!"
 function error() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale error "$1"
@@ -50,6 +62,8 @@ function error() {
   fi
 }
 
+# @description Logs an info message
+# @example signale info "Here is some information"
 function info() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale note "$1"
@@ -58,6 +72,8 @@ function info() {
   fi
 }
 
+# @description Logs a message that starts with a star emoji
+# @example signale star "Congratulations"
 function star() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale star "$1"
@@ -66,6 +82,8 @@ function star() {
   fi
 }
 
+# @description Starts a timer and logs a message saying so
+# @example signale start "Job ID"
 function start() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale start "$1"
@@ -74,6 +92,8 @@ function start() {
   fi
 }
 
+# @description Stops a timer and logs a message saying so
+# @example signale stop "Job ID"
 function stop() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale stop "$1"
@@ -82,6 +102,8 @@ function stop() {
   fi
 }
 
+# @description Logs a success message
+# @example signale success "Job complete!"
 function success() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale success "$1"
@@ -90,6 +112,8 @@ function success() {
   fi
 }
 
+# @description Logs a warning message
+# @example signale warn "Just so you know.."
 function warn() {
   if [ "$ENHANCED_LOGGING" ]; then
     signale warn "$1"

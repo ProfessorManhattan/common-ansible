@@ -33,6 +33,8 @@ tasks:
 
   commit:
     deps:
+      - :npm:commitizen
+      - :npm:commitlint
       - nodejs-dependencies
       - python-requirements
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
@@ -51,7 +53,7 @@ tasks:
     cmds:
       - . ./.husky/pre-commit
       - t info "Initiating the commit dialog"
-      - npm run commit -- --no-verify
+      - exec < /dev/tty && git cz --hook || true
 
   galaxy-requirements:
     cmds:
@@ -78,6 +80,34 @@ tasks:
       - sh: "type ansible-galaxy &> /dev/null"
         msg: "'ansible-galaxy' is missing from the PATH"
 
+  husky:
+    deps:
+      - :npm:commitizen
+      - :npm:commitlint
+      - :npm:husky
+      - nodejs-dependencies
+    cmds:
+      - |
+        if [ -d .git ]; then
+          husky install
+        else
+          t error "Cannot run 'husky install' because there is no '.git/' folder"
+        fi
+
+  husky-executable:
+    cmds:
+      - |
+        if [ -f "{{.FILE}}" ]; then
+          chmod 755 "{{.FILE}}"
+        else
+          if [ -f ".common/files-{{.REPOSITORY_SUBTYPE}}/.husky/{{.FILE}}" ]; then
+            cp ".common/files-{{.REPOSITORY_SUBTYPE}}/{{.FILE}}" "{{.FILE}}"
+            chmod 755 "{{.FILE}}"
+          else
+            t error "The '{{.FILE}}' is missing from the '.common/' folder"
+          fi
+        fi
+
   nodejs-dependencies:
     deps:
       - :software:node
@@ -100,6 +130,8 @@ tasks:
 
   nodejs-global-dependencies:
     deps:
+      - :npm:commitizen
+      - :npm:commitlint
       - :npm:cspell
       - :npm:hbs
       - :npm:lint-staged
@@ -107,6 +139,7 @@ tasks:
       - :npm:prettier
       - :npm:prettier-package-json
       - :npm:readme
+      - :npm:remark
       - :npm:shellcheck
       - :npm:snyk
       - :npm:standard-version
@@ -363,7 +396,9 @@ tasks:
       - task: update-files-handlebars
       - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
       - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
-      - chmod 755 .husky/pre-commit
+      - if [ -d .git ]; then husky install; fi
+      - if [ -f .husky/pre-commit ]; then chmod 755 .husky/pre-commit; fi
+      - if [ -f .husky/commit-msg ]; then chmod 755 .husky/commit-msg; fi
       - task: update-sort
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the

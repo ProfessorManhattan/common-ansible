@@ -10,6 +10,14 @@ tasks:
     status:
       - type docker &> /dev/null
 
+  exiftool:
+    cmds:
+      - task: exiftool
+        vars:
+          SOFTWARE: exiftool
+    status:
+      - type exiftool &> /dev/null
+
   git:
     cmds:
       - task: install-doctor
@@ -17,6 +25,14 @@ tasks:
           SOFTWARE: git
     status:
       - type git &> /dev/null
+
+  gitleaks:
+    cmds:
+      - task: install-doctor
+        vars:
+          SOFTWARE: gitleaks
+    status:
+      - type gitleaks &> /dev/null
 
   install-doctor:
     cmds:

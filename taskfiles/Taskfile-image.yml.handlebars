@@ -1,0 +1,60 @@
+version: '3'
+
+vars:
+  IGNORE_FOLDERS:
+    sh: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+      -o -name .modules -o -name .npm -o -name .task -o -name .venv -o -name node_modules
+      -o -name venv
+  TINYPNG_API_KEY: z4qhFBLRvNMG9rHmdkSLx1DR1FNZN5gc
+
+tasks:
+  compress:
+    deps:
+      - :npm:tinypng
+      - :software:exiftool
+    desc: Compress JPG/PNG images via TinyPNG
+    summary: |
+      $ Compress JPG/PNG images via TinyPNG
+
+      Finding the best stack for compressing images is not easy. All the best stacks seem to
+      only be available for macOS. This task gets around this shortcoming by using https://tinypng.org
+      to compress images. Although relying on a third-party service is not ideal, TinyPNG does
+      a fantastic job compressing images. After an image is compressed, file meta is stored to the
+      image using 'exiftool'. This helps us avoid compressing the same image twice.
+
+      An API key is embedded in these Taskfiles but it is a free one and has usage limits. If you
+      would like to use your own credits then you can sign up for a developer account here:
+      https://tinypng.com/developers. After you sign up, save your key to a file at '~/.tinypng'
+      and this task will use your API key instead.
+
+      Example of compressing all '**.*.(jpg|png)' files in a project:
+      > task image:compress
+
+      Example of compressing single image:
+      > task image:compress -- ./path/image.png
+    cmds:
+      - |
+        function compressImage() {
+          if exiftool "$1" &> /dev/null; then
+            if (exiftool "$1" | grep Comment | grep tinypng-compressed) &> /dev/null; then
+              t log "'$1' has already been compressed by TinyPNG"
+            else
+              if [ -f ~/.tinypng ]; then
+                tinypng "$1"
+              else
+                tinypng -k "\{{.TINYPNG_API_KEY}}" "$1"
+              fi
+              exiftool -comment="tinypng-compressed" "$1"
+            fi
+          else
+            t error "Failed to extract EXIF data from '$1' so the compression is being skipped"
+          fi
+        }
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.jpg -o -name \*.png \) -print0 |
+            xargs -0 -r -n1 compressImage
+        else
+          compressImage "\{{.CLI_ARGS}}"
+        fi
+    sources:
+      - "**/*.(jpg|png)"

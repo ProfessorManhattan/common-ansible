@@ -1,15 +1,9 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-. "./.common/scripts/log.sh"
+. "./.common/scripts/init.sh"
 
-if ! typeof task &> /dev/null; then
-  . "./.common/scripts/common.sh"
-  . "./.common/scripts/software.sh"
-  ensureTaskInstalled
-fi
-
-info "Performing various pre-commit tasks like autofixing, detecting private keys, etc."
+info "Performing various pre-commit tasks on staged files (like autofixing, detecting private keys, etc.)"
 STAGED_FILES=$(git diff --cached --name-only)
 for FILE in "$STAGED_FILES"; do
   if [ -f "$1" ]; then
@@ -21,7 +15,7 @@ wait
 info "Linting and fixing the staged files with 'lint-staged'"
 task lint:lint-staged
 
-info "Reporting possible spelling errors in the staged files"
+info "Reporting possible spelling errors in the staged files with 'cspell'"
 task lint:spelling
 
-success "pre-commit hook finished"
+success "pre-commit validation complete"

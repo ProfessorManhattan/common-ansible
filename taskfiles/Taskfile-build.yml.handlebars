@@ -112,6 +112,13 @@ tasks:
       - tsc -p tsconfig.module.json
 
 {{/if}}
+{{#if hbs.man}}
+  man-page:
+    desc: Build `man` page from the README.md file
+    cmds:
+      - echo "See https://github.com/remarkjs/remark-man"
+
+{{/if}}
 {{#if hbs.docker}}
   normal:
     deps:

@@ -2,6 +2,20 @@
 version: "3"
 
 tasks:
+  commitizen:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: commitizen
+          NPM_PACKAGE_BIN: "git-cz"
+
+  commitlint:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: "@commitlint/cli"
+          NPM_PACKAGE_BIN: commitlint
+
   cspell:
     cmds:
       - task: npm-install
@@ -15,6 +29,13 @@ tasks:
         vars:
           NPM_PACKAGE: hbs-cli
           NPM_PACKAGE_BIN: hbs
+
+  husky:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: husky
+          NPM_PACKAGE_BIN: husky
 
   lint-staged:
     cmds:
@@ -59,8 +80,6 @@ tasks:
         vars:
           NPM_PACKAGE: prettier
           NPM_PACKAGE_BIN: prettier
-    status:
-      - type prettier &> /dev/null
 
   readme:
     cmds:
@@ -68,6 +87,20 @@ tasks:
         vars:
           NPM_PACKAGE: "@appnest/readme"
           NPM_PACKAGE_BIN: readme
+
+  remark:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: remark-cli
+          NPM_PACKAGE_BIN: remark
+
+  sharp:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: sharp-cli
+          NPM_PACKAGE_BIN: sharp
 
   shellcheck:
     cmds:
@@ -89,3 +122,10 @@ tasks:
         vars:
           NPM_PACKAGE: standard-version
           NPM_PACKAGE_BIN: standard-version
+
+  tinypng:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: tinypng-cli
+          NPM_PACKAGE_BIN: tinypng

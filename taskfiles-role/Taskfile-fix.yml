@@ -13,6 +13,7 @@ tasks:
     deps:
       - formatting
       - json
+      - misc
       - python
       - scripts
 
