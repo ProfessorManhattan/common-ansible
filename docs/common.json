@@ -29,6 +29,5 @@
     ["`ci-docker-debian-snap`", "Uses Docker to test Debian just like `ci-docker-debian` except it excludes versions that cannot install snap packages."],
     ["`ci-docker-fedora`", "Uses Docker to test multiple versions of Fedora."],
     ["`ci-docker-ubuntu`", "Uses Docker to test multiple versions of Ubuntu."]
-  ],
-  "sharp_instructions": ["image:resize logo.png 200 200"]
+  ]
 }
