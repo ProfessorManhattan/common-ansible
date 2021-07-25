@@ -78,8 +78,6 @@ tasks:
     preconditions:
       - sh: "test -f requirements.yml"
         msg: "The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case)."
-      - sh: "type ansible-galaxy &> /dev/null"
-        msg: "'ansible-galaxy' is missing from the PATH"
 
 {{/if}}
   husky:
