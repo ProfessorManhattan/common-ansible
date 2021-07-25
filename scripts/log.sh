@@ -33,7 +33,7 @@ function commandExists() {
 if commandExists node; then
   # npm root -g takes around 0.25s to run, so cache the value
   if [ -f .cache/megabytelabs/NPM_ROOT ]; then
-    NODE_PATH="$(cat .common/NPM_ROOT):$NODE_PATH"
+    NODE_PATH="$(cat .cache/megabytelabs/NPM_ROOT):$NODE_PATH"
   else
     NPM_ROOT="$(npm root -g)"
     NODE_PATH="$NPM_ROOT:$NODE_PATH"

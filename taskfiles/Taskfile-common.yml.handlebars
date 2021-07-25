@@ -95,6 +95,15 @@ tasks:
         else
           true error "Cannot run 'husky install' because there is no '.git/' folder"
         fi
+      - task: husky-executable
+        vars:
+          FILE: .husky/commit-msg
+      - task: husky-executable
+        vars:
+          FILE: .husky/pre-commit
+      - task:
+        vars:
+          FILE: .husky/prepare-commit-msg
 
   husky-executable:
     cmds:
@@ -102,13 +111,16 @@ tasks:
         if [ -f "\{{.FILE}}" ]; then
           chmod 755 "\{{.FILE}}"
         else
-          if [ -f ".common/files-\{{.REPOSITORY_SUBTYPE}}/.husky/\{{.FILE}}" ]; then
+          if [ -f ".common/files-\{{.REPOSITORY_SUBTYPE}}/\{{.FILE}}" ]; then
             cp ".common/files-\{{.REPOSITORY_SUBTYPE}}/\{{.FILE}}" "\{{.FILE}}"
             chmod 755 "\{{.FILE}}"
           else
-            true error "The '\{{.FILE}}' is missing from the '.common/' folder"
+            true error "The '\{{.FILE}}' is missing from the '.common/files-\{{.REPOSITORY_SUBTYPE}}/' folder"
           fi
         fi
+    sources:
+      - ".common/files-\{{.REPOSITORY_SUBTYPE}}/\{{.FILE}}"
+      - "\{{.FILE}}"
 
   nodejs-dependencies:
     deps:
@@ -421,9 +433,7 @@ tasks:
         fi
 {{/if}}
       - rsync -aPq ".common/files-\{{.REPOSITORY_SUBTYPE}}/" ./
-      - if [ -d .git ]; then husky install; fi
-      - if [ -f .husky/pre-commit ]; then chmod 755 .husky/pre-commit; fi
-      - if [ -f .husky/commit-msg ]; then chmod 755 .husky/commit-msg; fi
+      - task: husky
       - task: update-sort
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
