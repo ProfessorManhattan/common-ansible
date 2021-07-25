@@ -10,6 +10,14 @@ tasks:
     status:
       - type docker &> /dev/null
 
+  dockle:
+    cmds:
+      - task: install-doctor
+        vars:
+          SOFTWARE: dockle
+    status:
+      - type dockle &> /dev/null
+
   exiftool:
     cmds:
       - task: exiftool

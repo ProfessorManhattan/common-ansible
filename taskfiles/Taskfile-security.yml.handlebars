@@ -3,6 +3,39 @@ version: '3'
 
 tasks:
 {{#if dockerfile}}
+  dockle:
+    deps:
+      - :software:dockle
+    desc: Analyze and lint the Docker container using Dockle
+    summary: |
+      $ Analyze and lint Docker containers with Dockle
+
+      Dockle is a Docker image linter that reports security tips and conflicts with best practices. It does
+      more than what Hadolint does, according to their GitHub page. Also, instead of linting the Dockerfile,
+      it lints the actual image.
+
+      Example usage for scanning standard Docker repository (with 'slim' build):
+      > task security:dockle
+
+      Example usage for any image:
+      > task security:dockle -- namespace/image:tag
+
+      For more information on Dockle, see: https://github.com/goodwithtech/dockle
+    vars:
+      DOCKER_IMAGE:
+        sh: jq -r '.slug' .variables.json
+    cmds:
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' with Dockle"
+          dockle {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
+          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' with Dockle"
+          dockle {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
+        else
+          t info "Scanning '\{{.CLI_ARGS}}' with Dockle"
+          dockle \{{.CLI_ARGS}}
+        fi
+
   snyk-login:
     deps:
       - :npm:snyk
@@ -30,16 +63,28 @@ tasks:
       service. Signing up is free and easy (albeit, there is a limit to the number of scans you can run for free).
       All you have to do is run `snyk auth` with the `snyk` NPM package installed.
 
+      Example usage for scanning standard Docker repository (with 'slim' build and Dockerfile in root directory):
+      > task security:snyk
+
+      Example usage for any image:
+      > task security:snyk -- namespace/image:tag
+
       For more information on Snyk, see: https://snyk.io/what-is-snyk/
     vars:
       DOCKER_IMAGE:
         sh: jq -r '.slug' .variables.json
     cmds:
       - task: snyk-login
-      - t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Snyk"
-      - snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile
-      - t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Snyk"
-      - snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Snyk"
+          snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest --file=Dockerfile
+          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Snyk"
+          snyk test --docker {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim --file=Dockerfile
+        else
+          t info "Scanning '\{{.CLI_ARGS}}' for vulnerabilities with Snyk"
+          snyk test --docker \{{.CLI_ARGS}}
+        fi
 
   trivy:
     deps:
@@ -53,14 +98,26 @@ tasks:
       and other artifacts. This task leverages Trivy's ability to report possible vulnerabilities in
       the Docker container.
 
+      Example usage for scanning both the 'latest' and 'slim' build in a standard Docker repository:
+      > task security:trivy
+
+      Example usage for scanning any image:
+      > task security:trivy -- alpine:latest
+
       For more information on Trivy, see: https://aquasecurity.github.io/trivy/
     vars:
       DOCKER_IMAGE:
         sh: jq -r '.slug' .variables.json
     cmds:
-      - t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Trivy"
-      - trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
-      - t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Trivy"
-      - trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest' for vulnerabilities with Trivy"
+          trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:latest
+          t info "Scanning '{{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim' for vulnerabilities with Trivy"
+          trivy image {{profile.dockerhub}}/\{{.DOCKER_IMAGE}}:slim
+        else
+          t info "Scanning '\{{.CLI_ARGS}}' for vulnerabilities with Trivy"
+          trivy image \{{.CLI_ARGS}}
+        fi
 
 {{/if}}
