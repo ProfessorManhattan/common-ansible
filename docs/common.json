@@ -30,5 +30,5 @@
     ["`ci-docker-fedora`", "Uses Docker to test multiple versions of Fedora."],
     ["`ci-docker-ubuntu`", "Uses Docker to test multiple versions of Ubuntu."]
   ],
-  "sharp_instructions": [["resize", "logo.png", "200", "200"]]
+  "sharp_instructions": ["image:resize logo.png 200 200"]
 }
