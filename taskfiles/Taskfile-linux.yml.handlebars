@@ -49,6 +49,8 @@ tasks:
           true info "Using https://install.doctor to install '\{{.SOFTWARE}}'"
           curl -sS https://install.doctor/\{{.SOFTWARE}} | bash
         fi
+    status:
+      - '[ "${container:=}" == "docker" ]'
 
   jq:
     cmds:
