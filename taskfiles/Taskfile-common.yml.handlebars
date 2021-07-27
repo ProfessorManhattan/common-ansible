@@ -116,6 +116,7 @@ tasks:
             chmod 755 "\{{.FILE}}"
           else
             true error "The '\{{.FILE}}' is missing from the '.common/files-\{{.REPOSITORY_SUBTYPE}}/' folder"
+            exit 1
           fi
         fi
     sources:

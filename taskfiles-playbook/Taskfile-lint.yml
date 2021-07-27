@@ -47,7 +47,7 @@ tasks:
       - :common:nodejs-dependencies
       - :npm:commitlint
     cmds:
-      - commitlint --config .common/commitlint.config.js --edit "{{.CLI_ARGS}}"
+      - commitlint --config .common/commitlint.config.cjs --edit "{{.CLI_ARGS}}"
     status:
       - '[[ "{{.CLI_ARGS}}" ]]'
 
@@ -251,12 +251,22 @@ tasks:
       For more information on proselint, see: https://github.com/amperser/proselint
     cmds:
       - |
+        if [ -f ~/.config/proselint/config ]; then
+          true info "Backing up '~/.config/proselint/config' to '~/.config/proselint/config.backup'"
+          cp ~/.config/proselint/config ~/.config/proselint/config.backup
+        fi
+      - mkdir -p ~/.config/proselint
+      - cp .common/proselint.json ~/.config/proselint/config
+      - |
         if [ -z "{{.CLI_ARGS}}" ]; then
           find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
             xargs -0 -r -n1 proselint --config .common/proselint.json
         else
           proselint --config .common/proselint.json {{.CLI_ARGS}}
         fi
+      - if [ -f ~/.config/proselint/config.backup ]; then
+        true info "Restoring pre-existing Proselint configuration"
+        mv ~/.config/proselint/config.backup ~/.config/proselint/config
     sources:
       - '**/*.md'
 
@@ -359,8 +369,7 @@ tasks:
     cmds:
       - |
         if [ -z "{{.CLI_ARGS}}" ]; then
-          cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json
-            "$STAGED_FILES" || true
+          cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES"
         else
           cspell --no-progress --show-context --no-must-find-files --config .cspell.json {{.CLI_ARGS}}
         fi
