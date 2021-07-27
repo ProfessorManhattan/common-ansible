@@ -30,6 +30,7 @@ tasks:
             rsync -a --delete /tmp/{{.RANDOM_STRING}}-empty "/tmp/{{.RANDOM_STRING}}-$TMP_FILE" &
           fi
         done
+        wait
 
   commit:
     deps:
