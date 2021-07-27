@@ -302,7 +302,7 @@ tasks:
     cmds:
       - |
         if [ -f ~/.config/proselint/config ]; then
-          true info "Backing up '~/.config/proselint/config' to '~/.config/proselint/config.backup'"
+          true info "Backing up '~/.config/proselint/config' to '~/.config/proselint/config.installdoc.backup'"
           cp ~/.config/proselint/config ~/.config/proselint/config.backup
         fi
       - mkdir -p ~/.config/proselint
@@ -310,13 +310,13 @@ tasks:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
           find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
-            xargs -0 -r -n1 proselint --config .common/proselint.json
+            xargs -0 -r -n1 proselint
         else
-          proselint --config .common/proselint.json \{{.CLI_ARGS}}
+          proselint \{{.CLI_ARGS}}
         fi
-      - if [ -f ~/.config/proselint/config.backup ]; then
+      - if [ -f ~/.config/proselint/config.installdoc.backup ]; then
           true info "Restoring pre-existing Proselint configuration"
-          mv ~/.config/proselint/config.backup ~/.config/proselint/config
+          mv ~/.config/proselint/config.installdoc.backup ~/.config/proselint/config
     sources:
       - "**/*.md"
 
