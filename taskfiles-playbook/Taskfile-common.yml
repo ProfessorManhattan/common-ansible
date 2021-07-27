@@ -97,7 +97,7 @@ tasks:
       - task: husky-executable
         vars:
           FILE: .husky/pre-commit
-      - task:
+      - task: husky-executable
         vars:
           FILE: .husky/prepare-commit-msg
     status:
