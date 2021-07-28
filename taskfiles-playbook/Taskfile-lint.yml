@@ -253,7 +253,7 @@ tasks:
       - |
         if [ -f ~/.config/proselint/config ]; then
           true info "Backing up '~/.config/proselint/config' to '~/.config/proselint/config.installdoc.backup'"
-          cp ~/.config/proselint/config ~/.config/proselint/config.backup
+          mv ~/.config/proselint/config ~/.config/proselint/config.installdoc.backup
         fi
       - mkdir -p ~/.config/proselint
       - cp .common/proselint.json ~/.config/proselint/config
