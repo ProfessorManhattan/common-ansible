@@ -563,8 +563,8 @@ tasks:
 
   update:
     deps:
-      - :ansible:populate-descriptions
       - :ansible:populate-dependencies
+      - :ansible:populate-meta
       - :ansible:update-galaxy-id
       - update-repositories
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated

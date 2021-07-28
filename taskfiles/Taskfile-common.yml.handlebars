@@ -601,8 +601,8 @@ tasks:
       - :packer:latestos
 {{/if}}
 {{#if hbs.role}}
-      - :ansible:populate-descriptions
       - :ansible:populate-dependencies
+      - :ansible:populate-meta
       - :ansible:update-galaxy-id
 {{/if}}
       - update-repositories

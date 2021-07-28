@@ -161,17 +161,18 @@ tasks:
     status:
       - '[[ "$DEPENDENCIES" =~ "{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
 
-  populate-descriptions:
+  populate-meta:
     deps:
       - :npm:prettier-package-json
       - :software:jq
-    env:
+    vars:
       DESCRIPTION:
         sh: yq eval '.galaxy_info.description' meta/main.yml
+    env:
       TMP:
         sh: mktemp
     cmds:
-      - jq --arg a "${DESCRIPTION}" '.description = $a' package.json > "$TMP"
+      - jq --arg a "{{.DESCRIPTION}}" --arg b "{{.GALAXY_ROLE_NAME}}" '.description = $a | .blueprint.slug = $b' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write package.json
     preconditions:
@@ -179,9 +180,13 @@ tasks:
         msg: "The 'meta/main.yml' file is missing. A properly filled out 'meta/main.yml' file is required for the
           update process. See https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/meta/main.yml
           for a good example of one."
-      - sh: '[[ "$DESCRIPTION" != "null" ]]'
+      - sh: '[[ "{{.DESCRIPTION}}" != "null" ]]'
         msg: "The 'meta/main.yml' file has a null value for the 'galaxy_info.description' key. Ensure the description
           is populated in 'meta/main.yml'. See https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/meta/main.yml
+          for an example."
+      - sh: '[[ "{{.GALAXY_ROLE_NAME}}" != "null" ]]'
+        msg: "The 'meta/main.yml' file has a null value for the 'galaxy_info.role_name' key. Ensure the role name is
+          populated in 'meta/main.yml'. See https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/meta/main.yml
           for an example."
 
   symlink:
