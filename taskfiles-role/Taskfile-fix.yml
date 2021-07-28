@@ -65,10 +65,19 @@ tasks:
     cmds:
       - |
         if [ -z "{{.CLI_ARGS}}" ]; then
-          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.json \) -print0 |
-            xargs -0 -r -n1 pretty-format-json --autofix --top-keys {{.TOP_KEYS}}
+          if [ -z "{{.TOP_KEYS}}" ]; then
+            find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.json \) -print0 |
+              xargs -0 -r -n1 pretty-format-json --autofix
+          else
+            find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.json \) -print0 |
+              xargs -0 -r -n1 pretty-format-json --autofix --top-keys {{.TOP_KEYS}}
+          fi
         else
-          pretty-format-json --autofix --top-keys {{.TOP_KEYS}} {{.CLI_ARGS}}
+          if [ -z "{{.TOP_KEYS}}" ]; then
+            pretty-format-json --autofix {{.CLI_ARGS}}
+          else
+            pretty-format-json --autofix --top-keys {{.TOP_KEYS}} {{.CLI_ARGS}}
+          fi
         fi
         exit 0
     sources:
