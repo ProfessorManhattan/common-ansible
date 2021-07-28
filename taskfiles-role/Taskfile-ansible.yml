@@ -172,7 +172,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - jq --arg a "{{.DESCRIPTION}}" --arg b "{{.GALAXY_ROLE_NAME}}" '.description = $a | .blueprint.slug = $b' package.json > "$TMP"
+      - jq --arg a "{{.DESCRIPTION}}" --arg b "{{.GALAXY_ROLE_NAME}}" '.blueprint.description = $a | .blueprint.slug = $b' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write package.json
     preconditions:
