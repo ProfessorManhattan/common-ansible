@@ -564,6 +564,7 @@ tasks:
 
   update:
     deps:
+      - :ansible:populate-descriptions
       - :ansible:populate-dependencies
       - :ansible:update-galaxy-id
       - update-repositories
