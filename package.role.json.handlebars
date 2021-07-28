@@ -18,10 +18,6 @@
     "windows"
   ],
   "lint-staged": {
-    "logo.png": [
-      "task image:resize -- 200 200",
-      "task image:compress --"
-    ],
     "./**/*.py": [
       "black",
       "flake8"
