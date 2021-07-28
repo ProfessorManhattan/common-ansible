@@ -90,7 +90,7 @@
     ],
     "**/!(package).json": [
       "check-json",
-      "pretty-format-json --autofix"
+      "task fix:json --"
     ],
     "**/*.md": [
       "prettier --write",
@@ -111,6 +111,10 @@
       "check-yaml",
       "yamllint -s",
       "prettier --write"
+    ],
+    "logo.png": [
+      "task image:resize -- 200 200",
+      "task image:compress --"
     ],
     "package.json": [
       "prettier-package-json --write"

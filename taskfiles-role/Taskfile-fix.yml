@@ -70,6 +70,7 @@ tasks:
         else
           pretty-format-json --autofix --top-keys {{.TOP_KEYS}} {{.CLI_ARGS}}
         fi
+        exit 0
     sources:
       - '**/*.json'
 
