@@ -380,9 +380,8 @@ tasks:
     cmds:
       - |
         find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" | while read FILE; do
-          hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}" &
+          hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}"
         done
-        wait
     sources:
       - .common/**/*.handlebars
       - .variables.json
