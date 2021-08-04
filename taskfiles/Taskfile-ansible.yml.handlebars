@@ -323,13 +323,12 @@ tasks:
     env:
       ROLES:
         sh: yq eval '.roles' requirements.yml
-      TMP:
+      TMP_SYNC:
         sh: mktemp
     cmds:
-      - yq eval -j '.dependencies' meta/main.yml > "$TMP"
-      - cat "$TMP"
+      - yq eval -j '.dependencies' meta/main.yml > "$TMP_SYNC"
       - |
-        jq -rc '.[] .role' "$TMP" | while read ROLE_NAME; do
+        jq -rc '.[] .role' "$TMP_SYNC" | while read ROLE_NAME; do
           if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
             ROLE_NAME="$ROLE_NAME" yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
           fi
