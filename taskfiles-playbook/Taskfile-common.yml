@@ -73,6 +73,7 @@ tasks:
             fi
           fi
         ignore_error: true
+    run: once
     sources:
       - requirements.yml
     preconditions:
@@ -127,6 +128,7 @@ tasks:
       - :software:node
     cmds:
       - task: nodejs-dependencies-install
+    run: once
     status:
       - 'test -d node_modules || [ "${container:=}" == "docker" ]'
 
@@ -160,6 +162,7 @@ tasks:
       - :npm:shellcheck
       - :npm:snyk
       - :npm:standard-version
+    run: once
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
@@ -190,6 +193,7 @@ tasks:
     cmds:
       - . .venv/bin/activate
       - pip3 install -r requirements.txt
+    run: once
     sources:
       - requirements.txt
     preconditions:
@@ -220,6 +224,7 @@ tasks:
           rsync -a --delete /tmp/{{.RANDOM_STRING}}-empty /tmp/{{.RANDOM_STRING}}-venv2 &
         fi
       - virtualenv .venv
+    run: once
     status:
       - test -f .venv/bin/activate
 
@@ -231,6 +236,7 @@ tasks:
       # - task: python-requirements-venv-activate
       - task: python-requirements-pip
       - task: galaxy-requirements
+    run: once
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
@@ -248,6 +254,7 @@ tasks:
       then install the Python requirements by running `pip3 install -r requirements` after
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
+    run: once
 
   reset-force:
     deps:

@@ -9,6 +9,7 @@ tasks:
           FORCE_INSTALL: true
           NPM_PACKAGE: commitizen
           NPM_PACKAGE_BIN: 'git-cz'
+    run: once
 
   commitlint:
     cmds:
@@ -16,6 +17,7 @@ tasks:
         vars:
           NPM_PACKAGE: '@commitlint/cli'
           NPM_PACKAGE_BIN: commitlint
+    run: once
 
   cspell:
     cmds:
@@ -23,6 +25,7 @@ tasks:
         vars:
           NPM_PACKAGE: cspell
           NPM_PACKAGE_BIN: cspell
+    run: once
 
   hbs:
     cmds:
@@ -30,6 +33,7 @@ tasks:
         vars:
           NPM_PACKAGE: hbs-cli
           NPM_PACKAGE_BIN: hbs
+    run: once
 
   husky:
     cmds:
@@ -37,6 +41,7 @@ tasks:
         vars:
           NPM_PACKAGE: husky
           NPM_PACKAGE_BIN: husky
+    run: once
 
   lint-staged:
     cmds:
@@ -44,6 +49,7 @@ tasks:
         vars:
           NPM_PACKAGE: lint-staged
           NPM_PACKAGE_BIN: lint-staged
+    run: once
 
   markdown-link-check:
     cmds:
@@ -51,6 +57,7 @@ tasks:
         vars:
           NPM_PACKAGE: markdown-link-check
           NPM_PACKAGE_BIN: markdown-link-check
+    run: once
 
   npm-install:
     deps:
@@ -74,6 +81,7 @@ tasks:
         vars:
           NPM_PACKAGE: prettier-package-json
           NPM_PACKAGE_BIN: prettier-package-json
+    run: once
 
   prettier:
     cmds:
@@ -85,6 +93,7 @@ tasks:
         vars:
           NPM_PACKAGE: prettier
           NPM_PACKAGE_BIN: prettier
+    run: once
 
   readme:
     cmds:
@@ -92,6 +101,7 @@ tasks:
         vars:
           NPM_PACKAGE: '@appnest/readme'
           NPM_PACKAGE_BIN: readme
+    run: once
 
   remark:
     cmds:
@@ -99,6 +109,7 @@ tasks:
         vars:
           NPM_PACKAGE: remark-cli
           NPM_PACKAGE_BIN: remark
+    run: once
 
   sharp:
     cmds:
@@ -106,6 +117,7 @@ tasks:
         vars:
           NPM_PACKAGE: sharp-cli
           NPM_PACKAGE_BIN: sharp
+    run: once
 
   shellcheck:
     cmds:
@@ -113,6 +125,7 @@ tasks:
         vars:
           NPM_PACKAGE: shellcheck
           NPM_PACKAGE_BIN: shellcheck
+    run: once
 
   snyk:
     cmds:
@@ -120,6 +133,7 @@ tasks:
         vars:
           NPM_PACKAGE: snyk
           NPM_PACKAGE_BIN: snyk
+    run: once
 
   standard-version:
     cmds:
@@ -127,6 +141,7 @@ tasks:
         vars:
           NPM_PACKAGE: standard-version
           NPM_PACKAGE_BIN: standard-version
+    run: once
 
   tinypng:
     cmds:
@@ -134,3 +149,4 @@ tasks:
         vars:
           NPM_PACKAGE: tinypng-cli
           NPM_PACKAGE_BIN: tinypng
+    run: once

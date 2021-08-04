@@ -93,16 +93,33 @@ tasks:
 
       Example usage:
       > task test:molecule-docker
+
+      Save test results for use with auto-generating compatibility chart:
+      > task test:molecule-docker -- matrix
     vars:
+      MOLECULE_DATE:
+        sh: date '+%Y-%m-%d'
       SNAP_REFS:
         sh: grep -Ril 'community.general.snap:' ./tasks || true
     cmds:
       - |
         if [ "{{.SNAP_REFS}}" ]; then
-          true warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap'."
-          molecule test -s docker-snap
+          true warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap' (i.e. Ubuntu and recent versions of Debian)."
+          SCENARIO=docker-snap
         else
-          molecule test -s docker
+          SCENARIO=docker
+        fi
+      - |
+        if [ "{{.CLI_ARGS}}" ]; then
+          if [ "{{.CLI_ARGS}}" == 'matrix']; then
+            mkdir -p molecule/.results
+            true info "Storing Docker test results to 'molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt'"
+            PY_COLORS=0 molecule test "$SCENARIO" > "molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt"
+          else
+            true error "Invalid CLI arguments passed in. See 'task test:molecule-docker --summary'."
+          fi
+        else
+          molecule test -s "$SCENARIO"
         fi
 
   molecule-e2e:
@@ -132,9 +149,9 @@ tasks:
       - |
         if [ "{{.CLI_ARGS}}" ]; then
           if [ "{{.CLI_ARGS}}" == 'matrix']; then
-            mkdir -p .molecule-results
-            true info "Storing full E2E test results to '.molecule-results/{{.MOLECULE_DATE}}-default.txt', this can take awhile.."
-            PY_COLORS=0 molecule test > .molecule-results/{{.MOLECULE_DATE}}-default.txt
+            mkdir -p molecule/.results
+            true info "Storing full E2E test results to 'molecule/.results/{{.MOLECULE_DATE}}-default.txt', this can take awhile.."
+            PY_COLORS=0 molecule test > molecule/.results/{{.MOLECULE_DATE}}-default.txt
           else
             true error "Invalid CLI arguments passed in. See 'task test:molecule-e2e --summary'."
         else

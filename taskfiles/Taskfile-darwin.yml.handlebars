@@ -7,6 +7,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: docker
+    run: once
     status:
       - type docker &> /dev/null
 
@@ -15,6 +16,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: dockle
+    run: once
     status:
       - type dockle &> /dev/null
 
@@ -23,6 +25,7 @@ tasks:
       - task: exiftool
         vars:
           SOFTWARE: exiftool
+    run: once
     status:
       - type exiftool &> /dev/null
 
@@ -31,6 +34,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: git
+    run: once
     status:
       - type git &> /dev/null
 
@@ -39,6 +43,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: gitleaks
+    run: once
     status:
       - type gitleaks &> /dev/null
 
@@ -55,6 +60,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: jq
+    run: once
     status:
       - type jq &> /dev/null
 
@@ -63,6 +69,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: node
+    run: once
     status:
       - type node &> /dev/null
       - type npm &> /dev/null
@@ -88,6 +95,7 @@ tasks:
             echo -e '\nexport PATH=$HOME/.local/miniconda/bin:$PATH' >> "$HOME/.bash_profile"
           fi
         fi
+    run: once
     status:
       - type python3 &> /dev/null
 
@@ -96,6 +104,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: rsync
+    run: once
     status:
       - type rsync &> /dev/null
 
@@ -104,6 +113,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: trivy
+    run: once
     status:
       - type trivy &> /dev/null
 
@@ -112,6 +122,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: vagrant
+    run: once
     status:
       - type vagrant &> /dev/null
 
@@ -120,6 +131,7 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: virtualbox
+    run: once
     status:
       - type virtualbox &> /dev/null
 
@@ -128,5 +140,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: yq
+    run: once
     status:
       - type yq &> /dev/null
