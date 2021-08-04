@@ -29,8 +29,8 @@
     <a title="Version: {{ pkg.version }}" href="{{ repository.github }}" target="_blank">
       <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?cacheSeconds=2592000" />
     </a>
-    <a title="Windows 10 build status on GitHub" href="{{ {{ repository.github }}/actions/Windows.yml" target="_blank">
-      <img alt="Windows 10 build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
+    <a title="Windows 11 build status on GitHub" href="{{ {{ repository.github }}/actions/Windows.yml" target="_blank">
+      <img alt="Windows 11 build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
     </a>
     <a title="macOS build status on GitHub" href="{{ repository.github }}/actions/macOS.yml" target="_blank">
       <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
