@@ -167,6 +167,9 @@ tasks:
         if [[ ! "$COLLECTIONS" =~ "\{{.KEY}}" ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
         fi
+      - task: :fix:yml-dashes
+        vars:
+          CLI_ARGS: requirements.yml
     status:
       - '[[ "$COLLECTIONS" =~ "\{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
 
@@ -234,6 +237,9 @@ tasks:
         if [[ ! "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
         fi
+      - task: yml-dashes
+        vars:
+          CLI_ARGS: meta/main.yml
     status:
       - '[[ "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
 
@@ -327,6 +333,9 @@ tasks:
             ROLE_NAME="$ROLE_NAME" yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
           fi
         done
+      - task: :fix:yml-dashes
+        vars:
+          CLI_ARGS: requirements.yml
 
   update-galaxy-id:
     vars:
