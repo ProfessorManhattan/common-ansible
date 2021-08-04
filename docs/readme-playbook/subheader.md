@@ -1,22 +1,22 @@
 <div align="center">
   <h4 align="center">
     <a href="{{ website.homepage }}" title="Megabyte Labs homepage" target="_blank">
-      <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/home-solid.svg" />
+      <img src="{{ repository.project.assets }}/svg/home-solid.svg" />
     </a>
     <a href="{{ repository.github }}{{ repository.location.contributing.github }}" title="Learn about contributing" target="_blank">
-      <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/contributing-solid.svg" />
+      <img src="{{ repository.project.assets }}/svg/contributing-solid.svg" />
     </a>
     <a href="{{ profile.patreon }}" title="Support us on Patreon" target="_blank">
-      <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/support-solid.svg" />
+      <img src="{{ repository.project.assets }}/svg/support-solid.svg" />
     </a>
     <a href="{{ chat_url }}" title="Slack chat room" target="_blank">
-      <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/chat-solid.svg" />
+      <img src="{{ repository.project.assets }}/svg/chat-solid.svg" />
     </a>
     <a href="{{ repository.github }}" title="GitHub mirror" target="_blank">
-      <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/github-solid.svg" />
+      <img src="{{ repository.project.assets }}/svg/github-solid.svg" />
     </a>
     <a href="{{ repository.gitlab }}" title="GitLab repository" target="_blank">
-      <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/gitlab-solid.svg" />
+      <img src="{{ repository.project.assets }}/svg/gitlab-solid.svg" />
     </a>
   </h4>
   <p align="center">
