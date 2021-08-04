@@ -1,5 +1,6 @@
 ansible-base
 ansible-lint<5.0.0
+ansibler
 black
 blocklint
 flake8
