@@ -237,7 +237,7 @@ tasks:
         if [[ ! "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
         fi
-      - task: yml-dashes
+      - task: :fix:yml-dashes
         vars:
           CLI_ARGS: meta/main.yml
     status:
