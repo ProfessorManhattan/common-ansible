@@ -1,8 +1,10 @@
 ansible-base
 ansible-lint<5.0.0
+ansibler
 black
 flake8
 mod-ansible-autodoc
 molecule-docker
 molecule-vagrant
 python-vagrant
+pywinrm>=0.3.0
