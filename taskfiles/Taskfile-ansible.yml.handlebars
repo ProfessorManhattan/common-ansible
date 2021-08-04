@@ -327,6 +327,7 @@ tasks:
         sh: mktemp
     cmds:
       - yq eval -j '.dependencies' meta/main.yml > "$TMP"
+      - cat "$TMP"
       - |
         jq -rc '.[] .role' "$TMP" | while read ROLE_NAME; do
           if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
