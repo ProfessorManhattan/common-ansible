@@ -24,10 +24,10 @@
       <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?cacheSeconds=2592000" />
     </a>
     <a href="{{ repository.github }}/actions/Windows.yml" target="_blank">
-      <img alt="Windows 11 build status" src="https://img.shields.io/github/workflow/status/ProfessorManhattan/InstallDoctor/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
+      <img alt="Windows 11 build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/InstallDoctor/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
     </a>
     <a href="{{ repository.github }}/actions/macOS.yml" target="_blank">
-      <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/ProfessorManhattan/InstallDoctor/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
+      <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/InstallDoctor/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
     </a>
     <a href="{{ repository.github }}/commits/master" target="_blank">
       <img alt="Linux build status" src="{{ repository.gitlab }}/badges/master/pipeline.svg">
@@ -41,11 +41,11 @@
     <a href="{{ profile.opencollective }}" title="Support us on Open Collective" target="_blank">
       <img alt="Open Collective sponsors" src="https://img.shields.io/opencollective/sponsors/megabytelabs?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAElBMVEUAAACvzfmFsft4pfD////w+P9tuc5RAAAABHRSTlMAFBERkdVu1AAAAFxJREFUKM9jgAAXIGBAABYXMHBA4yNEXGBAAU2BMz4FIIYTNhtFgRjZPkagFAuyAhGgHAuKAlQBCBtZB4gzQALoDsN0Oobn0L2PEUCoQYgZyOjRQFiJA67IRrEbAJImNwFBySjCAAAAAElFTkSuQmCC&label=Open%20Collective%20sponsors&logo=opencollective&style={{ badge_style }}" />
     </a>
-    <a href="{{ profile.github }}" title="Support us on GitHub" target="_blank">
-      <img alt="GitHub sponsors" src="https://img.shields.io/github/sponsors/ProfessorManhattan?label=GitHub%20sponsors&logo=github&style={{ badge_style }}" />
+    <a href="{{ profile_link.github }}/{{ profile.github }}" title="Support us on GitHub" target="_blank">
+      <img alt="GitHub sponsors" src="https://img.shields.io/github/sponsors/{{ profile.github }}?label=GitHub%20sponsors&logo=github&style={{ badge_style }}" />
     </a>
-    <a href="{{ profile.github }}" target="_blank">
-      <img alt="GitHub: ProfessorManhattan" src="https://img.shields.io/github/followers/ProfessorManhattan?style=social" target="_blank" />
+    <a href="{{ profile_link.github }}/{{ profile.github }}" target="_blank">
+      <img alt="GitHub: {{ profile.github }}" src="https://img.shields.io/github/followers/{{ profile.github }}?style=social" target="_blank" />
     </a>
     <a href="https://twitter.com/{{ profile.twitter }}" target="_blank">
       <img alt="Twitter: {{ profile.twitter }}" src="https://img.shields.io/twitter/url/https/twitter.com/{{ profile.twitter }}.svg?style=social&label=Follow%20%40{{ profile.twitter }}" />
