@@ -12,7 +12,6 @@
     "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing. ]]",
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
-  "github_prefix": "",
   "hbs": {
     "ansible": true,
     "dockerfile": true,
@@ -22,6 +21,11 @@
   },
   "profile": {
     "npmjs_organization": "installdoc"
+  },
+  "repository": {
+    "prefix": {
+      "github": "ansible-"
+    }
   },
   "subgroup": "role"
 }
