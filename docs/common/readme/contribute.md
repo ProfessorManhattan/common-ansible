@@ -1,16 +1,16 @@
 ## Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page]({{ repo }}{{ repository.location.issues }}). If you would like to contribute, please take a look at the [contributing guide]({{ repo }}{{ repository.location.contributing }}).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page]({{ repository.github }}{{ repository.location.issues.github }}). If you would like to contribute, please take a look at the [contributing guide]({{ repository.github }}{{ repository.location.contributing.github }}).
 
 <details>
 <summary>Sponsorship</summary>
 <br/>
 <blockquote>
 <br/>
-I create open source projects out of love. Although I have a job, shelter, and as much fast food as I can handle, it would still be pretty cool to be appreciated by the community for something I have spent a lot of time and money on. Please consider sponsoring me! Who knows? Maybe I will be able to quit my job and publish open source full time.
+{{ sponsorship.text }}
 <br/><br/>Sincerely,<br/><br/>
 
-**_Brian Zalewski_**<br/><br/>
+**_{{ sponsorship.author }}_**<br/><br/>
 
 </blockquote>
 

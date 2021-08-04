@@ -23,6 +23,12 @@
   "company": "Megabyte LLC",
   "copyright": "2020-2021",
   "docker_label_authors": "Brian Zalewski <brian@megabyte.space>",
+  "docs": {
+    "header_description_post": "<i></i>",
+    "header_description_pre": "<i></i>",
+    "header_title_post": "<i></i>",
+    "header_title_pre": "<i></i>"
+  },
   "email": {
     "help": "help@megabyte.space"
   },
@@ -40,9 +46,7 @@
     "role": true,
     "yaml": true
   },
-  "header_description_post": "",
   "header_description_pre": "An Ansible role brought to you by ",
-  "header_title_post": "",
   "header_title_pre": "Ansible Role: ",
   "json_top_keys": "",
   "license": "MIT",
@@ -87,7 +91,7 @@
   ],
   "name": "[[ package.json .blueprint.name - See CONTRIBUTING.md ]]",
   "organization": "Megabyte Labs",
-  "overview": "This is a new repository without the details filled in yet. Look for the section about blueprint data in the CONTRIBUTING.md to set up the project.",
+  "overview": "[[ This is a new repository without the details filled in yet. Look for the section about blueprint data in the CONTRIBUTING.md to set up the project. ]]",
   "profile": {
     "dockerhub": "megabytelabs",
     "galaxy": "professormanhattan",
@@ -119,6 +123,8 @@
   },
   "repo": "[[ package.json .blueprint.repo - See CONTRIBUTING.md ]]",
   "repository": {
+    "github": "",
+    "gitlab": "",
     "group": {
       "ansible_roles": "https://gitlab.com/megabyte-labs/ansible-roles",
       "apps": "https://gitlab.com/megabyte-labs/apps",
@@ -137,23 +143,48 @@
       "web_components": "https://gitlab.com/megabyte-labs/web-components"
     },
     "location": {
-      "conduct": "/-/blob/master/CODE_OF_CONDUCT.md",
-      "contributing": "/-/blob/master/CONTRIBUTING.md",
-      "demo": "/-/raw/master/.demo.gif",
-      "issues": "/-/issues",
-      "license": "/-/raw/master/LICENSE",
-      "logo": "/-/raw/master/logo.png",
-      "readme": "/-/blob/master/README.md"
+      "conduct": {
+        "github": "/blob/master/CODE_OF_CONDUCT.md",
+        "gitlab": "/-/blob/master/CODE_OF_CONDUCT.md"
+      },
+      "contributing": {
+        "github": "/blob/master/CONTRIBUTING.md",
+        "gitlab": "/-/blob/master/CONTRIBUTING.md"
+      },
+      "demo": {
+        "github": "/raw/master/.demo.gif",
+        "gitlab": "/-/raw/master/.demo.gif"
+      },
+      "issues": {
+        "github": "/issues",
+        "gitlab": "/-/issues"
+      },
+      "license": {
+        "github": "/blob/master/LICENSE",
+        "gitlab": "/-/blob/master/LICENSE"
+      },
+      "logo": {
+        "github": "/raw/master/logo.png",
+        "gitlab": "/-/raw/master/logo.png"
+      },
+      "readme": {
+        "github": "/blob/master/README.md",
+        "gitlab": "/-/blob/master/README.md"
+      }
     },
+    "namespace": "",
     "project": {
-      "ansible": "https://github.com/ProfessorManhattan/ansible-",
       "assets": "https://gitlab.com/megabyte-labs/assets/-/raw/master",
       "autodoc": "https://github.com/AndresBott/ansible-autodoc",
-      "playbooks": "https://gitlab.com/ProfessorManhattan/Playbooks",
+      "playbooks": "https://gitlab.com/InstallDoc/ansible-playbook-boilerplate",
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
   "sharp_instructions": [],
+  "sponsorship": {
+    "author": "Brian Zalewski",
+    "text": "I create open source projects out of love. Although I have a job, shelter, and as much fast food as I can handle, it would still be pretty cool to be appreciated by the community for something I have spent a lot of time and money on. Please consider sponsoring me! Who knows? Maybe I will be able to quit my job and publish open source full time."
+  },
   "subgroup": "role",
   "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]"
 }
