@@ -25,9 +25,9 @@
   "docker_label_authors": "Brian Zalewski <brian@megabyte.space>",
   "docs": {
     "header_description_post": "<i></i>",
-    "header_description_pre": "<i></i>",
+    "header_description_pre": "An Ansible role brought to you by ",
     "header_title_post": "<i></i>",
-    "header_title_pre": "<i></i>"
+    "header_title_pre": "Ansible Role: "
   },
   "email": {
     "help": "help@megabyte.space"
@@ -46,8 +46,6 @@
     "role": true,
     "yaml": true
   },
-  "header_description_pre": "An Ansible role brought to you by ",
-  "header_title_pre": "Ansible Role: ",
   "json_top_keys": "",
   "license": "MIT",
   "link": {
