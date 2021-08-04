@@ -187,7 +187,7 @@ tasks:
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 |
             xargs -0 -r -n1 remark
         else
           remark \{{.CLI_ARGS}}
@@ -216,7 +216,7 @@ tasks:
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 |
             xargs -0 -r -n1 markdown-link-check
         else
           markdown-link-check \{{.CLI_ARGS}}
@@ -309,7 +309,7 @@ tasks:
       - cp .common/proselint.json ~/.config/proselint/config
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.md \) -print0 |
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 |
             xargs -0 -r -n1 proselint
         else
           proselint \{{.CLI_ARGS}}
@@ -384,7 +384,7 @@ tasks:
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
-          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.sh -o -name \*.sh.j2 \) -print0 |
+          find . -type d \( \{{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.sh' -o -name '*.sh.j2' \) -print0 |
             xargs -0 -r -n1 shellcheck
         else
           shellcheck \{{.CLI_ARGS}}

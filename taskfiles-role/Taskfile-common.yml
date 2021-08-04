@@ -386,7 +386,7 @@ tasks:
         sh: mktemp
     cmds:
       - |
-        find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" | while read FILE; do
+        find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f -name '*.handlebars' | while read FILE; do
           hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}"
         done
     sources:
@@ -417,7 +417,7 @@ tasks:
         sh: mktemp
     cmds:
       - task: update-files-handlebars
-      - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name "*.handlebars" -delete
+      - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name '*.handlebars' -delete
       - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
       - task: husky
       - task: update-sort

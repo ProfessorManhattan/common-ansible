@@ -51,7 +51,7 @@ tasks:
           fi
         }
         if [ -z "{{.CLI_ARGS}}" ]; then
-          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.jpg -o -name \*.png \) -print0 |
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.jpg' -o -name '*.png' \) -print0 |
             xargs -0 -r -n1 compressImage
         else
           compressImage "{{.CLI_ARGS}}"
