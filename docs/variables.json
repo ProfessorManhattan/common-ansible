@@ -137,6 +137,10 @@
       "web_components": "https://gitlab.com/megabyte-labs/web-components"
     },
     "location": {
+      "commits": {
+        "github": "/commits/master",
+        "gitlab": "/-/commits/master"
+      },
       "conduct": {
         "github": "/blob/master/CODE_OF_CONDUCT.md",
         "gitlab": "/-/blob/master/CODE_OF_CONDUCT.md"

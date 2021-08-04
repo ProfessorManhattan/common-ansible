@@ -36,7 +36,7 @@
     "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing. ]]",
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
-  "github_prefix": "",
+  "github_prefix": "<i></i>",
   "group": "ansible",
   "hbs": {
     "ansible": true,
@@ -143,6 +143,10 @@
       "web_components": "https://gitlab.com/megabyte-labs/web-components"
     },
     "location": {
+      "commits": {
+        "github": "/commits/master",
+        "gitlab": "/-/commits/master"
+      },
       "conduct": {
         "github": "/blob/master/CODE_OF_CONDUCT.md",
         "gitlab": "/-/blob/master/CODE_OF_CONDUCT.md"
@@ -173,7 +177,9 @@
       }
     },
     "namespace": "",
-    "prefix": "ansible-",
+    "prefix": {
+      "github": "ansible-"
+    },
     "project": {
       "assets": "https://gitlab.com/megabyte-labs/assets/-/raw/master",
       "autodoc": "https://github.com/AndresBott/ansible-autodoc",
