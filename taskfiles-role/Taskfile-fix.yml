@@ -68,22 +68,17 @@ tasks:
           if [ -z "{{.TOP_KEYS}}" ]; then
             find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.json \) -print0 |
               xargs -0 -r -n1 pretty-format-json --autofix
-            true info "Finished fixing up the formatting and order of the JSON files"
           else
             find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name \*.json \) -print0 |
               xargs -0 -r -n1 pretty-format-json --autofix --top-keys {{.TOP_KEYS}}
-            true info "Finished formatting and re-ordering of the JSON files while prioritizing the keys specified in 'json_top_keys' in '.variables.json'"
           fi
         else
           if [ -z "{{.TOP_KEYS}}" ]; then
-            pretty-format-json --autofix {{.CLI_ARGS}}
-            true info "Fixed up the formatting and order of '{{.CLI_ARGS}}'"
+            pretty-format-json --autofix {{.CLI_ARGS}} || true
           else
-            pretty-format-json --autofix --top-keys {{.TOP_KEYS}} {{.CLI_ARGS}}
-            true info "Fixed up the formatting and order of '{{.CLI_ARGS}}' while prioritizing the keys specified in 'json_top_keys' in '.variables.json'"
+            pretty-format-json --autofix --top-keys {{.TOP_KEYS}} {{.CLI_ARGS}} || true
           fi
         fi
-        exit 0
     sources:
       - '**/*.json'
 
