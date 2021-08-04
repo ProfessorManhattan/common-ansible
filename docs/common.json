@@ -11,6 +11,10 @@
     ]
   ],
   "group": "ansible",
+  "link": {
+    "docker_role": "https://github.com/ProfessorManhattan/ansible-docker",
+    "mod_ansible_autodoc": "https://pypi.org/project/mod-ansible-autodoc/"
+  },
   "molecule_descriptions": [
     ["Scenario", "Description"],
     ["`default`", "Uses VirtualBox to run tests for all platforms in parallel."],
@@ -35,5 +39,8 @@
     ],
     ["`ci-docker-fedora`", "Uses Docker to test multiple versions of Fedora."],
     ["`ci-docker-ubuntu`", "Uses Docker to test multiple versions of Ubuntu."]
-  ]
+  ],
+  "repository": {
+    "prefix": "ansible-"
+  }
 }

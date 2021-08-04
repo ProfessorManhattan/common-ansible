@@ -1,1 +1,1 @@
-> <br/>**An Ansible playbook you can use to set up the ultimate home lab!**<br/><br/>
+> <br/>**A complete example of an Ansible playbook you can use to set up the ultimate home lab!**<br/><br/>

@@ -1,6 +1,6 @@
 ## Updating Meta Files and Documentation
 
-Since we have hundreds of Ansible roles to maintain, the majority of the files inside each role are shared across all our Ansible projects. We synchronize these common files across all our repositories with various build tools. When you clone a new repository, the first command you should run is `bash .start.sh`. This will run the full build sequence and ensure everything is up-to-date. To synchronize the project at a later point in time, you should leverage the `task -l` command which will show you a list of available tasks.
+Since we have hundreds of Ansible roles to maintain, the majority of the files inside each role are shared across all our Ansible projects. We synchronize these common files across all our repositories with various build tools. When you clone a new repository, the first command you should run is `bash .start.sh`. This will install missing software requirements, run the full update sequence, and ensure everything is up-to-date. To synchronize the project at a later point in time, you can run `task common:update` which runs most of the logic executed by running `bash .start.sh`.
 
 ### The `"blueprint" package.json` Field and `@appnest/readme`
 
@@ -24,7 +24,7 @@ The most important piece of text in each of our Ansible projects is the [Ansible
 - An Ansible role that _installs Android Studio and sets up Android SDKs on nearly any OS_
 - This repository is the home of an Ansible role that _installs Ansible Studio and sets up Android SDKs on nearly any OS_.
 
-It is important that all three variants of the `meta/main.yml` description make sense and be proper English. The `meta/main.yml` description should succinctly describe what the role does and possibly even describe what the product does if it is not well-known like Android Studio. An example of a description that includes an overview of the product would be something like, "Installs HTTPie (a user-friendly, command-line HTTP client) on nearly any platform," for the [HTTPie role]({{ profile_link.github }}/{{ profile.github }}/{{ github_prefix }}httpie) or "Installs Packer (an automation tool for building machine images) on nearly any platform" for the [Packer role]({{ profile_link.github }}/{{ profile.github }}/{{ github_prefix }}packer).
+It is important that all three variants of the `meta/main.yml` description make sense and be proper English. The `meta/main.yml` description should succinctly describe what the role does and possibly even describe what the product does if it is not well-known like Android Studio. An example of a description that includes an overview of the product would be something like, "Installs HTTPie (a user-friendly, command-line HTTP client) on nearly any platform," for the [HTTPie role](https://github.com/ProfessorManhattan/ansible-httpie) or "Installs Packer (an automation tool for building machine images) on nearly any platform" for the [Packer role](https://github.com/ProfessorManhattan/ansible-packer).
 
 ### `logo.png`
 
@@ -35,3 +35,5 @@ We include a `logo.png` file in all of our Ansible projects. This image is autom
 3. Resize the image to 200x200 pixels by running `sharp -i file_location.png -o logo.png resize 200 200`.
 4. Compress the resized image by dragging and dropping the resized image into the [TinyPNG web application]({{ misc.tinypng }}).
 5. Download the compressed image and add it to the root of the Ansible project. Make sure it is named `logo.png`.
+
+Alternatively, you can use our pre-commit hook to automatically take care of steps 2-5 when the `logo.png` file is staged with git.

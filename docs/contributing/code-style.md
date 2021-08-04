@@ -1,6 +1,6 @@
 ## Code Style
 
-We try to follow the same code style across all our Ansible repositories. If something is done one way somewhere, then it should be done the same way elsewhere. It is up to you to [browse through our roles]({{ project.playbooks }}/-/tree/master/roles) to get a feel for how everything should be styled. You should clone [the main playbooks repository]({{ project.playbooks }}) (a.k.a. [Install Doctor]({{ link.installdoctor }})), initialize all the submodules either via `bash .start.sh` or `git submodule update --init --recursive`, and search through the code base to see how we are _styling_ different task types. Below are some examples:
+We try to follow the same code style across all our Ansible repositories. If something is done one way somewhere, then it should be done the same way elsewhere. It is up to you to [browse through our roles]({{ repository.group.ansible_roles }}) to get a feel for how everything should be styled. You should clone [the main playbooks repository]({{ project.playbooks }}) (a.k.a. [Install Doctor]({{ link.installdoctor }})), initialize all the submodules either via `bash .start.sh` or `git submodule update --init --recursive`, and search through the code base to see how we are _styling_ different task types. Below are some examples:
 
 ### Arrays
 
@@ -95,7 +95,7 @@ If there are dependencies that are specific to a certain OS, then the dependency
 
 ### DRY
 
-DRY stands for "Don't Repeat Yourself." Whenever there is code that is duplicated across multiple task files, you should separate it into a different file and then include it like the following example:
+DRY stands for "Don't Repeat Yourself." Whenever there is code that is duplicated across multiple task files, you should separate it into a different file and then include it like in the following example:
 
 **GOOD**
 

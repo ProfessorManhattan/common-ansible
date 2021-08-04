@@ -1,6 +1,6 @@
 ## Commenting
 
-We strive to make our roles easy to understand. Commenting is a major part of making our roles easier to grasp. Several types of comments are supported in such a way that they tie into our automated documentation generation system. This project uses [ansible-autodoc]({{ project.autodoc }}) to scan through specially marked up comments and generate documentation out of them. The module also allows the use of markdown in comments so feel free to bold, italicize, and `code_block` as necessary. Although it is perfectly acceptable to use regular comments, in most cases, you should use one of the following types of _special_ comments:
+We strive to make our roles easy to understand. Commenting is a major part of making our roles easier to grasp. Several types of comments are supported in such a way that they are extracted and injected into our documentation. This project uses [mod-ansible-autodoc]({{ link.mod_ansible_autodoc }}) (a pet project of ours and a fork of [ansible-autodoc](https://pypi.org/project/ansible-autodoc/)) to scan through specially marked up comments and generate documentation out of them. The module also allows the use of markdown in comments so feel free to **bold**, _italicize_, and `code_block` as necessary. Although it is perfectly acceptable to use regular comments, in most cases you should use one of the following types of _special_ comments:
 
 - [Variable comments](#variable-comments)
 - [Action comments](#action-comments)
@@ -22,7 +22,7 @@ Each variable in `defaults/main.yml` should be added and documented using the fo
 ```
 <!-- prettier-ignore-end -->
 
-There are cases where you may want include an example or you can not fit the default_value on one line. In cases like this, use the following format:
+There may be cases where an example is helpful. In these cases, use the following format:
 
 <!-- prettier-ignore-start -->
 ```yaml
@@ -40,7 +40,7 @@ There are cases where you may want include an example or you can not fit the def
 ```
 <!-- prettier-ignore-end -->
 
-Each variable/comment block in `defaults/main.yml` should be separated by a line return. You can see an example of a `defaults/main.yml` file using this special [variable syntax in the Docker role]({{ repository.group.ansible_roles }}/docker/defaults/main.yml).
+Each variable-comment block in `defaults/main.yml` should be separated by a line return. You can see an example of a `defaults/main.yml` file using this special [variable syntax in the Docker role]({{ link.docker_role }}/blob/master/defaults/main.yml).
 
 ### Action Comments
 
@@ -48,7 +48,7 @@ Action comments allow us to describe what the role does. Each action comment sho
 
 #### Example Action Comment Implementation
 
-The following is an example of the implementation of action comments. You can find the [source here]({{ repository.group.ansible_roles }}/docker/tasks/main.yml) as well as an example of why and how you would include an [action comment outside of the `tasks/main.yml` file here]({{ repository.group.ansible_roles }}/docker/tasks/compose-Darwin.yml).
+The following is an example of the implementation of action comments. You can find the [source here]({{ link.docker_role }}/blob/master/tasks/main.yml) as well as an example of why and how you would include an [action comment outside of the `tasks/main.yml` file here]({{ link.docker_role }}/blob/master/tasks/compose-Darwin.yml).
 
 <!-- prettier-ignore-start -->
 ```yaml
@@ -97,7 +97,7 @@ The block of code above will generate markdown that would look similar to this:
 #### Action Comment Guidelines
 
 - The wording of each action should be in active tense, describing a capability of the role. So instead of calling an action "Generate TLS certificates," we would call it, "Generates TLS certificates."
-- The bulk of the action comments should be placed in the `tasks/main.yml` file. However, there may be use cases for putting an action comment in another file. For instance, if we did not support adding wildcard TLS certificates on Windows hosts only, then we might add an action comment to the `install-Windows.yml` file with the appropriate action section heading with further details.
+- The bulk of the action comments should be placed in the `tasks/main.yml` file. However, there may be use cases for putting an action comment in another file. For instance, if the business logic is different for Windows hosts, then we might add action comments to the `install-Windows.yml` file explaining the different logic.
 - The goal of action comments are to present our users with some easy to understand bullet points about exactly what the role does and also elaborate on some of the higher-level technical details.
 
 ### TODO Comments

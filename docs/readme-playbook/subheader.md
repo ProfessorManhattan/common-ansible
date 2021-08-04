@@ -3,7 +3,7 @@
     <a href="{{ website.homepage }}" title="Megabyte Labs homepage" target="_blank">
       <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/home-solid.svg" />
     </a>
-    <a href="{{ repository.playbooks }}/-/blob/master/CONTRIBUTING.md" title="Learn about contributing" target="_blank">
+    <a href="{{ repository.github }}{{ repository.location.contributing.github }}" title="Learn about contributing" target="_blank">
       <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/contributing-solid.svg" />
     </a>
     <a href="{{ profile.patreon }}" title="Support us on Patreon" target="_blank">
@@ -12,30 +12,30 @@
     <a href="{{ chat_url }}" title="Slack chat room" target="_blank">
       <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/chat-solid.svg" />
     </a>
-    <a href="{{ profile.github }}/InstallDoctor" title="GitHub mirror" target="_blank">
+    <a href="{{ repository.github }}" title="GitHub mirror" target="_blank">
       <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/github-solid.svg" />
     </a>
-    <a href="{{ repository.playbooks }}" title="GitLab repository" target="_blank">
+    <a href="{{ repository.gitlab }}" title="GitLab repository" target="_blank">
       <img src="https://gitlab.com/megabyte-labs/assets/-/raw/master/svg/gitlab-solid.svg" />
     </a>
   </h4>
   <p align="center">
-    <a href="{{ repository.playbooks }}" target="_blank">
+    <a href="{{ repository.github }}" target="_blank">
       <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?cacheSeconds=2592000" />
     </a>
-    <a href="{{ profile.github }}/InstallDoctor/actions/Windows.yml" target="_blank">
-      <img alt="Windows 10 build status" src="https://img.shields.io/github/workflow/status/ProfessorManhattan/InstallDoctor/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
+    <a href="{{ repository.github }}/actions/Windows.yml" target="_blank">
+      <img alt="Windows 11 build status" src="https://img.shields.io/github/workflow/status/ProfessorManhattan/InstallDoctor/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
     </a>
-    <a href="{{ profile.github }}/InstallDoctor/actions/macOS.yml" target="_blank">
+    <a href="{{ repository.github }}/actions/macOS.yml" target="_blank">
       <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/ProfessorManhattan/InstallDoctor/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
     </a>
-    <a href="{{ repository.playbooks }}/commits/master" target="_blank">
-      <img alt="Linux build status" src="{{ repository.group.ansible_roles }}/{{ role_name }}/badges/master/pipeline.svg">
+    <a href="{{ repository.github }}/commits/master" target="_blank">
+      <img alt="Linux build status" src="{{ repository.gitlab }}/badges/master/pipeline.svg">
     </a>
     <a href="{{ website.documentation }}/ansible" target="_blank">
       <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?logo=readthedocs&style={{ badge_style }}" />
     </a>
-    <a href="{{ repository.playbooks }}/-/raw/master/LICENSE" target="_blank">
+    <a href="{{ repository.github }}/blob/master/LICENSE" target="_blank">
       <img alt="License: {{ license }}" src="https://img.shields.io/badge/license-{{ license }}-yellow.svg?style={{ badge_style }}" />
     </a>
     <a href="{{ profile.opencollective }}" title="Support us on Open Collective" target="_blank">

@@ -7,6 +7,8 @@ pip3 install -r requirements.txt
 ansible-galaxy install -r requirements.yml
 ```
 
+Alternatively, you can simply run `bash .start.sh` if you are new to Ansible and do not mind the development requirements also being installed.
+
 ### Galaxy Roles
 
 Although most of our roles do not have dependencies, there are some cases where another role has to be installed before the logic can continue. At the beginning of the play, the Ansible Galaxy role dependencies listed in `meta/main.yml` will run. These dependencies are configured to only run once per playbook. If you include more than one of our roles in your playbook that have dependencies in common then the dependency installation will be skipped after the first run. Some of our roles also utilize helper roles which help keep our [main playbook]({{ repository.playbooks }}) DRY.

@@ -6,7 +6,7 @@ You can test all of the operating systems we support by running the following co
 molecule test
 ```
 
-The command `molecule test` will spin up VirtualBox VMs for all the OSes we support and run the role(s). _Do this before committing code._ If you are committing code for only one OS and can not create the fix or feature for the other operating systems then please, at the very minimum, [file an issue]({{ repository.group.ansible_roles }}/{{ galaxy_info.role_name }}{{ repository.location.issues }}) so someone else can pick it up.
+The command `molecule test` will spin up VirtualBox VMs for all the OSes we support and run the role(s). _Do this before committing code._ If you are committing code for only one OS and can not create the fix or feature for the other operating systems then please, at the very minimum, [file an issue]({{ repository.gitlab }}{{ repository.location.issues }}) so someone else can pick it up.
 
 ### Idempotence
 
@@ -17,8 +17,7 @@ It is important to note that `molecule test` tests for idempotence. To pass the 
 If you would like to shell into a container for debugging, you can do that by running:
 
 ```shell
-molecule converge # Creates the VM (without deleting it)
-molecule login    # Logs you in via SSH
+task common:shell
 ```
 
 ### Molecule Documentation
@@ -27,7 +26,7 @@ For more information about Ansible Molecule, check out [the docs](https://molecu
 
 ### Testing Desktop Environments
 
-Some of our roles include applications like Android Studio. You can not fully test Android Studio from a Docker command line. In cases like this, you should use our desktop scenarios to provision a desktop GUI-enabled VM to test things like:
+Some of our roles include applications like [Android Studio](https://github.com/ProfessorManhattan/ansible-androidstudio). You can not fully test Android Studio from a Docker command line. In cases like this, you should use our desktop scenarios to provision a desktop GUI-enabled VM to test things like:
 
 - Making sure the Android Studio shortcut is in the applications menu
 - Opening Android Studio to make sure it is behaving as expected
@@ -56,9 +55,8 @@ The chart below provides a list of the scenarios we include in all of our Ansibl
 
 ### Continuous Integration (CI)
 
-You might have noticed that there are no CI tests in the chart above for macOS and Windows. Due to the limitations of Docker, we use other methods to test macOS and Windows automatically with CI. After a project has passed various linting tests on GitLab CI, the following methods are used to test the project/role:
+You might have noticed that there are no CI tests in the chart above for macOS and Windows. Due to the limitations of Docker, we use other methods to test macOS and Windows automatically with CI. After a project has passed various linting tests on GitLab CI, the following methods are used to test the Ansible play:
 
-- Linux platforms are tested using Molecule and Docker on GitLab CI in parallel. ([Link to GitLab CI configuration]({{ repository.group.ci }}/-/blob/master/molecule.gitlab-ci.yml))
-- Windows is tested using GitLab CI without Molecule. ([Link to GitLab CI configuration]({{ repository.group.ci }}/-/blob/master/windows-ansible-test.gitlab-ci.yml))
+- Linux platforms are tested using Molecule and Docker on GitLab CI in parallel. ([Link to GitLab CI configuration]({{ repository.group.ci }}/-/blob/master/test/molecule.gitlab-ci.yml))
+- Windows is tested using GitLab CI without Molecule. ([Link to GitLab CI configuration]({{ repository.group.ci }}/-/blob/master/test/windows-ansible-test.gitlab-ci.yml))
 - macOS is tested using GitHub Actions after the code is automatically synchronized between GitLab and GitHub. ([Link to the macOS GitHub Action configuration]({{ repo }}/-/blob/master/.github/workflows/macOS.yml))
-- If all the GitLab tests succeed (i.e. Linux/Windows), then a final E2E test that includes all the platforms is run using the `default` scenario with VirtualBox. In this stage, the compatibility matrix is generated. This test is also run on a cron to ensure our compatibility matrixes are up-to-date.

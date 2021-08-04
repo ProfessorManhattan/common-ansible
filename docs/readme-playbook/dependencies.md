@@ -10,13 +10,15 @@ pip3 install -r requirements.txt
 ansible-galaxy install requirements.yml
 ```
 
-The method above should be used if you are not using the method detailed in the [Quick Start](#quick-start) section.
+You can also run `bash .start.sh` if you do not mind development dependencies being installed as well.
+
+The methods above should be used if you are not using the method detailed in the [Quick Start](#quick-start) section.
 
 SSH (or WinRM in the case of Windows) and Python should be available on the target systems you would like to provision.
 
 ### Optional Requirements
 
-**This playbook is built and tested to run on fresh installs of Windows, Mac OS X, Ubuntu, Fedora, Debian, CentOS, and Archlinux**. It may still be possible to run the playbook on your current machine. However, installing the playbook on a fresh install is the only thing we actively support. That said, if you come across an issue with an environment that already has configurations and software present, please do not hesitate to open an issue.
+**This playbook is built and tested to run on fresh installs of Windows, Mac OS X, Ubuntu, Fedora, Debian, CentOS, and Archlinux**. It may still be possible to run the playbook on your current machine. However, installing the playbook on a fresh install is the only thing we actively support. That said, if you come across an issue with an environment that already has configurations and software present, please do not hesitate to [open an issue]({{ repository.gitlab }}{{ repository.location.issue.gitlab }}).
 
 ### MAS on Mac OS X
 
