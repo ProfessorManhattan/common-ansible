@@ -321,13 +321,11 @@ tasks:
       - :software:jq
       - :software:yq
     env:
-      DEPS:
-        sh: yq eval -j '.dependencies' meta/main.yml
       ROLES:
         sh: yq eval '.roles' requirements.yml
     cmds:
       - |
-        jq -rc '.[] .role' "$DEPS" | while read ROLE_NAME; do
+        yq eval -j '.dependencies' meta/main.yml | jq -rc '.[] .role' | while read ROLE_NAME; do
           if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
             ROLE_NAME="$ROLE_NAME" yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
           fi
