@@ -234,3 +234,44 @@ tasks:
         fi
     sources:
       - "**/*.(sh|sh.j2)"
+
+  yml-dashes:
+    summary: |
+      $ Ensures YML files start with a "---"
+
+      This task will add a "---" as the first line of YML files if it is missing. It only works
+      on one YML file at a time. This task is intended to be used with lint-staged (with settings)
+      normally found in the 'package.json' file. You must specify the path/filename to the YML
+      file you wish to fix with this task. If the file does not exist or if the file does not end
+      with '.yml' or 'yaml' then an error will be reported.
+
+      Example usage:
+      > task fix:yml-dashes -- path/filename.yml
+    env:
+      TMP:
+        sh: mktemp
+    vars:
+      FILE_TYPE:
+        sh: echo -n "\{{.CLI_ARGS}}" | tail -c 4
+      HEADER:
+        sh: head -c 3 \{{.CLI_ARGS}}
+    cmds:
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          true error "Expecting command in the format of 'task fix:yml-dashes -- path/filename.yml'"
+        else
+          if test -f "\{{.CLI_ARGS}}"; then
+            if [ "$FILE_TYPE" == '.yml' ] || [ "$FILE_TYPE" == 'yaml' ]; then
+              if [ "$HEADER" != '---' ]; then
+                echo '---' | cat - "\{{.CLI_ARGS}}" > "$TMP"
+                mv "$TMP" "\{{.CLI_ARGS}}"
+                true info "Added '---' to the beginning of '\{{.CLI_ARGS}}' since it was missing from the head of the file"
+              fi
+            else
+              true warn "Attempted to process '\{{.CLI_ARGS}}' as if it were a YML file. This task only works on files ending with '.yml' or 'yaml'."
+            fi
+          else
+            true error "The path specified (\{{.CLI_ARGS}}) does not appear to be a file."
+          fi
+        fi
+

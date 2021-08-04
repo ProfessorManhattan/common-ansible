@@ -7,7 +7,7 @@ import signale from 'signale'
 import * as fs from 'fs'
 
 signale.info(
-  'Answer the prompt below to switch between environments. Each environment should be a folder with folders and files you wish to link to from the root of the project. They should normally consist of a host_vars, group_vars, inventory, and files folder (but can contain any files/folders you wish to link). Each environment should have its own folder in the `environments/` folder titled as the name of the environment. After you select an answer, the script will symlink all of the items in the environments folder to the root as long as there is not anything except a symlink in the target location (i.e. it will overwrite symlinks but not files).'
+  'Answer the prompt below to switch between environments. Each environment should be a folder with folders and files you wish to link to from the root of the project. They should normally consist of a host_vars, group_vars, inventory, and files folder (but can contain any files/folders you wish to link). Each environment should have its own folder in the `environments/` folder titled as the name of the environment. After you select an answer, the script will symlink all of the items in the environments folder to the root as long as there is not anything except a symlink to the target location (i.e. it will overwrite symlinks but not files).'
 )
 promptForEnv()
 
