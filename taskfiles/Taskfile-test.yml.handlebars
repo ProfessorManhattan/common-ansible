@@ -141,7 +141,7 @@ tasks:
     cmds:
       - |
         if [ "\{{.SNAP_REFS}}" ]; then
-          true warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap' (i.e. Ubuntu and recent versions of Debian)."
+          true warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap' inside Docker containers."
           SCENARIO=docker-snap
         else
           SCENARIO=docker
