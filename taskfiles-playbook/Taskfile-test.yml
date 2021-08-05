@@ -112,7 +112,7 @@ tasks:
           if [ "{{.CLI_ARGS}}" == 'matrix' ]; then
             mkdir -p molecule/.results
             true info "Storing Docker test results to 'molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt'"
-            PY_COLORS=0 molecule test "$SCENARIO" > "molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt"
+            PY_COLORS=0 molecule test -s "$SCENARIO" > "molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt"
           else
             true error "Invalid CLI arguments passed in. See 'task test:molecule-docker --summary'."
           fi
