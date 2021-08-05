@@ -13,22 +13,16 @@ tasks:
     cmds:
       - |
         echo '{"version": "2.0.0"}' > "$TMP_JSON"
-      - TASKS='['
       - |
-        echo $TASKS
+        TASKS='['
         while read LINE; do
           if [ "${LINE:0:1}" == '*' ]; then
             TASK_NAME=$(echo "$LINE" | sed 's/^\*.\([^\ ]*\):\(.*\)$/\1/g' | xargs)
             TASK_DESC=$(echo "$LINE" | sed 's/^\*.\([^\ ]*\):\(.*\)$/\2/g' | xargs)
-            echo $TASK_NAME
-            echo $TASK_DESC
             LABEL="($TASK_NAME): $TASK_DESC"
             TYPE="shell"
             COMMAND="bash .common/scripts/init.sh && task $TASK_NAME"
             TASKS+="{\"label\": \"$LABEL\", \"type\": \"$TYPE\", \"command\": \"$COMMAND\"},"
-            echo $TASKS
           fi
         done <<< "$TASK_LIST"
-      - echo $TASKS
-      - echo "${TASKS%?}]"
-      - jq --arg tasks "${TASKS%?}]" '.tasks = ($tasks | fromjson)' "$TMP_JSON" > .vscode/tasks.json
+        jq --arg tasks "${TASKS%?}]" '.tasks = ($tasks | fromjson)' "$TMP_JSON" > .vscode/tasks.json
