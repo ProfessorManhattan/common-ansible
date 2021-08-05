@@ -65,7 +65,7 @@ tasks:
     cmds:
       - |
         if [ ! -z "\{{.CLI_ARGS}}" ]; then
-          commitlint -e "\{{.CLI_ARGS}} --config .common/commitlint.config.cjs
+          commitlint -e "\{{.CLI_ARGS}}" --config .common/commitlint.config.cjs
         else
           true warn "The 'lint:commit' task requires a COMMIT_EDITMSG file path passed in as a CLI argument."
         fi
