@@ -27,5 +27,6 @@ tasks:
             TASKS+="{\"label\": \"$LABEL\", \"type\": \"$TYPE\", \"command\": \"$COMMAND\"},"
           fi
         done <<< "$TASK_LIST"
+      - echo $TASKS
       - echo "${TASKS%?}]"
       - jq --arg tasks "${TASKS%?}]" '.tasks = ($tasks | fromjson)' "$TMP_JSON" > .vscode/tasks.json
