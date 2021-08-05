@@ -38,10 +38,25 @@ tasks:
       If this command is incompatible with a file then you can add the file to the `.prettierignore`
       file.
 
+      Example of bulk fixing:
+      > task fix:formatting
+
+      Example of fixing a single file:
+      > task fix:formatting -- path/filename.ext
+
       For more information on Prettier, see: https://prettier.io/
     cmds:
-      - prettier --write .
-      - prettier-package-json --write package.json
+      - |
+        if [ -z "\{{.CLI_ARGS}}" ]; then
+          prettier --write .
+          prettier-package-json --write package.json
+        else
+          if [ "\{{.CLI_ARGS}}" == 'package.json' ]; then
+            prettier-package-json --write package.json
+          else
+            prettier --write "\{{.CLI_ARGS}}"
+          fi
+        fi
     sources:
       - "**/*.(css|html|js|json|less|md|mjml|php|scss|sh|ts|xml|yml)"
 

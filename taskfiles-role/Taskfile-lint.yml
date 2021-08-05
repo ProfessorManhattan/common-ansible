@@ -411,7 +411,7 @@ tasks:
         if [ -z "{{.CLI_ARGS}}" ]; then
           yamllint -s .
         else
-          yamllint {{.CLI_ARGS}}
+          yamllint -s {{.CLI_ARGS}}
         fi
     sources:
       - '**/*.yml'
