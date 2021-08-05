@@ -45,7 +45,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = $vars' .variables.json > "$TMP"
+      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = ($vars | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
 
   mod-ansible-autodoc:
@@ -72,6 +72,7 @@ tasks:
     sources:
       - 'tasks**/*.yml'
       - '.autodoc/*'
+      - '.variables.json'
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
         msg: 'The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
