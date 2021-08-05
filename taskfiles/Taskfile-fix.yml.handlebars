@@ -139,8 +139,8 @@ tasks:
 
       For more information on `packer fix`, see: https://www.packer.io/docs/commands/fix
     cmds:
+      - mkdir -p .tmp
       - |
-        mkdir -p .tmp
         if [ -z "\{{.CLI_ARGS}}" ]; then
           for TEMPLATE in *template.json; do
             true info "Running 'packer fix $TEMPLATE' to update the Packer template"
@@ -150,7 +150,7 @@ tasks:
         else
           packer fix \{{.CLI_ARGS}}" > ".tmp/tmp-\{{.CLI_ARGS}}" && mv ".tmp/tmp-\{{.CLI_ARGS}}"
         fi
-        rm -rf .tmp
+      - rm -rf .tmp
     sources:
       - "*template.json"
 
