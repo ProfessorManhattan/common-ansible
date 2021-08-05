@@ -376,7 +376,7 @@ tasks:
       CONTRIB_TEMPLATE: .common/docs/blueprint-contributing.md
     cmds:
       - true log "Generating CONTRIBUTING.md"
-      - readme generate --silent --config .variables.json --input "\{{.CONTRIB_TEMPLATE}}" --output CONTRIBUTING.md
+      - readme generate --silent --headingPrefix '{}' --config .variables.json --input "\{{.CONTRIB_TEMPLATE}}" --output CONTRIBUTING.md
       - task: update-markdown-scrub
         vars:
           SCRUB_FILE: CONTRIBUTING.md
@@ -524,7 +524,7 @@ tasks:
       README_TEMPLATE: blueprint-readme-\{{.REPOSITORY_SUBTYPE}}.md
     cmds:
       - true info "Generating README.md"
-      - readme generate --silent --config .variables.json --input ".common/docs/\{{.README_TEMPLATE}}"
+      - readme generate --headingPrefix '{}' --silent --config .variables.json --input ".common/docs/\{{.README_TEMPLATE}}"
       - task: update-markdown-scrub
         vars:
           SCRUB_FILE: README.md
