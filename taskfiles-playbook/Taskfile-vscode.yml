@@ -15,6 +15,7 @@ tasks:
         echo '{"version": "2.0.0"}' > "$TMP_JSON"
       - TASKS='['
       - |
+        echo $TASKS
         while read LINE; do
           if [ "${LINE:0:1}" == '*' ]; then
             TASK_NAME=$(echo "$LINE" | sed 's/^\*.\([^\ ]*\):\(.*\)$/\1/g' | xargs)
@@ -25,6 +26,7 @@ tasks:
             TYPE="shell"
             COMMAND="bash .common/scripts/init.sh && task $TASK_NAME"
             TASKS+="{\"label\": \"$LABEL\", \"type\": \"$TYPE\", \"command\": \"$COMMAND\"},"
+            echo $TASKS
           fi
         done <<< "$TASK_LIST"
       - echo $TASKS
