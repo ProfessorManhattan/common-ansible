@@ -9,13 +9,14 @@ env:
   REPOSITORY_TYPE: ansible
 
 includes:
-  ansible: ./.common/taskfiles-role/Taskfile-ansible.yml
-  common: ./.common/taskfiles-role/Taskfile-common.yml
-  fix: ./.common/taskfiles-role/Taskfile-fix.yml
-  image: ./.common/taskfiles-role/Taskfile-image.yml
-  lint: ./.common/taskfiles-role/Taskfile-lint.yml
-  npm: ./.common/taskfiles-role/Taskfile-npm.yml
-  python: ./.common/taskfiles-role/Taskfile-python.yml
-  security: ./.common/taskfiles-role/Taskfile-security.yml
-  software: ./.common/taskfiles-role/Taskfile-{{OS}}.yml
-  test: ./.common/taskfiles-role/Taskfile-test.yml
+  ansible: ./.common/taskfiles-playbook/Taskfile-ansible.yml
+  common: ./.common/taskfiles-playbook/Taskfile-common.yml
+  fix: ./.common/taskfiles-playbook/Taskfile-fix.yml
+  image: ./.common/taskfiles-playbook/Taskfile-image.yml
+  lint: ./.common/taskfiles-playbook/Taskfile-lint.yml
+  npm: ./.common/taskfiles-playbook/Taskfile-npm.yml
+  python: ./.common/taskfiles-playbook/Taskfile-python.yml
+  security: ./.common/taskfiles-playbook/Taskfile-security.yml
+  software: ./.common/taskfiles-playbook/Taskfile-{{OS}}.yml
+  test: ./.common/taskfiles-playbook/Taskfile-test.yml
+  vscode: ./.common/taskfiles-playbook/Taskfile-vscode.yml
