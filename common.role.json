@@ -19,9 +19,6 @@
     "role": true,
     "yaml": true
   },
-  "profile": {
-    "npmjs_organization": "installdoc"
-  },
   "repository": {
     "prefix": {
       "github": "ansible-"

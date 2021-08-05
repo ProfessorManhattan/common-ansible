@@ -9,5 +9,10 @@
     "python": true,
     "yaml": true
   },
+  "repository": {
+    "prefix": {
+      "github": "ansible-"
+    }
+  },
   "subgroup": "playbook"
 }
