@@ -88,7 +88,7 @@ tasks:
       - nodejs-dependencies
     cmds:
       - |
-        if [ -d .git ]; then
+        if [ -d .git ] && [ "${container:=}" != 'docker' ]; then
           husky install
         else
           true error "Cannot run 'husky install' because there is no '.git/' folder"
@@ -409,6 +409,8 @@ tasks:
         sh: jq -r '.dependencies' package.json | sed 's/^null$/{}/'
       PKG_DEV_DEPS:
         sh: jq -r '.devDependencies' package.json | sed 's/^null$/{}/'
+      PKG_KEYWORDS:
+        sh: jq -r '.keywords' package.json | sed 's/^null$/[]/'
       PKG_SCRIPTS:
         sh: jq -r '.scripts' package.json | sed 's/^null$/{}/'
       PKG_VERSION:
@@ -425,9 +427,11 @@ tasks:
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the
       # common dependencies to be updated at the same time. It also ensures the version is persistent. It is entirely possible that this
       # might cause issues if a project relies on an outdated dependency or if the upstream dependencies are out of date.
-      - jq --arg blueprint "$PKG_BLUEPRINT" --arg deps "$PKG_DEPS" --arg devDeps "$PKG_DEV_DEPS" --arg scripts "$PKG_SCRIPTS" --arg version "$PKG_VERSION"
-        '.dependencies = (($deps | fromjson) * .dependencies) | .devDependencies = (($devDeps | fromjson) * .devDependencies)
-        | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) | .version = $version' package.json > "$TMP"
+      - jq --arg blueprint "$PKG_BLUEPRINT" --arg deps "$PKG_DEPS" --arg devDeps "$PKG_DEV_DEPS" --arg keywords "$PKG_KEYWORDS" --arg scripts
+        "$PKG_SCRIPTS" --arg version "$PKG_VERSION" '.dependencies = (($deps | fromjson) * .dependencies)
+        | .devDependencies = (($devDeps | fromjson) * .devDependencies) | .keywords = .keywords + ($keywords | fromjson)
+        | .keywords = (.keywords | sort | unique) | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson)
+        | .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
       - cd .common && git reset --hard HEAD && git clean -fd && cd ..

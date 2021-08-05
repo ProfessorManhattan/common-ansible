@@ -174,7 +174,9 @@
       }
     },
     "namespace": "",
-    "prefix": "ansible-",
+    "prefix": {
+      "github": "ansible-"
+    },
     "project": {
       "assets": "https://gitlab.com/megabyte-labs/assets/-/raw/master",
       "autodoc": "https://github.com/AndresBott/ansible-autodoc",
