@@ -140,15 +140,13 @@ tasks:
         sh: grep -Ril 'community.general.snap:' ./tasks || true
     cmds:
       - |
-        if [ "\{{.SNAP_REFS}}" ]; then
+        SCENARIO=docker
+        if [ ! -z "\{{.SNAP_REFS}}" ]; then
           true warn "Degrading test scenario to 'docker-snap' which only tests Docker containers that support 'snap' inside Docker containers."
           SCENARIO=docker-snap
-        else
-          SCENARIO=docker
         fi
-      - |
-        if [ "\{{.CLI_ARGS}}" ]; then
-          if [ "\{{.CLI_ARGS}}" == 'matrix']; then
+        if [ ! -z "\{{.CLI_ARGS}}" ]; then
+          if [ "\{{.CLI_ARGS}}" == 'matrix' ]; then
             mkdir -p molecule/.results
             true info "Storing Docker test results to 'molecule/.results/\{{.MOLECULE_DATE}}-$SCENARIO.txt'"
             PY_COLORS=0 molecule test "$SCENARIO" > "molecule/.results/\{{.MOLECULE_DATE}}-$SCENARIO.txt"
