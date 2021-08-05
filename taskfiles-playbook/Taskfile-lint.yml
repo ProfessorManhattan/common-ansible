@@ -49,7 +49,7 @@ tasks:
     cmds:
       - echo '{{.CLI_ARGS}}' | commitlint --config .common/commitlint.config.cjs
     status:
-      - '[[ "{{.CLI_ARGS}}" ]]'
+      - '[[ -z "{{.CLI_ARGS}}" ]]'
 
   docker:
     deps:

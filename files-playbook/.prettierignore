@@ -9,7 +9,6 @@
 .modules/
 .nyc_output/
 .venv/
-.variables.json
 **/.cache/
 **/.husky/_/husky.sh
 **/Dockerfile
