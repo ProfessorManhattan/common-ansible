@@ -47,7 +47,12 @@ tasks:
       - :common:nodejs-dependencies
       - :npm:commitlint
     cmds:
-      - echo '{{.CLI_ARGS}}' | commitlint --config .common/commitlint.config.cjs
+      - |
+        if [ ! -z "{{.CLI_ARGS}}" ]; then
+          echo '{{.CLI_ARGS}}' | commitlint --config .common/commitlint.config.cjs
+        else
+          true warn "The 'lint:commit' task requires a commit message passed in as a CLI argument."
+        fi
     status:
       - '[[ -z "{{.CLI_ARGS}}" ]]'
 
