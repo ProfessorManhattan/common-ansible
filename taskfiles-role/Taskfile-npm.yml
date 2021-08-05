@@ -135,6 +135,14 @@ tasks:
           NPM_PACKAGE_BIN: snyk
     run: once
 
+  standard:
+    cmds:
+      - task: npm-install
+        vars:
+          NPM_PACKAGE: standard
+          NPM_PACKAGE_BIN: standard
+    run: once
+
   standard-version:
     cmds:
       - task: npm-install

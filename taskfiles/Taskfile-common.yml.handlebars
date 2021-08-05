@@ -165,6 +165,7 @@ tasks:
 {{#if hbs.dockerfile}}
       - :npm:snyk
 {{/if}}
+      - :npm:standard
       - :npm:standard-version
     run: once
     status:

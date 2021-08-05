@@ -161,6 +161,7 @@ tasks:
       - :npm:remark
       - :npm:shellcheck
       - :npm:snyk
+      - :npm:standard
       - :npm:standard-version
     run: once
     status:

@@ -141,7 +141,9 @@ tasks:
 
   lint-staged:
     deps:
-      - :npm:lint-staged
+      - :common:nodejs-dependencies
+      - :common:nodejs-global-dependencies
+      - :common:python-requirements
     cmds:
       - lint-staged
 
