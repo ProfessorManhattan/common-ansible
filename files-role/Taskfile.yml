@@ -37,4 +37,4 @@ tasks:
       **Example usage:**
       `task start`
     cmds:
-      - task: :common:update
+      - task: common:update
