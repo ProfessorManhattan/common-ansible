@@ -1,6 +1,6 @@
 {
   "galaxy_info": {
-    "role_name": "install-doctor"
+    "role_name": ""
   },
   "gitlab_pipelines": [
     {
