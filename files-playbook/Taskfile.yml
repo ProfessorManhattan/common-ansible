@@ -12,6 +12,7 @@ includes:
   ansible: ./.common/taskfiles-playbook/Taskfile-ansible.yml
   common: ./.common/taskfiles-playbook/Taskfile-common.yml
   fix: ./.common/taskfiles-playbook/Taskfile-fix.yml
+  git: ./.common/taskfiles-playbook/Taskfile-git.yml
   image: ./.common/taskfiles-playbook/Taskfile-image.yml
   lint: ./.common/taskfiles-playbook/Taskfile-lint.yml
   npm: ./.common/taskfiles-playbook/Taskfile-npm.yml

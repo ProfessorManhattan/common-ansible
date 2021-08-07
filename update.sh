@@ -27,7 +27,7 @@ if [ "${container:=}" != 'docker' ]; then
   success "Node.js, Task, jq, and yq are all installed"
 fi
 
-REPO_SUBTYPE=$(grep REPOSITORY_SUBTYPE Taskfile.yml | sed 's/.*REPOSITORY_SUBTYPE: \(.*\)/\1/')
+REPO_SUBTYPE=$((grep REPOSITORY_SUBTYPE Taskfile.yml) | sed 's/.*REPOSITORY_SUBTYPE: \(.*\)/\1/')
 export REPO_SUBTYPE
 
 cp ".common/files-$REPO_SUBTYPE/Taskfile.yml" Taskfile.yml
@@ -37,14 +37,7 @@ if [ "${container:=}" != 'docker' ]; then
   missingDockerNotice
   missingVirtualBoxNotice
 fi
-# Update shared files and install requirements
-# copy_project_files_and_generate_package_json
-#populate_alternative_descriptions
-#generate_ansible_charts
-#generate_documentation
-#populate_common_missing_ansible_dependencies
-#install_requirements
-#misc_fixes
+
 success "Bootstrap process complete!"
 
 cp .common/.start.sh .start.sh &
