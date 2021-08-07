@@ -1,7 +1,4 @@
 {
-  "galaxy_info": {
-    "role_name": ""
-  },
   "gitlab_pipelines": [
     {
       "active": true,
