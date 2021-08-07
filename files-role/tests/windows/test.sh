@@ -21,7 +21,7 @@ fi
 
 # Symlink the Ansible Galaxy role name to the working directory one level up
 ROLE_NAME="$(grep "role:" tests/windows/test.yml | sed 's^- role: ^^' | xargs)"
-ln -s "$(basename $PWD)" "../$ROLE_NAME"
+ln -s "$(basename "$PWD")" "../$ROLE_NAME"
 
 # Copy required files and run the Ansible play
 cp tests/windows/ansible.cfg ansible.cfg
