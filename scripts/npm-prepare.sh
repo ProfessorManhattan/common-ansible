@@ -6,4 +6,6 @@
 
 . "./.common/scripts/init.sh"
 
+set -eo pipefail
+
 task common:husky

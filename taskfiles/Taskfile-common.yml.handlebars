@@ -7,7 +7,7 @@ tasks:
       - :software:rsync
     desc: Removes optional folders that are cached during various tasks
     summary: |
-      $ Clean the project and remove all optional caches
+      # Clean the project and remove all optional caches
 
       This task will remove all the unnecessary files that are downloaded, generated, and
       cached during various build steps. This task is used by the `task common:reset` task
@@ -40,7 +40,7 @@ tasks:
       - python-requirements
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
     summary: |
-      $ Commit code
+      # Commit code
 
       This task will perform linting and auto-fixing on the files that have been staged in
       git (i.e. the files that were added with `git add --all`). It will then report possible
@@ -182,13 +182,14 @@ tasks:
       - :npm:standard-version
     desc: Ensure the project has upstream changes, lint, and then update the version
     summary: |
-      $ Prepare a new release
+      # Prepare a new release
 
       This task performs the following tasks in order:
-      (1) Ensures the project is up-to-date with the latest upstream changes
-      (2) Lints the project with all available linters
-      (3) Updates the version of the project in the `package.json` file
-      (4) Add the appropriate details to the CHANGELOG.md file
+      
+      1. Ensures the project is up-to-date with the latest upstream changes
+      2. Lints the project with all available linters
+      3. Updates the version of the project in the `package.json` file
+      4. Add the appropriate details to the CHANGELOG.md file
     cmds:
       - task: update
       - task: :lint:all
@@ -260,7 +261,7 @@ tasks:
       - python-requirements
     desc: Ensure all the dependencies are installed (Node.js, Python, etc.)
     summary: |
-      $ Ensure dependencies are installed
+      # Ensure dependencies are installed
 
       This task ensures that packages in various languages (Node.js, Python, etc.) are installed.
       At the very minimum, it will install the Node.js requirements by running `npm install` and
@@ -274,7 +275,7 @@ tasks:
       - software:git
     desc: "Aggressively reset the project (WARNING: This will wipe uncommitted work)"
     summary: |
-      $ Aggressively reset the project
+      # Aggressively reset the project
 
       If using `task common:reset` does not fix your issues, you can run this task
       to completely wipe out uncommitted work, clear all the caches, and sync
@@ -289,7 +290,7 @@ tasks:
   reset:
     desc: Resets the project by removing all caches and updating the project
     summary: |
-      $ Reset the project and then update it
+      # Reset the project and then update it
 
       This task is intended to be used when the `common:update` task is having trouble
       or when breaking changes are made to the build tools. Use this task if you are
@@ -322,21 +323,29 @@ tasks:
       - :software:docker
     desc: Start a terminal session using Docker with any Linux operating system
     summary: |
-      $ Start a Docker terminal session
+      # Start a Docker terminal session
 
       Use Docker to run commands on nearly any operating system. The operating
       systems are all stock distros with systemd added.
 
-      Example opening an interactive prompt:
-      > task shell
+      **Example opening an interactive prompt:**
+      `task shell`
 
-      Example of directly shelling into a container:
-      > task shell -- ubuntu-21.04
+      **Example of directly shelling into a container:**
+      `task shell -- ubuntu-21.04`
 
-      Available operating systems:
-        * archlinux   * debian-9     * fedora-34      * ubuntu-21.04
-        * centos-7    * debian-10    * ubuntu-18.04
-        * centos-8    * fedora-33    * ubuntu-20.04
+      ## Available operating systems (that you can use with the example above):
+
+      * archlinux
+      * centos-7
+      * centos-8
+      * debian-9
+      * debian-10
+      * fedora-33
+      * fedora-34
+      * ubuntu-18.04
+      * ubuntu-20.04
+      * ubuntu-21.04
     vars:
       WORKDIR:
         sh: basename $PWD
@@ -488,7 +497,7 @@ tasks:
       - :software:git
     desc: Ensure all submodules in the `.modules/` folder are updated
     summary: |
-      $ Ensure all submodules in `.modules/` are updated
+      # Ensure all submodules in `.modules/` are updated
 
       Some of our projects include submodules. These submodules are generally
       stored in the `.modules/` folder in the root of the project. Some projects
@@ -619,6 +628,17 @@ tasks:
 {{/if}}
       - update-repositories
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
+    summary: |
+      # Refresh project with latest upstream code and ensure project files are up-to-date
+
+      This task will pull the latest upstream code and overwrite any files that are out of date.
+      Ideally, you should run this task often to ensure there are no merge conflicts and to
+      ensure you are using the latest production settings. This task is also run by CI so
+      normally if you pull the latest changes, you should already have the updates that this
+      task applies.
+
+      **Example usage:**
+      `task common:update`
     cmds:
       - task: update-start
       - task: update-all
@@ -626,3 +646,23 @@ tasks:
       - task: :docker:update-labels
 {{/if}}
       - true success "Successfully updated the project with the latest upstream changes"
+
+  update-services:
+    deps:
+      - update
+    desc: Update elements of the repository that require API access
+    summary: |
+      # Update elements of the repository that require API access
+
+      This task will ensure that the git repositories and other services related to the
+      project are updated with the configurations.
+
+      **Example usage:**
+      `task common:update-services`
+    cmds:
+      - task: update-services-repos
+
+  update-services-repos:
+    deps:
+      - :git:update-gitlab
+      - :git:update-github

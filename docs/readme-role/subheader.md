@@ -44,7 +44,7 @@
     <a title="Ansible Galaxy download count" href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" target="_blank">
       <img alt="Ansible Galaxy download count" src="https://img.shields.io/ansible/role/d/53381?logo=ansible&style={{ badge_style }}">
     </a>
-    <a title="Documentation" href="{{ link.docs }}/ansible" target="_blank">
+    <a title="Documentation" href="{{ link.docs }}/{{ group }}" target="_blank">
       <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?logo=readthedocs&style={{ badge_style }}" />
     </a>
     <a title="License: {{ license }}" href="{{ repository.github }}{{ repository.location.license.github }}" target="_blank">

@@ -32,7 +32,7 @@
     <a title="Linux build status on GitLab" href="{{ repository.gitlab }}{{ repository.location.commits.gitlab }}" target="_blank">
       <img alt="Linux build status" src="{{ repository.gitlab }}/badges/master/pipeline.svg">
     </a>
-    <a title="Documentation" href="{{ website.documentation }}/ansible" target="_blank">
+    <a title="Documentation" href="{{ link.docs }}/{{ group }}" target="_blank">
       <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?logo=readthedocs&style={{ badge_style }}" />
     </a>
     <a title="View license agreement" href="{{ repository.github }}/blob/master/LICENSE" target="_blank">

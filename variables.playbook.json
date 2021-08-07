@@ -35,6 +35,14 @@
     "role_name": "install-doctor"
   },
   "github_prefix": "<i></i>",
+  "gitlab_pipelines": [
+    {
+      "active": true,
+      "cron": "0 12 * * 1",
+      "description": "Daily VirtualBox test",
+      "ref": "production"
+    }
+  ],
   "group": "ansible",
   "hbs": {
     "ansible": true,

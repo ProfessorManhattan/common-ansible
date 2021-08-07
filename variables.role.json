@@ -37,6 +37,14 @@
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
   "github_prefix": "<i></i>",
+  "gitlab_pipelines": [
+    {
+      "active": true,
+      "cron": "0 12 * * 1",
+      "description": "Weekly Docker Molecule test",
+      "ref": "master"
+    }
+  ],
   "group": "ansible",
   "hbs": {
     "ansible": true,

@@ -16,6 +16,8 @@
 #   * ensureVagrantInstalled - Ensures [Vagrant](https://www.vagrantup.com/) is installed
 #   * ensureYQInstalled - Ensures [yq](https://github.com/mikefarah/yq) is installed
 
+set -eo pipefail
+
 mkdir -p "$USER_BIN_FOLDER"
 mkdir -p "$TMP_DIR"
 

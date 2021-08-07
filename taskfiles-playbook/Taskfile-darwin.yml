@@ -29,6 +29,15 @@ tasks:
     status:
       - type exiftool &> /dev/null
 
+  gh:
+    cmds:
+      - task: install-doctor
+        vars:
+          SOFTWARE: gh
+    run: once
+    status:
+      - type gh &> /dev/null
+
   git:
     cmds:
       - task: install-doctor
@@ -46,6 +55,15 @@ tasks:
     run: once
     status:
       - type gitleaks &> /dev/null
+
+  glab:
+    cmds:
+      - task: install-doctor
+        vars:
+          SOFTWARE: glab
+    run: once
+    status:
+      - type glab &> /dev/null
 
   install-doctor:
     cmds:

@@ -3,6 +3,8 @@
 # @file .common/scripts/common.sh
 # @brief Includes common functions and initialization logic that is used by other scripts
 
+set -eo pipefail
+
 export START_PATH="$PWD"
 cd "$(dirname "${BASH_SOURCE[0]}")" || exit
 SCRIPT_PATH="$(pwd -P)"

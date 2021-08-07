@@ -24,6 +24,8 @@
 #   equal to `NODE_PATH="$(npm root -g):$NODE_PATH"` to ensure the `signale` logging works
 #   as expected.
 
+set -eo pipefail
+
 # @description Determines whether or not an executable is accessible
 # @example commandExists node
 function commandExists() {

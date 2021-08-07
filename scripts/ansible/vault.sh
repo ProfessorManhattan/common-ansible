@@ -6,7 +6,7 @@
 
 . "./.common/scripts/log.sh"
 
-set -e
+set -eo pipefail
 
 STATUS=0
 for FILE in "$@"; do

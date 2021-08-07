@@ -40,7 +40,7 @@ tasks:
       - :common:python-requirements
     desc: Lint Ansible projects using Ansible Lint
     summary: |
-      $ Lint an Ansible project using Ansible Lint
+      # Lint an Ansible project using Ansible Lint
 
       This task lints the project using Ansible Lint which will scan the project and report design
       patterns that can possibly be improved. It can be used on both playbooks and roles. The
@@ -48,10 +48,9 @@ tasks:
       `.ansible-lint`. This configuration file is shared between all of our Ansible projects
       so any changes to it need to be made to the upstream Ansible common file repository. Because of
       this, it probably makes more sense to to disable rules (when absolutely necessary) using the
-      syntax described in this link:
-      https://ansible-lint.readthedocs.io/en/latest/rules.html#false-positives-skipping-rules
+      [syntax described in this link](https://ansible-lint.readthedocs.io/en/latest/rules.html#false-positives-skipping-rules).
 
-      For more information on Ansible Lint, see: https://github.com/ansible-community/ansible-lint
+      For more information, see [Ansible Lint's GitHub page](https://github.com/ansible-community/ansible-lint).
     cmds:
       - ansible-lint
     sources:
@@ -78,7 +77,7 @@ tasks:
       - :software:docker
     desc: Lint Dockerfiles using Hadolint (requires Docker)
     summary: |
-      $ Lint Dockerfiles using Hadolint
+      # Lint Dockerfiles using Hadolint
 
       Hadolint is a linter for Dockerfiles. This task uses Hadolint to reportrue warnings
       and suggestions so that the project is using best practices and is less likely to
@@ -88,22 +87,22 @@ tasks:
       for adhereing to Docker best-practices, Hadolint also leverages Shellcheck to report
       possible errors in the shell logic used by the Dockerfile.
 
-      If the Dockerfile is named something other than `Dockerfile` or `Dockerfile.j2`, you
-      can manually run Hadolint by running:
-      > docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim CustomDockerfileName
+      **If the Dockerfile is named something other than `Dockerfile` or `Dockerfile.j2`, you
+      can manually run Hadolint by running:**
+      `docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim CustomDockerfileName`
 
-      This task will ignore files in the following directories:
+      **This task will ignore files in the following directories (and possibly more):**
         * .cache        * .husky        * node_modules
         * .common       * .modules      * test
         * .git          * .task         * venv
 
-      Example scanning the whole project:
-      > task lint:docker
+      **Example scanning the whole project:**
+      `task lint:docker`
 
-      Example scanning single file:
-      > task lint:docker -- CustomDockerfile
+      **Example scanning single file:**
+      `task lint:docker -- CustomDockerfile`
 
-      For more information on Hadolint, see: https://github.com/hadolint/hadolint
+      For more information, see [Hadolint's GitHub page](https://github.com/hadolint/hadolint).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -122,7 +121,7 @@ tasks:
       - :npm:prettier
     desc: Lint formatting using Prettier
     summary: |
-      $ Report formatting errors with Prettier
+      # Report formatting errors with Prettier
 
       This task will run Prettier on the project and list the possible fixes without automatically
       applying the fixes. It will report mistakes like inconsistent indent lengths, trailing spaces,
@@ -132,7 +131,7 @@ tasks:
       If this command is incompatible with a file then you can add the file to the `.prettierignore`
       file.
 
-      For more information on Prettier, see: https://prettier.io/
+      For more information, see [Prettier's website](https://prettier.io/).
     cmds:
       - prettier --list-different .
       - prettier-package-json --list-different package.json
@@ -152,18 +151,18 @@ tasks:
       - :software:gitleaks
     desc: Scans repository (including git history) for possible leaked keys
     summary: |
-      $ Scan repository with Gitleaks
+      # Scan repository with Gitleaks
 
       Find accidentally committed passwords, private keys, and API keys by scanning the repository with
-      'Gitleaks'.
+      Gitleaks.
 
-      Example of scanning current repository:
-      > task lint:gitleaks
+      **Example of scanning current repository:**
+      `task lint:gitleaks`
 
-      Example of scanning a public git repository:
-      > task lint:gitleaks -- https://github.com/installdoc/windows12
+      **Example of scanning a public git repository:**
+      `task lint:gitleaks -- https://github.com/ProfessorManhattan/Windows12`
 
-      For more information on 'Gitleaks', see: https://github.com/zricethezav/gitleaks
+      For more information, see the [Gitleaks GitHub page](https://github.com/zricethezav/gitleaks).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -178,19 +177,19 @@ tasks:
       - :npm:remark
     desc: Lint markdown files
     summary: |
-      $ Lint markdown files
+      # Lint markdown files
 
-      This task uses 'remark-lint' under the hood to provide markdown style recommendations.
+      This task uses `remark-lint` under the hood to provide markdown style recommendations.
 
-      Example scanning all markdown files:
-      > task lint:markdown
+      **Example scanning all markdown files:**
+      `task lint:markdown`
 
-      Example scanning single markdown file:
-      > task lint:markdown -- TEST.md
+      **Example scanning single markdown file:**
+      `task lint:markdown -- TEST.md`
 
-      For more information on 'remark', see: https://github.com/remarkjs/remark
+      For more information on `remark`, see the [GitHub page](https://github.com/remarkjs/remark).
 
-      For more information on 'remark-lint', see: https://github.com/remarkjs/remark-lint
+      For more information on `remark-lint`, see the [GitHub page](https://github.com/remarkjs/remark-lint).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -207,19 +206,18 @@ tasks:
       - :npm:markdown-link-check
     desc: Scan markdown files for broken links
     summary: |
-      $ Report any broken links in the files that end with .md
+      # Report any broken links in the files that end with .md
 
       This task uses the npm package called `markdown-link-check` to scan all the links
       and then report which ones are broken.
 
-      Example scanning the whole project:
-      > task lint:markdown-broken-links
+      **Example scanning the whole project:**
+      `task lint:markdown-broken-links`
 
-      Example scanning single file:
-      > task lint:markdown-broken-links -- filename.md
+      **Example scanning single file:**
+      `task lint:markdown-broken-links -- filename.md`
 
-      For more information on `markdown-link-check`, see the following page:
-      https://github.com/tcort/markdown-link-check
+      For more information on `markdown-link-check`, see their [GitHub page](https://github.com/tcort/markdown-link-check).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -237,19 +235,19 @@ tasks:
       - :software:packer
     desc: Validate the Packer templates ending with `template.json`
     summary: |
-      $ Validate Packer templates
+      # Validate Packer templates
 
       This task will loop through all the Packer templates ending with `template.json`
       in the root of this project and report any errors that the templates might have.
       Alternatively, you can scan a single file (see example below).
 
-      Example scanning for all files ending with 'template.json' in the root directory:
-      > task lint:packer
+      **Example scanning for all files ending with `template.json` in the root directory:**
+      `task lint:packer`
 
-      Example scanning single file:
-      > task lint:packer -- filename.json
+      **Example scanning single file:**
+      `task lint:packer -- filename.json`
 
-      For more information on `packer validate`, see: https://www.packer.io/docs/commands/validate
+      For more information on `packer validate`, see the [Packer website](https://www.packer.io/docs/commands/validate).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -268,17 +266,17 @@ tasks:
       - :common:python-requirements
     desc: Scan for private keys
     summary: |
-      $ Scan for private keys
+      # Scan for private keys
 
       This task will scan the project for private keys that might not belong where they are. You
       can pass this task a single file or let it loop through the project. If you loop through
       the project, common folders like 'node_modules/' and 'venv/' will be ignored.
 
-      Example scanning the whole project:
-      > task lint:private-keys
+      **Example scanning the whole project:**
+      `task lint:private-keys`
 
-      Example scanning single file:
-      > task lint:private-keys -- filename.ext
+      **Example scanning single file:**
+      `task lint:private-keys -- filename.ext`
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -296,16 +294,16 @@ tasks:
     summary: |
       # Lint for English prose
 
-      This task uses 'proselint' to analyze markdown files for prose. It will generate recommendations
+      This task uses Proselint to analyze markdown files for prose. It will generate recommendations
       based on typography, grammar, and wording.
 
-      Example scanning all markdown files:
-      > task lint:prose
+      **Example scanning all markdown files:**
+      `task lint:prose`
 
-      Example scanning specific file (markdown or not):
-      > task lint:prose -- myfile.js
+      **Example scanning specific file (markdown or not):**
+      `task lint:prose -- myfile.js`
 
-      For more information on proselint, see: https://github.com/amperser/proselint
+      For more information, see [Proselint's GitHub page](https://github.com/amperser/proselint).
     cmds:
       - |
         if [ -f ~/.config/proselint/config ]; then
@@ -333,28 +331,27 @@ tasks:
       - :common:python-requirements
     desc: Lint Python files using Flake8
     summary: |
-      $ Lint Python files using Flake8
+      # Lint Python files using Flake8
 
       Flake8 is a Python library that lints Python projects (or projects that may include Python files).
       It is a combination of several Python linters like PyFlakes and pycodestyle. This task will run
       `flake8` using the configuration found in the `.flake8` file in the root of this project.
 
       The `.flake8` file is a common file shared across many of our repositories so if changes are made to
-      it then the changes need to be made to the appropriate common file repository here:
-      https://gitlab.com/megabyte-labs/common. Because of this, it might make more sense to add a comment
-      to lines that you wish to be ignored by flake8. For instance, you can ignore rule E234 by adding
-      a comment at the end of the line that looks like, "# noqa: E234".
+      it then the changes need to be made to the appropriate common file repository [here](https://gitlab.com/megabyte-labs/common).
+      Because of this, it might make more sense to add a comment to lines that you wish to be ignored by flake8.
+      For instance, you can ignore rule E234 by adding a comment at the end of the line that looks like, "# noqa: E234".
 
-      NOTE: In order to maintain our strict quality standards, disabling Flake8 rules should only be done
-      when absolutely necessary.
+      _NOTE: In order to maintain our strict quality standards, disabling Flake8 rules should only be done
+      when absolutely necessary._
 
-      Example scanning all files:
-      > task lint:python
+      **Example scanning all files:**
+      `task lint:python`
 
-      Example scanning specific file:
-      > task lint:python -- myfile.py
+      **Example scanning specific file:**
+      `task lint:python -- myfile.py`
 
-      For more information on Flake8, see: https://github.com/PyCQA/flake8
+      For more information, see [Flake8's GitHub page](https://github.com/PyCQA/flake8).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -371,7 +368,7 @@ tasks:
       - :npm:shellcheck
     desc: Report possible errors in shell scripts
     summary: |
-      $ Report possible errors in shell scripts using Shellcheck
+      # Report possible errors in shell scripts using Shellcheck
 
       Shellcheck is a tool that reports warnings and suggestions for shell (e.g. bash) scripts. This
       task is a wrapper for the `npm run lint:shellcheck` command. The npm command scans the project
@@ -381,13 +378,13 @@ tasks:
         * .git          * node_modules
         * .husky        * slim_test
 
-      Example scanning all files:
-      > task lint:scripts
+      **Example scanning all files:**
+      `task lint:scripts`
 
-      Example scanning specific file:
-      > task lint:scripts -- myfile.sh
+      **Example scanning specific file:**
+      `task lint:scripts -- myfile.sh`
 
-      For more information on Shellcheck, see: https://github.com/koalaman/shellcheck
+      For more information, see [Shellcheck's GitHub page](https://github.com/koalaman/shellcheck).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
@@ -406,22 +403,22 @@ tasks:
       - :software:node
     desc: Checks for spelling errors in staged files
     summary: |
-      $ Check for spelling errors in staged files
+      # Check for spelling errors in staged files
 
       Use cspell to check for possible spelling errors using the configuration stored in `.common/.cspell.json`.
 
-      This task is utilized by the pre-commit hook. For more information about cspell, see:
-      https://www.npmjs.com/package/cspell
+      This task is utilized by the pre-commit hook. For more information about cspell, see the
+      [cspell NPM page](https://www.npmjs.com/package/cspell).
 
-      Example scanning all staged files:
-      > task lint:spelling
+      **Example scanning all staged files:**
+      `task lint:spelling`
 
-      Example scanning specific file:
-      > task lint:spelling -- myfile.sh
+      **Example scanning specific file:**
+      `task lint:spelling -- myfile.sh`
 
-      Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
-      files by running:
-      > npx cspell '**/*.js'
+      **Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
+      files by running:**
+      `npx cspell '**/*.js'`
     env:
       STAGED_FILES:
         sh: git diff --cached --name-only
@@ -442,13 +439,13 @@ tasks:
       - :software:vagrant
     desc: Validate the Vagrantfile
     summary: |
-      $ Validate the Vagrantfile
+      # Validate the Vagrantfile
 
       This task is an alias for `vagrant validate`. Vagrant's `validate` command
       will ensure the Vagrantfile in the root of this repository has no errors and
       is using valid syntax.
 
-      For more information on `vagrant validate`, see: https://www.vagrantup.com/docs/cli/validate
+      For more information on `vagrant validate`, see the [Vagrant website](https://www.vagrantup.com/docs/cli/validate).
     cmds:
       - vagrant validate
     sources:
@@ -461,7 +458,7 @@ tasks:
       - :common:python-requirements
     desc: Lint .yml files using YAML Lint
     summary: |
-      $ Lint YML files using YAML Lint
+      # Lint YML files using YAML Lint
 
       YAML Lint is a general purpose linter tool that reports suggestions for `.yml`
       files. It checks for syntax validity as well as cosmetic problems like line
@@ -469,17 +466,17 @@ tasks:
       of the repository in the file named `.yamllint`. The `.yamllint` file is shared
       across all of our projects so if you need to make changes to get rid of warnings
       it will generally make more sense to disable YAML Lint for a single line using the
-      method described here: https://github.com/adrienverge/yamllint#features.
+      [method described here](https://github.com/adrienverge/yamllint#features).
 
-      NOTE: Disabling YAML Lint rules should only be done when absolutely necessary.
+      _NOTE: Disabling YAML Lint rules should only be done when absolutely necessary._
 
-      Example scanning all '**/*.yml' files:
-      > task lint:yaml
+      **Example scanning all '**/*.yml' files:**
+      `task lint:yaml`
 
-      Example scanning specific file:
-      > task lint:yaml -- myfile.sh
+      **Example scanning specific file:**
+      `task lint:yaml -- myfile.sh`
 
-      For more information on YAML Lint, see: https://github.com/adrienverge/yamllint
+      For more information, see the [YAML Lint GitHub page](https://github.com/adrienverge/yamllint).
     cmds:
       - |
         if [ -z "\{{.CLI_ARGS}}" ]; then
