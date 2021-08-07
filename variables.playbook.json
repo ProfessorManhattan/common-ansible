@@ -31,9 +31,6 @@
   "email": {
     "help": "help@megabyte.space"
   },
-  "galaxy_info": {
-    "role_name": "install-doctor"
-  },
   "github_prefix": "<i></i>",
   "gitlab_pipelines": [
     {
