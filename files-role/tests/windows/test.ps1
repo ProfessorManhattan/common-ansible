@@ -13,7 +13,7 @@
 # 3. Sets up WinRM CredSSP which Ansible connects with since SSH is currently not a viable option for
 #    connecting to the Windows host from a child Docker container. The script this step uses is an
 #    official example of how to set up WinRM on Windows for Ansible.
-# 4. Runs the Ansible play via Docker
+# 4. Runs the Ansible play via Docker which then performs the remaining steps by running a seperate shell script.
 #
 # This script is called by a [GitLab CI job](https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/blob/master/test/windows-ansible.gitlab-ci.yml).
 

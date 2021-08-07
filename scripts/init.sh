@@ -6,7 +6,7 @@
 
 . "./.common/scripts/log.sh"
 
-if ! typeof task &> /dev/null; then
+if ! type task &> /dev/null; then
   . "./.common/scripts/common.sh"
   . "./.common/scripts/software.sh"
   ensureTaskInstalled

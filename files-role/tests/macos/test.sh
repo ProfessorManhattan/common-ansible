@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 
 # @file tests/macos/test.sh
-# @brief A script that is used to test the role's macOS compatibility via GitHub actions.
+# @brief A script that is used to test the role's macOS compatibility via a [GitHub action](https://gitlab.com/megabyte-labs/common/ansible/-/blob/master/files-role/.github/workflows/macOS.yml).
 
 # Ensure Ansible is installed
-pip3 install ansible
+if ! type ansible &> /dev/null; then
+  pip3 install ansible
+fi
 
 # Ensure Ansible Galaxy dependencies are installed
 if [ -f requirements.yml ]; then
   ansible-galaxy install -r requirements.yml
 fi
 
-# Symlink Ansible Galaxy role name to the working directory one level up
+# Symlink the Ansible Galaxy role name to the working directory one level up
 ROLE_NAME="$(cat tests/macos/test.yml | grep role: | sed 's^- role: ^^' | xargs)"
 ln -s echo "$(basename $PWD)" "../$ROLE_NAME"
 
