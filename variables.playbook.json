@@ -183,7 +183,7 @@
     },
     "namespace": "",
     "prefix": {
-      "github": "ansible-"
+      "github": ""
     },
     "project": {
       "assets": "https://gitlab.com/megabyte-labs/assets/-/raw/master",

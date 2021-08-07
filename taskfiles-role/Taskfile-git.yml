@@ -219,7 +219,7 @@ tasks:
             REF=$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].ref')
             if ! $(echo "$PIPELINE_RES") | grep "$DESC"; then
               glab api projects/:fullpath/pipeline_schedules -X POST -f active="$ACTIVE" -f description="$DESC" \
-                -f ref="$REF" -f cron="$CRON"
+                -f ref="$REF" -f cron="$CRON" -f cron_timezone="{{.TIMEZONE}}"
               true success "Pipeline with description of `$DESC` successfully added"
             else
               true log "Pipeline with description of `$DESC` already added"

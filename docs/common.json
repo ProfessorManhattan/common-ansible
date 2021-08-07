@@ -40,6 +40,9 @@
     ["`ci-docker-fedora`", "Uses Docker to test multiple versions of Fedora."],
     ["`ci-docker-ubuntu`", "Uses Docker to test multiple versions of Ubuntu."]
   ],
+  "profile": {
+    "npmjs_organization": "installdoc"
+  },
   "repository": {
     "prefix": "ansible-"
   }
