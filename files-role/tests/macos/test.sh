@@ -14,8 +14,8 @@ if [ -f requirements.yml ]; then
 fi
 
 # Symlink the Ansible Galaxy role name to the working directory one level up
-ROLE_NAME="$(cat tests/macos/test.yml | grep role: | sed 's^- role: ^^' | xargs)"
-ln -s echo "$(basename $PWD)" "../$ROLE_NAME"
+ROLE_NAME="$(grep "role:" tests/macos/test.yml | sed 's^- role: ^^' | xargs)"
+ln -s "$(basename "$PWD")" "../$ROLE_NAME"
 
 # Copy required files and run the Ansible play
 cp tests/macos/ansible.cfg ansible.cfg
