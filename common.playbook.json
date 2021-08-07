@@ -19,7 +19,7 @@
   },
   "repository": {
     "prefix": {
-      "github": "ansible-"
+      "github": ""
     }
   },
   "subgroup": "playbook"
