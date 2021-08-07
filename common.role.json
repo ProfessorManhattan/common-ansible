@@ -12,6 +12,14 @@
     "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing. ]]",
     "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
   },
+  "gitlab_pipelines": [
+    {
+      "active": true,
+      "cron": "0 12 * * 1",
+      "description": "Weekly Docker Molecule test",
+      "ref": "master"
+    }
+  ],
   "hbs": {
     "ansible": true,
     "dockerfile": true,

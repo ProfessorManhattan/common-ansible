@@ -2,6 +2,14 @@
   "galaxy_info": {
     "role_name": "install-doctor"
   },
+  "gitlab_pipelines": [
+    {
+      "active": true,
+      "cron": "0 12 * * 1",
+      "description": "Daily VirtualBox test",
+      "ref": "production"
+    }
+  ],
   "hbs": {
     "ansible": true,
     "dockerfile": true,
