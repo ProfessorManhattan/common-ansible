@@ -60,11 +60,11 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - COLLECTION_DEPS=$(jq --arg collections "$COLLECTIONS" '.collection_dependencies = ($collections | fromjson)
+      - COLLECTION_DEPS="$(jq --arg collections "$COLLECTIONS" '.collection_dependencies = ($collections | fromjson)
           | "<b><a href=\"" + .collection_dependencies[].source + "/" + (.collection_dependencies[].name
           | split(".") | join("/")) + "\" title=\"" + .collection_dependencies[].name +
           " collection on Ansible Galaxy\" target=\"blank\">" + .collection_dependencies[].name
-          + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]')
+          + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]')"
           && jq --arg collections "$COLLECTION_DEPS" '.collection_dependencies = ($collections | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     sources:
@@ -81,7 +81,7 @@ tasks:
       - mkdir -p .autodoc
       - |
         if [ "$COLLECTION_LENGTH" != '0' ]; then
-          echo "### Galaxy Collections\n\nThis role is dependent on one or more Ansible Galaxy collections. The following is a list of names of the collections with links to their page on Ansible Galaxy:\n\n\{{collection_dependencies}}" > .autodoc/collection_dependencies.md
+          echo "### Galaxy Collections\n\nThis role is dependent on Ansible Galaxy collections. The following is a list of the names of the collections along with links to their page on Ansible Galaxy:\n\n\{{collection_dependencies}}" > .autodoc/collection_dependencies.md
         else
           echo "" > .autodoc/collection_dependencies.md
         fi
