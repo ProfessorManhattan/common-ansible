@@ -85,7 +85,7 @@ tasks:
       MULTIPLE_COLLECTIONS_TEXT: ### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy
         collections. The collections along with a links to their source are listed below.\n\n\{{collection_dependencies}}
       SINGLE_COLLECTION_TEXT: ### Galaxy Collection\n\nThis role is dependent on the following Ansible Galaxy
-        collection:\n\n{{collection_dependencies}}
+        collection:\n\n\{{collection_dependencies}}
     env:
       COLLECTION_LENGTH:
         sh: jq -r '.collection_dependencies | length' .variables.json
