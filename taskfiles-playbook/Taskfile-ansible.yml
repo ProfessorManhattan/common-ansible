@@ -49,16 +49,16 @@ tasks:
       - :software:yq
     env:
       COLLECTIONS:
-        sh: yq eval -j '.collections' requirements.yml
+        sh:
+          jq --arg collections "$(yq eval -j '.collections' requirements.yml)" '.collection_dependencies = ($collections | fromjson)
+          | "<b><a href=\"" + .collection_dependencies[].source + "/" + (.collection_dependencies[].name
+          | split(".") | join("/")) + "\" title=\"" + .collection_dependencies[].name +
+          " collection on Ansible Galaxy\" target=\"blank\">" + .collection_dependencies[].name
+          + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]'
       TMP:
         sh: mktemp
     cmds:
-      - COLLECTION_DEPS="$(jq --arg collections "$COLLECTIONS" '.collection_dependencies = ($collections | fromjson)
-        | "<b><a href=\"" + .collection_dependencies[].source + "/" + (.collection_dependencies[].name
-        | split(".") | join("/")) + "\" title=\"" + .collection_dependencies[].name +
-        " collection on Ansible Galaxy\" target=\"blank\">" + .collection_dependencies[].name
-        + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]')"
-        && jq --arg collections "$COLLECTION_DEPS" '.collection_dependencies = ($collections | fromjson)' .variables.json > "$TMP"
+      - jq --arg collections "$COLLECTIONS" '.collection_dependencies = ($collections | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     sources:
       - .variables.json

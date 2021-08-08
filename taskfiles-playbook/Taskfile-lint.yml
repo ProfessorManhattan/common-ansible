@@ -373,9 +373,9 @@ tasks:
     cmds:
       - |
         if [ -z "{{.CLI_ARGS}}" ]; then
-          cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES"
+          cspell --no-summary --no-progress --show-context --no-must-find-files --config .common/.cspell.json "$STAGED_FILES" || true
         else
-          cspell --no-progress --show-context --no-must-find-files --config .cspell.json {{.CLI_ARGS}}
+          cspell --no-progress --show-context --no-must-find-files --config .cspell.json {{.CLI_ARGS}} || true
         fi
     preconditions:
       - sh: 'git diff --cached --name-only'
