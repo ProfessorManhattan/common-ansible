@@ -1,4 +1,4 @@
-## One-Line Install Method
+## Quick Start - Easy Install Method
 
 Looking to install {{ name }} without having to deal with [Ansible](https://www.ansible.com/)? Simply run the following command that correlates to your operating system:
 

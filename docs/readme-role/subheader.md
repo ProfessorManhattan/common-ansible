@@ -36,7 +36,7 @@
       <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
     </a>
     <a title="Linux build status on GitLab" href="{{ repository.gitlab }}{{ repository.location.commits.gitlab }}" target="_blank">
-      <img alt="Linux build status" src="{{ repository.group.ansible_roles }}/{{ role_name }}/badges/master/pipeline.svg">
+      <img alt="Linux build status" src="{{ repository.group.ansible_roles }}/{{ galaxy_info.role_name }}/badges/master/pipeline.svg">
     </a>
     <a title="Ansible Galaxy quality score (out of 5)" href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" target="_blank">
       <img alt="Ansible Galaxy quality score" src="https://img.shields.io/ansible/quality/{{ ansible_galaxy_project_id }}?logo=ansible&style={{ badge_style }}" />
