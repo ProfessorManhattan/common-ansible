@@ -344,7 +344,7 @@ tasks:
       - |
         DESCRIPTION_ALT="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${DESCRIPTION_LOWERCASE}."
         DESCRIPTION_SUBHEADER="An Ansible role that ${LOWERCASE_DESCRIPTION}"
-        jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO"
+        jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO" \
           '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     preconditions:
