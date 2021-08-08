@@ -185,7 +185,7 @@ tasks:
       # Prepare a new release
 
       This task performs the following tasks in order:
-      
+
       1. Ensures the project is up-to-date with the latest upstream changes
       2. Lints the project with all available linters
       3. Updates the version of the project in the `package.json` file
@@ -524,6 +524,9 @@ tasks:
 
   update-readme:
     deps:
+{{#if hbs.ansible}}
+      - :ansible:collection-dependencies-markdown
+{{/if}}
 {{#if hbs.role}}
       - :ansible:mod-ansible-autodoc
 {{/if}}

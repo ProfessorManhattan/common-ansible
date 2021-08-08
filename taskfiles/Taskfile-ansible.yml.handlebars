@@ -3,15 +3,22 @@ version: '3'
 
 tasks:
   ansibler-compatibility-chart:
+    env:
+      TMP:
+        sh: mktemp
     cmds:
-      - ansibler --generate-compatibility-chart
+      - ansibler --generate-compatibility-chart --molecule-results-dir molecule/.results --json-file .variables.json
+      - |
+        MATRIX_JSON=$(jq -r '.blueprint.compatibility_matrix' package.ansibler.json)
+        jq --arg matrix "$MATRIX_JSON" '.compatibility_matrix = ($matrix | fromjson)' .variables.json > "$TMP"
+        mv "$TMP" .variables.json
     sources:
-      - .molecule-results/*.txt
+      - molecule/.results/*.txt
 
 {{#if hbs.role}}
   ansibler-populate-platforms:
     cmds:
-      - ansibler --populate-platforms
+      - ansibler --populate-platforms --json-file .variables.json
     sources:
       - tasks/main.yml
       - .molecule-results/*.txt
@@ -19,7 +26,7 @@ tasks:
 {{/if}}
   ansibler-role-dependencies:
     cmds:
-      - ansibler --role-dependencies
+      - ansibler --role-dependencies --json-file .variables.json
     sources:
       - requirements.yml
 
@@ -29,6 +36,7 @@ tasks:
       - ansibler-populate-platforms
 {{/if}}
       - ansibler-role-dependencies
+      - collection-dependencies
 
   ansibler:
     deps:
@@ -41,6 +49,45 @@ tasks:
         msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
     status:
       - true
+
+  collection-dependencies:
+    deps:
+      - :software:jq
+      - :software:yq
+    env:
+      COLLECTIONS:
+        sh: yq eval -j '.collections' requirements.yml
+      TMP:
+        sh: mktemp
+    cmds:
+      - COLLECTION_DEPS=$(jq --arg collections "$COLLECTIONS" '.collection_dependencies = ($collections | fromjson)
+          | "<b><a href=\"" + .collection_dependencies[].source + "/" + (.collection_dependencies[].name
+          | split(".") | join("/")) + "\" title=\"" + .collection_dependencies[].name +
+          " collection on Ansible Galaxy\" target=\"blank\">" + .collection_dependencies[].name
+          + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]')
+          && jq --arg collections "$COLLECTION_DEPS" '.collection_dependencies = ($collections | fromjson)' .variables.json > "$TMP"
+      - mv "$TMP" .variables.json
+    sources:
+      - .variables.json
+      - requirements.yml
+
+  collection-dependencies-markdown:
+    deps:
+      - :software:jq
+    env:
+      COLLECTION_LENGTH:
+        sh: jq -r '.collection_dependencies | length' .variables.json
+    cmds:
+      - mkdir -p .autodoc
+      - |
+        if [ "$COLLECTION_LENGTH" != '0' ]; then
+          echo "### Galaxy Collections\n\nThis role is dependent on one or more Ansible Galaxy collections. The following is a list of names of the collections with links to their page on Ansible Galaxy:\n\n\{{collection_dependencies}}" > .autodoc/collection_dependencies.md
+        else
+          echo "" > .autodoc/collection_dependencies.md
+        fi
+    sources:
+      - .autodoc/collection_dependencies.md
+      - .variables.json
 
 {{#if hbs.playbook}}
   environment-prompt:
@@ -361,6 +408,11 @@ tasks:
       - '[[ "\{{.HAS_PROJECT_ID}}" == "true" ]]'
 
   update-variables:
+    deps:
+      - ansibler
+      - update-variables-descriptions
+
+  update-variables-descriptions:
     deps:
       - :software:jq
       - :software:yq

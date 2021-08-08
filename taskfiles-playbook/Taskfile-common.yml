@@ -500,6 +500,7 @@ tasks:
 
   update-readme:
     deps:
+      - :ansible:collection-dependencies-markdown
       - :npm:prettier
       - :npm:readme
     vars:
