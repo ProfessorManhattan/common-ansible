@@ -268,17 +268,16 @@ tasks:
         sh: echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]'
       DESCRIPTION_LOWERCASE:
         sh: echo "${DESCRIPTION_FIRST_LETTER}${DESCRIPTION:1}"
-      DESCRIPTION_SUBHEADER:
-        sh: echo "An Ansible role that ${LOWERCASE_DESCRIPTION}"
-      DESCRIPTION_ALT:
-        sh: echo "This repository is the home of an [Ansible](https://www.ansible.com/) role that ${DESCRIPTION_LOWERCASE}."
       GALAXY_INFO:
         sh: yq e -j '.galaxy_info' meta/main.yml
       TMP:
         sh: mktemp
     cmds:
-      - jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO"
-        '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
+      - |
+        DESCRIPTION_ALT="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${DESCRIPTION_LOWERCASE}."
+        DESCRIPTION_SUBHEADER="An Ansible role that ${LOWERCASE_DESCRIPTION}"
+        jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO"
+          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
       - mv "$TMP" .variables.json
     preconditions:
       - sh: 'type jq &> /dev/null'
