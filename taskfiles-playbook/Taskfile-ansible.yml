@@ -10,11 +10,12 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - ansibler --generate-compatibility-chart --molecule-results-dir molecule/.results --json-file .variables.json
       - |
-        MATRIX_JSON=$(jq -r '.blueprint.compatibility_matrix' package.ansibler.json)
-        jq --arg matrix "$MATRIX_JSON" '.compatibility_matrix = ($matrix | fromjson)' .variables.json > "$TMP"
-        mv "$TMP" .variables.json
+        if ansibler --generate-compatibility-chart --molecule-results-dir molecule/.results --json-file .variables.json; then
+          MATRIX_JSON=$(jq -r '.blueprint.compatibility_matrix' package.ansibler.json)
+          jq --arg matrix "$MATRIX_JSON" '.compatibility_matrix = ($matrix | fromjson)' .variables.json > "$TMP"
+          mv "$TMP" .variables.json
+        fi
     sources:
       - molecule/.results/*.txt
 
@@ -22,7 +23,7 @@ tasks:
     deps:
       - :common:python-requirements
     cmds:
-      - ansibler --role-dependencies --json-file .variables.json
+      - if ansibler --role-dependencies --json-file .variables.json; then true; fi
     sources:
       - requirements.yml
 
