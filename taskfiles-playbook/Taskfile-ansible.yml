@@ -3,6 +3,9 @@ version: '3'
 
 tasks:
   ansibler-compatibility-chart:
+    deps:
+      - :common:python-requirements
+      - :software:jq
     env:
       TMP:
         sh: mktemp
@@ -16,6 +19,8 @@ tasks:
       - molecule/.results/*.txt
 
   ansibler-role-dependencies:
+    deps:
+      - :common:python-requirements
     cmds:
       - ansibler --role-dependencies --json-file .variables.json
     sources:

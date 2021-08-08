@@ -3,6 +3,9 @@ version: '3'
 
 tasks:
   ansibler-compatibility-chart:
+    deps:
+      - :common:python-requirements
+      - :software:jq
     env:
       TMP:
         sh: mktemp
@@ -16,13 +19,19 @@ tasks:
       - molecule/.results/*.txt
 
   ansibler-populate-platforms:
+    deps:
+      - :common:python-requirements
+      - :npm:prettier
     cmds:
       - ansibler --populate-platforms --json-file .variables.json
+      - prettier --write meta/main.yml
     sources:
       - tasks/main.yml
       - .molecule-results/*.txt
 
   ansibler-role-dependencies:
+    deps:
+      - :common:python-requirements
     cmds:
       - ansibler --role-dependencies --json-file .variables.json
     sources:
