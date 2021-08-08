@@ -10,7 +10,7 @@
   <center><h4 style="color: #18c3d1;">A set of upstream repositories that contain files common to hundreds of our repositories</h4></center>
 </div>
 
-<a href="#-table-of-contents" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#table-of-contents)
 
 ## Table of Contents
 
@@ -22,19 +22,19 @@
 - [➤ Templated Files](#templated-files)
 - [➤ More Information](#more-information)
 
-<a href="#overview" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#overview)
 
 ## Overview
 
 All of the projects in the [Megabyte Labs](https://megabyte.space) eco-system inherit many of their files (e.g. configuration files) from a cascade of [common file repositories](https://gitlab.com/megabyte-labs/common). Each repository includes a bundle of shared files as a submodule. The submodule is located in the `.common/` folder in the root of each project. The submodule links to the common file repository that corresponds to the type of project (e.g. Ansible projects link their `.common/` folder to the [Ansible common files repository](https://gitlab.com/megabyte-labs/common/ansible)). Each of the common file repositories houses all the data that is required for a downstream repository but many of the files in the common file repository are actually inherited from a repository even further upstream.
 
-<a href="#documentation-partials-and-variable-inheritence" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#documentation-partials-and-variable-inheritence)
 
 ## Documentation Partials and Variable Inheritence
 
 We encourage you to read the [documentation for our documentation partials repositories](https://gitlab.com/megabyte-labs/documentation/shared/-/blob/master/README.md) first because those repositories are the highest upstream. The documentation for the documentation partials repositories already covers how the variables stored in `common.json`, `common.{{ project_subtype }}.json`, and `variables.json` inherit from each other so we will skip the details of that process in this documentation.
 
-<a href="#common-file-propagation-process" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#common-file-propagation-process)
 
 ## Common File Propagation Process
 
@@ -47,7 +47,7 @@ Many of the files in all our repositories are actually housed in upstream reposi
 5. After the common file repositories are done updating and linting, they propagate their changes to their final destination repositories. This is done by using a GitLab CI script that takes a comma-seperated CI variable (named `DOWNSTREAM_GROUP_IDS`) that includes the sub-groups group IDs that the common file repository is responsible for. The script takes the ID of each sub-group and uses the GitLab API to get the project ID of every project in that sub-group. With the project IDs in hand, it triggers the pipeline of each project using the GitLab API ([Link to propagation GitLab CI configuration](https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/blob/master/propagate/propagate-groups.gitlab-ci.yml)).
 6. Finally, when the downstream project's pipelines are triggered, they update themselves via a [GitLab CI update configuration](https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/blob/master/update/update-project.gitlab-ci.yml). This update process calls `bash .start.sh`. `.start.sh` is a file we keep in all our repositories which ensures the `.common/` submodule is up-to-date, ensures [Task](https://taskfile.dev/#/) is installed, and then uses Task to run the project configuration/generation/update process. Using Task allows us to run all parts of the project configuration/generation/update in parallel which makes the process quick. It also has some other nice features like dependency management and conditional script execution.
 
-<a href="#common-file-sub-types" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#common-file-sub-types)
 
 ## Common File Sub-Types
 
@@ -62,7 +62,7 @@ Common file sub-types will always have their own group in the [Megabyte Labs Git
 
 This is because the Dockerfile group contains four sub-groups. Notice how the group names correspond to the slugs of each of the sub-types group pages.
 
-<a href="#sub-type-specific-files" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#sub-type-specific-files)
 
 ## Sub-Type Specific Files
 
@@ -70,13 +70,13 @@ You might also notice that we have a `package.role.json.handlebars` and `package
 
 Note: When dealing with JSON files, the downstream repository's JSON will always take precedence. In other cases, however, upstream files will write over downstream files. The best way of figuring out which files take precedence is to read through the various CI links added to this README.
 
-<a href="#templated-files" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#templated-files)
 
 ## Templated Files
 
 Many of the files included in our upstream common file repositories end with the file extension `.handlebars`. A file with the `.handlebars` extension is compiled at some point using [Handlebars](https://handlebarsjs.com/). This lets us add conditional logic and inject variables into files.
 
-<a href="#more-information" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
+[![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#more-information)
 
 ## More Information
 
