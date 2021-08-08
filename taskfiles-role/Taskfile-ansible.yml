@@ -271,7 +271,7 @@ tasks:
       DESCRIPTION_SUBHEADER:
         sh: echo "An Ansible role that ${LOWERCASE_DESCRIPTION}"
       DESCRIPTION_ALT:
-        sh: echo "This repository is the home of an [Ansible](https://www.ansible.com/) role that ${LOWERCASE_DESCRIPTION}."
+        sh: echo "This repository is the home of an [Ansible](https://www.ansible.com/) role that ${DESCRIPTION_LOWERCASE}."
       GALAXY_INFO:
         sh: yq e -j '.galaxy_info' meta/main.yml
       TMP:
