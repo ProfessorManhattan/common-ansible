@@ -12,7 +12,7 @@
 
 <a href="#-table-of-contents" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
 
-## ➤ Table of Contents
+## Table of Contents
 
 - [➤ Overview](#overview)
 - [➤ Documentation Partials and Variable Inheritence](#documentation-partials-and-variable-inheritence)
