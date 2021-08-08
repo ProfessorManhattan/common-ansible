@@ -80,10 +80,12 @@ tasks:
     cmds:
       - mkdir -p .autodoc
       - |
-        if [ "$COLLECTION_LENGTH" != '0' ]; then
-          echo "### Galaxy Collections\n\nThis role is dependent on Ansible Galaxy collections. The following is a list of the names of the collections along with links to their page on Ansible Galaxy:\n\n\{{collection_dependencies}}" > .autodoc/collection_dependencies.md
-        else
+        if [ "$COLLECTION_LENGTH" == '0' ]; then
           echo "" > .autodoc/collection_dependencies.md
+        elif [ "$COLLECTION_LENGTH" == '1' ]; then
+          echo "### Galaxy Collection\n\nThis role is dependent on the following Ansible Galaxy collection:\n\n{{collection_dependencies}}" > .autodoc/collection_dependencies.md
+        else
+          echo "### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy collections. The collections along with a links to their source are listed below.\n\n\{{collection_dependencies}}" > .autodoc/collection_dependencies.md
         fi
     sources:
       - .autodoc/collection_dependencies.md
