@@ -1,63 +1,76 @@
 ---
 version: '3'
 
+vars:
+  CollectionDeps: collection_dependencies
+  MainTasksPath: tasks/main.yml
+  MetaPath: meta/main.yml
+  MoleculeResultsPath: molecule/.results
+  RequirementsPath: requirements.yml
+  RoleName: {{.GALAXY_NAMESPACE}}.{{.GALAXY_ROLE_NAME}}
+  VariablesPath: '.variables.json'
+
 tasks:
-  ansibler-compatibility-chart:
+  ansibler:
     deps:
-      - :common:python-requirements
+      - :common:python:requirements
+    cmds:
+      - task: ansibler:compatibility-chart
+      - task: ansibler:tasks:{{.REPOSITORY_SUBTYPE}}
+    preconditions:
+      - sh: 'type ansibler &> /dev/null'
+        msg: '`ansibler` is not installed globally. Install all the requirements by running `task requirements`.'
+
+  ansibler:compatibility-chart:
+    deps:
+      - :common:python:requirements
       - :software:jq
     env:
       TMP:
         sh: mktemp
     cmds:
-      - |
-        if ansibler --generate-compatibility-chart --molecule-results-dir molecule/.results --json-file .variables.json; then
-          MATRIX_JSON=$(jq -r '.blueprint.compatibility_matrix' package.ansibler.json)
-          jq --arg matrix "$MATRIX_JSON" '.compatibility_matrix = ($matrix | fromjson)' .variables.json > "$TMP"
-          mv "$TMP" .variables.json
-        fi
+      - ansibler --generate-compatibility-chart --molecule-results-dir '{{.MoleculeResultsPath}}' --json-file '{{.VariablesPath}}'
+    log:
+      error: 'Failed to generate the compatibility chart JSON using data from `{{.MoleculeResultsPath}}/`'
+      success: 'Generated compatibility chart JSON and injected it into the `{{.VariablesPath}}` file'
     sources:
-      - molecule/.results/*.txt
+      - '{{.MoleculeResultsPath}}/*'
 
-{{#if hbs.role}}
-  ansibler-populate-platforms:
+  ansibler:populate-platforms:
     deps:
-      - :common:python-requirements
+      - :common:requirements:python
       - :npm:prettier
     cmds:
-      - if ansibler --populate-platforms --json-file .variables.json; then prettier --write meta/main.yml; fi
+      - ansibler --populate-platforms --json-file '{{.VariablesPath}}'
+      - prettier --write '{{.MetaPath}}'
+    log:
+      error: 'Error populating the `{{.MetaPath}}` platforms variable with `ansibler.'
+      success: 'Populated the platforms variable in `{{.MetaPath}}` using data from `{{.MoleculeResultsPath}}`'
     sources:
-      - tasks/main.yml
-      - .molecule-results/*.txt
+      - '{{.MainTasksPath}}'
+      - '{{.MoleculeResultsPath}}/*'
 
-{{/if}}
-  ansibler-role-dependencies:
+  ansibler:role-dependencies:
     deps:
-      - :common:python-requirements
+      - :common:requirements:python
     cmds:
-      - if ansibler --role-dependencies --json-file .variables.json; then true; fi
+      - ansibler --role-dependencies --json-file '{{.VariablesPath}}'
+    log:
+      error: 'Failed to acquire the `role_dependencies` JSON and inject it into `{{.VariablesPath}}`'
+      success: 'Populated the `role_dependencies` variable in `{{.VariablesPath}}`'
     sources:
-      - requirements.yml
+      - '{{.RequirementsPath}}'
 
-  ansibler-tasks:
+  ansibler:tasks:playbook:
     deps:
-{{#if hbs.role}}
-      - ansibler-populate-platforms
-{{/if}}
-      - ansibler-role-dependencies
+      - ansibler:role-dependencies
       - collection-dependencies
 
-  ansibler:
+  ansibler:tasks:role:
     deps:
-      - :common:python-requirements
-    cmds:
-      - task: ansibler-compatibility-chart
-      - task: ansibler-tasks
-    preconditions:
-      - sh: "type ansibler &> /dev/null"
-        msg: "`ansibler` is not installed globally. Install all the requirements by running `task common:requirements`."
-    status:
-      - true
+      - ansibler:populate-platforms
+      - ansibler:role-dependencies
+      - collection-dependencies
 
   collection-dependencies:
     deps:
@@ -65,99 +78,113 @@ tasks:
       - :software:yq
     env:
       COLLECTIONS:
-        sh: jq --arg collections "$(yq eval -j '.collections' requirements.yml)" '.collection_dependencies = ($collections | fromjson) |
-          .collection_dependencies[] | "<b<a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
-          " collection on Ansible Galaxy\" target=\"blank\">" + .name + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") |
+        sh: jq --arg collections "$(yq eval -j '.collections' {{.RequirementsPath}})" '.{{.CollectionDeps}} = ($collections | fromjson) |
+          .{{.CollectionDeps}}[] | "<b<a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
+          " collection on Ansible Galaxy\" target=\"blank\">" + .name + "</a></b>"' -r  {{.VariablesPath}} | jq --raw-input --slurp 'split("\n") |
           .[0:((. | length) - 1)]'
       TMP:
         sh: mktemp
     cmds:
-      - jq --arg collections "$COLLECTIONS" '.collection_dependencies = ($collections | fromjson)' .variables.json > "$TMP"
-      - mv "$TMP" .variables.json
+      - jq --arg collections "$COLLECTIONS" '.{{.CollectionDeps}} = ($collections | fromjson)' '{{.VariablesPath}}' > "$TMP"
+      - mv "$TMP" '{{.VariablesPath}}'
+    log:
+      error: 'Failed to populate the `{{.CollectionDeps}}` variable in `{{.VariablesPath}}`'
+      success: 'Populated the `{{.CollectionDeps}}` variable in `{{.VariablesPath}}`'
     sources:
-      - .variables.json
-      - requirements.yml
+      - '{{.VariablesPath}}'
+      - '{{.RequirementsPath}}'
 
-  collection-dependencies-markdown:
+  collection-dependencies:markdown:
     deps:
       - :software:jq
     vars:
-      MULTIPLE_COLLECTIONS_TEXT: ### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy
-        collections. The collections along with a links to their source are listed below.\n\n\{{"{{"}}collection_dependencies\{{"}}"}}
-      SINGLE_COLLECTION_TEXT: ### Galaxy Collection\n\nThis role is dependent on the following Ansible Galaxy
-        collection:\n\n\{{"{{"}}collection_dependencies\{{"}}"}}
-    env:
-      COLLECTION_LENGTH:
-        sh: jq -r '.collection_dependencies | length' .variables.json
+      CollectionLength:
+        sh: jq -r '.{{.CollectionDeps}} | length' '{{.VariablesPath}}'
+      FilePath: .autodoc/{{.CollectionDeps}}.md
+      MultipleCollectionText: '### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy collections.
+        The collections along with a links to their source are listed below.\n\n\{{"{{"}}{{.CollectionDeps}}{{"}}"}}'
+      SingleCollectionText: '### Galaxy Collection\n\nThis role is dependent on the following Ansible Galaxy
+        collection:\n\n{{"{{"}}{{.CollectionDeps}}{{"}}"}}'
     cmds:
-      - mkdir -p .autodoc
-      - |
-        if [ "$COLLECTION_LENGTH" == '0' ]; then
-          echo "" > .autodoc/collection_dependencies.md
-        elif [ "$COLLECTION_LENGTH" == '1' ]; then
-          echo "\{{.SINGLE_COLLECTION_TEXT}}" > .autodoc/collection_dependencies.md
-        else
-          echo "\{{.MULTIPLE_COLLECTIONS_TEXT}}" > .autodoc/collection_dependencies.md
-        fi
+      - mkdir -p '{{dir .FilePath}}'
+      - {{if (eq .CollectionLength 0)}}""
+          echo '' > {{.FilePath}}
+        {{else if (eq .CollectionLength 1)}}
+          echo '{{.SingleCollectionText}}' > '{{.FilePath}}'
+        {{else}}
+          echo '{{.MultipleCollectionText}}' > '{{.FilePath}}'
+        {{end}}
+    log:
+      error: 'Failed to create `{{.FilePath}}`'
+      success: 'Generated `{{.FilePath}}`'
     sources:
-      - .autodoc/collection_dependencies.md
-      - .variables.json
+      - '{{.FilePath}}'
+      - '{{.VariablesPath}}'
 
-{{#if hbs.playbook}}
-  environment-prompt:
-    deps:
-      - :common:nodejs-dependencies
-    env:
-      ENVIRONMENT:
-        sh: node .common/scripts/prompts/environment.js
+  playbook:environment:
     cmds:
-        - |
-          if [ ! -z "$ENVIRONMENT" ]; then
-            for ITEM in "environments/$ENVIRONMENT/*"; do
-              if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-                true info "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
-              else
-                rm -f $ITEM
-                ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
-              fi
-            done
-          fi
-    preconditions:
-      - sh: "test -d node_modules"
-        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
-    status:
-      - '[[ -z "\{{.CLI_ARGS}}" ]]'
+      - task: playbook:environment:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
 
-  environment:
-    desc: Prompts for which environment to use and then symlinks to it
-    summary: |
-      # Switch environments using an interactive dialogue
+#  playbook:environment:prompt:
+#    deps:
+#      - :common:nodejs-dependencies
+#    env:
+#      ENVIRONMENT:
+#        sh: node .common/scripts/prompts/environment.js
+#    cmds:
+#        - |
+#          if [ ! -z "$ENVIRONMENT" ]; then
+#            for ITEM in "environments/$ENVIRONMENT/*"; do
+#              if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+#                true info "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
+#              else
+#                rm -f $ITEM
+#                ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
+#              fi
+#            done
+#          fi
+#    preconditions:
+#      - sh: "test -d node_modules"
+#        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:nodejs-dependencies`."
+#    status:
+#      - '[[ -z "\{{.CLI_ARGS}}" ]]'
 
-      Ansible does not really provide any great ways to switch between environments (or sets of
-      `host_vars/`, `group_vars/` etc.). If you place all the files and folders you wish to constitute
-      as an environment inside a folder named as the name of the environment then you can use
-      this task to handle the symlinking and switching between environments.
+#  playbook:environment:cli:
+#    desc: Prompts for which environment to use and then symlinks to it
+#    summary: |
+#      # Switch environments using an interactive dialogue
+#
+#      Ansible does not really provide any great ways to switch between environments (or sets of
+#      `host_vars/`, `group_vars/` etc.). If you place all the files and folders you wish to constitute
+#      as an environment inside a folder named as the name of the environment then you can use
+#      this task to handle the symlinking and switching between environments.
+#
+#      **Example of opening the interactive prompt:**
+#      `task ansible:environment`
+#
+#      **You can directly switch enironments to `environments/prod/` by running:**
+#      `task ansible:environment -- prod`
+#    cmds:
+#      - {{if .CLI_ARGS}}
+#          for ENV in environments/{{.CLI_ARGS}}/*; do
+#            if [ ! -d "$ENV" ] && [ ! -f "$ENV" ]; then
+#              rm -f "$ENV"
+#              ln -s "./environments/{{.CLI_ARGS}}/$ENV" "$ENV"
+#            else
+#              true warn ""
+#      - |
+#        if [ ! -z "\{{.CLI_ARGS}}" ]; then
+#          for ITEM in environments/\{{.CLI_ARGS}}/*; do
+#            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+#              true info "Skipping environments/\{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
+#            else
+#              rm -f $ITEM
+#              ln -s "./environments/\{{.CLI_ARGS}}/$ITEM" "$ITEM"
+#            fi
+#          done
+#        fi
 
-      **Example of opening the interactive prompt:**
-      `task ansible:environment`
-
-      **You can directly switch enironments to `environments/prod/` by running:**
-      `task ansible:environment -- prod`
-    cmds:
-      - |
-        if [ ! -z "\{{.CLI_ARGS}}" ]; then
-          for ITEM in environments/\{{.CLI_ARGS}}/*; do
-            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              true info "Skipping environments/\{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
-            else
-              rm -f $ITEM
-              ln -s "./environments/\{{.CLI_ARGS}}/$ITEM" "$ITEM"
-            fi
-          done
-        fi
-      - task: environment-prompt
-
-  find-missing-files:
+  playbook:find-missing:
     desc: Find roles that are missing files
     summary: |
       # Find roles that are missing any given file
@@ -166,27 +193,35 @@ tasks:
       for the presence of a file that you pass in through the CLI.
 
       **Example usage:**
-      `task find-missing-files -- logo.png`
+      `task find-missing -- logo.png`
 
       The example above will look through all the folders two levels deep (e.g. `./roles/tools/nmap`,
       `./roles/system/snapd`) in the roles folder and display any roles that are missing the file.
     cmds:
-      - find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/\{{.CLI_ARGS}}" ';' -print
+      - |
+        FILES=$(find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print)
+        true log info "Found "$(echo "$FILES" | wc -l | xargs)" roles missing {{.CLI_ARGS}}:"
+        echo "$FILES"
+    log:
+      error: 'Failed to search for the file named `{{.CLI_ARGS}}`'
     preconditions:
-      - sh: "test -d roles"
-        msg: "The roles folder is missing. Is the project set up right?"
+      - sh: 'test -d roles'
+        msg: 'The `roles/` folder is missing. Is the project set up right?'
 
-{{/if}}
-{{#if hbs.role}}
-  mod-ansible-autodoc-variables:
+  mod-ansible-autodoc:variables:
     env:
       ROLE_VARIABLES:
         sh: jq -r '.role_variables' ansible_variables.json
       TMP:
         sh: mktemp
     cmds:
-      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = ($vars | fromjson)' .variables.json > "$TMP"
-      - mv "$TMP" .variables.json
+      - jq --arg vars "$ROLE_VARIABLES" '.role_variables = ($vars | fromjson)' '{{.VariablesPath}}' > "$TMP"
+      - mv "$TMP" '{{.VariablesPath}}'
+    log:
+      error: 'Failed to inject `{{.VariablesPath}}` with the `role_variables` stored in `ansible_variables.json`'
+      success: 'Injected `{{.VariablesPath}}` with the `role_variables` from `ansible_variables.json`'
+    sources:
+      - ansible_variables.json
 
   mod-ansible-autodoc:
     deps:
@@ -194,61 +229,67 @@ tasks:
       - :software:jq
     env:
       ACTIONS_DESCRIPTION:
-        sh: jq -r '.autodoc_actions_description' .variables.json
+        sh: jq -r '.autodoc_actions_description' '{{.VariablesPath}}'
       TAGS_DESCRIPTION:
-        sh: jq -r '.autodoc_tags_description' .variables.json
+        sh: jq -r '.autodoc_tags_description' '{{.VariablesPath}}'
       TODO_DESCRIPTION:
-        sh: jq -r '.autodoc_todo_description' .variables.json
+        sh: jq -r '.autodoc_todo_description' '{{.VariablesPath}}'
       VARIABLES_DESCRIPTION:
-        sh: jq -r '.autodoc_variables_description' .variables.json
+        sh: jq -r '.autodoc_variables_description' '{{.VariablesPath}}'
     cmds:
-      - mod-ansible-autodoc --actions-title "## Features" --actions-description "$ACTIONS_DESCRIPTION"
-          --tags-title "### Tags" --tags-description "$TAGS_DESCRIPTION" --todo-title "### TODO"
-          --todo-description "$TODO_DESCRIPTION" --variables-title "## Variables" --variables-description
+      - mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
+          --tags-title '### Tags' --tags-description "$TAGS_DESCRIPTION" --todo-title '### TODO'
+          --todo-description '$TODO_DESCRIPTION' --variables-title '## Variables' --variables-description
           "$VARIABLES_DESCRIPTION"
-      - task: mod-ansible-autodoc-variables
+      - task: mod-ansible-autodoc:variables
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
+    log:
+      error: 'Error running `mod-ansible-autodoc`'
+      success 'Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder'
     sources:
-      - "tasks**/*.yml"
-      - ".autodoc/*"
-      - ".variables.json"
+      - '{{.VariablesPath}}'
+      - '.autodoc/*'
+      - tasks/**/*.yml
     preconditions:
-      - sh: "type mod-ansible-autodoc &> /dev/null"
-        msg: "The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
+      - sh: 'type mod-ansible-autodoc &> /dev/null'
+        msg: The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
           by running `task common:requirements`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt`
-          file."
+          file.
 
-  populate-collection:
+  populate:collection:
     deps:
       - :software:yq
     env:
       COLLECTIONS:
-        sh: yq eval '.collections' requirements.yml
+        sh: yq eval '.collections' '{{.RequirementsPath}}'
       REFERENCES:
-        sh: grep -Ril "\{{.KEY}}" ./tasks || true
+        sh: grep -Ril '{{.KEY}}' ./tasks || true
     cmds:
       - |
-        if [[ ! "$COLLECTIONS" =~ "\{{.KEY}}" ]] && [ "$REFERENCES" ]; then
-          yq eval -i -P '.collections = .collections + \{{.VAL}}' requirements.yml
+        if [[ ! "$COLLECTIONS" =~ '{{.KEY}}' ]] && [ "$REFERENCES" ]; then
+          yq eval -i -P '.collections = .collections + {{.VAL}}' '{{.RequirementsPath}}'
         fi
       - task: :fix:yml-dashes
         vars:
-          CLI_ARGS: requirements.yml
+          CLI_ARGS: '{{.RequirementsPath}}'
+    log:
+      error: 'Failed to populate and/or format the `{{.RequirementsPath}}` with the `{{.KEY}}` collection'
+      success: 'Ensured that `{{.RequirementsPath}}` includes the `{{.KEY}}` collection'
     status:
-      - '[[ "$COLLECTIONS" =~ "\{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
+      - '[[ "$COLLECTIONS" =~ "{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
 
-  populate-dependencies:
-    desc: Attempt to automatically populate meta/main.yml and requirements.yml
+  populate:dependencies:
+    desc: Attempt to automatically populate `{{.MetaPath}}` and `{{.RequirementsPath}}`
     summary: |
-      # Automatically populate meta/main.yml and requirements.yml
+      # Automatically populate `{{.MetaPath}}` and `{{.RequirementsPath}}`
 
       A role can sometimes have dependencies that need to be installed prior to being run (e.g. most
       roles in Ansible >2.9 need the `community.general` collection installed). Roles also sometimes
       need other roles to run before they are run (e.g. a task that installs a Node.js package needs
       the Node.js installer to run first). This task will scan for common dependencies by doing a text
       search for a handful of common strings. It will then attempt to automatically populate
-      `meta/main.yml` and the `requirements.yml`.
+      `{{.MetaPath}}` and the `{{.RequirementsPath}}`.
 
       Items it attempts to auto-populate for:
 
@@ -259,157 +300,168 @@ tasks:
       * community.general.npm
       * community.general.snap
     cmds:
-      - task: populate-collection
+      - task: populate:collection
         vars:
           KEY: chocolatey.chocolatey
           VAL: '{"name": "chocolatey.chocolatey", "source": "https://galaxy.ansible.com"}'
-      - task: populate-collection
+      - task: populate:collection
         vars:
           KEY: community.general
           VAL: '{"name": "community.general", "source": "https://galaxy.ansible.com"}'
-      - task: populate-dependency
+      - task: populate:dependency
         vars:
           KEY: community.general.homebrew
           ROLE: professormanhattan.homebrew
           VAL: '{"role": "professormanhattan.homebrew", "when": "ansible_os_family == \"Darwin\""}'
-      - task: populate-dependency
+      - task: populate:dependency
         vars:
           KEY: community.general.npm
           ROLE: professormanhattan.nodejs
           VAL: '{"role": "professormanhattan.nodejs"}'
-      - task: populate-dependency
+      - task: populate:dependency
         vars:
           KEY: community.general.gem
           ROLE: professormanhattan.ruby
           VAL: '{"role": "professormanhattan.ruby"}'
-      - task: populate-dependency
+      - task: populate:dependency
         vars:
           KEY: community.general.snap
           ROLE: professormanhattan.snapd
           VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
       - task: sync-requirements
     sources:
-      - meta/main.yml
-      - requirements.yml
+      - '{{.MetaPath}}'
+      - '{{.RequirementsPath}}'
       - tasks/**/*.yml
 
-  populate-dependency:
+  populate:dependency:
     deps:
       - :software:yq
     env:
       DEPENDENCIES:
-        sh: yq eval '.dependencies' meta/main.yml
+        sh: yq eval '.dependencies' '{{.MetaPath}}'
       REFERENCES:
-        sh: grep -Ril "\{{.KEY}}" ./tasks || true
+        sh: grep -Ril '{{.KEY}}' ./tasks || true
     cmds:
       - |
-        if [[ ! "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] && [ "$REFERENCES" ]; then
-          yq eval -i -P '.dependencies = .dependencies + \{{.VAL}}' meta/main.yml
+        if [[ ! "$DEPENDENCIES" =~ '{{.ROLE}}' ]] && [ "$REFERENCES" ]; then
+          yq eval -i -P '.dependencies = .dependencies + {{.VAL}}' '{{.MetaPath}}'
         fi
       - task: :fix:yml-dashes
         vars:
-          CLI_ARGS: meta/main.yml
+          CLI_ARGS: {{.MetaPath}}
+    log:
+      error: 'Failed to ensure that `{{.ROLE}}` is included in the `{{.MetaPath}}` file\'s `dependencies`'
+      success: 'Ensured `{{.ROLE}}` is included in the `{{.MetaPath}}` file's `dependencies`'
     status:
-      - '[[ "$DEPENDENCIES" =~ "\{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
+      - '[[ "$DEPENDENCIES" =~ "{{.ROLE}}" ]] || [ ! "$REFERENCES" ]'
 
-  populate-meta:
+  populate:meta:
     deps:
       - :npm:prettier-package-json
       - :software:jq
     vars:
-      DESCRIPTION:
-        sh: yq eval '.galaxy_info.description' meta/main.yml
+      Description:
+        sh: yq eval '.galaxy_info.description' '{{.MetaPath}}'
+      ReferenceLink: Take a look at an [example meta/main.yml
+        file](https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/{{.MetaPath}}).
     env:
       TMP:
         sh: mktemp
     cmds:
-      - jq --arg a "\{{.DESCRIPTION}}" --arg b "\{{.GALAXY_ROLE_NAME}}" '.blueprint.description = $a | .blueprint.slug = $b' package.json > "$TMP"
+      - jq --arg a '{{.Description}}' --arg b '{{.GALAXY_ROLE_NAME}}' '.blueprint.description = $a | .blueprint.slug = $b' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write package.json
+    log:
+      error: 'Failed to update the `blueprint` variable in `package.json` with meta information'
+      success: 'Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information'
     preconditions:
-      - sh: test -f meta/main.yml
-        msg: "The 'meta/main.yml' file is missing. A properly filled out 'meta/main.yml' file is required for the
-          update process. See https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/meta/main.yml
-          for a good example of one."
-      - sh: '[[ "\{{.DESCRIPTION}}" != "null" ]]'
-        msg: "The 'meta/main.yml' file has a null value for the 'galaxy_info.description' key. Ensure the description
-          is populated in 'meta/main.yml'. See https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/meta/main.yml
-          for an example."
-      - sh: '[[ "\{{.GALAXY_ROLE_NAME}}" != "null" ]]'
-        msg: "The 'meta/main.yml' file has a null value for the 'galaxy_info.role_name' key. Ensure the role name is
-          populated in 'meta/main.yml'. See https://gitlab.com/megabyte-labs/ansible-roles/androidstudio/-/blob/master/meta/main.yml
-          for an example."
+      - sh: 'test -f {{.MetaPath}}'
+        msg: The `{{.MetaPath}}` file is missing. A properly filled out `{{.MetaPath}}` file is required for the
+          update process. {{.ReferenceLink}}
+      - sh: '[[ "{{.Description}}" != "null" ]]'
+        msg: The `{{.MetaPath}}` file has a null value for the `galaxy_info.description` key. Ensure the description
+          is populated in `{{.MetaPath}}`. {{.ReferenceLink}}
+      - sh: '[[ "{{.GALAXY_ROLE_NAME}}" != "null" ]]'
+        msg: The `{{.MetaPath}}` file has a null value for the `galaxy_info.role_name` key. Ensure the role name is
+          populated in `{{.MetaPath}}`. {{.ReferenceLink}}
 
-{{/if}}
-{{#if hbs.playbook}}
-  symlink:
+  symlink:playbook:
     desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
     summary: |
-      # Symlink each role to `~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.role_name`
+      # Symlink each role to `~/.ansible/roles/{{.GALAXY_NAMESPACE}}.{{'{{'}}role_name{{'}}'}}`
 
       In the playbook, roles are sometimes referred to by their folder name and in other cases
-      they are referred to with their namespace prepended (e.g. `\{{.GALAXY_NAMESPACE}}.role_name`).
+      they are referred to with their namespace prepended (e.g. `{{.GALAXY_NAMESPACE}}.{{'{{'}}role_name{{'}}'}}`).
       This can cause issues so, in order for everything to work, each folder needs to be symlinked
       to `~/.ansible/roles` with the namespace prepended.
     cmds:
       - |
         find ./roles -mindepth 2 -maxdepth 2 -type d -print0 | while read -d $'\0' ROLE_PATH; do;
-          PATH_BASENAME=$(basename "$ROLE_PATH");
-          if [ ! -d "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.$PATH_BASENAME" ]; then
-            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.$PATH_BASENAME"
+          ROLE_FOLDER="{{.GALAXY_NAMESPACE}}$(basename "$ROLE_PATH")";
+          if [ ! -d "~/.ansible/roles/$ROLE_FOLDER" ]; then
+            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/$ROLE_FOLDER"
           fi
         done
+    log:
+      error: 'Encountered an error while symlinking the roles to `~/.ansible/roles`'
+      success: 'Successfully symlinked the roles in this playbook to `~/.ansible/roles`'
     preconditions:
-      - sh: "test -d roles"
-        msg: "The roles folder is missing. Is the project set up right?"
-{{/if}}
-{{#if hbs.role}}
-  symlink:
-    desc: Symlink the current role to ~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}
+      - sh: 'test -d roles'
+        msg: 'The roles folder is missing. Is the project set up right?'
+
+  symlink:role:
+    desc: Symlink the current role to ~/.ansible/roles/{{.RoleName}}
     summary: |
-      # Symlink this role to `~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}`
+      # Symlink this role to `~/.ansible/roles/{{.RoleName}}`
 
       Roles are sometimes referred to by their folder name (which ideally is also the role_name in
-      the meta/main.yml file) and they are sometimes referred to by their Ansible Galaxy name which
-      has the namespace prepended (e.g. `\{{.GALAXY_NAMESPACE}}.role_name`). In order to make sure Ansible
+      the `{{.MetaPath}}` file) and they are sometimes referred to by their Ansible Galaxy name which
+      has the namespace prepended (e.g. `{{.RoleName}}`). In order to make sure Ansible
       can find the role in both cases, a symlink in `~/.ansible/roles` that points to the folder needs
       to be created.
     vars:
-      SYMLINK:
-        sh: readlink "$HOME/.ansible/roles/professormanhattan.androidstudio"
+      Symlink:
+        sh: readlink "$HOME/.ansible/roles/{{.RoleName}}"
     cmds:
       - mkdir -p "$HOME/.ansible/roles"
-      - rm -f "$HOME/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}"
-      - ln -s "$PWD" "~/.ansible/roles/\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}"
+      - rm -f "$HOME/.ansible/roles/{{.RoleName}}"
+      - ln -s "$PWD" '~/.ansible/roles/{{.RoleName}}'
+    log:
+      error: 'Failed to symlink `{{.RoleName}}` to `~/.ansible/roles/{{.RoleName}}`'
+      success: 'Symlinked `{{.RoleName}}` to `~/.ansible/roles/{{.RoleName}}`'
     status:
-      - test -d "$HOME/.ansible/roles/professormanhattan.androidstudio"
-      - '[ "\{{.SYMLINK}}" == "$PWD" ]'
+      - test -d "$HOME/.ansible/roles/{{.RoleName}}"
+      - '[[ "{{.Symlink}}" == "$PWD" ]]'
 
-  sync-requirements:
+  sync:requirements:
     deps:
       - :software:jq
       - :software:yq
     env:
       ROLES:
-        sh: yq eval '.roles' requirements.yml
+        sh: yq eval '.roles' '{{.RequirementsPath}}'
     cmds:
       - |
-        yq eval -j '.dependencies' meta/main.yml | jq -rc '.[] .role' | while read ROLE_NAME; do
+        yq eval -j '.dependencies' '{{.MetaPath}}' | jq -rc '.[] .role' | while read ROLE_NAME; do
           if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
-            ROLE_NAME="$ROLE_NAME" yq eval -i -P '.roles = .roles + {"name": env(ROLE_NAME)}' requirements.yml
+            yq eval -i -P '.roles = .roles + {"name": '"$ROLE_NAME"'}' '{{.RequirementsPath}}'
           fi
         done
       - task: :fix:yml-dashes
         vars:
-          CLI_ARGS: requirements.yml
+          CLI_ARGS: {{.RequirementsPath}}
+    log:
+      error: 'Failed to sync requirements from `{{.MetaPath}}` to `{{.RequirementsPath}}`'
+      success: 'Successfully synchronized requirements from `{{.MetaPath}}` to `{{.RequirementsPath}}`'
 
-  update-galaxy-id:
+  update:galaxy-id:
     vars:
       HAS_PROJECT_ID:
         sh: jq -e 'has("blueprint.ansible_galaxy_project_id")' package.json || true
     env:
       PROJECT_ID:
-        sh: '(ansible-galaxy info "\{{.GALAXY_NAMESPACE}}.\{{.GALAXY_ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}) 2> /dev/null || true'
+        sh: '(ansible-galaxy info "{{.RoleName}}" | grep -E "id: [0-9]" | awk {"print $2"}) 2> /dev/null || true'
       TMP:
         sh: mktemp
     cmds:
@@ -418,49 +470,51 @@ tasks:
           jq --arg a "${PROJECT_ID}" '.blueprint.ansible_galaxy_project_id = $a' package.json > "$TMP"
           mv "$TMP" package.json
         fi
+    log:
+      error: 'Failed to acquire and inject the `.blueprint.ansible_galaxy_project_id` value into `package.json`'
+      success: 'Ensured that the `.blueprint.ansible_galaxy_project_id` variable in `package.json` is accurate'
     status:
-      - '[[ "\{{.HAS_PROJECT_ID}}" == "true" ]]'
+      - '[[ "{{.HAS_PROJECT_ID}}" == "true" ]]'
 
-  update-variables:
+  update:variables:
     deps:
       - ansibler
-      - update-variables-descriptions
+      - update:variables:descriptions
 
-  update-variables-descriptions:
+  update:variables:descriptions:
     deps:
       - :software:jq
       - :software:yq
+    var:
+      AltPrefix: This repository is the home of an [Ansible](https://www.ansible.com/) role that
+      Description:
+        sh: yq e '.galaxy_info.description' '{{.MetaPath}}'
+      DescriptionLower: '{{lower (trunc 1 .Description)}}{{substr 1 (len .Description) .Description}}'
+      SubheaderPrefix: An Ansible role that
     env:
-      DESCRIPTION:
-        sh: yq e '.galaxy_info.description' meta/main.yml
-      DESCRIPTION_FIRST_LETTER:
-        sh: echo ${DESCRIPTION:0:1} | tr '[A-Z]' '[a-z]'
-      DESCRIPTION_LOWERCASE:
-        sh: echo "${DESCRIPTION_FIRST_LETTER}${DESCRIPTION:1}"
+      ALT: '{{.AltPrefix}} {{.DescriptionLower}}'
       GALAXY_INFO:
-        sh: yq e -j '.galaxy_info' meta/main.yml
+        sh: yq e -j '.galaxy_info' '{{.MetaPath}}'
+      SUBHEADER: '{{.SubheaderPrefix}} {{.DescriptionLower}}'
       TMP:
         sh: mktemp
     cmds:
-      - |
-        DESCRIPTION_ALT="This repository is the home of an [Ansible](https://www.ansible.com/) role that ${DESCRIPTION_LOWERCASE}."
-        DESCRIPTION_SUBHEADER="An Ansible role that ${LOWERCASE_DESCRIPTION}"
-        jq -S --arg subheader "$DESCRIPTION_SUBHEADER" --arg alt "$DESCRIPTION_ALT" --arg galaxyinfo "$GALAXY_INFO" \
-          '.subheader_description = $subheader | .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson)' .variables.json > "$TMP"
-      - mv "$TMP" .variables.json
+      - jq -S --arg alt "$ALT" --arg galaxyinfo "$GALAXY_INFO" --arg subheader "$SUBHEADER"
+          .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson) | '.subheader_description = $subheader' '{{.VariablesPath}}' > "$TMP"
+    log:
+      error: 'Failed to inject `{{.VariablesPath}}` with alternative descriptions'
+      success: 'Ensured `{{.VariablesPath}}` has alternative descriptions'
     preconditions:
-      - sh: "type jq &> /dev/null"
-        msg: "jq is not installed! You can install it by running `task software:jq`."
-      - sh: "type yq &> /dev/null"
-        msg: "yq is not installed! You can install it by running `task software:yq`."
-      - sh: "test -f meta/main.yml"
-        msg: "The `meta/main.yml` file is missing. A properly populated `meta/main.yml` is required. You can find an
-          example of one at https://github.com/ProfessorManhattan/ansible-snapd."
-      - sh: test -f .variables.json
-        msg: "The `.variables.json` file is missing!"
+      - sh: 'type jq &> /dev/null'
+        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+      - sh: 'type yq &> /dev/null'
+        msg: 'yq is not installed! You can install it by running `task software:yq`.'
+      - sh: 'test -f "{{.MetaPath}}"'
+        msg: 'The `{{.MetaPath}}` file is missing. A properly populated `{{.MetaPath}}` is required. You can find an
+          example of one at https://github.com/ProfessorManhattan/ansible-snapd.'
+      - sh: 'test -f "{{.VariablesPath}}"'
+        msg: 'The `{{.VariablesPath}}` file is missing!'
     sources:
-      - ".common/variables.\{{.REPOSITORY_SUBTYPE}}.json"
-      - meta/main.yml
+      - '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
+      - '{{.MetaPath}}'
       - package.json
-
-{{/if}}

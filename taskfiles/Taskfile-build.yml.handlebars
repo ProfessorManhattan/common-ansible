@@ -1,15 +1,12 @@
 ---
 version: '3'
 
-{{#if hbs.packer}}
 vars:
   TEMPLATE_FILE:
-    sh: if [ ! -z "\{{.CLI_ARGS}}" ]; then echo "\{{.CLI_ARGS}}"; else echo template.json; fi
-{{/if}}
+    sh: if [ ! -z "\{{.CLI_ARGS}}" ]; then echo "\{{.CLI_ARGS}}"; else echo "template.json"; fi
 
 tasks:
-{{#if hbs.packer}}
-  all:
+  packer:all:
     deps:
       - :software:kvm
       - :software:packer
@@ -26,7 +23,7 @@ tasks:
       the template file. The template file may include instructions for the following
       virtualization platforms (and it is possible that it includes other ones that are
       not listed below):
-      
+
       * Hyper-V
       * KVM
       * Parallels
@@ -45,21 +42,15 @@ tasks:
       - task: prepare-packer
       - packer build \{{.TEMPLATE_FILE}}
 
-{{/if}}
-{{#if hbs.docker}}
-  build:
+  docker:all:
     cmds:
       - task: normal
       - task: slim
 
-{{/if}}
-{{#if hbs.npm}}
-  build:
+  npm:all:
     deps: [main, module]
 
-{{/if}}
-{{#if hbs.npm}}
-  clean:
+  npm:clean:
     deps:
       - :software:rsync
     desc: Remove temporary folders that might conflicts with builds
@@ -77,9 +68,7 @@ tasks:
           fi
         done
 
-{{/if}}
-{{#if packer}}
-  kvm:
+  packer:kvm:
     deps:
       - :software:kvm
       - :software:packer
@@ -103,28 +92,22 @@ tasks:
       - task: prepare-packer
       - packer build -only=qemu \{{.TEMPLATE_FILE}}
 
-{{/if}}
-{{#if hbs.npm}}
-  main:
+  npm:main:
     desc: Build `main` using `tsconfig.json`
     cmds:
       - tsc -p tsconfig.json
 
-  module:
+  npm:module:
     desc: Build `module` using `tsconfig.module.json`
     cmds:
       - tsc -p tsconfig.module.json
 
-{{/if}}
-{{#if hbs.man}}
   man-page:
     desc: Build `man` page from the README.md file
     cmds:
       - echo "See https://github.com/remarkjs/remark-man"
 
-{{/if}}
-{{#if hbs.docker}}
-  normal:
+  docker:fat:
     deps:
       - :software:docker
       - :software:jq
@@ -152,9 +135,7 @@ tasks:
       - Dockerfile
       - package.json
 
-{{/if}}
-{{#if hbs.packer}}
-  parallels:
+  packer:parallels:
     deps:
       - :software:packer
       - :software:parallels
@@ -177,12 +158,12 @@ tasks:
       - task: prepare-packer
       - packer build -only=parallels-iso \{{.TEMPLATE_FILE}}
 
-{{/if}}
-{{#if hbs.docker}}
-  slim-finish:
-    deps: [slim-prettier, slim-sizes]
+  docker:slim-finish:
+    deps:
+      - docker:slim-prettier
+      - docker:slim-sizes
 
-  slim-prettier:
+  docker:slim-prettier:
     deps:
       - :npm:prettier
     cmds:
@@ -190,7 +171,7 @@ tasks:
     sources:
       - slim.report.json
 
-  slim-sizes:
+  docker:slim-sizes:
     deps:
       - :software:docker
       - :software:jq
@@ -214,7 +195,7 @@ tasks:
     status:
       - '[[ "\{{.PREVIOUS_SLIM_SIZE}}" == "\{{.SLIM_SIZE}}" ]]'
 
-  slim:
+  docker:slim:
     deps:
       - :common:npm-prettier
       - :software:docker
@@ -251,9 +232,7 @@ tasks:
       - sh: docker image inspect megabytelabs/updater:latest > /dev/null 2>&1
         msg: "You need to build a normal Docker container before converting it into a slim build. Try running `task build:normal` before this task."
 
-{{/if}}
-{{#if hbs.packer}}
-  virtualbox:
+  packer:virtualbox:
     deps:
       - :software:packer
       - :software:virtualbox
@@ -276,7 +255,7 @@ tasks:
       - task: prepare-packer
       - packer build -only=virtualbox-iso \{{.TEMPLATE_FILE}}
 
-  vmware:
+  packer:vmware:
     deps:
       - :software:packer
       - :software:vmware
@@ -299,5 +278,3 @@ tasks:
     cmds:
       - task: prepare-packer
       - packer build -only=vmware-iso \{{.TEMPLATE_FILE}}
-
-{{/if}}

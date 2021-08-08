@@ -2,6 +2,23 @@
 version: '3'
 
 tasks:
+  npm-install:
+    deps:
+      - :software:node
+    label: 'install-{{.NPM_PACKAGE}}'
+    cmds:
+      - |
+        if [ "${container:=}" != 'docker' ]; then
+          if [ "\{{.FORCE_INSTALL}}" ]; then
+            npm install -g \{{.NPM_PACKAGE}}@latest --force
+          else
+            npm install -g \{{.NPM_PACKAGE}}@latest
+          fi
+          true success "The npm '\{{.NPM_PACKAGE}}' package is globally installed"
+        fi
+    status:
+      - '(type \{{.NPM_PACKAGE_BIN}} &> /dev/null) || [ "${container:=}" == "docker" ]'
+
   commitizen:
     cmds:
       - task: npm-install
@@ -58,22 +75,6 @@ tasks:
           NPM_PACKAGE: markdown-link-check
           NPM_PACKAGE_BIN: markdown-link-check
     run: once
-
-  npm-install:
-    deps:
-      - :software:node
-    cmds:
-      - |
-        if [ "${container:=}" != 'docker' ]; then
-          if [ "\{{.FORCE_INSTALL}}" ]; then
-            npm install -g \{{.NPM_PACKAGE}}@latest --force
-          else
-            npm install -g \{{.NPM_PACKAGE}}@latest
-          fi
-          true success "The npm '\{{.NPM_PACKAGE}}' package is globally installed"
-        fi
-    status:
-      - '(type \{{.NPM_PACKAGE_BIN}} &> /dev/null) || [ "${container:=}" == "docker" ]'
 
   prettier-package-json:
     cmds:
