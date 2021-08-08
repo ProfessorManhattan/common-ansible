@@ -66,10 +66,9 @@ tasks:
     env:
       COLLECTIONS:
         sh: jq --arg collections "$(yq eval -j '.collections' requirements.yml)" '.collection_dependencies = ($collections | fromjson) |
-          "<b><a href=\"" + .collection_dependencies[].source + "/" + (.collection_dependencies[].name |
-          split(".") | join("/")) + "\" title=\"" + .collection_dependencies[].name +
-          " collection on Ansible Galaxy\" target=\"blank\">" + .collection_dependencies[].name
-          + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]'
+          .collection_dependencies[] | "<b<a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
+          " collection on Ansible Galaxy\" target=\"blank\">" + .name + "</a></b>"' -r  .variables.json | jq --raw-input --slurp 'split("\n") |
+          .[0:((. | length) - 1)]'
       TMP:
         sh: mktemp
     cmds:
