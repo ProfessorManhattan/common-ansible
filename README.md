@@ -1,13 +1,13 @@
 <div align="center">
   <center>
     <a href="https://gitlab.com/megabyte-labs/common">
-      <img width="140" height="140" alt="Common files logo" src="https://gitlab.com/megabyte-labs/common/shared/-/raw/master/logo.png" />
+      <img width="140" height="140" alt="Common files logo" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/src/shared.png" />
     </a>
   </center>
 </div>
 <div align="center">
   <center><h1>Common Files</h1></center>
-  <center><h4 style="color: #18c3d1;">Documentation for a set of upstream repositories that house the source for many files used in hundreds of our repositories</h4></center>
+  <center><h4 style="color: #18c3d1;">A set of upstream repositories that contain files common to hundreds of our repositories</h4></center>
 </div>
 
 <a href="#-table-of-contents" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------" src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
