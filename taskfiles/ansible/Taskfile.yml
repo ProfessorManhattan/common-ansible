@@ -456,6 +456,7 @@ tasks:
     cmds:
       - jq -S --arg alt "$ALT" --arg galaxyinfo "$GALAXY_INFO" --arg subheader "$SUBHEADER" '.alternative_description = $alt |
         .galaxy_info = ($galaxyinfo | fromjson) | .subheader_description = $subheader' '{{.VARIABLES_PATH}}' > "$TMP"
+      - mv "$TMP" '{{.VARIABLES_PATH}}'
     log:
       error: 'Failed to inject `{{.VARIABLES_PATH}}` with alternative descriptions'
       success: 'Ensured `{{.VARIABLES_PATH}}` has alternative descriptions'
