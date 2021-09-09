@@ -12,18 +12,18 @@ vars:
   REPOSITORY_TYPE: ansible
 
 includes:
-  ansible: ./taskfiles/ansible/Taskfile.yml
-  ansible:ansibler: ./taskfiles/ansible/Taskfile-ansibler.yml
-  ansible:test: ./taskfiles/ansible/Taskfile-test.yml
-  common: ./taskfiles/common/Taskfile.yml
-  common:update: ./taskfiles/common/Taskfile-update.yml
-  fix: ./taskfiles/Taskfile-fix.yml
-  git: ./taskfiles/Taskfile-git.yml
-  image: ./taskfiles/Taskfile-image.yml
-  install: ./taskfiles/Taskfile-install.yml
-  lint: ./taskfiles/Taskfile-lint.yml
-  security: ./taskfiles/Taskfile-security.yml
-  vscode: ./taskfiles/Taskfile-vscode.yml
+  ansible: ./.common/taskfiles/ansible/Taskfile.yml
+  ansible:ansibler: ./.common/taskfiles/ansible/Taskfile-ansibler.yml
+  ansible:test: ./.common/taskfiles/ansible/Taskfile-test.yml
+  common: ./.common/taskfiles/common/Taskfile.yml
+  common:update: ./.common/taskfiles/common/Taskfile-update.yml
+  fix: ./.common/taskfiles/Taskfile-fix.yml
+  git: ./.common/taskfiles/Taskfile-git.yml
+  image: ./.common/taskfiles/Taskfile-image.yml
+  install: ./.common/taskfiles/Taskfile-install.yml
+  lint: ./.common/taskfiles/Taskfile-lint.yml
+  security: ./.common/taskfiles/Taskfile-security.yml
+  vscode: ./.common/taskfiles/Taskfile-vscode.yml
 
 tasks:
   start:
