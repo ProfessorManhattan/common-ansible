@@ -13,8 +13,8 @@ tasks:
       # Analyze and lint Docker containers with Dockle
 
       Dockle is a Docker image linter that reports security tips and conflicts with best practices. It does
-      more than what Hadolint does, according to their GitHub page. Also, instead of linting the Dockerfile,
-      it lints the actual image.
+      more than what Hadolint does, according to their GitHub page. Instead of linting the Dockerfile, it
+      lints the actual image.
 
       **Example usage for scanning standard Docker repository (with `slim` build):**
       `task security:dockle`
