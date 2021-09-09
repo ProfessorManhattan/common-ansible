@@ -59,4 +59,4 @@ You might have noticed that there are no CI tests in the chart above for macOS a
 
 - Linux platforms are tested using Molecule and Docker on GitLab CI in parallel. ([Link to GitLab CI configuration]({{ repository.group.ci }}/-/blob/master/test/molecule.gitlab-ci.yml))
 - Windows is tested using GitLab CI without Molecule. ([Link to GitLab CI configuration]({{ repository.group.ci }}/-/blob/master/test/windows-ansible-test.gitlab-ci.yml))
-- macOS is tested using GitHub Actions after the code is automatically synchronized between GitLab and GitHub. ([Link to the macOS GitHub Action configuration]({{ repo }}/-/blob/master/.github/workflows/macOS.yml))
+- macOS is tested using GitHub Actions after the code is automatically synchronized between GitLab and GitHub. ([Link to the macOS GitHub Action configuration]({{ repository.github }}/-/blob/master/.github/workflows/macOS.yml))
