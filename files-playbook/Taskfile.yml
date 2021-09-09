@@ -23,6 +23,8 @@ includes:
   vscode: ./.common/taskfiles/Taskfile-vscode.yml
 
 tasks:
+  donothing: 'true'
+
   start:
     desc: Set up the project and refresh it with the latest changes
     summary: |
@@ -34,4 +36,4 @@ tasks:
       **Example usage:**
       `task start`
     cmds:
-      - task: common:update
+      - task: common:update:update
