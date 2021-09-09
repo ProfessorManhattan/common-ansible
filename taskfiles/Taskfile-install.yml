@@ -10,7 +10,7 @@ tasks:
           curl -sS https://install.doctor/{{.SOFTWARE}} | bash
         fi
     status:
-      - '[ "${container:=}" == "docker" ]'
+      - '[[ "${container:=}" == "docker" ]]'
 
   npm:commitizen:
     run: once
@@ -52,7 +52,7 @@ tasks:
           true success "The npm '{{.NPM_PACKAGE}}' package is globally installed"
         fi
     status:
-      - '(type {{.NPM_PACKAGE_BIN}} &> /dev/null) || [ "${container:=}" == "docker" ]'
+      - '(type {{.NPM_PACKAGE_BIN}} &> /dev/null) || [[ "${container:=}" == "docker" ]]'
 
   npm:hbs:
     run: once

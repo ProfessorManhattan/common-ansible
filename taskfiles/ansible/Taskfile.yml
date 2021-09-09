@@ -8,6 +8,7 @@ vars:
   MOLECULE_RESULTS_PATH: molecule/.results
   REQUIREMENTS_PATH: requirements.yml
   ROLE_NAME: '{{.GALAXY_NAMESPACE}}.{{.GALAXY_ROLE_NAME}}'
+  SAMPLE_PROJECT: https://github.com/ProfessorManhattan/ansible-snapd
   VARIABLES_PATH: .variables.json
 
 tasks:
@@ -49,9 +50,9 @@ tasks:
     cmds:
       - mkdir -p '{{dir .FILE_PATH}}'
       - |
-        {{if (eq .COLLECTION_LENGTH 0)}}
+        {{if (eq .COLLECTION_LENGTH "0")}}
           echo '' > {{.FILE_PATH}}
-        {{else if (eq .COLLECTION_LENGTH 1)}}
+        {{else if (eq .COLLECTION_LENGTH "1")}}
           echo '{{.SINGLE_COLLECTION_TEXT}}' > '{{.FILE_PATH}}'
         {{else}}
           echo '{{.MULTIPLE_COLLECTION_TEXT}}' > '{{.FILE_PATH}}'
@@ -64,8 +65,6 @@ tasks:
       - '{{.VARIABLES_PATH}}'
 
   galaxy:requirements:
-    deps:
-      - :common:python:requirements
     run: once
     cmds:
       - . .venv/bin/activate
@@ -109,9 +108,7 @@ tasks:
       - tasks/**/*.yml
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
-        msg: The Python package `mod-ansible-autodoc` is missing. Ensure all the requirements are installed
-          by running `task common:requirements`. Also, ensure `mod-ansible-autodoc` is included in the `requirements.txt`
-          file.
+        msg: The Python package `mod-ansible-autodoc` is missing.
 
   mod-ansible-autodoc:variables:
     env:
@@ -228,7 +225,7 @@ tasks:
         if [[ ! "$COLLECTIONS" =~ '{{.KEY}}' ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.collections = .collections + {{.VAL}}' '{{.REQUIREMENTS_PATH}}'
         fi
-      - task: :fix:yml-dashes
+      - task: :fix:yaml:dashes:cli
         vars:
           CLI_ARGS: '{{.REQUIREMENTS_PATH}}'
     log:
@@ -286,7 +283,7 @@ tasks:
           KEY: community.general.snap
           ROLE: professormanhattan.snapd
           VAL: '{"role": "professormanhattan.snapd", "when": "ansible_system == \"Linux\""}'
-      - task: sync-requirements
+      - task: sync:requirements
     sources:
       - '{{.META_PATH}}'
       - '{{.REQUIREMENTS_PATH}}'
@@ -305,7 +302,7 @@ tasks:
         if [[ ! "$DEPENDENCIES" =~ '{{.ROLE}}' ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.dependencies = .dependencies + {{.VAL}}' '{{.META_PATH}}'
         fi
-      - task: :fix:yml-dashes
+      - task: :fix:yaml:dashes:cli
         vars:
           CLI_ARGS: '{{ .META_PATH }}'
     log:
@@ -406,7 +403,7 @@ tasks:
             yq eval -i -P '.roles = .roles + {"name": '"$ROLE_NAME"'}' '{{.REQUIREMENTS_PATH}}'
           fi
         done
-      - task: :fix:yml-dashes
+      - task: :fix:yaml:dashes:cli
         vars:
           CLI_ARGS: '{{.REQUIREMENTS_PATH}}'
     log:
@@ -457,8 +454,8 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - jq -S --arg alt "$ALT" --arg galaxyinfo "$GALAXY_INFO" --arg subheader "$SUBHEADER"
-        .alternative_description = $alt | .galaxy_info = ($galaxyinfo | fromjson) | '.subheader_description = $subheader' '{{.VARIABLES_PATH}}' > "$TMP"
+      - jq -S --arg alt "$ALT" --arg galaxyinfo "$GALAXY_INFO" --arg subheader "$SUBHEADER" '.alternative_description = $alt |
+        .galaxy_info = ($galaxyinfo | fromjson) | .subheader_description = $subheader' '{{.VARIABLES_PATH}}' > "$TMP"
     log:
       error: 'Failed to inject `{{.VARIABLES_PATH}}` with alternative descriptions'
       success: 'Ensured `{{.VARIABLES_PATH}}` has alternative descriptions'
@@ -468,11 +465,11 @@ tasks:
       - package.json
     preconditions:
       - sh: 'type jq &> /dev/null'
-        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+        msg: 'jq is not installed.'
       - sh: 'type yq &> /dev/null'
-        msg: 'yq is not installed! You can install it by running `task software:yq`.'
+        msg: 'yq is not installed.'
       - sh: 'test -f "{{.META_PATH}}"'
         msg: 'The `{{.META_PATH}}` file is missing. A properly populated `{{.META_PATH}}` is required. You can find an
-          example of one at https://github.com/ProfessorManhattan/ansible-snapd.'
+          example of one at {{.SAMPLE_PROJECT}}.'
       - sh: 'test -f "{{.VARIABLES_PATH}}"'
         msg: 'The `{{.VARIABLES_PATH}}` file is missing!'

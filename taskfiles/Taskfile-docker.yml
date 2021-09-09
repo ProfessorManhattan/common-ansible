@@ -109,7 +109,7 @@ tasks:
     cmds:
       - jq --arg a "{{.SLIM_SIZE}}" '.blueprint.slim_size = $a' package.json > "$TMP"
       - mv "$TMP" package.json
-      - task: :common:update
+      - task: :common:update:update
     log:
       start: 'The slim build was compressed to `{{.SLIM_SIZE}}` (from `{{.REGULAR_SIZE}}` originally).'
     status:

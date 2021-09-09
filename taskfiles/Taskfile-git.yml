@@ -286,7 +286,7 @@ tasks:
 
   gitlab:wiki:
     deps:
-      - :common:update
+      - :common:update:update
       - :install:software:glab
       - :install:software:jq
       - gitlab:create

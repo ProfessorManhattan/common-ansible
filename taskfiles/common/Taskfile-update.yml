@@ -4,7 +4,7 @@ version: '3'
 tasks:
   all:
     deps:
-      - '{{if eq .REPOSITORY_TYPE "packer"}}:packer:update:descriptions{{end}}'
+      - ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:descriptions{{else}}donothing{{end}}'
       - contributing
       - files
       - readme
@@ -96,7 +96,7 @@ tasks:
       - package.json
       - .variables.json
     preconditions:
-      - sh: 'type rsync &> /dev/null'
+      - sh: type rsync &> /dev/null
         msg: '`rsync` is not installed!'
       - sh: 'type prettier-package-json &> /dev/null'
         msg: '`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`.'
@@ -127,6 +127,10 @@ tasks:
       REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
     cmds:
       - task: markdown:scrub:{{OS}}
+        vars:
+          DIVIDER_SRC: '{{.DIVIDER_SRC}}'
+          REGEX: '{{.REGEX}}'
+          SCRUB_FILE: '{{.SCRUB_FILE}}'
 
   markdown:scrub:darwin: sed -i .bak 's^{{.REGEX}}^{{.DIVIDER_SRC}}^g' {{.SCRUB_FILE}} && rm {{.SCRUB_FILE}}.bak
 
@@ -165,8 +169,8 @@ tasks:
 
   readme:
     deps:
-      - '{{if eq .REPOSITORY_TYPE "ansible"}}:ansible:collection-dependencies:markdown{{end}}'
-      - '{{if eq .REPOSITORY_TYPE "ansible"}}:ansible:mod-ansible-autodoc{{end}}'
+      - ':{{if eq .REPOSITORY_TYPE "ansible"}}ansible:collection-dependencies:markdown{{else}}donothing{{end}}'
+      - ':{{if eq .REPOSITORY_TYPE "ansible"}}ansible:mod-ansible-autodoc{{else}}donothing{{end}}'
       - :install:npm:prettier
       - :install:npm:readme
     vars:
@@ -176,7 +180,7 @@ tasks:
       - task: markdown:scrub
         vars:
           SCRUB_FILE: README.md
-      - task: '{{if eq .REPOSITORY_TYPE "packer"}}:packer:update:readme{{end}}'
+      - task: ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:readme{{else}}donothing{{end}}'
       - prettier --write README.md
     log:
       error: Failed to generate README.md
@@ -223,7 +227,7 @@ tasks:
       - :git:github:update
   start:
     deps:
-      - requirements
+      - :common:requirements
       - start-sh
       - taskfile
       - variables
@@ -242,10 +246,8 @@ tasks:
 
   update:
     deps:
-      - '{{if eq .REPOSITORY_TYPE "packer"}}:packer:latestos{{end}}'
-      - '{{if eq .REPOSITORY_SUBTYPE "role"}}:ansible:populate:dependencies{{end}}'
-      - '{{if eq .REPOSITORY_SUBTYPE "role"}}:ansible:populate:meta{{end}}'
-      - '{{if eq .REPOSITORY_SUBTYPE "role"}}:ansible:update:galaxy-id{{end}}'
+      - ':{{if eq .REPOSITORY_SUBTYPE "role"}}common:update:ansible{{else}}donothing{{end}}'
+      - ':{{if eq .REPOSITORY_TYPE "packer"}}packer:latestos{{else}}donothing{{end}}'
       - repositories
     label: update
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
@@ -264,11 +266,17 @@ tasks:
     cmds:
       - task: start
       - task: all
-      - task: '{{if eq .REPOSITORY_TYPE "docker"}}:docker:update-labels{{end}}'
+      - task: ':{{if eq .REPOSITORY_TYPE "docker"}}docker:update-labels{{else}}donothing{{end}}'
     log:
       success: Successfully updated the project with the latest upstream changes
 
-  update:sort:
+  ansible:
+    deps:
+      - :ansible:populate:dependencies
+      - :ansible:populate:meta
+      - :ansible:update:galaxy-id
+
+  sort:
     cmds:
       - if [ -f paths.txt ]; then sort paths.txt -o paths.txt; fi
       - if [ -f requirements.txt ]; then sort requirements.txt -o requirements.txt; fi
@@ -289,13 +297,13 @@ tasks:
     cmds:
       - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
       - mv "$TMP" .variables.json
-      - task: '{{if eq .REPOSITORY_TYPE "packer"}}:packer:update:variables{{end}}'
-      - task: '{{if eq .REPOSITORY_SUBTYPE "role"}}:ansible:update-variables{{end}}'
+      - task: ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:variables{{else}}donothing{{end}}'
+      - task: ':{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:update:variables{{else}}donothing{{end}}'
     sources:
       - .common/variables.{{.REPOSITORY_SUBTYPE}}.json
       - package.json
     preconditions:
       - sh: 'type jq &> /dev/null'
-        msg: 'jq is not installed! You can install it by running `task software:jq`.'
+        msg: 'jq is not installed.'
       - sh: 'type yq &> /dev/null'
-        msg: 'yq is not installed! You can install it by running `task software:yq`.'
+        msg: 'yq is not installed.'

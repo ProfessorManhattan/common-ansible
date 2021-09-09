@@ -75,7 +75,7 @@ tasks:
         vars:
           FILE: .husky/prepare-commit-msg
     status:
-      - '[ "${container:=}" == "docker" ]'
+      - '[[ "${container:=}" == "docker" ]]'
 
   husky:install:
     cmds:
@@ -184,9 +184,13 @@ tasks:
       - task: python:requirements:venv
       - task: python:requirements:venv:activate
       - task: python:requirements:pip
-      - task: '{{if eq .REPOSITORY_TYPE "ansible"}}:ansible:galaxy:requirements{{end}}'
+      - task: python:requirements:{{.REPOSITORY_TYPE}}
     status:
       - '[[ "${container:=}" == "docker" ]]'
+
+  python:requirements:ansible:
+    cmds:
+      - task: :ansible:galaxy:requirements
 
   python:requirements:pip:
     run: once

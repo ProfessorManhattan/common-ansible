@@ -10,7 +10,7 @@ tasks:
       - task: tasks:{{.REPOSITORY_SUBTYPE}}
     preconditions:
       - sh: 'type ansibler &> /dev/null'
-        msg: '`ansibler` is not installed globally. Install all the requirements by running `task requirements`.'
+        msg: '`ansibler` is not installed globally.'
 
   compatibility-chart:
     deps:
@@ -29,7 +29,7 @@ tasks:
 
   populate-platforms:
     deps:
-      - :common:requirements:python
+      - :common:python:requirements
       - :install:npm:prettier
     cmds:
       - ansibler --populate-platforms --json-file '{{.VARIABLES_PATH}}'
@@ -43,7 +43,7 @@ tasks:
 
   role-dependencies:
     deps:
-      - :common:requirements:python
+      - :common:python:requirements
     cmds:
       - ansibler --role-dependencies --json-file '{{.VARIABLES_PATH}}'
     log:

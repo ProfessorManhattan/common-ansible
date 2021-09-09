@@ -30,7 +30,7 @@ tasks:
       success: Local testing of the Ansible play was successful!
     preconditions:
       - sh: typeof ansible &> /dev/null
-        msg: 'Ansible is not available. Install the dependencies by running `task common:requirements`.'
+        msg: Ansible is not available.
 
   molecule:docker:
     deps:
@@ -60,6 +60,9 @@ tasks:
       - '{{if .SNAP_REFS}}true warn "Degrading test scenario to `docker-snap` which only tests
         Docker containers that support `snap` inside Docker containers."{{end}}'
       - task: test:molecule:docker:{{if eq .CLI_ARGS "matrix"}}matrix{{else}}default{{end}}
+    log:
+      error: Finished Docker Molecule testing of the Ansible play with error(s)
+      success: Docker Molecule testing of the Ansible play was successful!
 
   molecule:docker:default: molecule test -s "docker{{if .SNAP_REFS}}-snap{{end}}"
 
@@ -104,6 +107,9 @@ tasks:
       OBJC_DISABLE_INITIALIZE_FORK_SAFETY: YES
     cmds:
       - task: test:molecule:virtualbox:converge:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
+    log:
+      error: There was an error using VirtualBox to test the Ansible play. The machine has been left open.
+      success: VirtualBox testing of the Ansible play was successful! The machine has been left open.
 
   molecule:virtualbox:converge:cli: molecule converge -s {{.CLI_ARGS}}-desktop
 
@@ -142,7 +148,7 @@ tasks:
       - PY_COLORS=0 molecule test > molecule/.results/{{.MOLECULE_DATE}}-default.txt
     log:
       error: 'Test finished with error(s). See the log at `molecule/.results/{{.MOLECULE_DATE}}-default.txt`.'
-      start: 'Storing full E2E test results to `molecule/.results/{{.MOLECULE_DATE}}-default.txt`, this can take awhile..'
+      start: 'Storing full E2E test results to `molecule/.results/{{.MOLECULE_DATE}}-default.txt`. This can take awhile..'
       success: 'Successfully completed the `molecule test`. Results are stored in `molecule/.results/{{.MOLECULE_DATE}}-default.txt`.'
 
   molecule:virtualbox:e2e:default:
@@ -191,6 +197,9 @@ tasks:
       `task test:vagrant -- --provider=vmware_workstation windows`
     cmds:
       - task: vagrant-prompt-{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
+    log:
+      error: There was an error using Vagrant to run the Ansible play.
+      success: The Vagrant box has been successfully provisioned with the Ansible play.
 
   vagrant:cli:
     deps:
