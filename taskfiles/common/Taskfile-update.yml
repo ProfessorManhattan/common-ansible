@@ -9,6 +9,12 @@ tasks:
       - files
       - readme
 
+  ansible:
+    deps:
+      - :ansible:populate:dependencies
+      - :ansible:populate:meta
+      - :ansible:update:galaxy-id
+
   common:
     deps:
       - :install:software:git
@@ -16,7 +22,7 @@ tasks:
       - cd .common && git reset --hard HEAD && git pull origin master --no-rebase || true && cd ..
     preconditions:
       - sh: 'type git &> /dev/null'
-        msg: 'git is not installed! You can install it by running `task software:git`.'
+        msg: 'git is not installed.'
 
   contributing:
     deps:
@@ -40,9 +46,9 @@ tasks:
       - sh: test -f .common/docs/blueprint-contributing.md
         msg: The CONTRIBUTING.md template file is not present at `.common/docs/blueprint-contributing.md`
       - sh: test -f .variables.json
-        msg: 'The .variables.json file is not present. Generate it by running `task common:update`.'
+        msg: 'The .variables.json file is not present.'
       - sh: type readme &> /dev/null
-        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
+        msg: '`@appnest/readme` is not installed globally.'
 
   files:
     deps:
@@ -99,7 +105,7 @@ tasks:
       - sh: type rsync &> /dev/null
         msg: '`rsync` is not installed!'
       - sh: 'type prettier-package-json &> /dev/null'
-        msg: '`prettier-package-json` is not installed globally. Install all the requirements by running `task common:requirements`.'
+        msg: '`prettier-package-json` is not installed globally.'
 
   files:handlebars:
     deps:
@@ -117,7 +123,7 @@ tasks:
       - .variables.json
     preconditions:
       - sh: 'type hbs &> /dev/null'
-        msg: '`hbs-cli` is not installed globally. Install all the requirements by running `task common:requirements`.'
+        msg: '`hbs-cli` is not installed globally.'
 
   markdown:scrub:
     vars:
@@ -193,11 +199,11 @@ tasks:
       - sh: 'test -f .common/docs/{{.README_TEMPLATE}}'
         msg: 'The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`.'
       - sh: test -f .variables.json
-        msg: 'The `.variables.json` file is not present. Generate it by running `task common:update`.'
+        msg: 'The `.variables.json` file is not present.'
       - sh: type readme &> /dev/null
-        msg: '`@appnest/readme` is not installed globally. Install all the requirements by running `task common:requirements`.'
+        msg: '`@appnest/readme` is not installed globally.'
       - sh: type prettier &> /dev/null
-        msg: '`prettier` is not installed globally. Install all the requirements by running `task common:requirements`.'
+        msg: '`prettier` is not installed globally.'
 
   repositories:
     cmds:
@@ -225,6 +231,14 @@ tasks:
     deps:
       - :git:gitlab:update
       - :git:github:update
+  sort:
+    cmds:
+      - if [ -f paths.txt ]; then sort paths.txt -o paths.txt; fi
+      - if [ -f requirements.txt ]; then sort requirements.txt -o requirements.txt; fi
+    sources:
+      - paths.txt
+      - requirements.txt
+
   start:
     deps:
       - :common:requirements
@@ -270,20 +284,6 @@ tasks:
     log:
       success: Successfully updated the project with the latest upstream changes
 
-  ansible:
-    deps:
-      - :ansible:populate:dependencies
-      - :ansible:populate:meta
-      - :ansible:update:galaxy-id
-
-  sort:
-    cmds:
-      - if [ -f paths.txt ]; then sort paths.txt -o paths.txt; fi
-      - if [ -f requirements.txt ]; then sort requirements.txt -o requirements.txt; fi
-    sources:
-      - paths.txt
-      - requirements.txt
-
   variables:
     deps:
       - :install:software:jq
@@ -304,6 +304,6 @@ tasks:
       - package.json
     preconditions:
       - sh: 'type jq &> /dev/null'
-        msg: 'jq is not installed.'
+        msg: jq is not installed.
       - sh: 'type yq &> /dev/null'
-        msg: 'yq is not installed.'
+        msg: yq is not installed.

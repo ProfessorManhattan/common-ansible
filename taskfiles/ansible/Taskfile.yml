@@ -149,7 +149,7 @@ tasks:
   #          fi
   #    preconditions:
   #      - sh: "test -d node_modules"
-  #        msg: "This task has dependencies in the `node_modules` folder which is missing. Install them by running `task common:node:dependencies`."
+  #        msg: "This task has dependencies in the `node_modules` folder which is missing."
   #    status:
   #      - '[[ -z "{{.CLI_ARGS}}" ]]'
 
@@ -465,9 +465,9 @@ tasks:
       - package.json
     preconditions:
       - sh: 'type jq &> /dev/null'
-        msg: 'jq is not installed.'
+        msg: jq is not installed.
       - sh: 'type yq &> /dev/null'
-        msg: 'yq is not installed.'
+        msg: yq is not installed.
       - sh: 'test -f "{{.META_PATH}}"'
         msg: 'The `{{.META_PATH}}` file is missing. A properly populated `{{.META_PATH}}` is required. You can find an
           example of one at {{.SAMPLE_PROJECT}}.'

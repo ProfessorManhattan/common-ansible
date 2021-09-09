@@ -313,7 +313,7 @@ tasks:
       - task: shell:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
     preconditions:
       - sh: 'type docker &> /dev/null'
-        msg: 'Docker is not installed! Install it by running `task software:docker`.'
+        msg: 'Docker is not installed.'
 
   shell:cli: docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm megabytelabs/ansible-molecule-{{.CLI_ARGS}}:latest /bin/bash
 
@@ -325,7 +325,6 @@ tasks:
       - node .common/scripts/prompts/shell.js
     status:
       - '[[ ! -z "{{.CLI_ARGS}}" ]]'
-
     preconditions:
       - sh: 'type node &> /dev/null'
-        msg: 'Node.js is not installed! Install it by running `task install:software:node`.'
+        msg: 'Node.js is not installed.'
