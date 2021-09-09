@@ -12,18 +12,18 @@ vars:
   REPOSITORY_TYPE: ansible
 
 includes:
-  ansible: ./.common/taskfiles-role/Taskfile-ansible.yml
-  common: ./.common/taskfiles-role/Taskfile-common.yml
-  fix: ./.common/taskfiles-role/Taskfile-fix.yml
-  git: ./.common/taskfiles-playbook/Taskfile-git.yml
-  image: ./.common/taskfiles-role/Taskfile-image.yml
-  lint: ./.common/taskfiles-role/Taskfile-lint.yml
-  npm: ./.common/taskfiles-role/Taskfile-npm.yml
-  python: ./.common/taskfiles-role/Taskfile-python.yml
-  security: ./.common/taskfiles-role/Taskfile-security.yml
-  software: ./.common/taskfiles-role/Taskfile-{{OS}}.yml
-  test: ./.common/taskfiles-role/Taskfile-test.yml
-  vscode: ./.common/taskfiles-role/Taskfile-vscode.yml
+  ansible: ./taskfiles/ansible/Taskfile.yml
+  ansible:ansibler: ./taskfiles/ansible/Taskfile-ansibler.yml
+  ansible:test: ./taskfiles/ansible/Taskfile-test.yml
+  common: ./taskfiles/common/Taskfile.yml
+  common:update: ./taskfiles/common/Taskfile-update.yml
+  fix: ./taskfiles/Taskfile-fix.yml
+  git: ./taskfiles/Taskfile-git.yml
+  image: ./taskfiles/Taskfile-image.yml
+  install: ./taskfiles/Taskfile-install.yml
+  lint: ./taskfiles/Taskfile-lint.yml
+  security: ./taskfiles/Taskfile-security.yml
+  vscode: ./taskfiles/Taskfile-vscode.yml
 
 tasks:
   start:
