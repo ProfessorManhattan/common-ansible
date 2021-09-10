@@ -1,20 +1,23 @@
 ---
 version: '3'
 
+vars:
+  TASKS_FILE: .vscode/tasks.json
+
 tasks:
   tasks:generate:
     deps:
+      - :install:npm:prettier
       - :install:software:jq
-    vars:
+    env:
       TASK_LIST:
         sh: task --list
-    env:
-      TMP_JSON:
+      TMP:
         sh: mktemp
     run: when_changed
     cmds:
       - |
-        echo '{"version": "2.0.0"}' > "$TMP_JSON"
+        echo '{"version": "2.0.0"}' > "$TMP"
       - |
         TASKS='['
         while read LINE; do
@@ -26,5 +29,6 @@ tasks:
             COMMAND="bash .common/scripts/init.sh && task $TASK_NAME"
             TASKS+="{\"label\": \"$LABEL\", \"type\": \"$TYPE\", \"command\": \"$COMMAND\"},"
           fi
-        done <<< "{{.TASK_LIST}}"
-        jq --arg tasks "${TASKS%?}]" '.tasks = ($tasks | fromjson)' "$TMP_JSON" > .vscode/tasks.json
+        done <<< "$TASK_LIST"
+        jq --arg tasks "${TASKS%?}]" '.tasks = ($tasks | fromjson)' "$TMP" > '{{.TASKS_FILE}}'
+      - prettier --write '{{.TASKS_FILE}}'
