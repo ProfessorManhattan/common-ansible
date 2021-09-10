@@ -20,8 +20,8 @@ tasks:
       COLLECTIONS:
         sh:
           jq --arg collections "$(yq eval -j '.collections' {{.REQUIREMENTS_PATH}})" '.{{.COLLECTION_DEPS}} = ($collections | fromjson) |
-          .{{.COLLECTION_DEPS}}[] | "<b<a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
-          " collection on Ansible Galaxy\" target=\"blank\">" + .name + "</a></b>"' -r  {{.VARIABLES_PATH}} | jq --raw-input --slurp 'split("\n") |
+          .{{.COLLECTION_DEPS}}[] | "<b><a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
+          " collection on Ansible Galaxy\" target=\"_blank\">" + .name + "</a></b>"' -r  {{.VARIABLES_PATH}} | jq --raw-input --slurp 'split("\n") |
           .[0:((. | length) - 1)]'
       TMP:
         sh: mktemp
@@ -43,19 +43,19 @@ tasks:
         sh: jq -r '.{{.COLLECTION_DEPS}} | length' '{{.VARIABLES_PATH}}'
       FILE_PATH: .autodoc/{{.COLLECTION_DEPS}}.md
       MULTIPLE_COLLECTION_TEXT:
-        '### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy collections.
-        The collections along with a links to their source are listed below.\n\n{{"{{"}}{{.COLLECTION_DEPS}}{{"}}"}}'
-      SINGLE_COLLECTION_TEXT: '### Galaxy Collection\n\nThis role is dependent on the following Ansible Galaxy
-        collection:\n\n{{"{{"}}{{.COLLECTION_DEPS}}{{"}}"}}'
+        "### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy collections.
+        The collections along with a links to their source are listed below.\n\n{{\"{{\"}}{{.COLLECTION_DEPS}}{{\"}}\"}}"
+      SINGLE_COLLECTION_TEXT: "### Galaxy Collection\n\nThis role is dependent on the following Ansible Galaxy
+        collection:\n\n{{\"{{\"}}{{.COLLECTION_DEPS}}{{\"}}\"}}"
     cmds:
       - mkdir -p '{{dir .FILE_PATH}}'
       - |
         {{if (eq .COLLECTION_LENGTH "0")}}
           echo '' > {{.FILE_PATH}}
         {{else if (eq .COLLECTION_LENGTH "1")}}
-          echo '{{.SINGLE_COLLECTION_TEXT}}' > '{{.FILE_PATH}}'
+          echo "{{.SINGLE_COLLECTION_TEXT}}" > '{{.FILE_PATH}}'
         {{else}}
-          echo '{{.MULTIPLE_COLLECTION_TEXT}}' > '{{.FILE_PATH}}'
+          echo "{{.MULTIPLE_COLLECTION_TEXT}}" > '{{.FILE_PATH}}'
         {{end}}
     log:
       error: 'Failed to create `{{.FILE_PATH}}`'
@@ -94,7 +94,7 @@ tasks:
     cmds:
       - mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
         --tags-title '### Tags' --tags-description "$TAGS_DESCRIPTION" --todo-title '### TODO'
-        --todo-description '$TODO_DESCRIPTION' --variables-title '## Variables' --variables-description
+        --todo-description "$TODO_DESCRIPTION" --variables-title '## Variables' --variables-description
         "$VARIABLES_DESCRIPTION"
       - task: mod-ansible-autodoc:variables
       - mkdir -p .autodoc
