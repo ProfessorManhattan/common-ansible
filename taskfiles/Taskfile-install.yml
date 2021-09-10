@@ -40,6 +40,7 @@ tasks:
   npm:global:
     deps:
       - :install:software:node
+      - npm:global:clean
     label: 'install-{{.NPM_PACKAGE}}'
     cmds:
       - |
@@ -53,6 +54,16 @@ tasks:
         fi
     status:
       - '(type {{.NPM_PACKAGE_BIN}} &> /dev/null) || [[ "${container:=}" == "docker" ]]'
+
+  npm:global:clean:
+    vars:
+      NPM_ROOT:
+        sh: npm root -g
+    run: once
+    cmds:
+      - rm -rf {{.NPM_ROOT}}/.* 2> /dev/null | true
+    status:
+      - '! ls /usr/local/lib/node_modules/.*'
 
   npm:hbs:
     run: once
