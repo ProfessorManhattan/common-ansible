@@ -57,11 +57,15 @@ tasks:
       - :install:software:jq
       - :install:software:rsync
     vars:
+      CONTAINER:
+        sh: if [[ "${container:=}" == "docker" ]]; then echo "docker"; fi
       FIRST_LINE:
         sh: if [ -f Dockerfile ]; then head -n 1 Dockerfile; fi
       PKG_VERSION:
         sh: jq -r '.version' package.json
     env:
+      CONTAINER:
+        sh: '[[ "${container:=}" == "docker" ]]'
       PKG_BLUEPRINT:
         sh: jq -r '.blueprint' package.json | sed 's/^null$/{}/'
       PKG_DEPS:
@@ -84,7 +88,7 @@ tasks:
         fi
         {{end}}
       - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
-      - task: :common:husky
+      - task: :common:{{if eq .CONTAINER "docker"}}husky:ci{{else}}husky{{end}}
       - task: sort
       # The following command merges upstream package.json dependencies and devDependencies and overwrites them with the upstream versions.
       # It allows the package.json in each project to include whatever dependencies it needs while at the same time it allows all the

@@ -66,16 +66,14 @@ tasks:
     cmds:
       - task: husky:install
       - task: husky:permissions
-        vars:
-          FILE: .husky/commit-msg
-      - task: husky:permissions
-        vars:
-          FILE: .husky/pre-commit
-      - task: husky:permissions
-        vars:
-          FILE: .husky/prepare-commit-msg
     status:
       - '[[ "${container:=}" == "docker" ]]'
+
+  husky:ci:
+    cmds:
+      - task: husky:permissions
+    status:
+      - '[[ "${container:=}" != "docker" ]]'
 
   husky:install:
     cmds:
@@ -88,7 +86,7 @@ tasks:
     status:
       - '[ ! -d .git ] || [[ "${container:=} == "docker" ]]'
 
-  husky:permissions:
+  husky:permission:
     cmds:
       - |
         if [ -f "{{.FILE}}" ]; then
@@ -105,6 +103,18 @@ tasks:
     sources:
       - '.common/files-{{.REPOSITORY_SUBTYPE}}/{{.FILE}}'
       - '{{.FILE}}'
+
+  husky:permissions:
+    cmds:
+      - task: husky:permission
+        vars:
+          FILE: .husky/commit-msg
+      - task: husky:permission
+        vars:
+          FILE: .husky/pre-commit
+      - task: husky:permission
+        vars:
+          FILE: .husky/prepare-commit-msg
 
   man-page:
     desc: Build `man` page from the README.md file
