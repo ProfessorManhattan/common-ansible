@@ -403,12 +403,14 @@ tasks:
             yq eval -i -P '.roles = .roles + {"name": '"$ROLE_NAME"'}' '{{.REQUIREMENTS_PATH}}'
           fi
         done
-      # - task: :fix:yaml:dashes:cli
-      #   vars:
-      #     CLI_ARGS: '{{.REQUIREMENTS_PATH}}'
+      - task: testy
+        vars:
+          CLI_ARGS: '{{.REQUIREMENTS_PATH}}'
     log:
       error: 'Failed to sync requirements from `{{.META_PATH}}` to `{{.REQUIREMENTS_PATH}}`'
       success: 'Successfully synchronized requirements from `{{.META_PATH}}` to `{{.REQUIREMENTS_PATH}}`'
+
+  testy: true
 
   update:galaxy-id:
     vars:
