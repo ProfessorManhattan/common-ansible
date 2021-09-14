@@ -19,7 +19,7 @@ tasks:
     env:
       COLLECTIONS:
         sh:
-          jq --arg collections "$(yq eval -j '.collections' {{.REQUIREMENTS_PATH}})" '.{{.COLLECTION_DEPS}} = ($collections | fromjson) |
+          jq --arg collections "$(yq eval -o=json '.collections' {{.REQUIREMENTS_PATH}})" '.{{.COLLECTION_DEPS}} = ($collections | fromjson) |
           .{{.COLLECTION_DEPS}}[] | "<b><a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
           " collection on Ansible Galaxy\" target=\"_blank\">" + .name + "</a></b>"' -r  {{.VARIABLES_PATH}} | jq --raw-input --slurp 'split("\n") |
           .[0:((. | length) - 1)]'
@@ -67,7 +67,7 @@ tasks:
   galaxy:requirements:
     run: once
     cmds:
-      - . .venv/bin/activate
+      - task: :common:python:requirements:venv:activate
       - cmd: ansible-galaxy install -r requirements.yml --ignore-errors
         ignore_error: true
     status:
@@ -449,7 +449,7 @@ tasks:
     env:
       ALT: '{{.ALT_PREFIX}} {{.DESCRIPTION_LOWER}}'
       GALAXY_INFO:
-        sh: yq e -j '.galaxy_info' '{{.META_PATH}}'
+        sh: yq e -o=json '.galaxy_info' '{{.META_PATH}}'
       SUBHEADER: '{{.SUBHEADER_PREFIX}} {{.DESCRIPTION_LOWER}}'
       TMP:
         sh: mktemp

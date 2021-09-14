@@ -116,9 +116,9 @@ tasks:
       TAG:
         sh: jq -r '.variables.latestos_tag' template.json
     cmds:
+      - task: :common:python:requirements:venv:activate
       - |
         if [ "${container:=}" != 'docker' ] && [[ '{{.TAG}}' != 'macos' ]]; then
-          . .venv/bin/activate
           latestos {{.TAG}}
         fi
     status:
