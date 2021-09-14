@@ -129,8 +129,7 @@ tasks:
 
   markdown:scrub:
     vars:
-      DIVIDER_SRC:
-        <a href="\1" style="width:100%"><img style="width:100%" alt="-----------------------------------------------------"
+      DIVIDER_SRC: <a href="\1" style="width:100%"><img style="width:100%"
         src="https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png" /></a>
       REGEX: .*https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/.*.png)][(]\(.*\)[)].*$
     cmds:
