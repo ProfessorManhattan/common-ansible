@@ -279,7 +279,6 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - echo testing
       - |
         if [ '{{.HEADER}}' != '---' ] && [ '{{.ANSIBLE_VAULT}} != '$ANSIBLE_VAULT' ]; then
           echo '---' | cat - '{{.CLI_ARGS}}' > "$TMP"
