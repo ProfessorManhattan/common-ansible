@@ -14,13 +14,13 @@
 
 ## Table of Contents
 
-- [➤ Overview](#overview)
-- [➤ Documentation Partials and Variable Inheritence](#documentation-partials-and-variable-inheritence)
-- [➤ Common File Propagation Process](#common-file-propagation-process)
-- [➤ Common File Sub-Types](#common-file-sub-types)
-- [➤ Sub-Type Specific Files](#sub-type-specific-files)
-- [➤ Templated Files](#templated-files)
-- [➤ More Information](#more-information)
+- [Overview](#overview)
+- [Documentation Partials and Variable Inheritence](#documentation-partials-and-variable-inheritence)
+- [Common File Propagation Process](#common-file-propagation-process)
+- [Common File Sub-Types](#common-file-sub-types)
+- [Sub-Type Specific Files](#sub-type-specific-files)
+- [Templated Files](#templated-files)
+- [More Information](#more-information)
 
 [![-----------------------------------------------------](https://gitlab.com/megabyte-labs/assets/-/raw/master/png/aqua-divider.png)](#overview)
 
