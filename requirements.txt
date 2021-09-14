@@ -1,0 +1,3 @@
+blocklint
+proselint
+yamllint

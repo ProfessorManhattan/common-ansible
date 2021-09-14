@@ -269,6 +269,8 @@ tasks:
 
   yaml:dashes:cli:
     vars:
+      ANSIBLE_VAULT:
+        sh: head -c 14 {{.CLI_ARGS}}
       FILE_TYPE:
         sh: echo -n "{{.CLI_ARGS}}" | tail -c 4
       HEADER:
@@ -278,14 +280,14 @@ tasks:
         sh: mktemp
     cmds:
       - |
-        if [ '{{.HEADER}}' != '---' ]; then
+        if [[ '{{.HEADER}}' != '---' ]] && [[ '{{.ANSIBLE_VAULT' != '$ANSIBLE_VAULT']]; then
           echo '---' | cat - '{{.CLI_ARGS}}' > "$TMP"
           mv "$TMP" '{{.CLI_ARGS}}'
         fi
     log:
       success: 'Added `---` to the beginning of `{{.CLI_ARGS}}` since it was missing from the head of the file'
     status:
-      - '[ "{{.HEADER}}" == "---" ]'
+      - "[[ '{{.HEADER}}' == '---' ]] || [[ '{{.ANSIBLE_VAULT}}' == '$ANSIBLE_VAULT']]"
     preconditions:
       - sh: '[ "{{.FILE_TYPE}}" == ".yml" ] || [ "{{.FILE_TYPE}}" == "yaml" ]'
         msg: The file name must end with either `.yml` or `yaml`
@@ -293,5 +295,38 @@ tasks:
         msg: '`{{.CLI_ARGS}}` is not a file path.'
 
   yaml:dashes:default:
-    log:
-      start: 'Expecting command in the format of `task fix:yaml:dashes -- path/filename.yml`'
+    cmds:
+      - |
+        for YML_FILE in `find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.yml' -o -name '*.yaml' \); do
+          if [[ "`head -c 14 $YML_FILE`" != '$ANSIBLE_VAULT' ]] && [[ "`head -c 3 $YML_FILE`" != '---' ]]; then
+            TMP=$(mktemp)
+            echo '---' | cat - "$YML_FILE" > "$TMP"
+            cp "$TMP" "$YML_FILE"
+          fi
+        done
+
+  yaml:order:
+    deps:
+      - :common:node:dependencies:local
+      - :install:npm:eslint
+    summary: |
+      # Ensure YML files are sorted properly
+
+      This task will sort YML keys alphabetically and also obey the order specified in `.eslintrc.js`.
+      It uses [ESLint](https://eslint.org/) along with the [`eslint-plugin-yml`](https://ota-meshi.github.io/eslint-plugin-yml/)
+      plugin.
+
+      By default, the plugin will automatically fix all YML files but you can also pass in a single file or glob
+      that needs to be fixed.
+
+      **Example fixing all `.yml` files:**
+      `task fix:yaml:order`
+
+      **Example fixing specific `.yml` file(s):**
+      `task fix:yaml:order -- 'file_name.{yml,yaml}'`
+    cmds:
+      - task: yaml:order:{{if .CLI_ARGS}}cli{{else}}default{{end}}
+
+  yaml:order:cli: eslint --fix '{{.CLI_ARGS}}'
+
+  yaml:order:default: eslint --fix '**/*.{yml,yaml}'

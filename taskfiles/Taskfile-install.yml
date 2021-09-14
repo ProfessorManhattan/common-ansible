@@ -37,6 +37,14 @@ tasks:
           NPM_PACKAGE: cspell
           NPM_PACKAGE_BIN: cspell
 
+  npm:eslint:
+    run: once
+    cmds:
+      - task: npm:global
+        vars:
+          NPM_PACKAGE: eslint
+          NPM_PACKAGE_BIN: eslint
+
   npm:global:
     deps:
       - :install:software:node
@@ -100,10 +108,6 @@ tasks:
   npm:prettier:
     run: once
     cmds:
-      - task: npm:global
-        vars:
-          NPM_PACKAGE: prettier-plugin-sh
-          NPM_PACKAGE_BIN: prettier
       - task: npm:global
         vars:
           NPM_PACKAGE: prettier

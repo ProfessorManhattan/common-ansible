@@ -87,6 +87,13 @@ tasks:
     -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work
     megabytelabs/hadolint:slim
 
+  eslint:
+    deps:
+      - :common:node:dependencies:local
+      - :install:npm:eslint
+  cmds:
+    - eslint .
+
   lint-staged:
     deps:
       - :common:node:dependencies:global
