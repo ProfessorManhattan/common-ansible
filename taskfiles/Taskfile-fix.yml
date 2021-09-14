@@ -280,7 +280,7 @@ tasks:
         sh: mktemp
     cmds:
       - |
-        if [ '{{.HEADER}}' != '---' ] && [ '{{.ANSIBLE_VAULT}} != '$ANSIBLE_VAULT' ]; then
+        if [ '{{.HEADER}}' != '---' ] && [ '{{.ANSIBLE_VAULT}}' != '$ANSIBLE_VAULT' ]; then
           echo '---' | cat - '{{.CLI_ARGS}}' > "$TMP"
           mv "$TMP" '{{.CLI_ARGS}}'
         fi
