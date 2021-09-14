@@ -64,8 +64,6 @@ tasks:
       PKG_VERSION:
         sh: jq -r '.version' package.json
     env:
-      CONTAINER:
-        sh: '[[ "${container:=}" == "docker" ]]'
       PKG_BLUEPRINT:
         sh: jq -r '.blueprint' package.json | sed 's/^null$/{}/'
       PKG_DEPS:
