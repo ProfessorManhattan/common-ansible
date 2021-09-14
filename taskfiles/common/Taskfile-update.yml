@@ -116,8 +116,10 @@ tasks:
       TMP_DIRNAME:
         sh: mktemp
     cmds:
-      - find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f -name '*.handlebars' | while
-        read FILE; do hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}"; done
+      - |
+        find ./.common/files-{{.REPOSITORY_SUBTYPE}} -type f -name '*.handlebars' | while read FILE; do
+          hbs --data .variables.json "$FILE" --stdout > "${FILE%.*}"
+        done
     sources:
       - .common/**/*.handlebars
       - .variables.json
