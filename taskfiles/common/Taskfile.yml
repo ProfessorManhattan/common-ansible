@@ -225,7 +225,8 @@ tasks:
 
   python:requirements:venv:activate:
     cmds:
-      - . .venv/bin/activate
+      - cmd: . .venv/bin/activate
+        ignore_error: true
     preconditions:
       - sh: test -f .venv/bin/activate
         msg: '`.venv/bin/activate` is missing!'
