@@ -92,11 +92,11 @@ tasks:
     cmds:
       - |
         if [ -f "{{.FILE}}" ]; then
-          chmod 755 "{{.FILE}}"
+          chmod +x "{{.FILE}}"
         else
           if [ -f ".common/files-{{.REPOSITORY_SUBTYPE}}/{{.FILE}}" ]; then
             cp ".common/files-{{.REPOSITORY_SUBTYPE}}/{{.FILE}}" "{{.FILE}}"
-            chmod 755 "{{.FILE}}"
+            chmod +x "{{.FILE}}"
           else
             true error "The '{{.FILE}}' is missing from the '.common/files-{{.REPOSITORY_SUBTYPE}}/' folder"
             exit 1
