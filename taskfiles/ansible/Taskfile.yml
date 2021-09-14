@@ -398,7 +398,7 @@ tasks:
         sh: yq eval '.roles' '{{.REQUIREMENTS_PATH}}'
     cmds:
       - |
-        yq eval -j '.dependencies' '{{.META_PATH}}' | jq -rc '.[] .role' | while read ROLE_NAME; do
+        yq eval -o=json '.dependencies' '{{.META_PATH}}' | jq -rc '.[] .role' | while read ROLE_NAME; do
           if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
             yq eval -i -P '.roles = .roles + {"name": '"$ROLE_NAME"'}' '{{.REQUIREMENTS_PATH}}'
           fi
