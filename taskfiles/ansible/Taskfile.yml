@@ -478,3 +478,19 @@ tasks:
           example of one at {{.SAMPLE_PROJECT}}.'
       - sh: 'test -f "{{.VARIABLES_PATH}}"'
         msg: 'The `{{.VARIABLES_PATH}}` file is missing!'
+
+  vault:lint:file:
+    summary: |
+      # Check for unencrypted Ansible Vault files
+
+      This task is leveraged by `lint-staged` to ensure that any file that matches `**/*vault.yml` is encrypted
+      with Ansible Vault.
+    cmds:
+      - echo "{{.CLI_ARGS}}"
+      - |
+        head -1 "$FILE" | grep --quiet '^\$ANSIBLE_VAULT;' || {
+          if [ -s '{{.CLI_ARGS}}' ]; then
+            echo '`{{.CLI_ARGS}}` is not encrypted. All files matching `**/*vault.yml` should be encrypted by `ansible-vault`.'
+            exit 1
+          fi
+        }

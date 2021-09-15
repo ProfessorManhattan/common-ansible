@@ -126,6 +126,7 @@ tasks:
       - :install:npm:commitizen
       - :install:npm:commitlint
       - :install:npm:cspell
+      - :install:npm:eslint
       - :install:npm:hbs
       - :install:npm:lint-staged
       - :install:npm:markdown-link-check

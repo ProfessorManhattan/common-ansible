@@ -32,9 +32,12 @@ tasks:
       VERSION:
         sh: jq -r '.version' package.json
     cmds:
-      - true info "Building regular image named '{{.DOCKERHUB_PROFILE}}/{{.SLUG}}'"
       - docker build --build-arg BUILD_DATE="{{.BUILD_DATE}}" --build-arg REVISION="{{.REVISION}}" --build-arg VERSION="{{.VERSION}}"
         --tag {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest --tag {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:{{.VERSION}} .
+    log:
+      error: Failed to build "fat" image
+      start: Building regular image named `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}`
+      success: Successfully built "fat" image
     sources:
       - Dockerfile
       - package.json
