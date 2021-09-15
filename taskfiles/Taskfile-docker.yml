@@ -127,7 +127,8 @@ tasks:
     cmds:
       - |
         if grep -q "CMD.\[\"--version\"\]" Dockerfile; then
-          VERSION=$(docker run --cap-drop=ALL -e PY_COLORS=0 --rm megabytelabs/shellcheck:latest | perl -pe 'if(($v)=/([0-9]+([.][0-9]+)+)/){print"$v";exit}$_=""')
+          VERSION=$(docker run --cap-drop=ALL -e PY_COLORS=0 --rm megabytelabs/shellcheck:latest | perl \
+            -pe 'if(($v)=/([0-9]+([.][0-9]+)+)/){print"$v";exit}$_=""')
           if [[ $VERSION == *.*.* ]]; then
             echo $VERSION
           elif [[ $VERSION == *.* ]]; then
