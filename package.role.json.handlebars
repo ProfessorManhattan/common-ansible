@@ -1,8 +1,4 @@
 {
-  "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-formatter-pretty": "^4.1.0"
-  },
   "keywords": [
     "{{galaxy_info.role_name}}",
     "ansible",
@@ -28,7 +24,7 @@
       "flake8"
     ],
     "**/*vault.yml": [
-      "bash .common/scripts/ansible/vault.sh"
+      "task ansible:vault:lint:file --"
     ]
   }
 }
