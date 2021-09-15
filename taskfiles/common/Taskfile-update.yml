@@ -47,6 +47,7 @@ tasks:
       start: Generating CONTRIBUTING.md
       success: Generated CONTRIBUTING.md
     sources:
+      - .common/docs/**/*
       - .variables.json
     preconditions:
       - sh: test -f .common/docs/blueprint-contributing.md
@@ -222,6 +223,7 @@ tasks:
       success: Generated README.md
     sources:
       - .autodoc/*
+      - .common/docs/**/*
       - .variables.json
     preconditions:
       - sh: 'test -f .common/docs/{{.README_TEMPLATE}}'
