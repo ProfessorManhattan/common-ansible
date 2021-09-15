@@ -34,12 +34,16 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^13.1.0",
     "@megabytelabs/prettier-config": "^2.0.0",
+    "@prettier/plugin-xml": "^1.0.2",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-formatter-pretty": "^4.1.0",
     "eslint-plugin-jsonc": "^1.6.0",
     "eslint-plugin-yml": "0.10.1",
-    "prettier-plugin-sh": "^0.7.1"
+    "prettier": "^2.4.0",
+    "prettier-plugin-sh": "^0.7.1",
+    "prettier-plugin-toml": "^0.3.1"
   },
   "keywords": [
     "ansible",
@@ -104,7 +108,8 @@
       "prettier --write"
     ],
     "**/*.toml": [
-      "check-toml"
+      "check-toml",
+      "prettier --write"
     ],
     "**/*.xml": [
       "check-xml",
@@ -113,8 +118,7 @@
     "**/*.yml": [
       "check-yaml",
       "yamllint -s",
-      "task fix:yaml:dashes --",
-      "task fix:yaml:order --",
+      "task fix:yaml --",
       "prettier --write"
     ],
     "logo.png": [

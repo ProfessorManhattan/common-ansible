@@ -3,8 +3,6 @@ version: '3'
 
 vars:
   DOCKERHUB_PROFILE: megabytelabs
-  SLUG:
-    sh: jq -r '.slug' .variables.json
 
 tasks:
   build:all:
@@ -29,6 +27,8 @@ tasks:
         sh: git show -s --format=%cI
       REVISION:
         sh: git rev-parse HEAD
+      SLUG:
+        sh: jq -r '.slug' .variables.json
       VERSION:
         sh: jq -r '.version' package.json
     cmds:
@@ -71,6 +71,9 @@ tasks:
       - package.json
 
   build:slim:command:
+    vars:
+      SLUG:
+        sh: jq -r '.slug' .variables.json
     cmds:
       - docker-slim build --tag '{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim' {{.SLIM_COMMAND}} '{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest'
     log:
@@ -98,6 +101,8 @@ tasks:
     vars:
       PREVIOUS_SLIM_SIZE:
         sh: jq -r '.blueprint.slim_size' package.json
+      SLUG:
+        sh: jq -r '.slug' .variables.json
       REGULAR_SIZE:
         sh:
           'docker manifest inspect -v "{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest" | grep size | awk -F ":" "{sum+=$NF} END {print sum}"
@@ -118,6 +123,30 @@ tasks:
     status:
       - '[[ "{{.PREVIOUS_SLIM_SIZE}}" == "{{.SLIM_SIZE}}" ]]'
 
+  standard-version:prebump:
+    cmds:
+      - |
+        if grep -q "CMD.\[\"--version\"\]" Dockerfile; then
+          VERSION=$(docker run --cap-drop=ALL -e PY_COLORS=0 --rm megabytelabs/shellcheck:latest | perl -pe 'if(($v)=/([0-9]+([.][0-9]+)+)/){print"$v";exit}$_=""')
+          if [[ $VERSION == *.*.* ]]; then
+            echo $VERSION
+          elif [[ $VERSION == *.* ]]; then
+            echo $VERSION.0
+          fi
+        fi
+
+  standard-version:prerelease: git add --all
+
+  standard-version:pretag:
+    vars:
+      PACKAGE_VERSION:
+        sh: cat package.json | grep version | head -1 | awk -F':' '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]'
+    cmds:
+      - |
+        if git show-ref --tags 'v{{.PACKAGE_VERSION}}' --quiet; then
+          git tag -d 'v{{.PACKAGE_VERSION}}'
+        fi
+
   test:slim:
     deps:
       - :install:software:docker
@@ -126,6 +155,8 @@ tasks:
     vars:
       DOCKER_COMMAND:
         sh: jq -r '.docker_command' .variables.json
+      SLUG:
+        sh: jq -r '.slug' .variables.json
     cmds:
       - |
         if [[ "{{.DOCKER_COMMAND}}" != 'null' ]]; then

@@ -19,7 +19,13 @@ tasks:
     deps:
       - :install:software:git
     cmds:
-      - cd .common && git reset --hard HEAD && git pull origin master --no-rebase || true && cd ..
+      - |
+        if [[ '{{.PRODUCTION_MODE}}' == 'true' ]]; then
+          cd .common
+          git reset --hard HEAD
+          git pull origin master --no-rebase || true
+          cd ..
+        fi
     preconditions:
       - sh: 'type git &> /dev/null'
         msg: 'git is not installed.'
@@ -99,12 +105,17 @@ tasks:
         .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
       - prettier-package-json --write
-      - cd .common && git reset --hard HEAD && git clean -fd && cd ..
+      - |
+        if [[ '{{.PRODUCTION_MODE}}' == 'true' ]]; then
+          cd .common && git reset --hard HEAD
+          git clean -fd
+          cd ..
+        fi
     sources:
       - package.json
       - .variables.json
     preconditions:
-      - sh: type rsync &> /dev/null
+      - sh: 'type rsync &> /dev/null'
         msg: '`rsync` is not installed!'
       - sh: 'type prettier-package-json &> /dev/null'
         msg: '`prettier-package-json` is not installed globally.'
@@ -128,6 +139,20 @@ tasks:
     preconditions:
       - sh: 'type hbs &> /dev/null'
         msg: '`hbs-cli` is not installed globally.'
+
+  init:
+    cmds:
+      - |
+        if ! test -f package.json; then
+          echo '{"blueprint": {}}' > package.json
+        fi
+      - |
+        if ! test -f requirements.txt; then
+          echo '' > requirements.txt
+        fi
+    status:
+      - test -f package.json
+      - test -f requirements.txt
 
   markdown:scrub:
     vars:
@@ -257,7 +282,10 @@ tasks:
 
   taskfile:
     cmds:
-      - cp .common/files-{{.REPOSITORY_SUBTYPE}}/Taskfile.yml Taskfile.yml
+      - |
+        if [[ '{{.PRODUCTION_MODE}}' == 'true' ]]; then
+          cp .common/files-{{.REPOSITORY_SUBTYPE}}/Taskfile.yml Taskfile.yml
+        fi
     sources:
       - .common/files-{{.REPOSITORY_SUBTYPE}}/Taskfile.yml
 
@@ -265,6 +293,7 @@ tasks:
     deps:
       - ':{{if eq .REPOSITORY_SUBTYPE "role"}}common:update:ansible{{else}}donothing{{end}}'
       - ':{{if eq .REPOSITORY_TYPE "packer"}}packer:latestos{{else}}donothing{{end}}'
+      - init
       - repositories
     label: update
     desc: Refresh the project with the latest upstream code and ensure blueprint data has propagated
@@ -298,6 +327,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
+      - echo hey
       - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
       - mv "$TMP" .variables.json
       - task: ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:variables{{else}}donothing{{end}}'

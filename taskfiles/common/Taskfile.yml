@@ -195,7 +195,7 @@ tasks:
       - task: python:requirements:venv
       - task: python:requirements:venv:activate
       - task: python:requirements:pip
-      - task: python:requirements:{{.REPOSITORY_TYPE}}
+      - task: :{{if eq .REPOSITORY_TYPE "ansible"}}common:python:requirements:ansible{{else}}donothing{{end}}
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
