@@ -22,6 +22,7 @@
   ],
   "company": "Megabyte LLC",
   "copyright": "2020-2021",
+  "description_emojis": "👨🏻‍💻 🩺",
   "docker_label_authors": "Brian Zalewski <brian@megabyte.space>",
   "docs": {
     "header_description_post": "<i></i>",
@@ -49,7 +50,6 @@
   "hbs": {
     "ansible": true,
     "dockerfile": true,
-    "playbook": false,
     "python": true,
     "role": true,
     "yaml": true
@@ -129,7 +129,6 @@
     "twitter": "MegabyteLabs",
     "vagrant": "https://app.vagrantup.com"
   },
-  "repo": "[[ package.json .blueprint.repo - See CONTRIBUTING.md ]]",
   "repository": {
     "github": "",
     "gitlab": "",
