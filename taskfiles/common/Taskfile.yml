@@ -252,7 +252,8 @@ tasks:
       # Ensure dependencies are installed
 
       This task ensures that packages in various languages (Node.js, Python, etc.) are installed.
-      At the very minimum, it will install the Node.js requirements by running `npm install` and
+      At the very minimum, it will install the Node.js requirements by running `npm install`
+      (or `pnpm install`, if configured to do so), install the NPM global dependencies, and
       then install the Python requirements by running `pip3 install -r requirements` after
       initiating a `virtualenv`. In some types of projects, additional types of requirements are
       installed (e.g. Ansible projects also install Ansible Galaxy requirements).
