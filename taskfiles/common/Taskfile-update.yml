@@ -85,7 +85,7 @@ tasks:
         sh: mktemp
     cmds:
       - task: files:handlebars
-      - find .common/files-{{.REPOSITORY_SUBTYPE}} -type f -name '*.handlebars' -delete
+      - find '.common/files-{{.REPOSITORY_SUBTYPE}}' -type f -name '*.handlebars' -delete
       - |
         {{if eq .REPOSITORY_SUBTYPE "ci-pipeline"}}
         if [[ "{{.FIRST_LINE}}" == *"debian"* ]] || [[ "{{.FIRST_LINE}}" == *"ubuntu"* ]]; then
