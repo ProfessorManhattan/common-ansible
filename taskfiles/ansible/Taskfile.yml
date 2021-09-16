@@ -82,6 +82,52 @@ tasks:
       - sh: test -f requirements.yml
         msg: The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).
 
+  keywords:sync:
+    deps:
+      - :install:npm:prettier
+      - :install:npm:prettier-package-json
+      - :install:software:jq
+      - :install:software:yq
+    summary: |
+      # Sync Galaxy Tags with `package.json` Keywords
+
+      This task syncs the Ansible Galaxy tags found in `meta/main.yml` with the keywords in the `package.json`
+      file. The Ansible Galaxy tags are capped to a maximum of 20 tags.
+    env:
+      GALAXY_INFO:
+        sh: yq e -o=j meta/main.yml
+      GALAXY_TAGS:
+        sh: yq e -o=j '.galaxy_info.galaxy_tags' meta/main.yml
+      MERGED_TAGS:
+        sh: jq -s --argjson galaxy "$GALAXY_TAGS" '.[0].keywords + $galaxy | sort | unique' package.json
+      MERGED_TAGS_LENGTH:
+        sh: jq -s --argjson galaxy "$GALAXY_TAGS" '.[0].keywords + $galaxy | sort | unique | length' package.json
+      OPTIONAL_TAGS:
+        sh: jq '.keywords' .common/files-role/package.json.handlebars
+      TMP:
+        sh: mktemp
+    cmds:
+      - |
+        if [ "$MERGED_TAGS_LENGTH" -gt 20 ]; then
+          RESULT="$MERGED_TAGS"
+          function updateList() {
+            REMOVE_KEY="$(jq -n --argjson optional "$OPTIONAL_TAGS" '$optional['"$1"']')"
+            RESULT="$(jq -n --argjson remove "$REMOVE_KEY" --argjson jq "$RESULT" '$jq | del(.[] | select(. == $remove))')"
+          }
+          LOOP_COUNT="$((MERGED_TAGS_LENGTH-20))"
+          for i in $(seq "$LOOP_COUNT"); do
+            updateList "$i"
+          done
+          jq -r --argjson result "$MERGED_TAGS" '.keywords = $result' package.json > "$TMP"
+          mv "$TMP" package.json
+          prettier-package-json --write
+          mkdir -p .cache/megabytelabs
+          jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
+          yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
+          prettier --write meta/main.yml
+        fi
+
+
   mod-ansible-autodoc:
     deps:
       - :common:python:requirements
