@@ -190,8 +190,8 @@ tasks:
 
       This task will run Prettier on the project and list the possible fixes without automatically
       applying the fixes. It will report mistakes like inconsistent indent lengths, trailing spaces,
-      and more. This task is a wrapper for the `npm run lint:prettier` command. It will use the configuration
-      specified in the `package.json` file under the `prettier` key.
+      and more. Prettier will use the configuration specified in the `package.json` file under the
+      `prettier` key.
 
       If this command is incompatible with a file then you can add the file to the `.prettierignore`
       file.
@@ -291,10 +291,10 @@ tasks:
     summary: |
       # Report possible errors in shell scripts using Shellcheck
 
-      Shellcheck is a tool that reports warnings and suggestions for shell (e.g. bash) scripts. This
-      task is a wrapper for the `npm run lint:shellcheck` command. The npm command scans the project
-      for files ending with `.sh` or `.sh.j2` and runs Shellcheck on them. Files in the following folders
-      are ignored:
+      Shellcheck is a tool that reports warnings and suggestions for shell (e.g. bash) scripts. This task
+      can scan the project for files ending with `.sh` or `.sh.j2` and runs Shellcheck on them. Files in
+      the following folders are ignored:
+
         * .cache        * .husky
         * .git          * node_modules
         * .husky        * slim_test
