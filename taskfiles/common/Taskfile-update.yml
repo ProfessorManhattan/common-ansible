@@ -272,15 +272,8 @@ tasks:
   start:
     deps:
       - :common:requirements
-      - start-sh
       - taskfile
       - variables
-
-  start-sh:
-    cmds:
-      - cp .common/.start.sh .start.sh
-    sources:
-      - .common/start.sh
 
   taskfile:
     cmds:
