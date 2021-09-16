@@ -97,12 +97,10 @@ tasks:
     env:
       GALAXY_INFO:
         sh: yq e -o=j meta/main.yml
-      GALAXY_TAGS:
-        sh: yq e -o=j '.galaxy_info.galaxy_tags' meta/main.yml
       MERGED_TAGS:
-        sh: jq -s --argjson galaxy "$GALAXY_TAGS" '.[0].keywords + $galaxy | sort | unique' package.json
+        sh: jq -s --argjson galaxy "$(yq e -o=j '.galaxy_info.galaxy_tags' meta/main.yml)" '.[0].keywords + $galaxy | sort | unique' package.json
       MERGED_TAGS_LENGTH:
-        sh: jq -s --argjson galaxy "$GALAXY_TAGS" '.[0].keywords + $galaxy | sort | unique | length' package.json
+        sh: jq -s --argjson galaxy "$(yq e -o=j '.galaxy_info.galaxy_tags' meta/main.yml)" '.[0].keywords + $galaxy | sort | unique | length' package.json
       OPTIONAL_TAGS:
         sh: jq '.keywords' .common/files-role/package.json.handlebars
       TMP:
@@ -127,7 +125,6 @@ tasks:
           yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
           prettier --write meta/main.yml
         fi
-
 
   mod-ansible-autodoc:
     deps:
