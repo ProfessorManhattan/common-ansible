@@ -46,6 +46,7 @@ tasks:
       COLLECTION_LENGTH:
         sh: jq -r '.{{.COLLECTION_DEPS}} | length' '{{.VARIABLES_PATH}}'
       FILE_PATH: .autodoc/{{.COLLECTION_DEPS}}.md
+    env:
       MULTIPLE_COLLECTION_TEXT:
         "### Galaxy Collections\n\nThis role is dependent on multiple Ansible Galaxy collections.
         The collections along with a links to their source are listed below.\n\n{{\"{{\"}}{{.COLLECTION_DEPS}}{{\"}}\"}}"
@@ -57,9 +58,9 @@ tasks:
         {{if (eq .COLLECTION_LENGTH "0")}}
           echo '' > {{.FILE_PATH}}
         {{else if (eq .COLLECTION_LENGTH "1")}}
-          echo "{{.SINGLE_COLLECTION_TEXT}}" > '{{.FILE_PATH}}'
+          echo "$SINGLE_COLLECTION_TEXT" > '{{.FILE_PATH}}'
         {{else}}
-          echo "{{.MULTIPLE_COLLECTION_TEXT}}" > '{{.FILE_PATH}}'
+          echo "$MULTIPLE_COLLECTION_TEXT" > '{{.FILE_PATH}}'
         {{end}}
     log:
       error: 'Failed to create `{{.FILE_PATH}}`'
