@@ -3,7 +3,7 @@ version: '3'
 
 vars:
   NPM_PROGRAM:
-    sh: if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi
+    sh: 'if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi'
 
 tasks:
   install-doctor:
