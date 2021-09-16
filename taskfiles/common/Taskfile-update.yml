@@ -105,7 +105,7 @@ tasks:
         .keywords = (.keywords | sort | unique) | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) |
         .version = $version' package.json > "$TMP"
       - mv "$TMP" package.json
-      - task: :{{if eq REPOSITORY_SUBTYPE "role"}}ansible:keywords:sync{{else}}donothing{{end}}
+      - task: :{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:keywords:sync{{else}}donothing{{end}}
       - prettier-package-json --write
       - |
         if [[ '{{.PRODUCTION_MODE}}' == 'true' ]]; then
