@@ -145,7 +145,7 @@ tasks:
       - :install:software:node
     run: once
     cmds:
-      - task: node:dependencies:local:install
+      - task: :install:local:modules
     status:
       - 'test -d node_modules || [ "${container:=}" == "docker" ]'
 

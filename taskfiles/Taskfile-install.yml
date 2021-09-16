@@ -3,7 +3,7 @@ version: '3'
 
 vars:
   NPM_PROGRAM:
-    sh: 'if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi'
+    sh: if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi
 
 tasks:
   install-doctor:
@@ -15,6 +15,11 @@ tasks:
         fi
     status:
       - '[[ "${container:=}" == "docker" ]]'
+
+  local:modules:
+    cmds:
+      - '{{.NPM_PROGRAM}} install'
+      - '{{.NPM_PROGRAM}} audit fix{{if eq .NPM_PROGRAM "npm"}} --force{{end}} || true'
 
   npm:commitizen:
     run: once
