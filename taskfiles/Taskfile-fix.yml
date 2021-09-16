@@ -135,9 +135,8 @@ tasks:
       # Automatically format most files using Prettier
 
       This task will run Prettier on the project. Prettier will automatically fix formatting
-      mistakes like inconsistent indent lengths, trailing spaces, and more. This task is a wrapper
-      for the `npm run fix:prettier` command. It will use the configuration specified in the
-      `package.json` file under the `prettier` key.
+      mistakes like inconsistent indent lengths, trailing spaces, and more. It will use the
+      configuration specified in the `package.json` file under the `prettier` key.
 
       If this command is incompatible with a file then you can add the file to the `.prettierignore`
       file.
@@ -201,10 +200,9 @@ tasks:
     summary: |
       # Automatically apply fixes to shell scripts using Shellcheck
 
-      Shellcheck is generally used to lint shell scripts. It makes This task is a wrapper for the
-      `npm run fix:shellcheck` command which uses Shellcheck and `git apply` to automatically
-      apply Shellcheck's recommendations. The npm command is configured to apply the fixes to files
-      that end with `.sh` or `.sh.j2` files that are NOT in the following folders:
+      Shellcheck is generally used to lint shell scripts. This task uses Shellcheck and `git apply`
+      to automatically apply Shellcheck's recommendations. It only runs on files that are not in
+      the following folders:
 
       * `.autodoc/`
       * `.cache/`
@@ -225,10 +223,6 @@ tasks:
 
       **To see what changes Shellcheck will make to a file named `test.sh`, for example, you can run:**
       `npx shellcheck -f diff test.sh`
-
-      To see the changes Shellcheck will make when you run this task, you can copy the line from
-      the `package.json` file that corresponds to the `npm run fix:shellcheck` task, remove
-      the ` | git apply` ending, and then run the command.
 
       **Example applying fixes to all shell scripts:**
       `task fix:scripts`
