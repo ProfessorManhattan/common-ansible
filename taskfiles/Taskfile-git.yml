@@ -14,7 +14,7 @@ env:
     sh: if [[ "${container:=}" == 'docker' ]]; then echo "0"; else echo "1"; fi
 
 tasks:
-  convert-folder-to-submodule:
+  convert:folder:submodule:
     deps:
       - github:update
       - gitlab:update
