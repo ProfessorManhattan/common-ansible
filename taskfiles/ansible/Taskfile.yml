@@ -102,13 +102,13 @@ tasks:
       MERGED_TAGS_LENGTH:
         sh: jq -s --argjson galaxy "$(yq e -o=j '.galaxy_info.galaxy_tags' meta/main.yml)" '.[0].keywords + $galaxy | sort | unique | length' package.json
       OPTIONAL_TAGS:
-        sh: jq '.keywords' .common/files-role/package.json.handlebars
+        sh: jq '.keywords' .common/files-{{.REPOSITORY_SUBTYPE}}/package.json.handlebars
       TMP:
         sh: mktemp
     cmds:
       - |
+        RESULT="$MERGED_TAGS"
         if [ "$MERGED_TAGS_LENGTH" -gt 20 ]; then
-          RESULT="$MERGED_TAGS"
           function updateList() {
             REMOVE_KEY="$(jq -n --argjson optional "$OPTIONAL_TAGS" '$optional['"$1"']')"
             RESULT="$(jq -n --argjson remove "$REMOVE_KEY" --argjson jq "$RESULT" '$jq | del(.[] | select(. == $remove))')"
@@ -117,14 +117,14 @@ tasks:
           for i in $(seq "$LOOP_COUNT"); do
             updateList "$i"
           done
-          jq -r --argjson result "$MERGED_TAGS" '.keywords = $result' package.json > "$TMP"
-          mv "$TMP" package.json
-          prettier-package-json --write
-          mkdir -p .cache/megabytelabs
-          jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
-          yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
-          prettier --write meta/main.yml
         fi
+        jq -r --argjson result "$MERGED_TAGS" '.keywords = $result' package.json > "$TMP"
+        mv "$TMP" package.json
+        prettier-package-json --write
+        mkdir -p .cache/megabytelabs
+        jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
+        yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
+        prettier --write meta/main.yml
 
   mod-ansible-autodoc:
     deps:

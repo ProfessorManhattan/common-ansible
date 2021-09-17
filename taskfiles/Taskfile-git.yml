@@ -94,15 +94,41 @@ tasks:
     vars:
       DESCRIPTION:
         sh: jq -r '.description' package.json
+      GITHUB_SLUG:
+        sh: jq -r '.name' package.json | sed 's/.*\///'
       HOMEPAGE:
         sh: jq -r '.homepage' package.json
       PRIVATE:
         sh: jq -r '.private' package.json | sed 's/null/false/'
+    env:
+      OPTIONAL_TAGS:
+        sh: jq '.keywords' .common/files-{{.REPOSITORY_SUBTYPE}}/package.json.handlebars
+      TOPICS:
+        sh: jq '.keywords' package.json | sed 's/null/[]/'
+      TOPICS_LENGTH:
+        sh: jq -r '.keywords | length' package.json
     cmds:
-      - |
+      - >
         if [ ! -z "$GITHUB_TOKEN" ]; then
           gh api -X PATCH repos/{owner}/{repo} -f description="{{.DESCRIPTION}}" -f homepage="{{.HOMEPAGE}}" \
-            -f has_issues={{.GITHUB_ISSUES}} -f has_wiki={{.GITHUB_WIKI}} -f private="{{.PRIVATE}}"
+            -f has_issues={{.GITHUB_ISSUES}} -f has_wiki={{.GITHUB_WIKI}} -f private="{{.PRIVATE}}" --silent
+          RESULT="$TOPICS"
+          if [ "$TOPICS_LENGTH" -gt 20 ]; then
+            function updateList() {
+              REMOVE_KEY="$(jq -n --argjson optional "$OPTIONAL_TAGS" '$optional['"$1"']')"
+              RESULT="$(jq -n --argjson remove "$REMOVE_KEY" --argjson jq "$RESULT" '$jq | del(.[] | select(. == $remove))')"
+            }
+            LOOP_COUNT="$((TOPICS_LENGTH-20))"
+            for i in $(seq "$LOOP_COUNT"); do
+              updateList "$i"
+            done
+          fi
+          MINIMIZED_TOPICS="$(jq -n --argjson tags "$RESULT" '$tags | .[]' | xargs | sed 's/ /","/g' | sed 's/^/"/' | sed 's/$/"/')"
+          if [[ "$MINIMIZED_TOPICS" != '""' ]]; then
+            echo "Inside"
+            curl -X PUT -H "Accept: application/vnd.github.mercy-preview+json" -u "{{.GITHUB_ORG}}:$GITHUB_TOKEN" \
+              https://api.github.com/repos/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}/topics -d '{"names":['"$MINIMIZED_TOPICS"']}'
+          fi
         else
           true warn "The `GITHUB_TOKEN` environment variable is not set so the GitHub repository cannot be updated via the API."
         fi
@@ -141,7 +167,6 @@ tasks:
       - ignore_error: true
         cmd: >
           if [ ! -z "$GITLAB_TOKEN" ] && ! glab repo view '{{.GITLAB_PATH}}' > /dev/null; then
-            echo "heyy"
             glab repo create '{{.GITLAB_PATH}}' --group '{{.GITLAB_GROUP}}' --description '{{.DESCRIPTION}}' --name '{{.NAME}}' \
               {{.PROJECT_TYPE}} --tag '$KEYWORDS'
           else
@@ -255,7 +280,7 @@ tasks:
       - |
         if [ ! -z "$GITLAB_TOKEN" ]; then
           glab api projects/:fullpath -X PUT -f description="{{.DESCRIPTION}}" -f name="{{.NAME}}" \
-            -f wiki_enabled={{.GITLAB_WIKI}} -f visibility="{{.PROJECT_TYPE}}" -f tag_list="$KEYWORDS"
+            -f wiki_enabled={{.GITLAB_WIKI}} -f visibility="{{.PROJECT_TYPE}}" -f tag_list="$KEYWORDS" --silent
         else
           true warn "The `GITLAB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API."
         fi
