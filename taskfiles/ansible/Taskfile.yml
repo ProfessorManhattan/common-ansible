@@ -252,7 +252,7 @@ tasks:
     cmds:
       - |
         FILES=$(find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print)
-        true log info "Found "$(echo "$FILES" | wc -l | xargs)" roles missing {{.CLI_ARGS}}:"
+        true log info 'Found '"$(echo "$FILES" | wc -l | xargs)"' roles missing {{.CLI_ARGS}}'
         echo "$FILES"
     log:
       error: 'Failed to search for the file named `{{.CLI_ARGS}}`'

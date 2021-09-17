@@ -28,7 +28,7 @@
     "header_description_pre": "<i></i>",
     "header_title_post": "<i></i>",
     "header_title_pre": "<i></i>",
-    "link": "https://megabyte.space/docs/ansible/roles"
+    "link": "https://megabyte.space/docs/ansible/playbook"
   },
   "email": {
     "help": "help@megabyte.space"

@@ -10,7 +10,7 @@ tasks:
     cmds:
       - |
         if ! type {{.SOFTWARE}} &> /dev/null; then
-          true info "Using https://install.doctor to install '{{.SOFTWARE}}'"
+          true info 'Using https://install.doctor to install `{{.SOFTWARE}}`'
           curl -sS https://install.doctor/{{.SOFTWARE}} | bash
         fi
     status:
@@ -338,7 +338,7 @@ tasks:
       rm miniconda.sh
       export PATH="$HOME/.local/miniconda/bin:$PATH"
       if grep -L '.local/miniconda/bin' "$HOME/{{.BASH_PROFILE}}"; then
-        true info 'Updating the `{{.BASH_PROFILE}}` file to include Miniconda Python 3 in the PATH environment variable'
+        true info 'Updating the `{{.BASH_PROFILE}}` file to include Miniconda Python 3 in the `PATH` environment variable'
         echo -e '\nexport PATH=$HOME/.local/miniconda/bin:$PATH' >> "$HOME/{{.BASH_PROFILE}}"
       fi
     fi

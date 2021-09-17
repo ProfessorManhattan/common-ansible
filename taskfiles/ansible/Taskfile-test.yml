@@ -57,8 +57,8 @@ tasks:
       SNAP_REFS:
         sh: grep -Ril 'community.general.snap:' ./tasks || true
     cmds:
-      - '{{if .SNAP_REFS}}true warn "Degrading test scenario to `docker-snap` which only tests
-        Docker containers that support `snap` inside Docker containers."{{end}}'
+      - "{{if .SNAP_REFS}}true warn 'Degrading test scenario to `docker-snap` which only tests
+        Docker containers that support `snap` inside Docker containers.'{{end}}"
       - task: test:molecule:docker:{{if eq .CLI_ARGS "matrix"}}matrix{{else}}default{{end}}
     log:
       error: Finished Docker Molecule testing of the Ansible play with error(s)

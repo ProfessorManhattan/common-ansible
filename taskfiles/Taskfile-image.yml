@@ -37,7 +37,7 @@ tasks:
         function compressImage() {
           if exiftool "$1" &> /dev/null; then
             if (exiftool "$1" | grep Comment | grep tinypng-compressed) &> /dev/null; then
-              true log "'$1' has already been compressed by TinyPNG"
+              true log '`'"$1"'` has already been compressed by TinyPNG'
             else
               if [ -f ~/.tinypng ]; then
                 tinypng "$1"
@@ -47,7 +47,7 @@ tasks:
               exiftool -comment="tinypng-compressed" "$1"
             fi
           else
-            true error "Failed to extract EXIF data from `$1` so the compression is being skipped"
+            true error 'Failed to extract EXIF data from `$1` so the compression is being skipped'
           fi
         }
         if [ -z '{{.CLI_ARGS}}' ]; then

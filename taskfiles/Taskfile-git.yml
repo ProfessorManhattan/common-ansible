@@ -38,7 +38,7 @@ tasks:
         git add {{.BASENAME}}
         git commit -m "refactor(convert-dir-to-submodule) Adding new submodule which was previously a directory."
         git push -u origin HEAD
-      - true success "Converted the `{{.BASENAME}}` directory to a submodule"
+      - true success 'Converted the `{{.BASENAME}}` directory to a submodule'
     preconditions:
       - sh: '[[ ! $(git rev-parse --git-dir) =~ ".git/modules" ]]'
         msg: Cannot convert the directory to a submodule - the directory already appears to be a submodule.
@@ -69,7 +69,7 @@ tasks:
                 {{.PROJECT_TYPE}}
             fi
           else
-            true warn "The `GITHUB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API."
+            true warn 'The `GITHUB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
           fi
     status:
       - '[[ "$(gh repo view {{.GITHUB_ORG}}/{{.GITHUB_SLUG}})" ]]'
@@ -130,7 +130,7 @@ tasks:
               https://api.github.com/repos/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}/topics -d '{"names":['"$MINIMIZED_TOPICS"']}'
           fi
         else
-          true warn "The `GITHUB_TOKEN` environment variable is not set so the GitHub repository cannot be updated via the API."
+          true warn 'The `GITHUB_TOKEN` environment variable is not set so the GitHub repository cannot be updated via the API.'
         fi
     status:
       - '[ -z "$GITHUB_TOKEN" ]'
@@ -197,13 +197,13 @@ tasks:
     cmds:
       - >
         if [[ "{{.PUSH_MIRROR_COUNT}}" == '0' ]]; then
-          glab api projects/:fullpath/remote_mirrors --method POST --header "Content-Type: application/json"
-            -f "url=https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git"
+          glab api projects/:fullpath/remote_mirrors --method POST --header "Content-Type: application/json" \
+            -f "url=https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git" \
             -f 'enabled=true'
         fi
       - cmd: >
-          curl -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -XPUT --data
-            "{'mirror': true, 'import_url': 'https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git'}"
+          curl -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -XPUT --data \
+            "{'mirror': true, 'import_url': 'https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git'}" \
             'https://gitlab.com/api/v4/projects/{{.GITLAB_REPO_ID}}'
     sources:
       - package.json
@@ -229,30 +229,39 @@ tasks:
       PIPELINE_RES:
         sh: glab api projects/:fullpath/pipeline_schedules
     cmds:
-      - |
+      - >
         if [ ! -z "$GITLAB_TOKEN" ]; then
-          MAX_INDEX=$(({{.PIPELINE_COUNT}} - 1))
-          for PIPELINE_INDEX in {0..$MAX_INDEX}; do
-            ACTIVE=$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].active')
-            CRON=$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].cron')
-            DESC=$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].description')
-            REF=$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].ref')
-            if ! $(echo "$PIPELINE_RES") | grep "$DESC"; then
+          for INDEX in {1..{{.PIPELINE_COUNT}}}; do
+            PIPELINE_INDEX="$((INDEX - 1))"
+            ACTIVE="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].active')"
+            CRON="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].cron' | sed 's/"//g')"
+            DESC="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].description')"
+            REF="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].ref')"
+            if ! echo "$PIPELINE_RES" | grep "$DESC"; then
               glab api projects/:fullpath/pipeline_schedules -X POST -f active="$ACTIVE" -f description="$DESC" \
-                -f ref="$REF" -f cron="$CRON" -f cron_timezone="{{.TIMEZONE}}"
-              true success "Pipeline with description of `$DESC` successfully added"
+                -f ref="$REF" -f cron="$CRON" -f cron_timezone='{{.TIMEZONE}}'
+              true success 'Pipeline with description of `$DESC` successfully added'
             else
-              true log "Pipeline with description of `$DESC` already added"
+              true log 'Pipeline with description of `'"$DESC"'` already added'
+            fi
           done
-          for
         else
-          true warn "The `GITLAB_TOKEN` environment variable is not set so the GitLab pipelines cannot be updated via the API."
+          true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab pipelines cannot be updated via the API.'
         fi
     status:
       - '[ -z "$GITLAB_TOKEN" ]'
-
     sources:
       - .variables.json
+
+  gitlab:pipelines:clear:
+    env:
+      PIPELINE_IDS:
+        sh: glab api projects/:id/pipeline_schedules -X GET | jq -r '.[].id'
+    cmds:
+      - >
+        for ID in "$PIPELINE_IDS"; do
+          glab api projects/:fullpath/pipeline_schedules/"$ID" -X DELETE
+        done
 
   gitlab:update:
     deps:
@@ -282,7 +291,7 @@ tasks:
           glab api projects/:fullpath -X PUT -f description="{{.DESCRIPTION}}" -f name="{{.NAME}}" \
             -f wiki_enabled={{.GITLAB_WIKI}} -f visibility="{{.PROJECT_TYPE}}" -f tag_list="$KEYWORDS" --silent
         else
-          true warn "The `GITLAB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API."
+          true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
         fi
     status:
       - '[ -z "$GITLAB_TOKEN" ]'
@@ -310,7 +319,7 @@ tasks:
         if [ -z "$GITLAB_TOKEN" ]; then
           glab api projects/:fullpath/services/external-wiki -X PUT -f external_wiki_url="{{.DOCS_URL}}/{{.GROUP}}"
         else
-          true warn "The `GITLAB_TOKEN` environment variable is not set so the GitLab repository's external wiki cannot be updated via the API."
+          true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository\'s external wiki cannot be updated via the API.'
         fi
     status:
       - '[ -z "$GITLAB_TOKEN" ]'

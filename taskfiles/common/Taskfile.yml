@@ -96,7 +96,7 @@ tasks:
             cp ".common/files-{{.REPOSITORY_SUBTYPE}}/{{.FILE}}" "{{.FILE}}"
             chmod +x "{{.FILE}}"
           else
-            true error "The '{{.FILE}}' is missing from the '.common/files-{{.REPOSITORY_SUBTYPE}}/' folder"
+            true error 'The `{{.FILE}}` is missing from the `.common/files-{{.REPOSITORY_SUBTYPE}}/` folder'
             exit 1
           fi
         fi
