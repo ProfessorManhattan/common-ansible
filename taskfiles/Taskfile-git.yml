@@ -312,12 +312,10 @@ tasks:
     vars:
       DOCS_URL:
         sh: jq -r '.docs.link' .variables.json
-      GROUP:
-        sh: jq -r '.group' .variables.json
     cmds:
       - |
-        if [ -z "$GITLAB_TOKEN" ]; then
-          glab api projects/:fullpath/services/external-wiki -X PUT -f external_wiki_url="{{.DOCS_URL}}/{{.GROUP}}"
+        if [ ! -z "$GITLAB_TOKEN" ]; then
+          glab api projects/:fullpath/services/external-wiki -X PUT -f external_wiki_url="{{.DOCS_URL}}"
         else
           true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository external wiki cannot be updated via the API.'
         fi

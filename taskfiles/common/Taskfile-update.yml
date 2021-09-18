@@ -312,8 +312,14 @@ tasks:
       - task: start
       - task: all
       - task: ':{{if eq .REPOSITORY_TYPE "docker"}}docker:update-labels{{else}}donothing{{end}}'
+      - task: update:git
     log:
       success: Successfully updated the project with the latest upstream changes
+
+  update:git:
+    deps:
+      - :git:github:update
+      - :git:gitlab:update
 
   variables:
     deps:
