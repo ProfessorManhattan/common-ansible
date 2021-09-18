@@ -125,6 +125,7 @@ tasks:
         jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
         yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
         prettier --write meta/main.yml
+      - task: :fix:yaml:dashes -- meta/main.yml
 
   mod-ansible-autodoc:
     deps:

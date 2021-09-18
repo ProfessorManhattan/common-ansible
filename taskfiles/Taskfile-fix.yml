@@ -274,7 +274,10 @@ tasks:
       This task is mainly intended to be used with `lint-staged`.
 
       **Example usage:**
-      `task fix:yaml:dashes:cli -- path/filename.yml`
+      `task fix:yaml:dashes`
+
+      **Example usage for one specific file:**
+      `task fix:yaml:dashes -- path/filename.yml`
     cmds:
       - task: 'yaml:dashes:{{if .CLI_ARGS}}cli{{else}}default{{end}}'
 
