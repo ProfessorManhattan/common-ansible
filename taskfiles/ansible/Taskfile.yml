@@ -118,12 +118,12 @@ tasks:
             updateList "$i"
           done
         fi
-      - jq -r --argjson result "$MERGED_TAGS" '.keywords = $result' package.json > "$TMP"
-      - mv "$TMP" package.json
-      - prettier-package-json --write
-      - mkdir -p .cache/megabytelabs
-      - jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
-      - yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
+        jq -r --argjson result "$MERGED_TAGS" '.keywords = $result' package.json > "$TMP"
+        mv "$TMP" package.json
+        prettier-package-json --write
+        mkdir -p .cache/megabytelabs
+        jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
+        yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
       - prettier --write meta/main.yml
       - task fix:yaml:dashes -- meta/main.yml
 
