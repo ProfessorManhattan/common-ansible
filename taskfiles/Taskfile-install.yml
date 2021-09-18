@@ -73,7 +73,10 @@ tasks:
           true success "The npm `{{.NPM_PACKAGE}}` package is globally installed"
         fi
     status:
-      - '(type {{.NPM_PACKAGE_BIN}} &> /dev/null && [ ! -z "{{.PNPM_GREP}}" ]) || [[ "${container:=}" == "docker" ]]'
+      - >
+        '(type {{.NPM_PACKAGE_BIN}} &> /dev/null{{if eq .NPM_PROGRAM "pnpm"}} &&
+        [ ! -z "$(pnpm list -g | grep "{{.NPM_PACKAGE}} ")" ]){{end}} ||
+        [[ "${container:=}" == "docker" ]]'
 
   npm:global:clean:
     vars:
