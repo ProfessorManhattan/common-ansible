@@ -280,18 +280,18 @@ tasks:
 
   yaml:dashes:cli:
     vars:
-      ANSIBLE_VAULT:
-        sh: head -c 14 '{{.CLI_ARGS}}'
       FILE_TYPE:
         sh: echo -n '{{.CLI_ARGS}}' | tail -c 4
-      HEADER:
-        sh: head -c 3 {{.CLI_ARGS}}
     env:
+      ANSIBLE_VAULT:
+        sh: head -c 14 '{{.CLI_ARGS}}'
+      HEADER:
+        sh: head -c 3 '{{.CLI_ARGS}}'
       TMP:
         sh: mktemp
     cmds:
       - |
-        if [ '{{.HEADER}}' != '---' ] && [ '{{.ANSIBLE_VAULT}}' != '$ANSIBLE_VAULT' ]; then
+        if [ "$HEADER" != '---' ] && [ "$ANSIBLE_VAULT" != '$ANSIBLE_VAULT' ]; then
           echo '---' | cat - '{{.CLI_ARGS}}' > "$TMP"
           mv "$TMP" '{{.CLI_ARGS}}'
         fi
