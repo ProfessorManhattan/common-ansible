@@ -76,8 +76,11 @@ tasks:
       - '[[ "${container:=}" != "docker" ]]'
 
   husky:install:
+    deps:
+      - :install:npm:husky
     cmds:
       - |
+        echo "Suppp"
         if [ -d .git ] && [ "${container:=}" != 'docker' ]; then
           husky install
         else
@@ -128,6 +131,7 @@ tasks:
       - :install:npm:cspell
       - :install:npm:eslint
       - :install:npm:hbs
+      - :install:npm:husky
       - :install:npm:lint-staged
       - :install:npm:markdown-link-check
       - :install:npm:prettier
@@ -146,8 +150,8 @@ tasks:
     run: once
     cmds:
       - task: :install:local:modules
-    status:
-      - 'test -d node_modules || [ "${container:=}" == "docker" ]'
+    sources:
+      - package.json
 
   node:dependencies:local:install:
     cmds:
