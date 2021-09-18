@@ -319,7 +319,7 @@ tasks:
         if [ -z "$GITLAB_TOKEN" ]; then
           glab api projects/:fullpath/services/external-wiki -X PUT -f external_wiki_url="{{.DOCS_URL}}/{{.GROUP}}"
         else
-          true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository\'s external wiki cannot be updated via the API.'
+          true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository external wiki cannot be updated via the API.'
         fi
     status:
       - '[ -z "$GITLAB_TOKEN" ]'
