@@ -80,7 +80,6 @@ tasks:
       - :install:npm:husky
     cmds:
       - |
-        echo "Suppp"
         if [ -d .git ] && [ "${container:=}" != 'docker' ]; then
           husky install
         else
