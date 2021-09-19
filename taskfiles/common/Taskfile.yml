@@ -132,7 +132,6 @@ tasks:
       - :install:npm:hbs
       - :install:npm:husky
       - :install:npm:lint-staged
-      - :install:npm:markdown-link-check
       - :install:npm:prettier
       - :install:npm:prettier-package-json
       - :install:npm:readme
