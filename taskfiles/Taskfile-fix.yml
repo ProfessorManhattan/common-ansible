@@ -314,8 +314,6 @@ tasks:
         fi
     log:
       success: 'Added `---` to the beginning of `{{.CLI_ARGS}}` since it was missing from the head of the file'
-    status:
-      - "[[ '{{.HEADER}}' == '---' ]] || [[ '{{.ANSIBLE_VAULT}}' == '$ANSIBLE_VAULT' ]]"
     preconditions:
       - sh: '[ "{{.FILE_TYPE}}" == ".yml" ] || [ "{{.FILE_TYPE}}" == "yaml" ]'
         msg: The file name must end with either `.yml` or `yaml`
