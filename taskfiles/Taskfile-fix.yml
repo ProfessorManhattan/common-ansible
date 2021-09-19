@@ -316,7 +316,7 @@ tasks:
       success: 'Added `---` to the beginning of `{{.CLI_ARGS}}` since it was missing from the head of the file'
     preconditions:
       - sh: '[ "{{.FILE_TYPE}}" == ".yml" ] || [ "{{.FILE_TYPE}}" == "yaml" ]'
-        msg: The file name must end with either `.yml` or `yaml`
+        msg: 'The file name must end with either `.yml` or `yaml`'
       - sh: test -f '{{.CLI_ARGS}}'
         msg: '`{{.CLI_ARGS}}` is not a file path.'
 

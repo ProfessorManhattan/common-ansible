@@ -76,11 +76,11 @@ tasks:
       - test -d .git
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
-        msg: The `.description` in `package.json` must be set.
+        msg: 'The `.description` in `package.json` must be set.'
       - sh: '[ "{{.GITHUB_SLUG}}" != "null" ]'
-        msg: The `.name` in `package.json` must be set.
+        msg: 'The `.name` in `package.json` must be set.'
       - sh: '[ "{{.HOMEPAGE}}" != "null" ]'
-        msg: The `.homepage` in `package.json` must be set.
+        msg: 'The `.homepage` in `package.json` must be set.'
 
   github:update:
     deps:
@@ -137,9 +137,9 @@ tasks:
       - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
-        msg: The `.description` in `package.json` must be set.
+        msg: 'The `.description` in `package.json` must be set.'
       - sh: '[ "{{.HOMEPAGE}}" != "null" ]'
-        msg: The `.homepage` in `package.json` must be set.
+        msg: 'The `.homepage` in `package.json` must be set.'
 
   gitlab:create:
     deps:
@@ -176,9 +176,9 @@ tasks:
       - test -d .git
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
-        msg: The `.description` in `package.json` must be set.
+        msg: 'The `.description` in `package.json` must be set.'
       - sh: '[ "{{.NAME}}" != "null" ]'
-        msg: The `.blueprint.name` variable in `package.json` must be set.
+        msg: 'The `.blueprint.name` variable in `package.json` must be set.'
 
   gitlab:mirror:
     deps:
@@ -208,11 +208,11 @@ tasks:
       - package.json
     preconditions:
       - sh: '[ ! -z "$GITHUB_TOKEN" ]'
-        msg: The `GITHUB_TOKEN` environment variable must be set to enable mirroring.
+        msg: 'The `GITHUB_TOKEN` environment variable must be set to enable mirroring.'
       - sh: '[ ! -z "$GITLAB_TOKEN" ]'
-        msg: The `GITLAB_TOKEN` environment variable must be set to enable mirroring.
+        msg: 'The `GITLAB_TOKEN` environment variable must be set to enable mirroring.'
       - sh: '[ ! -z "{{.GITLAB_REPO_ID}}" ]'
-        msg: Unable to acquire `GITLAB_REPO_ID`. Ensure origin is pointing to GitLab.
+        msg: 'Unable to acquire `GITLAB_REPO_ID`. Ensure origin is pointing to GitLab.'
 
   gitlab:pipelines:
     deps:
@@ -298,9 +298,9 @@ tasks:
       - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
-        msg: The `.description` in `package.json` must be set.
+        msg: 'The `.description` in `package.json` must be set.'
       - sh: '[ "{{.NAME}}" != "null" ]'
-        msg: The `.blueprint.name` variable in `package.json` must be set.
+        msg: 'The `.blueprint.name` variable in `package.json` must be set.'
 
   gitlab:wiki:
     deps:
@@ -324,14 +324,14 @@ tasks:
       - .variables.json
     preconditions:
       - sh: '[ "{{.DOCS_URL}}" != "null" ]'
-        msg: The `.docs.link` variable in `.variables.json` must be set.
+        msg: 'The `.docs.link` variable in `.variables.json` must be set.'
       - sh: '[ "{{.GROUP}}" != "null" ]'
-        msg: The `.group` variable in `.variables.json` must be set.
+        msg: 'The `.group` variable in `.variables.json` must be set.'
 
   remotes:
     deps:
       - :install:software:git
-    desc: Configure the git remote `origin` to point to GitLab and the git remote `all` to point to GitLab and GitHub
+    desc: 'Configure the git remote `origin` to point to GitLab and the git remote `all` to point to GitLab and GitHub'
     summary: |
       # Configure git remote
 

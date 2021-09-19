@@ -122,6 +122,14 @@ tasks:
           NPM_PACKAGE: husky
           NPM_PACKAGE_BIN: husky
 
+  npm:markdown-link-check:
+    run: once
+    cmds:
+      - task: npm:global
+        vars:
+          NPM_PACKAGE: markdown-link-check
+          NPM_PACKAGE_BIN: markdown-link-check
+
   npm:npm:
     run: once
     cmds:

@@ -13,7 +13,7 @@ tasks:
       - :install:software:parallels
       - :install:software:virtualbox
       - :install:software:vmware
-    desc: Build Packer images for all platforms (default setting uses `template.json`)
+    desc: 'Build Packer images for all platforms (default setting uses `template.json`)'
     summary: |
       # Build Packer images for all virtualization platforms
 
@@ -127,7 +127,7 @@ tasks:
       - template.json
     preconditions:
       - sh: test -f template.json
-        msg: The `template.json` file is missing from the root of this project.
+        msg: 'The `template.json` file is missing from the root of this project.'
 
   packer:vmware:
     deps:
@@ -229,7 +229,7 @@ tasks:
           meta artifacts. Please add a `template.json`. You can find an example of one in
           [this repository](https://gitlab.com/megabyte-labs/packer/ubuntu-desktop)'
       - sh: test -f .variables.json
-        msg: The `.variables.json` file is missing!
+        msg: 'The `.variables.json` file is missing!'
 
   update:variables:darwin:
     cmds:

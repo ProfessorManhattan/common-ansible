@@ -6,12 +6,12 @@ tasks:
     deps: [main, module]
 
   build:main:
-    desc: Build `main` using `tsconfig.json`
+    desc: 'Build `main` using `tsconfig.json`'
     cmds:
       - tsc -p tsconfig.json
 
   build:module:
-    desc: Build `module` using `tsconfig.module.json`
+    desc: 'Build `module` using `tsconfig.module.json`'
     cmds:
       - tsc -p tsconfig.module.json
 

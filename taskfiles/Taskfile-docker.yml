@@ -36,7 +36,7 @@ tasks:
         --tag {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest --tag {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:{{.VERSION}} .
     log:
       error: Failed to build "fat" image
-      start: Building regular image named `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}`
+      start: 'Building regular image named `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}`'
       success: Successfully built "fat" image
     sources:
       - Dockerfile
@@ -175,15 +175,15 @@ tasks:
           done
         fi
     log:
-      error: Encountered error while testing the test scenarios in the `slim_test/` folder
-      success: The output from both the `latest` and `slim` container are the same for all the test scenarios in `slim_test/`
+      error: 'Encountered error while testing the test scenarios in the `slim_test/` folder'
+      success: 'The output from both the `latest` and `slim` container are the same for all the test scenarios in `slim_test/`'
     status:
       - test ! -d slim_test
     preconditions:
       - sh: '[[ "$(docker images -q {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim 2> /dev/null)" != "" ]]'
-        msg: The slim image has not been built yet. Try running `task build`.
+        msg: 'The slim image has not been built yet. Try running `task build`.'
       - sh: '[[ "$(docker images -q {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest 2>/dev/null)" == "" ]]'
-        msg: The regular image has not been built yet. Try running `task build`.
+        msg: 'The regular image has not been built yet. Try running `task build`.'
 
   update:labels:
     deps:
@@ -200,11 +200,11 @@ tasks:
       - package.json
     preconditions:
       - sh: test -f Dockerfile
-        msg: A `Dockerfile` is not present in the root of this project!
+        msg: 'A `Dockerfile` is not present in the root of this project!'
       - sh: test -f .variables.json
-        msg: The `.variables.json` file is not present in the root of this project!
+        msg: 'The `.variables.json` file is not present in the root of this project!'
       - sh: test -f package.json
-        msg: The `package.json` file is not present in the root of this project!
+        msg: 'The `package.json` file is not present in the root of this project!'
 
   update:labels:add:
     vars:

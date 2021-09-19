@@ -149,15 +149,15 @@ tasks:
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     log:
-      error: Error running `mod-ansible-autodoc`
-      success: Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder
+      error: 'Error running `mod-ansible-autodoc`'
+      success: 'Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder'
     sources:
       - '{{.VARIABLES_PATH}}'
       - '.autodoc/*'
       - tasks/**/*.yml
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
-        msg: The Python package `mod-ansible-autodoc` is missing.
+        msg: 'The Python package `mod-ansible-autodoc` is missing.'
 
   mod-ansible-autodoc:variables:
     env:
@@ -198,7 +198,7 @@ tasks:
   #          fi
   #    preconditions:
   #      - sh: "test -d node_modules"
-  #        msg: "This task has dependencies in the `node_modules` folder which is missing."
+  #        msg: 'This task has dependencies in the `node_modules` folder which is missing.'
   #    status:
   #      - '[[ -z "{{.CLI_ARGS}}" ]]'
 
@@ -259,7 +259,7 @@ tasks:
       error: 'Failed to search for the file named `{{.CLI_ARGS}}`'
     preconditions:
       - sh: test -d roles
-        msg: The `roles/` folder is missing. Is the project set up right?
+        msg: 'The `roles/` folder is missing. Is the project set up right?'
 
   populate:collection:
     deps:
@@ -284,7 +284,7 @@ tasks:
       - '[[ "$COLLECTIONS" =~ "{{.KEY}}" ]] || [ ! "$REFERENCES" ]'
 
   populate:dependencies:
-    desc: Attempt to automatically populate `{{.META_PATH}}` and `{{.REQUIREMENTS_PATH}}`
+    desc: 'Attempt to automatically populate `{{.META_PATH}}` and `{{.REQUIREMENTS_PATH}}`'
     summary: |
       # Automatically populate `{{.META_PATH}}` and `{{.REQUIREMENTS_PATH}}`
 
@@ -377,18 +377,18 @@ tasks:
       - mv "$TMP" package.json
       - prettier-package-json --write package.json
     log:
-      error: Failed to update the `blueprint` variable in `package.json` with meta information
-      success: Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information
+      error: 'Failed to update the `blueprint` variable in `package.json` with meta information'
+      success: 'Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information'
     preconditions:
       - sh: 'test -f {{.META_PATH}}'
-        msg: The `{{.META_PATH}}` file is missing. A properly filled out `{{.META_PATH}}` file is required for the
-          update process. {{.REFERENCE_LINK}}
+        msg: 'The `{{.META_PATH}}` file is missing. A properly filled out `{{.META_PATH}}` file is required for the
+          update process. {{.REFERENCE_LINK}}'
       - sh: '[[ "{{.DESCRIPTION}}" != "null" ]]'
-        msg: The `{{.META_PATH}}` file has a null value for the `galaxy_info.description` key. Ensure the description
-          is populated in `{{.META_PATH}}`. {{.REFERENCE_LINK}}
+        msg: 'The `{{.META_PATH}}` file has a null value for the `galaxy_info.description` key. Ensure the description
+          is populated in `{{.META_PATH}}`. {{.REFERENCE_LINK}}'
       - sh: '[[ "{{.GALAXY_ROLE_NAME}}" != "null" ]]'
-        msg: The `{{.META_PATH}}` file has a null value for the `galaxy_info.role_name` key. Ensure the role name is
-          populated in `{{.META_PATH}}`. {{.REFERENCE_LINK}}
+        msg: 'The `{{.META_PATH}}` file has a null value for the `galaxy_info.role_name` key. Ensure the role name is
+          populated in `{{.META_PATH}}`. {{.REFERENCE_LINK}}'
 
   symlink:playbook:
     desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
@@ -408,8 +408,8 @@ tasks:
           fi
         done
     log:
-      error: Encountered an error while symlinking the roles to `~/.ansible/roles`
-      success: Successfully symlinked the roles in this playbook to `~/.ansible/roles`
+      error: 'Encountered an error while symlinking the roles to `~/.ansible/roles`'
+      success: 'Successfully symlinked the roles in this playbook to `~/.ansible/roles`'
     preconditions:
       - sh: test -d roles
         msg: The roles folder is missing. Is the project set up right?
@@ -475,8 +475,8 @@ tasks:
           mv "$TMP" package.json
         fi
     log:
-      error: Failed to acquire and inject the `.blueprint.ansible_galaxy_project_id` value into `package.json`
-      success: Ensured that the `.blueprint.ansible_galaxy_project_id` variable in `package.json` is accurate
+      error: 'Failed to acquire and inject the `.blueprint.ansible_galaxy_project_id` value into `package.json`'
+      success: 'Ensured that the `.blueprint.ansible_galaxy_project_id` variable in `package.json` is accurate'
     status:
       - '[[ "{{.HAS_PROJECT_ID}}" == "true" ]]'
 

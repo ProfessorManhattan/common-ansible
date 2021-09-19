@@ -159,7 +159,7 @@ tasks:
   packer:
     deps:
       - :install:software:packer
-    desc: Validate the Packer templates ending with `template.json`
+    desc: 'Validate the Packer templates ending with `template.json`'
     summary: |
       # Validate Packer templates
 
@@ -229,7 +229,7 @@ tasks:
     cmds:
       - |
         if [ -f ~/.config/proselint/config ]; then
-          true info 'Backing up `proselint` from `~/.config/proselint/config` to `~/.config/proselint/config.backup`''
+          true info 'Backing up `proselint` from `~/.config/proselint/config` to `~/.config/proselint/config.backup`'
           mv ~/.config/proselint/config ~/.config/proselint/config.backup
         fi
       - mkdir -p ~/.config/proselint
