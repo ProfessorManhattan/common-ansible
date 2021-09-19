@@ -44,13 +44,6 @@
     }
   ],
   "group": "ansible",
-  "hbs": {
-    "ansible": true,
-    "dockerfile": true,
-    "python": true,
-    "role": true,
-    "yaml": true
-  },
   "json_top_keys": "",
   "license": "MIT",
   "link": {
