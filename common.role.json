@@ -9,10 +9,6 @@
     "header_title_pre": "Ansible Role: ",
     "link": "https://megabyte.space/docs/ansible/roles"
   },
-  "galaxy_info": {
-    "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing. ]]",
-    "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
-  },
   "gitlab_pipelines": [
     {
       "active": true,
@@ -21,13 +17,6 @@
       "ref": "master"
     }
   ],
-  "hbs": {
-    "ansible": true,
-    "dockerfile": true,
-    "python": true,
-    "role": true,
-    "yaml": true
-  },
   "repository": {
     "prefix": {
       "github": "ansible-"
