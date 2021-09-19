@@ -28,22 +28,6 @@ tasks:
           NPM_PACKAGE: commitizen
           NPM_PACKAGE_BIN: git-cz
 
-  npm:commitlint:
-    run: once
-    cmds:
-      - task: npm:global
-        vars:
-          NPM_PACKAGE: '@commitlint/cli'
-          NPM_PACKAGE_BIN: commitlint
-
-  npm:cspell:
-    run: once
-    cmds:
-      - task: npm:global
-        vars:
-          NPM_PACKAGE: cspell
-          NPM_PACKAGE_BIN: cspell
-
   npm:eslint:
     run: once
     cmds:
