@@ -34,10 +34,6 @@
   "email": {
     "help": "help@megabyte.space"
   },
-  "galaxy_info": {
-    "namespace": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.namespace` value is missing. ]]",
-    "role_name": "[[ The `meta/main.yml` file needs to be setup. The `galaxy_info.role_name` value is missing. ]]"
-  },
   "github_prefix": "<i></i>",
   "gitlab_pipelines": [
     {
