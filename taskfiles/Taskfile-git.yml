@@ -123,7 +123,7 @@ tasks:
           MINIMIZED_TOPICS="$(jq -n --argjson tags "$RESULT" '$tags | .[]' | xargs | sed 's/ /","/g' | sed 's/^/"/' | sed 's/$/"/')"
           if [[ "$MINIMIZED_TOPICS" != '""' ]]; then
             curl -X PUT -H "Accept: application/vnd.github.mercy-preview+json" -u "{{.GITHUB_ORG}}:$GITHUB_TOKEN" \
-              'https://api.github.com/repos/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}/topics' -d '{"names":['"$MINIMIZED_TOPICS"']}' --silent
+              'https://api.github.com/repos/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}/topics' -d '{"names":['"$MINIMIZED_TOPICS"']}' > /dev/null
           fi
         else
           true warn 'The `GITHUB_TOKEN` environment variable is not set so the GitHub repository cannot be updated via the API.'
