@@ -92,7 +92,7 @@ tasks:
       - :common:node:dependencies:local
       - :install:npm:eslint
   cmds:
-    - eslint .
+    - eslint --format pretty .
 
   lint-staged:
     deps:

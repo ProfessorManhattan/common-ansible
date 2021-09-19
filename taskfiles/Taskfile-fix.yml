@@ -45,9 +45,9 @@ tasks:
       - task: json:{{if .CLI_ARGS}}cli{{else}}default{{end}}
 
   json:cli: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.json' \) -print0 |
-    xargs -0 -r -n1 eslint --fix
+    xargs -0 -r -n1 eslint --format pretty --fix
 
-  json:default: eslint --fix --ext json .
+  json:default: eslint --fix --format pretty --ext json .
 
   misc:
     deps:
@@ -341,6 +341,6 @@ tasks:
     cmds:
       - task: yaml:order:{{if .CLI_ARGS}}cli{{else}}default{{end}}
 
-  yaml:order:cli: eslint --fix '{{.CLI_ARGS}}'
+  yaml:order:cli: eslint --format pretty --fix '{{.CLI_ARGS}}'
 
-  yaml:order:default: eslint --ext yml,yaml .'
+  yaml:order:default: eslint --format pretty --ext yml,yaml .'
