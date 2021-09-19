@@ -1,10 +1,6 @@
 ---
 version: '3'
 
-vars:
-  NPM_PROGRAM:
-    sh: 'if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi'
-
 tasks:
   install-doctor:
     cmds:
@@ -56,10 +52,9 @@ tasks:
           NPM_PACKAGE: eslint
           NPM_PACKAGE_BIN: eslint
 
-  npm:eslint:dev-dependencies:
+  npm:eslint:js:dev-dependencies:
     deps:
-      - :common:node:dependencies:local
-      - :install:npm:eslint:dev-dependencies
+      - software:node
     run: once
     cmds:
       - >
@@ -67,6 +62,7 @@ tasks:
           @typescript-eslint/eslint-plugin
           @typescript-eslint/eslint-plugin-tslint
           @typescript-eslint/parser
+          eslint
           eslint-plugin-import
           eslint-plugin-jsdoc
           eslint-plugin-prefer-arrow
@@ -77,23 +73,20 @@ tasks:
 
   npm:global:
     deps:
-      - :install:software:node
-      - npm:global:clean
+      - npm:global:deps
     label: 'install-{{.NPM_PACKAGE}}'
     cmds:
-      - task: npm:{{.NPM_PROGRAM}}
       - |
-        echo "HERE IS ONE {{.NPM_PACKAGE}}"
         if [ "${container:=}" != 'docker' ]; then
           if [ "{{.FORCE_INSTALL}}" ]; then
             {{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}@latest --force
           else
             {{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}@latest
           fi
-          true success "The npm `{{.NPM_PACKAGE}}` package is globally installed"
+          true success 'The npm `{{.NPM_PACKAGE}}` package is globally installed'
         fi
     status:
-      - '(type {{.NPM_PACKAGE_BIN}} &> /dev/null || [[ "${container:=}" == "docker" ]]'
+      - type {{.NPM_PACKAGE_BIN}} &> /dev/null
 
   npm:global:clean:
     vars:
@@ -104,6 +97,14 @@ tasks:
       - rm -rf "{{.NPM_ROOT}}/.*" 2> /dev/null | true
     status:
       - '! ls {{.NPM_ROOT}}/.*'
+
+  npm:global:deps:
+    deps:
+      - software:node
+    run: once
+    cmds:
+      - task: 'npm:{{.NPM_PROGRAM}}'
+      - task: npm:global:clean
 
   npm:hbs:
     run: once
@@ -134,6 +135,8 @@ tasks:
     cmds:
       - npm install -g pnpm
       - pnpm import
+    status:
+      - type pnpm &> /dev/null
 
   npm:lint-staged:
     run: once
@@ -142,14 +145,6 @@ tasks:
         vars:
           NPM_PACKAGE: lint-staged
           NPM_PACKAGE_BIN: lint-staged
-
-  npm:markdown-link-check:
-    run: once
-    cmds:
-      - task: npm:global
-        vars:
-          NPM_PACKAGE: markdown-link-check
-          NPM_PACKAGE_BIN: markdown-link-check
 
   npm:prettier:
     run: once

@@ -10,7 +10,7 @@ tasks:
   js:
     deps:
       - :install:npm:eslint
-      - :install:npm:eslint:dev-dependencies
+      - :install:npm:eslint:js:dev-dependencies
     desc: Fix JavaScript/TypeScript errors automatically
     summary: |
       # Fix JavaScript/TypeScript errors automatically with `eslint`
