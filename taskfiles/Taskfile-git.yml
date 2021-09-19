@@ -198,7 +198,7 @@ tasks:
             -f 'enabled=true'
         fi
       - cmd: >
-          curl -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -XPUT --data \
+          curl -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -X PUT --data \
             "{'mirror': true, 'import_url': 'https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git'}" \
             'https://gitlab.com/api/v4/projects/{{.GITLAB_REPO_ID}}'
     sources:
@@ -217,6 +217,10 @@ tasks:
       - :install:software:jq
       - gitlab:create
     vars:
+      GITHUB_SLUG:
+        sh: jq -r '.name' package.json | sed 's/.*\///'
+      GITLAB_REPO_ID:
+        sh: glab api projects/:fullpath | jq -r '.id'
       PIPELINE_COUNT:
         sh: jq -r '.gitlab_pipelines | length' .variables.json
     env:
@@ -229,13 +233,13 @@ tasks:
         if [ ! -z "$GITLAB_TOKEN" ]; then
           for INDEX in {1..{{.PIPELINE_COUNT}}}; do
             PIPELINE_INDEX="$((INDEX - 1))"
-            ACTIVE="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].active')"
-            CRON="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].cron' | sed 's/"//g')"
-            DESC="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].description')"
-            REF="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].ref')"
-            if ! echo "$PIPELINE_RES" | grep "$DESC"; then
-              glab api projects/:fullpath/pipeline_schedules -X POST -f active="$ACTIVE" -f description="$DESC" \
-                -f ref="$REF" -f cron="$CRON" -f cron_timezone='{{.TIMEZONE}}' --silent
+            ACTIVE="$(echo "$PIPELINES" | jq -r --arg i "$PIPELINE_INDEX" '.[$i | tonumber].active')"
+            CRON="$(echo "$PIPELINES" | jq -r --arg i "$PIPELINE_INDEX" '.[$i | tonumber].cron' | sed 's/"//g')"
+            DESC="$(echo "$PIPELINES" | jq -r --arg i "$PIPELINE_INDEX" '.[$i | tonumber].description')"
+            REF="$(echo "$PIPELINES" | jq -r --arg i "$PIPELINE_INDEX" '.[$i | tonumber].ref')"
+            if (! echo "$PIPELINE_RES" | grep "$DESC") > /dev/null; then
+              glab api projects/:fullpath/pipeline_schedules -X POST -f active="$ACTIVE" -f description="$DESC" -f ref="$REF" \
+                -f cron="$CRON" -f cron_timezone='{{.TIMEZONE}}' --silent
               true success 'Pipeline with description of `$DESC` successfully added'
             else
               true log 'Pipeline with description of `'"$DESC"'` already added'
@@ -251,12 +255,13 @@ tasks:
 
   gitlab:pipelines:clear:
     env:
-      PIPELINE_IDS:
-        sh: glab api projects/:id/pipeline_schedules -X GET | jq -r '.[].id'
+      TMP:
+        sh: mktemp
     cmds:
-      - >
-        for ID in "$PIPELINE_IDS"; do
-          glab api projects/:fullpath/pipeline_schedules/"$ID" -X DELETE
+      - |
+        glab api projects/:id/pipeline_schedules -X GET > "$TMP"
+        for PIPELINE_ID in $(jq -r '.[].id' "$TMP"); do
+          glab api projects/:fullpath/pipeline_schedules/"$PIPELINE_ID" -X DELETE
         done
 
   gitlab:update:
@@ -301,6 +306,7 @@ tasks:
 
   gitlab:wiki:
     deps:
+      - :common:update:variables
       - :install:software:glab
       - :install:software:jq
       - gitlab:create
