@@ -61,6 +61,7 @@ tasks:
     deps:
       - :install:npm:commitizen
       - :install:npm:commitlint
+      - :install:npm:husky
       - node:dependencies:local
     cmds:
       - task: husky:install
@@ -75,12 +76,14 @@ tasks:
       - '[[ "${container:=}" != "docker" ]]'
 
   husky:install:
+    deps:
+      - :install:npm:husky
     cmds:
       - |
         if [ -d .git ] && [ "${container:=}" != 'docker' ]; then
-          {{.NPX_PACKAGE}} husky install
+          husky install
         else
-          true warn 'Cannot run `{{.NPX_PACKAGE}}husky install` because there is no `.git/` folder (or this is a Docker container)'
+          true warn 'Cannot run `husky install` because there is no `.git/` folder (or this is a Docker container)'
         fi
     status:
       - '[ ! -d .git ] || [[ "${container:=} == "docker" ]]'
@@ -127,6 +130,8 @@ tasks:
       - :install:npm:cspell
       - :install:npm:eslint
       - :install:npm:hbs
+      - :install:npm:husky
+      - :install:npm:lint-staged
       - :install:npm:prettier
       - :install:npm:prettier-package-json
       - :install:npm:readme

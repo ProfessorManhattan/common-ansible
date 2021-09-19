@@ -100,7 +100,7 @@ tasks:
       - :common:node:dependencies:local
       - :common:python:requirements
     cmds:
-      - '{{.NPX_PACKAGE}} lint-staged'
+      - lint-staged
 
   markdown:
     deps:
