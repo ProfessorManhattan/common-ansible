@@ -5,6 +5,7 @@ output: interleaved
 
 env:
   GALAXY_NAMESPACE: installdoctor
+  NPX_PACKAGE: pnpx
   REPOSITORY_SUBTYPE: playbook
   REPOSITORY_TYPE: ansible
 
