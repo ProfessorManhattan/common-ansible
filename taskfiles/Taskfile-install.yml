@@ -83,6 +83,7 @@ tasks:
     cmds:
       - task: npm:{{.NPM_PROGRAM}}
       - |
+        echo "HERE IS ONE {{.NPM_PACKAGE}}"
         if [ "${container:=}" != 'docker' ]; then
           if [ "{{.FORCE_INSTALL}}" ]; then
             {{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}@latest --force
@@ -92,10 +93,7 @@ tasks:
           true success "The npm `{{.NPM_PACKAGE}}` package is globally installed"
         fi
     status:
-      - >
-        '(type {{.NPM_PACKAGE_BIN}} &> /dev/null{{if eq .NPM_PROGRAM "pnpm"}} &&
-        [ ! -z "$(pnpm list -g | grep "{{.NPM_PACKAGE}} ")" ]){{end}} ||
-        [[ "${container:=}" == "docker" ]]'
+      - '(type {{.NPM_PACKAGE_BIN}} &> /dev/null || [[ "${container:=}" == "docker" ]]'
 
   npm:global:clean:
     vars:
