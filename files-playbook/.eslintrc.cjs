@@ -3,7 +3,6 @@ const YAML = require('yaml')
 
 const taskfile = YAML.parse(fs.readFileSync('./Taskfile.yml', 'utf8'))
 
-// TODO: Incorporate @typescript-eslint/tslint
 const plugins = {
   eslint: ['editorconfig'],
   html: ['html'],
