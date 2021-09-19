@@ -3,11 +3,8 @@ version: '3'
 
 vars:
   GITHUB_ISSUES: true
-  GITHUB_ORG: ProfessorManhattan
-  GITHUB_USER: ProfessorManhattan
   GITHUB_WIKI: false
   GITLAB_WIKI: false
-  TIMEZONE: America/New_York
 
 env:
   CLICOLOR:
@@ -304,7 +301,6 @@ tasks:
 
   gitlab:wiki:
     deps:
-      - :common:update:update
       - :install:software:glab
       - :install:software:jq
       - gitlab:create
