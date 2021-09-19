@@ -125,7 +125,6 @@ tasks:
           fi
           MINIMIZED_TOPICS="$(jq -n --argjson tags "$RESULT" '$tags | .[]' | xargs | sed 's/ /","/g' | sed 's/^/"/' | sed 's/$/"/')"
           if [[ "$MINIMIZED_TOPICS" != '""' ]]; then
-            echo "Inside"
             curl -X PUT -H "Accept: application/vnd.github.mercy-preview+json" -u "{{.GITHUB_ORG}}:$GITHUB_TOKEN" \
               https://api.github.com/repos/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}/topics -d '{"names":['"$MINIMIZED_TOPICS"']}'
           fi
@@ -239,7 +238,7 @@ tasks:
             REF="$(echo "$PIPELINES" | jq --arg i "$PIPELINE_INDEX" '.[$i | tonumber].ref')"
             if ! echo "$PIPELINE_RES" | grep "$DESC"; then
               glab api projects/:fullpath/pipeline_schedules -X POST -f active="$ACTIVE" -f description="$DESC" \
-                -f ref="$REF" -f cron="$CRON" -f cron_timezone='{{.TIMEZONE}}'
+                -f ref="$REF" -f cron="$CRON" -f cron_timezone='{{.TIMEZONE}}' --silent
               true success 'Pipeline with description of `$DESC` successfully added'
             else
               true log 'Pipeline with description of `'"$DESC"'` already added'
@@ -417,7 +416,6 @@ tasks:
         if [ -f '.gitmodules' ]; then
           MODULE_PATHS=$(git config --file "{{.GITMODULES_PATH}}" --name-only --get-regexp "{{.RELATIVE_PATH}}" |
             sed 's/^submodule\.//' | grep "path$" | sed 's/\.path$//'{{.REGEX_ARG}})
-          echo "YOOO"
           for MODULE_PATH in "$MODULE_PATHS"; do
             # https://github.com/a14m/gitsubmodule/blob/master/gitsubmodule
             git config -f '{{.GITMODULES_PATH}}' --remove-section "submodule.$MODULE_PATH" | true
