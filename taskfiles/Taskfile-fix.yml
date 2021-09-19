@@ -7,6 +7,25 @@ vars:
     -o -name venv
 
 tasks:
+  js:
+    deps:
+      - :install:npm:eslint
+      - :install:npm:eslint:dev-dependencies
+    desc: Fix JavaScript/TypeScript errors automatically
+    summary: |
+      # Fix JavaScript/TypeScript errors automatically with `eslint`
+
+      This task is an `eslint` task that is configured to only run on JavaScript/TypeScript files. It will
+      attempt to automatically fix `eslint` issues and will also report any issues it finds.
+
+      **Example using `eslint` to fix a single JS/TS file:**
+      `task fix:js -- single.ts`
+
+      **Example fixing all JS/TS files in a project:**
+      `task fix:js`
+    cmds:
+      - eslint --fix --format pretty --ext .js,.jsx,.ts {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+
   json:
     deps:
       - :common:python:requirements
@@ -22,7 +41,7 @@ tasks:
       you can also pass a filename to only sort one JSON file (see example below).
 
       **Example sorting a single JSON file:**
-      task fix:json -- single.json`
+      `task fix:json -- single.json`
 
       **Example looping through project:**
       `task fix:json`
@@ -42,12 +61,7 @@ tasks:
       * `node_modules/`
       * `venv/`
     cmds:
-      - task: json:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  json:cli: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.json' \) -print0 |
-    xargs -0 -r -n1 eslint --format pretty --fix
-
-  json:default: eslint --fix --format pretty --ext json .
+      - eslint --fix --format pretty --ext .json {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   misc:
     deps:
@@ -250,7 +264,7 @@ tasks:
       tasks:
 
       1. Ensures the first line of the file is `---`
-      2. Sorts the file according to the layout specified by `.eslintrc.js`
+      2. Sorts the file according to the layout specified by `.eslintrc.cjs`
 
       **Example usage:**
       `task fix:yaml`
@@ -326,7 +340,7 @@ tasks:
     summary: |
       # Ensure YML files are sorted properly
 
-      This task will sort YML keys alphabetically and also obey the order specified in `.eslintrc.js`.
+      This task will sort YML keys alphabetically and also obey the order specified in `.eslintrc.cjs`.
       It uses [ESLint](https://eslint.org/) along with the [`eslint-plugin-yml`](https://ota-meshi.github.io/eslint-plugin-yml/)
       plugin.
 

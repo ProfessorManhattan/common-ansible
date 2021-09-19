@@ -56,6 +56,25 @@ tasks:
           NPM_PACKAGE: eslint
           NPM_PACKAGE_BIN: eslint
 
+  npm:eslint:dev-dependencies:
+    deps:
+      - :common:node:dependencies:local
+      - :install:npm:eslint:dev-dependencies
+    run: once
+    cmds:
+      - >
+        {{.NPM_PROGRAM}} install --save-dev
+          @typescript-eslint/eslint-plugin
+          @typescript-eslint/eslint-plugin-tslint
+          @typescript-eslint/parser
+          eslint-plugin-import
+          eslint-plugin-jsdoc
+          eslint-plugin-prefer-arrow
+          eslint-plugin-promise
+          eslint-plugin-regexp
+          eslint-plugin-tsdoc
+          eslint-plugin-unicorn
+
   npm:global:
     deps:
       - :install:software:node
