@@ -69,7 +69,7 @@ tasks:
             true warn 'The `GITHUB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
           fi
     status:
-      - '[[ "$(gh repo view {{.GITHUB_ORG}}/{{.GITHUB_SLUG}})" ]]'
+      - '[ -z "$GITHUB_TOKEN" ]'
       - test -d .git
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
