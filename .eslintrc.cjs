@@ -53,7 +53,7 @@ const getExtends = (type, subType) => {
         ...templates.eslint,
         ...templates.typescript,
         ...templates.json,
-        ...plugins.yml,
+        ...templates.yml,
         ...templates.prettier
       ]
     case 'angular-website':
