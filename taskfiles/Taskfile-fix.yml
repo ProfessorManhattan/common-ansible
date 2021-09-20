@@ -90,8 +90,6 @@ tasks:
         {{end}}
         wait
 
-  misc:default:
-
   packer:
     deps:
       - :install:software:packer
