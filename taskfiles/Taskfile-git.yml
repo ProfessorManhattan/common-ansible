@@ -130,8 +130,6 @@ tasks:
         fi
     status:
       - '[ -z "$GITHUB_TOKEN" ]'
-    sources:
-      - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
         msg: 'The `.description` in `package.json` must be set.'
@@ -201,8 +199,8 @@ tasks:
           curl -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -X PUT --data \
             "{'mirror': true, 'import_url': 'https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git'}" \
             'https://gitlab.com/api/v4/projects/{{.GITLAB_REPO_ID}}'
-    sources:
-      - package.json
+    status:
+      - '[ -z "$GITLAB_TOKEN ] || [ -z "$GITHUB_TOKEN ]'
     preconditions:
       - sh: '[ ! -z "$GITHUB_TOKEN" ]'
         msg: 'The `GITHUB_TOKEN` environment variable must be set to enable mirroring.'
@@ -263,6 +261,9 @@ tasks:
         for PIPELINE_ID in $(jq -r '.[].id' "$TMP"); do
           glab api projects/:fullpath/pipeline_schedules/"$PIPELINE_ID" -X DELETE
         done
+    preconditions:
+      - sh: '[ ! -z "$GITLAB_TOKEN" ]'
+        msg: 'The `GITLAB_TOKEN` environment variable must be set to run this task'
 
   gitlab:update:
     deps:

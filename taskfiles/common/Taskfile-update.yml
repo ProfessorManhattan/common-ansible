@@ -5,10 +5,15 @@ tasks:
   all:
     deps:
       - ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:descriptions{{else}}donothing{{end}}'
-      - contributing
       - files
-      - readme
       - :git:remotes
+    cmds:
+      - task: all:docs
+
+  all:docs:
+    deps:
+      - contributing
+      - readme
 
   ansible:
     deps:
@@ -321,6 +326,8 @@ tasks:
     deps:
       - :git:github:update
       - :git:gitlab:update
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
 
   variables:
     deps:

@@ -124,21 +124,21 @@ tasks:
       - echo "See https://github.com/remarkjs/remark-man"
 
   node:dependencies:global:
-    deps:
-      - :install:npm:commitizen
-      - :install:npm:commitlint
-      - :install:npm:cspell
-      - :install:npm:eslint
-      - :install:npm:hbs
-      - :install:npm:husky
-      - :install:npm:lint-staged
-      - :install:npm:prettier
-      - :install:npm:prettier-package-json
-      - :install:npm:readme
-      - :install:npm:remark
-      - :install:npm:shellcheck
-      - :install:npm:standard-version
     run: once
+    cmds:
+      - task: :install:npm:commitizen
+      - task: :install:npm:commitlint
+      - task: :install:npm:cspell
+      - task: :install:npm:eslint
+      - task: :install:npm:hbs
+      - task: :install:npm:husky
+      - task: :install:npm:lint-staged
+      - task: :install:npm:prettier
+      - task: :install:npm:prettier-package-json
+      - task: :install:npm:readme
+      - task: :install:npm:remark
+      - task: :install:npm:shellcheck
+      - task: :install:npm:standard-version
     status:
       - '[[ "${container:=}" == "docker" ]]'
 
