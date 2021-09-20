@@ -323,11 +323,15 @@ tasks:
       success: Successfully updated the project with the latest upstream changes
 
   update:git:
+    cmds:
+      - task: update:git:proceed
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
+
+  update:git:proceed:
     deps:
       - :git:github:update
       - :git:gitlab:update
-    status:
-      - '[[ "${container:=}" == "docker" ]]'
 
   variables:
     deps:
