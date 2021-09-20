@@ -148,8 +148,6 @@ tasks:
       For more information on `markdown-link-check`, see their [GitHub page](https://github.com/tcort/markdown-link-check).
     cmds:
       - task: markdown:broken-links:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-    sources:
-      - '**/*.md'
 
   markdown:links:cli: markdown-link-check {{.CLI_ARGS}}
 
@@ -402,8 +400,9 @@ tasks:
 
       For more information, see the [YAML Lint GitHub page](https://github.com/adrienverge/yamllint).
     cmds:
-      - task: yaml:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  yaml:cli: yamllint -s {{.CLI_ARGS}}
-
-  yaml:default: yamllint -s .
+      - |
+        {{if .CLI_ARGS}}
+          yamllint -s {{.CLI_ARGS}}
+        {{else}}
+          yamllint -s .
+        {{end}}

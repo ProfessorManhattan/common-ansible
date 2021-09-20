@@ -3,11 +3,13 @@ version: '3'
 
 vars:
   DOCKERHUB_PROFILE: megabytelabs
+  TAGS: latest slim
 
 tasks:
   dockle:
     deps:
       - :install:software:dockle
+      - :install:software:jq
     desc: Analyze and lint the Docker container using Dockle
     summary: |
       # Analyze and lint Docker containers with Dockle
@@ -24,25 +26,15 @@ tasks:
 
       For more information, see [Dockle's GitHub page](https://github.com/goodwithtech/dockle).
     cmds:
-      - task: dockle:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  dockle:cli: dockle {{.CLI_ARGS}}
-
-  dockle:default:
-    cmds:
-      - task: dockle:default:image
-        vars:
-          TAG: latest
-      - task: dockle:default:image
-        vars:
-          TAG: slim
-
-  dockle:default:image:
-    vars:
-      DOCKER_IMAGE:
-        sh: jq -r '.slug' .variables.json
-    cmds:
-      - dockle {{.DOCKERHUB_PROFILE}}/{{.DOCKER_IMAGE}}:{{.TAG}}
+      - |
+        {{if .CLI_ARGS}}
+          dockle {{.CLI_ARGS}}
+        {{else}}
+          DOCKER_IMAGE="$(jq -r '.slug' .variables.json)"
+          for TAG in {{.TAGS}}; do
+            dockle "{{.DOCKERHUB_PROFILE}}/${DOCKER_IMAGE}:${TAG}"
+          done
+        {{end}}
 
   gitleaks:
     deps:
@@ -62,11 +54,12 @@ tasks:
 
       For more information, see the [Gitleaks GitHub page](https://github.com/zricethezav/gitleaks).
     cmds:
-      - task: gitleaks:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  gitleaks:cli: gitleaks --repo-url "{{.CLI_ARGS}}" -v
-
-  gitleaks:default: gitleaks -p . -v
+      - |
+        {{if .CLI_ARGS}}
+          gitleaks --repo-url '{{.CLI_ARGS}}' -v
+        {{else}}
+          gitleaks -p . -v
+        {{end}}
 
   private-keys:
     deps:
@@ -85,11 +78,12 @@ tasks:
       **Example scanning single file:**
       `task lint:private-keys -- filename.ext`
     cmds:
-      - task: private-keys:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  private-keys:cli: detect-private-key {{.CLI_ARGS}}
-
-  private-keys:default: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f -print0 | xargs -0 -r -n1 detect-private-key
+      - |
+        {{if .CLI_ARGS}}
+          detect-private-key {{.CLI_ARGS}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f -print0 | xargs -0 -r -n1 detect-private-key
+        {{end}}
 
   snyk:
     deps:
@@ -114,29 +108,17 @@ tasks:
       For more information, see [Snyk's website](https://snyk.io/what-is-snyk/).
     cmds:
       - task: snyk:login
-      - task: snyk:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  snyk:cli: snyk test --docker {{.CLI_ARGS}}
-
-  snyk:default:
-    cmds:
-      - task: snyk:default:image
-        vars:
-          TAG: latest
-      - task: snyk:default:image
-        vars:
-          TAG: slim
-
-  snyk:default:image:
-    vars:
-      DOCKER_IMAGE:
-        sh: jq -r '.slug' .variables.json
-    cmds:
-      - snyk test --docker {{.DOCKERHUB_PROFILE}}/{{.DOCKER_IMAGE}}:{{.TAG}} --file=Dockerfile
+      - |
+        {{if .CLI_ARGS}}
+          snyk test --docker {{.CLI_ARGS}}
+        {{else}}
+          for TAG in {{.TAGS}}; do
+            DOCKER_IMAGE="$(jq -r '.slug' .variables.json)"
+            snyk test --docker {{.DOCKERHUB_PROFILE}}/${DOCKER_IMAGE}:${TAG} --file=Dockerfile
+          done
+        {{end}}
 
   snyk:login:
-    deps:
-      - :install:npm:snyk
     env:
       SNYK_API_TOKEN:
         sh: snyk config get api
@@ -147,6 +129,7 @@ tasks:
 
   trivy:
     deps:
+      - :install:software:jq
       - :install:software:trivy
     desc: Analyze the Docker container for security vulnerabilities with Trivy
     summary: |
@@ -164,24 +147,12 @@ tasks:
 
       For more information, see [Trivy's website](https://aquasecurity.github.io/trivy/).
     cmds:
-      - task: trivy:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  trivy:cli: trivy image {{.CLI_ARGS}}
-
-  trivy:default:
-    cmds:
-      - task: trivy:default:image
-        vars:
-          TAG: latest
-      - task: trivy:default:image
-        vars:
-          TAG: slim
-
-  trivy:default:image:
-    deps:
-      - :install:software:jq
-    vars:
-      DOCKER_IMAGE:
-        sh: jq -r '.slug' .variables.json
-    cmds:
-      - trivy image {{.DOCKERHUB_PROFILE}}/{{.DOCKER_IMAGE}}:{{.TAG}}
+      - |
+        {{if .CLI_ARGS}}
+          trivy image {{.CLI_ARGS}}
+        {{else}}
+          DOCKER_IMAGE="$(jq -r '.slug' .variables.json)"
+          for TAG in {{.TAGS}}; do
+            trivy image {{.DOCKERHUB_PROFILE}}/${DOCKER_IMAGE}:${TAG}
+          done
+        {{end}}

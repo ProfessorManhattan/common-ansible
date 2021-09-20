@@ -10,7 +10,7 @@ tasks:
   js:
     deps:
       - :install:npm:eslint
-      - :install:npm:eslint:js:dev-dependencies
+      - :install:npm:eslint:dev-dependencies
     desc: Fix JavaScript/TypeScript errors automatically
     summary: |
       # Fix JavaScript/TypeScript errors automatically with `eslint`
@@ -33,33 +33,14 @@ tasks:
     summary: |
       # Automatically alphabetize JSON
 
-      Scan through the project and alphabetize all the JSON files that are not in `.gitignore` folders
-      like `.venv/`, `node_modules/`, etc. This task will check the `.variables.json` file for a key
-      titled `json_top_keys` and if it exists then those keys will be prioritized during the
-      sorting. You can ensure the `json_top_keys` value is persistent by adding the value in the
-      `blueprint` section of package.json. By default the command will apply the logic in a loop but
-      you can also pass a filename to only sort one JSON file (see example below).
+      This task will format and organize JSON files based on the configuration stored in
+      `.eslintrc.cjs`.
 
       **Example sorting a single JSON file:**
       `task fix:json -- single.json`
 
       **Example looping through project:**
       `task fix:json`
-
-      _Note: The example above ignores files in the following folders:_
-
-      * `.autodoc/`
-      * `.cache/`
-      * `.common/`
-      * `.git/`
-      * `.husky/`
-      * `.modules/`
-      * `.npm/`
-      * `.task/`
-      * `.venv/`
-      * `.vscode/`
-      * `node_modules/`
-      * `venv/`
     cmds:
       - eslint --fix --format pretty --ext .json {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
@@ -102,11 +83,14 @@ tasks:
           fix-byte-order-marker "$1" &
           mixed-line-ending --fix=lf "$1" &
         }
-      - task: misc:{{if .CLI_ARGS}}cli{{else}}default{{end}}
+        {{if .CLI_ARGS}}
+          misc '{{.CLI_ARGS}}'
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f -print0 | xargs -0 -r -n1 misc
+        {{end}}
+        wait
 
-  misc:cli: misc '{{.CLI_ARGS}}'; wait
-
-  misc:default: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f -print0 | xargs -0 -r -n1 misc; wait
+  misc:default:
 
   packer:
     deps:

@@ -10,7 +10,7 @@ tasks:
           curl -sS https://install.doctor/{{.SOFTWARE}} | bash
         fi
     status:
-      - '[[ "${container:=}" == "docker" ]]'
+      - '[[ "${container:=}" == "docker" ]] || type {{.SOFTWARE}} &> /dev/null'
 
   local:modules:
     deps:
@@ -42,7 +42,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: cspell
-          NPM_PACKAGE_BIN: cspell
 
   npm:eslint:
     run: once
@@ -50,9 +49,8 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: eslint
-          NPM_PACKAGE_BIN: eslint
 
-  npm:eslint:js:dev-dependencies:
+  npm:eslint:dev-dependencies:
     deps:
       - software:node
     run: once
@@ -93,7 +91,7 @@ tasks:
           true success 'The npm `{{.NPM_PACKAGE}}` package is globally installed'
         fi
     status:
-      - type {{.NPM_PACKAGE_BIN}} &> /dev/null
+      - type {{if .NPM_PACKAGE_BIN}}{{.NPM_PACKAGE_BIN}}{{else}}{{.NPM_PACKAGE}}{{end}} &> /dev/null
 
   npm:global:clean:
     vars:
@@ -126,7 +124,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: husky
-          NPM_PACKAGE_BIN: husky
 
   npm:markdown-link-check:
     run: once
@@ -134,7 +131,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: markdown-link-check
-          NPM_PACKAGE_BIN: markdown-link-check
 
   npm:npm:
     run: once
@@ -142,7 +138,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: npm
-          NPM_PACKAGE_BIN: npm
 
   npm:pnpm:
     run: once
@@ -150,7 +145,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: pnpm
-          NPM_PACKAGE_BIN: pnpm
       - pnpm import
     status:
       - type pnpm &> /dev/null
@@ -161,7 +155,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: lint-staged
-          NPM_PACKAGE_BIN: lint-staged
 
   npm:prettier:
     run: once
@@ -169,7 +162,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: prettier
-          NPM_PACKAGE_BIN: prettier
 
   npm:prettier-package-json:
     run: once
@@ -177,7 +169,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: prettier-package-json
-          NPM_PACKAGE_BIN: prettier-package-json
 
   npm:readme:
     run: once
@@ -209,7 +200,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: shellcheck
-          NPM_PACKAGE_BIN: shellcheck
 
   npm:snyk:
     run: once
@@ -217,7 +207,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: snyk
-          NPM_PACKAGE_BIN: snyk
 
   npm:standard:
     run: once
@@ -225,7 +214,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: standard
-          NPM_PACKAGE_BIN: standard
 
   npm:standard-version:
     run: once
@@ -233,7 +221,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: standard-version
-          NPM_PACKAGE_BIN: standard-version
 
   npm:tinypng:
     run: once
@@ -258,8 +245,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: docker
-    status:
-      - type docker &> /dev/null
 
   software:dockle:
     run: once
@@ -267,8 +252,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: dockle
-    status:
-      - type dockle &> /dev/null
 
   software:exiftool:
     run: once
@@ -276,8 +259,6 @@ tasks:
       - task: exiftool
         vars:
           SOFTWARE: exiftool
-    status:
-      - type exiftool &> /dev/null
 
   software:gh:
     run: once
@@ -285,8 +266,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: gh
-    status:
-      - type gh &> /dev/null
 
   software:git:
     run: once
@@ -294,8 +273,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: git
-    status:
-      - type git &> /dev/null
 
   software:gitleaks:
     run: once
@@ -303,8 +280,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: gitleaks
-    status:
-      - type gitleaks &> /dev/null
 
   software:glab:
     run: once
@@ -312,8 +287,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: glab
-    status:
-      - type glab &> /dev/null
 
   software:jq:
     run: once
@@ -321,8 +294,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: jq
-    status:
-      - type jq &> /dev/null
 
   software:node:
     run: once
@@ -381,8 +352,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: rsync
-    status:
-      - type rsync &> /dev/null
 
   software:trivy:
     run: once
@@ -390,8 +359,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: trivy
-    status:
-      - type trivy &> /dev/null
 
   software:vagrant:
     run: once
@@ -399,8 +366,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: vagrant
-    status:
-      - type vagrant &> /dev/null
 
   software:virtualbox:
     run: once
@@ -408,8 +373,6 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: virtualbox
-    status:
-      - type virtualbox &> /dev/null
 
   software:yq:
     run: once
@@ -417,5 +380,3 @@ tasks:
       - task: install-doctor
         vars:
           SOFTWARE: yq
-    status:
-      - type yq &> /dev/null

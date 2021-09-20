@@ -33,6 +33,10 @@ tasks:
       **Example of compressing single image:**
       `task image:compress -- ./path/image.png`
     cmds:
+      - task: compress:{{if .CLI_ARGS}}cli{{else}}default{{end}}
+
+  compress:cli:
+    cmds:
       - |
         function compressImage() {
           if exiftool "$1" &> /dev/null; then
@@ -50,12 +54,29 @@ tasks:
             true error 'Failed to extract EXIF data from `$1` so the compression is being skipped'
           fi
         }
-        if [ -z '{{.CLI_ARGS}}' ]; then
-          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.jpg' -o -name '*.png' \) -print0 |
-            xargs -0 -r -n1 compressImage
-        else
-          compressImage '{{.CLI_ARGS}}'
-        fi
+        compressImage '{{.CLI_ARGS}}'
+
+  compress:default:
+    cmds:
+      - |
+        function compressImage() {
+          if exiftool "$1" &> /dev/null; then
+            if (exiftool "$1" | grep Comment | grep tinypng-compressed) &> /dev/null; then
+              true log '`'"$1"'` has already been compressed by TinyPNG'
+            else
+              if [ -f ~/.tinypng ]; then
+                tinypng "$1"
+              else
+                tinypng -k "{{.TINYPNG_API_KEY}}" "$1"
+              fi
+              exiftool -comment="tinypng-compressed" "$1"
+            fi
+          else
+            true error 'Failed to extract EXIF data from `$1` so the compression is being skipped'
+          fi
+        }
+        find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.jpg' -o -name '*.png' \) -print0 |
+          xargs -0 -r -n1 compressImage
     sources:
       - '**/*.(jpg|png)'
 
@@ -80,14 +101,17 @@ tasks:
     cmds:
       - task: resize:{{if .CLI_ARGS}}cli{{else}}default{{end}}
 
-  resize:cli: true info "Interactive dialog coming eventually.."
-
-  resize:default:
+  resize:cli:
     env:
       ARGS_ARRAY:
         sh: ({{.CLI_ARGS}})
     cmds:
-      - sharp -i "${ARGS_ARRAY[3]}" -o "${ARGS_ARRAY[3]}.resized" resize "${ARGS_ARRAY[1]}" "${ARGS_ARRAY[2]}"
-      - mv "${ARGS_ARRAY[3]}.resized" "${ARGS_ARRAY[3]}"
+      - |
+        if ! exiftool "${ARGS_ARRAY[3]}" | grep "Image Size" | grep "${ARGS_ARRAY[1]}x${ARGS_ARRAY[2]}; then
+          sharp -i "${ARGS_ARRAY[3]}" -o "${ARGS_ARRAY[3]}.resized" resize "${ARGS_ARRAY[1]}" "${ARGS_ARRAY[2]}"
+          mv "${ARGS_ARRAY[3]}.resized" "${ARGS_ARRAY[3]}"
+        fi
     status:
       - 'exiftool "${ARGS_ARRAY[3]}" | grep "Image Size" | grep "${ARGS_ARRAY[1]}x${ARGS_ARRAY[2]}'
+
+  resize:default: true info "Interactive dialog coming eventually.."
