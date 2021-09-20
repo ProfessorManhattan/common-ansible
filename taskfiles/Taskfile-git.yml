@@ -381,8 +381,7 @@ tasks:
           git remote set-url --add --push all '{{.GITLAB_REPO}}.git'
         fi
     status:
-      - '[ -z "{{.GITHUB_REPO}}" ]'
-      - '[ -z "{{.GITLAB_REPO}}" ]'
+      - '[[ "${container:=}" == "docker" ]]'
     sources:
       - package.json
 
