@@ -247,8 +247,6 @@ tasks:
           mv ~/.config/proselint/config.backup ~/.config/proselint/config
         fi
 
-  prose:default:
-
   python:
     deps:
       - :common:python:requirements
