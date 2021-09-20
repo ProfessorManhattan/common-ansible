@@ -14,20 +14,31 @@ const plugins = {
     'eslint-plugin-jsdoc',
     'eslint-plugin-tsdoc',
     'eslint-plugin-unicorn',
+    'import',
     'jsdoc',
     'promise',
-    'regexp'
+    'regexp',
+    'rxjs',
+    'simple-import-sort',
+    'sort-class-members',
+    'sort-keys-fix',
+    'typescript-sort-keys',
+    'unused-imports'
   ]
 }
 
 const templates = {
+  angular: ['plugin:compat/recommended'],
   eslint: ['eslint:all', 'plugin:eslint-comments/recommended', 'plugin:editorconfig/all'],
   json: ['plugin:jsonc/recommended-with-json', 'plugin:jsonc/prettier'],
   prettier: ['prettier', 'plugin:prettier/recommended'],
   typescript: [
+    'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:regexp/recommended',
+    'plugin:rxjs/recommended',
     'plugin:promise/recommended',
+    'plugin:typescript-sort-keys/recommended',
     'plugin:unicorn/recommended',
     'plugin:jsdoc/recommended'
   ],
@@ -37,9 +48,22 @@ const templates = {
 const getExtends = (type, subType) => {
   switch (type + '-' + subType) {
     case 'angular-app':
-      return [...templates.eslint, ...templates.typescript, ...templates.json, ...plugins.yml, ...templates.prettier]
+      return [
+        ...templates.angular,
+        ...templates.eslint,
+        ...templates.typescript,
+        ...templates.json,
+        ...plugins.yml,
+        ...templates.prettier
+      ]
     case 'angular-website':
-      return [...templates.eslint, ...templates.typescript, ...templates.json, ...templates.prettier]
+      return [
+        ...templates.angular,
+        ...templates.eslint,
+        ...templates.typescript,
+        ...templates.json,
+        ...templates.prettier
+      ]
     case 'npm-cli':
       return [...templates.eslint, ...templates.typescript, ...templates.json, ...templates.prettier]
     case 'npm-library':
@@ -81,6 +105,7 @@ const getPlugins = (type, subType) => {
 
 module.exports = {
   env: {
+    browser: taskfile.vars.REPOSITORY_TYPE === 'angular',
     es6: true,
     node: true
   },
@@ -259,6 +284,8 @@ module.exports = {
         ],
         'quote-props': ['error', 'as-needed'],
         semi: 'off',
+        'simple-import-sort/imports': 'error',
+        'simple-import-sort/exports': 'error',
         'space-before-function-paren': 'off',
         'space-in-parens': ['off', 'never'],
         'spaced-comment': [
@@ -268,7 +295,24 @@ module.exports = {
             markers: ['/']
           }
         ],
-        'tsdoc/syntax': 'error'
+        'sort-class-members/sort-class-members': [
+          2,
+          {
+            order: [
+              '[static-properties]',
+              '[static-methods]',
+              '[properties]',
+              '[conventional-private-properties]',
+              'constructor',
+              '[methods]',
+              '[conventional-private-methods]'
+            ],
+            accessorPairPositioning: 'getThenSet'
+          }
+        ],
+        'sort-keys-fix/sort-keys-fix': 'warn',
+        'tsdoc/syntax': 'error',
+        'unused-imports/no-unused-imports': 'error'
         /* "@typescript-eslint/tslint/config": [ // TODO: Make it so this works for both projects that do and do not have a tsconfig.json file
           // TODO: Ensure these rules are working and eliminate rules that are duplicates of other rules
           "error",

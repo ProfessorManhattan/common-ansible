@@ -68,8 +68,16 @@ tasks:
           eslint-plugin-prefer-arrow
           eslint-plugin-promise
           eslint-plugin-regexp
+          eslint-plugin-rxjs
+          eslint-plugin-simple-import-sort
+          eslint-plugin-sort-class-members
+          eslint-plugin-sort-keys-fix
           eslint-plugin-tsdoc
+          eslint-plugin-typescript-sort-keys
           eslint-plugin-unicorn
+          eslint-plugin-unused-imports
+          prettier-plugin-organize-imports
+          typescript
 
   npm:global:
     deps:
