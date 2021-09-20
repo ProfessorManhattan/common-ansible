@@ -152,6 +152,7 @@ tasks:
       error: 'Error running `mod-ansible-autodoc`'
       success: 'Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder'
     sources:
+      - '.common/**/*'
       - '{{.VARIABLES_PATH}}'
       - '.autodoc/*'
       - tasks/**/*.yml
@@ -171,8 +172,6 @@ tasks:
     log:
       error: 'Failed to inject `{{.VARIABLES_PATH}}` with the `role_variables` stored in `ansible_variables.json`'
       success: 'Injected `{{.VARIABLES_PATH}}` with the `role_variables` from `ansible_variables.json`'
-    sources:
-      - ansible_variables.json
 
   playbook:environment:
     cmds:
