@@ -173,11 +173,14 @@ tasks:
 
       For more information on `packer validate`, see the [Packer website](https://www.packer.io/docs/commands/validate).
     cmds:
-      - task: packer:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  packer:cli: packer validate {{.CLI_ARGS}}
-
-  packer:default: for TEMPLATE in *template.json; do packer validate "$TEMPLATE"; done
+      - |
+        {{if .CLI_ARGS}}
+          packer validate {{.CLI_ARGS}}
+        {{else}}
+          for TEMPLATE in *template.json; do
+            packer validate "$TEMPLATE"
+          done
+        {{end}}
 
   prettier:
     deps:
@@ -218,10 +221,13 @@ tasks:
       For more information, see [Proselint's GitHub page](https://github.com/amperser/proselint).
     cmds:
       - task: prose:config
-      - task: prose:{{if .CLI_ARGS}}cli{{else}}default{{end}}
+      - |
+        {{if .CLI_ARGS}}
+          proselint {{.CLI_ARGS}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 | xargs -0 -r -n1 proselint
+        {{end}}
       - task: prose:config:restore
-
-  prose:cli: proselint {{.CLI_ARGS}}
 
   prose:config:
     cmds:
@@ -232,8 +238,6 @@ tasks:
         fi
       - mkdir -p ~/.config/proselint
       - cp .common/proselint.json ~/.config/proselint/config
-    status:
-      - '! test -f ~/.config/proselint/config'
 
   prose:config:restore:
     cmds:
@@ -242,11 +246,8 @@ tasks:
           true info "Restoring original Proselint configuration"
           mv ~/.config/proselint/config.backup ~/.config/proselint/config
         fi
-    status:
-      - '! test -f ~/.config/proselint/config.backup'
 
-  prose:default: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 |
-    xargs -0 -r -n1 proselint
+  prose:default:
 
   python:
     deps:
@@ -276,11 +277,12 @@ tasks:
 
       For more information, see [Flake8's GitHub page](https://github.com/PyCQA/flake8).
     cmds:
-      - task: lint:python:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  python:cli: flake8 {{.CLI_ARGS}}
-
-  python:default: flake8 .
+      - |
+        {{if .CLI_ARGS}}
+          flake8 {{.CLI_ARGS}}
+        {{else}}
+          flake8 .
+        {{end}}
 
   shellcheck:
     deps:
@@ -305,18 +307,12 @@ tasks:
 
       For more information, see [Shellcheck's GitHub page](https://github.com/koalaman/shellcheck).
     cmds:
-      - task: shellcheck:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  shellcheck:cli:
-    cmds:
-      - shellcheck {{.CLI_ARGS}}
-    preconditions:
-      - sh: test -f {{.CLI_ARGS}}
-        msg: '{{.CLI_ARGS}} does not appear to be a file. Try passing a file path instead.'
-
-  shellcheck:default:
-    find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.sh' -o -name '*.sh.j2' \) -print0 |
-    xargs -0 -r -n1 shellcheck
+      - |
+        {{if .CLI_ARGS}}
+          shellcheck {{.CLI_ARGS}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.sh' -o -name '*.sh.j2' \) -print0 | xargs -0 -r -n1 shellcheck
+        {{end}}
 
   spelling:
     deps:
@@ -339,9 +335,6 @@ tasks:
       **Although this task only analyzes staged files, you can manually run cspell, for example, on all JavaScript
       files by running:**
       `npx cspell '**/*.js'`
-    env:
-      STAGED_FILES:
-        sh: git diff --cached --name-only
     cmds:
       - task: spelling:{{if .CLI_ARGS}}cli{{else}}staged{{end}}
 
@@ -351,14 +344,17 @@ tasks:
         ignore_errors: true
 
   spelling:staged:
+    deps:
+      - :install:npm:cspell
+      - :install:software:git
     env:
       STAGED_FILES: git diff --cached --name-only
     cmds:
-      - cmd: cspell --no-summary --no-progress --show-context --no-must-find-files --config {{.CSPELL_CONFIG}} "$STAGED_FILES"
+      - cmd: |
+          if [ '{{.STAGED_FILES}}' ]; then
+            cspell --no-summary --no-progress --show-context --no-must-find-files --config {{.CSPELL_CONFIG}} "$STAGED_FILES"
+          fi
         ignore_errors: true
-    preconditions:
-      - sh: git diff --cached --name-only
-        msg: Cannot perform a spell check because there are no staged files
 
   vagrant:
     deps:
