@@ -24,9 +24,10 @@ tasks:
       COLLECTIONS:
         sh:
           jq --arg collections "$(yq eval -o=json '.collections' {{.REQUIREMENTS_PATH}})" '.{{.COLLECTION_DEPS}} = ($collections | fromjson) |
-          .{{.COLLECTION_DEPS}}[] | "<b><a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
-          " collection on Ansible Galaxy\" target=\"_blank\">" + .name + "</a></b>"' -r  {{.VARIABLES_PATH}} | jq --raw-input --slurp 'split("\n") |
-          .[0:((. | length) - 1)]'
+          .{{.COLLECTION_DEPS}}[] | "<a href=\"" + .source + "/" + (.name | split(".") | join("/")) + "\" title=\"" + .name +
+          " collection on Ansible Galaxy\" target=\"_blank\"><img src=\"https:\/\/img.shields.io\/badge\/Ansible%20Galaxy-" +
+          .name + "-000000?logo=ansible&amp;logoColor=white&amp;style=for-the-badge"><\/a>"' -r  {{.VARIABLES_PATH}} |
+          jq --raw-input --slurp 'split("\n") | .[0:((. | length) - 1)]'
       TMP:
         sh: mktemp
     cmds:
@@ -56,7 +57,7 @@ tasks:
       - mkdir -p '{{dir .FILE_PATH}}'
       - |
         {{if (eq .COLLECTION_LENGTH "0")}}
-          echo '' > {{.FILE_PATH}}
+          echo '' > '{{.FILE_PATH}}'
         {{else if (eq .COLLECTION_LENGTH "1")}}
           echo "$SINGLE_COLLECTION_TEXT" > '{{.FILE_PATH}}'
         {{else}}
