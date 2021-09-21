@@ -18,7 +18,7 @@
     <img alt="GitHub" src="https://img.shields.io/badge/Mirror-GitHub-333333?logo=github&style={{ badge_style }}" />
   </a>
   <a href="{{ repository.gitlab }}" title="GitLab repository" target="_blank">
-    <img alt="GitLab" src="https://img.shields.io/badge/Repo-GitLab-fc6d26?logo=gitlab&style={{ badge_style }}" />
+    <img alt="GitLab" src="https://img.shields.io/badge/Repo-GitLab-fc6d26?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAAHJJREFUCNdNxKENwzAQQNEfWU1ZPUF1cxR5lYxQqQMkLEsUdIxCM7PMkMgLGB6wopxkYvAeI0xdHkqXgCLL0Beiqy2CmUIdeYs+WioqVF9C6/RlZvblRNZD8etRuKe843KKkBPw2azX13r+rdvPctEaFi4NVzAN2FhJMQAAAABJRU5ErkJggg==&style={{ badge_style }}" />
   </a>
 </div>
 <br/>
@@ -36,7 +36,7 @@
     <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
   </a>
   <a title="Linux build status on GitLab" href="{{ repository.gitlab }}{{ repository.location.commits.gitlab }}" target="_blank">
-    <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ gitlab_encoded_path }}%2Fpipelines&style={{ badge_style }}">
+    <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ gitlab_encoded_path }}%2Fpipelines&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAElBMVEUAAAAwPEEuOEIxOzswPj7///91+pI+AAAABXRSTlMANRkNJejDPNcAAAB+SURBVCjPddHBDYAgDIXhGtMRHMG7S3hvTP79VxFIQVq1wOVLm7wU8QIJpSThC2wGwwJoPQFKRdiAAIhGsAykZNSZAOVNMx4BMjwtpySgr6CDJdB/MAdJwAvSiFoE5aABHUb0ch0WHNQq+KPAOgCgrbEnbjAHArjGz3jr3hpumrQpvwi66rkAAAAASUVORK5CYII=&style={{ badge_style }}">
   </a>
   <a title="Ansible Galaxy quality score (out of 5)" href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" target="_blank">
     <img alt="Ansible Galaxy quality score" src="https://img.shields.io/ansible/quality/{{ ansible_galaxy_project_id }}?logo=ansible&style={{ badge_style }}" />
@@ -48,7 +48,7 @@
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?logo=readthedocs&style={{ badge_style }}" />
   </a>
   <a title="License: {{ license }}" href="{{ repository.github }}{{ repository.location.license.github }}" target="_blank">
-    <img alt="License: {{ license }}" src="https://img.shields.io/badge/license-{{ license }}-yellow.svg?style={{ badge_style }}" />
+    <img alt="License: {{ license }}" src="https://img.shields.io/badge/license-{{ license }}-yellow.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAAHpJREFUCNdjYOD/wMDAUP+PgYHxhzwDA/MB5gMM7AwMDxj4GBgKGGQYGCyAEEgbMDDwAAWAwmk8958xpIOI5zKH2RmOyhxmZjguAiKmgIgtQOIYmFgCIp4AlaQ9OczGkJYCJEAGgI0CGwo2HmwR2Eqw5SBnNIAdBHYaAJb6KLM15W/CAAAAAElFTkSuQmCC&style={{ badge_style }}" />
   </a>
   <a title="Support us on Open Collective" href="{{ profile_link.opencollective }}/{{ profile.opencollective }}" target="_blank">
     <img alt="Open Collective sponsors" src="https://img.shields.io/opencollective/sponsors/megabytelabs?logo=opencollective&logoColor=white&style={{ badge_style }}" />
