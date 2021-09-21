@@ -7,7 +7,7 @@
   "autodoc_tags_description": "",
   "autodoc_todo_description": "",
   "autodoc_variables_description": "",
-  "badge_style": "flat",
+  "badge_style": "for-the-badge",
   "blueprint_requirements": [
     ["Variable Name", "Variable Description"],
     [

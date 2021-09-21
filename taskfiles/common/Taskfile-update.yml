@@ -335,20 +335,22 @@ tasks:
     deps:
       - :install:software:jq
     vars:
-      COMMON_JSON: '.common/common.{{.REPOSITORY_SUBTYPE}}.json'
+      SHARED_JSON: '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
+      GITLAB_ENCODED_PATH:
+        sh: jq -r '.blueprint.repository.gitlab' package.json | sed 's/https:\/\/gitlab.com\///' | sed 's/\//%252F/g'
       TMP:
         sh: mktemp
     cmds:
       - echo hey
-      - jq -S --arg blueprint "$BLUEPRINT_DATA" '. = . * ($blueprint | fromjson)' ".common/variables.{{.REPOSITORY_SUBTYPE}}.json" > "$TMP"
+      - jq -S --arg blueprint "$BLUEPRINT_DATA" --arg encoded "$GITLAB_ENCODED_PATH" '. = . * ($blueprint | fromjson) | .gitlab_encoded_path = $encoded' '{{.SHARED_JSON}}' > "$TMP"
       - mv "$TMP" .variables.json
       - task: ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:variables{{else}}donothing{{end}}'
       - task: ':{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:update:variables{{else}}donothing{{end}}'
     sources:
-      - .common/variables.{{.REPOSITORY_SUBTYPE}}.json
+      - '{{.SHARED_JSON}}'
       - package.json
     preconditions:
       - sh: 'type jq &> /dev/null'
