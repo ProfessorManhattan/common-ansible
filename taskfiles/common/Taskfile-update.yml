@@ -32,9 +32,6 @@ tasks:
           git pull origin master --no-rebase || true
           cd ..
         fi
-    preconditions:
-      - sh: 'type git &> /dev/null'
-        msg: 'git is not installed.'
 
   contributing:
     deps:
@@ -123,6 +120,7 @@ tasks:
         fi
       - task: :{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:keywords:sync{{else}}donothing{{end}}
     sources:
+      - Dockerfile
       - package.json
       - .variables.json
     preconditions:
