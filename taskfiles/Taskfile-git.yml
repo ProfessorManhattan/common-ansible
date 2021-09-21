@@ -278,7 +278,7 @@ tasks:
         sh: if [[ $(jq -r '.private' package.json) == 'true' ]]; then echo 'private'; else echo 'public'; fi
     env:
       KEYWORDS:
-        sh: jq -r '.keywords | tostring' package.json | sed 's/\[//' | sed 's/\]//'
+        sh: jq -r '.keywords | tostring' package.json | sed 's/\[//' | sed 's/\]//' | sed 's/"//g'
     cmds:
       - |
         if [ ! -z "$GITLAB_TOKEN" ]; then

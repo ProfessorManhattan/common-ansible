@@ -52,7 +52,8 @@ tasks:
     deps:
       - :common:python:requirements
     cmds:
-      - ansibler --role-dependencies --json-file '{{.VARIABLES_PATH}}'
+      - cmd: ansibler --role-dependencies --json-file '{{.VARIABLES_PATH}}'
+        ignore_error: true
     log:
       error: 'Failed to acquire the `role_dependencies` JSON and inject it into `{{.VARIABLES_PATH}}`'
       success: 'Populated the `role_dependencies` variable in `{{.VARIABLES_PATH}}`'
