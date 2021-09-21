@@ -28,7 +28,7 @@ tasks:
       REVISION:
         sh: git rev-parse HEAD
       SLUG:
-        sh: jq -r '.slug' .variables.json
+        sh: jq -r '.blueprint.slug' package.json
       VERSION:
         sh: jq -r '.version' package.json
     cmds:
@@ -73,13 +73,16 @@ tasks:
   build:slim:command:
     vars:
       SLUG:
-        sh: jq -r '.slug' .variables.json
+        sh: jq -r '.blueprint.slug' package.json
     cmds:
       - docker-slim build --tag '{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim' {{.SLIM_COMMAND}} '{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest'
     log:
       error: 'Failed to build `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim`'
       start: 'Building slim image named `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim`'
       success: 'Successfully built `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim`'
+    sources:
+      - Dockerfile
+      - package.json
 
   build:slim:finish:
     deps:
@@ -119,7 +122,7 @@ tasks:
       - mv "$TMP" package.json
       - task: :common:update:update
     log:
-      start: 'The slim build was compressed to `{{.SLIM_SIZE}}` (from `{{.REGULAR_SIZE}}` originally).'
+      success: 'The slim build was compressed to `{{.SLIM_SIZE}}` (from `{{.REGULAR_SIZE}}` originally).'
     status:
       - '[[ "{{.PREVIOUS_SLIM_SIZE}}" == "{{.SLIM_SIZE}}" ]]'
 
