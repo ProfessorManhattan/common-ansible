@@ -20,7 +20,7 @@ tasks:
 
   ansible:
     deps:
-      - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
+      - :symlink:{{.REPOSITORY_SUBTYPE}}
       - :common:python:requirements
     desc: Lint Ansible projects using Ansible Lint
     summary: |
@@ -103,7 +103,7 @@ tasks:
     deps:
       - :common:node:dependencies:local
       - :install:npm:eslint
-    desc: 'Lint with `eslint`'
+    desc: Lint with `eslint`
     summary: |
       # Lint with `eslint`
 
@@ -186,7 +186,7 @@ tasks:
   packer:
     deps:
       - :install:software:packer
-    desc: 'Validate the Packer templates ending with `template.json`'
+    desc: Validate the Packer templates ending with `template.json`
     summary: |
       # Validate Packer templates
 

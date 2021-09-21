@@ -127,6 +127,13 @@ tasks:
         vars:
           NPM_PACKAGE: husky
 
+  npm:lint-staged:
+    run: once
+    cmds:
+      - task: npm:global
+        vars:
+          NPM_PACKAGE: lint-staged
+
   npm:markdown-link-check:
     run: once
     cmds:
@@ -150,13 +157,6 @@ tasks:
       - pnpm import
     status:
       - type pnpm &> /dev/null
-
-  npm:lint-staged:
-    run: once
-    cmds:
-      - task: npm:global
-        vars:
-          NPM_PACKAGE: lint-staged
 
   npm:prettier:
     run: once

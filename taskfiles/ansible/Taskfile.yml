@@ -150,8 +150,8 @@ tasks:
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
     log:
-      error: 'Error running `mod-ansible-autodoc`'
-      success: 'Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder'
+      error: Error running `mod-ansible-autodoc`
+      success: Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder
     sources:
       - '.common/**/*'
       - '{{.VARIABLES_PATH}}'
@@ -159,7 +159,7 @@ tasks:
       - tasks/**/*.yml
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
-        msg: 'The Python package `mod-ansible-autodoc` is missing.'
+        msg: The Python package `mod-ansible-autodoc` is missing.
 
   mod-ansible-autodoc:variables:
     env:
@@ -178,64 +178,58 @@ tasks:
     cmds:
       - task: playbook:environment:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
 
-  #  playbook:environment:prompt:
-  #    deps:
-  #      - :common:node:dependencies:local
-  #    env:
-  #      ENVIRONMENT:
-  #        sh: node .common/scripts/prompts/environment.js
-  #    cmds:
-  #        - |
-  #          if [ ! -z "$ENVIRONMENT" ]; then
-  #            for ITEM in "environments/$ENVIRONMENT/*"; do
-  #              if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-  #                true info "Skipping environments/$ENVIRONMENT/$ITEM because it already exists as a file/folder in the root of the project."
-  #              else
-  #                rm -f $ITEM
-  #                ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
-  #              fi
-  #            done
-  #          fi
-  #    preconditions:
-  #      - sh: "test -d node_modules"
-  #        msg: 'This task has dependencies in the `node_modules` folder which is missing.'
-  #    status:
-  #      - '[[ -z "{{.CLI_ARGS}}" ]]'
+  playbook:environment:cli:
+    desc: Prompts for which environment to use and then symlinks to it
+    summary: |
+      # Switch environments using an interactive dialogue
 
-  #  playbook:environment:cli:
-  #    desc: Prompts for which environment to use and then symlinks to it
-  #    summary: |
-  #      # Switch environments using an interactive dialogue
-  #
-  #      Ansible does not really provide any great ways to switch between environments (or sets of
-  #      `host_vars/`, `group_vars/` etc.). If you place all the files and folders you wish to constitute
-  #      as an environment inside a folder named as the name of the environment then you can use
-  #      this task to handle the symlinking and switching between environments.
-  #
-  #      **Example of opening the interactive prompt:**
-  #      `task ansible:environment`
-  #
-  #      **You can directly switch enironments to `environments/prod/` by running:**
-  #      `task ansible:environment -- prod`
-  #    cmds:
-  #      - {{if .CLI_ARGS}}
-  #          for ENV in environments/{{.CLI_ARGS}}/*; do
-  #            if [ ! -d "$ENV" ] && [ ! -f "$ENV" ]; then
-  #              rm -f "$ENV"
-  #              ln -s "./environments/{{.CLI_ARGS}}/$ENV" "$ENV"
-  #            else
-  #              true warn ""
-  #      - |
-  #        if [ ! -z "{{.CLI_ARGS}}" ]; then
-  #          for ITEM in environments/{{.CLI_ARGS}}/*; do
-  #            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-  #              true info "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
-  #            else
-  #              rm -f $ITEM
-  #              ln -s "./environments/{{.CLI_ARGS}}/$ITEM" "$ITEM"
-  #            fi
-  #          done
-  #        fi
+      Ansible does not really provide any great ways to switch between environments (or sets of
+      `host_vars/`, `group_vars/` etc.). If you place all the files and folders you wish to constitute
+      as an environment inside a folder named as the name of the environment then you can use
+      this task to handle the symlinking and switching between environments.
+
+      **Example of opening the interactive prompt:**
+      `task ansible:environment`
+
+      **You can directly switch enironments to `environments/prod/` by running:**
+      `task ansible:environment -- prod`
+    cmds:
+      - |
+        {{if .CLI_ARGS}}
+          for ITEM in environments/{{.CLI_ARGS}}/*; do
+            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+              true info "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
+            else
+              rm -f $ITEM
+              ln -s "./environments/{{.CLI_ARGS}}/$ITEM" "$ITEM"
+            fi
+          done
+        {{end}}
+
+  playbook:environment:prompt:
+    deps:
+      - :common:node:dependencies:local
+    env:
+      ENVIRONMENT:
+        sh: node .common/scripts/prompts/environment.js
+    cmds:
+      - |
+        if [ ! -z "$ENVIRONMENT" ]; then
+          for ITEM in "environments/$ENVIRONMENT/*"; do
+            if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
+              true info 'Skipping `environments/'"$ENVIRONMENT/$ITEM"'` because it already exists as a file/folder in the root of the project.'
+            else
+              rm -f $ITEM
+              ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
+            fi
+          done
+        fi
+    status:
+      - '[[ -z "{{.CLI_ARGS}}" ]]'
+
+    preconditions:
+      - sh: test -d node_modules
+        msg: This task has dependencies in the `node_modules` folder which is missing.
 
   playbook:find-missing:
     desc: Find roles that are missing files
@@ -259,7 +253,7 @@ tasks:
       error: 'Failed to search for the file named `{{.CLI_ARGS}}`'
     preconditions:
       - sh: test -d roles
-        msg: 'The `roles/` folder is missing. Is the project set up right?'
+        msg: The `roles/` folder is missing. Is the project set up right?
 
   populate:collection:
     deps:
@@ -377,8 +371,8 @@ tasks:
       - mv "$TMP" package.json
       - prettier-package-json --write package.json
     log:
-      error: 'Failed to update the `blueprint` variable in `package.json` with meta information'
-      success: 'Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information'
+      error: Failed to update the `blueprint` variable in `package.json` with meta information
+      success: Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information
     preconditions:
       - sh: 'test -f {{.META_PATH}}'
         msg: 'The `{{.META_PATH}}` file is missing. A properly filled out `{{.META_PATH}}` file is required for the
@@ -389,54 +383,6 @@ tasks:
       - sh: '[[ "{{.GALAXY_ROLE_NAME}}" != "null" ]]'
         msg: 'The `{{.META_PATH}}` file has a null value for the `galaxy_info.role_name` key. Ensure the role name is
           populated in `{{.META_PATH}}`. {{.REFERENCE_LINK}}'
-
-  symlink:playbook:
-    desc: Symlink all the roles in the roles/ folder to ~/.ansible/roles
-    summary: |
-      # Symlink each role to `~/.ansible/roles/{{.GALAXY_NAMESPACE}}.{{'{{'}}role_name{{'}}'}}`
-
-      In the playbook, roles are sometimes referred to by their folder name and in other cases
-      they are referred to with their namespace prepended (e.g. `{{.GALAXY_NAMESPACE}}.{{'{{'}}role_name{{'}}'}}`).
-      This can cause issues so, in order for everything to work, each folder needs to be symlinked
-      to `~/.ansible/roles` with the namespace prepended.
-    cmds:
-      - |
-        find ./roles -mindepth 2 -maxdepth 2 -type d -print0 | while read -d $'\0' ROLE_PATH; do;
-          ROLE_FOLDER="{{.GALAXY_NAMESPACE}}$(basename "$ROLE_PATH")";
-          if [ ! -d "~/.ansible/roles/$ROLE_FOLDER" ]; then
-            ln -sf "$PWD/$ROLE_PATH" "~/.ansible/roles/$ROLE_FOLDER"
-          fi
-        done
-    log:
-      error: 'Encountered an error while symlinking the roles to `~/.ansible/roles`'
-      success: 'Successfully symlinked the roles in this playbook to `~/.ansible/roles`'
-    preconditions:
-      - sh: test -d roles
-        msg: The roles folder is missing. Is the project set up right?
-
-  symlink:role:
-    desc: Symlink the current role to ~/.ansible/roles/{{.ROLE_NAME}}
-    summary: |
-      # Symlink this role to `~/.ansible/roles/{{.ROLE_NAME}}`
-
-      Roles are sometimes referred to by their folder name (which ideally is also the role_name in
-      the `{{.META_PATH}}` file) and they are sometimes referred to by their Ansible Galaxy name which
-      has the namespace prepended (e.g. `{{.ROLE_NAME}}`). In order to make sure Ansible
-      can find the role in both cases, a symlink in `~/.ansible/roles` that points to the folder needs
-      to be created.
-    vars:
-      SYMLINK:
-        sh: readlink "$HOME/.ansible/roles/{{.ROLE_NAME}}"
-    cmds:
-      - mkdir -p "$HOME/.ansible/roles"
-      - rm -f "$HOME/.ansible/roles/{{.ROLE_NAME}}"
-      - ln -s "$PWD" '~/.ansible/roles/{{.ROLE_NAME}}'
-    log:
-      error: 'Failed to symlink `{{.ROLE_NAME}}` to `~/.ansible/roles/{{.ROLE_NAME}}`'
-      success: 'Symlinked `{{.ROLE_NAME}}` to `~/.ansible/roles/{{.ROLE_NAME}}`'
-    status:
-      - test -d "$HOME/.ansible/roles/{{.ROLE_NAME}}"
-      - '[[ "{{.SYMLINK}}" == "$PWD" ]]'
 
   sync:requirements:
     deps:
@@ -475,8 +421,8 @@ tasks:
           mv "$TMP" package.json
         fi
     log:
-      error: 'Failed to acquire and inject the `.blueprint.ansible_galaxy_project_id` value into `package.json`'
-      success: 'Ensured that the `.blueprint.ansible_galaxy_project_id` variable in `package.json` is accurate'
+      error: Failed to acquire and inject the `.blueprint.ansible_galaxy_project_id` value into `package.json`
+      success: Ensured that the `.blueprint.ansible_galaxy_project_id` variable in `package.json` is accurate
     status:
       - '[[ "{{.HAS_PROJECT_ID}}" == "true" ]]'
 
@@ -531,9 +477,8 @@ tasks:
       This task is leveraged by `lint-staged` to ensure that any file that matches `**/*vault.yml` is encrypted
       with Ansible Vault.
     cmds:
-      - echo "{{.CLI_ARGS}}"
       - |
-        head -1 "$FILE" | grep --quiet '^\$ANSIBLE_VAULT;' || {
+        head -1 '{{.CLI_ARGS}}' | grep --quiet '^\$ANSIBLE_VAULT;' || {
           if [ -s '{{.CLI_ARGS}}' ]; then
             echo '`{{.CLI_ARGS}}` is not encrypted. All files matching `**/*vault.yml` should be encrypted by `ansible-vault`.'
             exit 1

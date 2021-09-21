@@ -157,7 +157,7 @@ tasks:
     log:
       error: '`molecule test` finished with error(s)'
       start: This is a full E2E test and can take awhile..
-      success: 'Successfully completed the `molecule test`'
+      success: Successfully completed the `molecule test`
 
   vagrant:
     deps:

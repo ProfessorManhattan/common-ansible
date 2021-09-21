@@ -14,7 +14,7 @@ tasks:
       - :install:software:parallels
       - :install:software:virtualbox
       - :install:software:vmware
-    desc: 'Build Packer images for all platforms (default setting uses `template.json`)'
+    desc: Build Packer images for all platforms (default setting uses `template.json`)
     summary: |
       # Build Packer images for all virtualization platforms
 
@@ -125,7 +125,7 @@ tasks:
       - '[[ "{{.TAG}}}" == "macos" ]] || [ "${container:=}" == "docker" ]'
     preconditions:
       - sh: test -f template.json
-        msg: 'The `template.json` file is missing from the root of this project.'
+        msg: The `template.json` file is missing from the root of this project.
 
   packer:vmware:
     deps:
