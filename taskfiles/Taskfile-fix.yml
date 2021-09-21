@@ -287,10 +287,10 @@ tasks:
       - |
         echo "CLI Arguments: {{.CLI_ARGS}}"
         function yamlDashes() {
-          if test -f "$1" && [[ "`head -c 14 "$YML_FILE"`" != '$ANSIBLE_VAULT' ]] && [[ "`head -c 3 "$YML_FILE"`" != '---' ]]; then
+          if test -f "$1" && [[ "`head -c 14 "$1"`" != '$ANSIBLE_VAULT' ]] && [[ "`head -c 3 "$1"`" != '---' ]]; then
             TMP=$(mktemp)
-            echo '---' | cat - "$YML_FILE" > "$TMP"
-            mv "$TMP" "$YML_FILE"
+            echo '---' | cat - "$1" > "$TMP"
+            mv "$TMP" "$1"
           fi
         }
         {{if .CLI_ARGS}}
