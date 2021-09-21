@@ -1,25 +1,25 @@
 <div align="center">
   <h4 align="center">
     <a href="{{ link.home }}" title="{{ organization }} homepage" target="_blank">
-      <img alt="Homepage" src="https://img.shields.io/website?down_color=%23FF4136&down_message=Down&label=Homepage&logo=home-assistant&logoColor=white&style=for-the-badge&up_color=%232ECC40&up_message=Up&url=https%3A%2F%2Fmegabyte.space" />
+      <img alt="Homepage" src="https://img.shields.io/website?down_color=%23FF4136&down_message=Down&label=Homepage&logo=home-assistant&logoColor=white&up_color=%232ECC40&up_message=Up&url=https%3A%2F%2Fmegabyte.space&style={{ badge_style }}" />
     </a>
     <a href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" title="{{ name }} role on Ansible Galaxy" target="_blank">
-      <img alt="Ansible Galaxy" src="https://img.shields.io/badge/Ansible-Galaxy-000000?logo=ansible&style=for-the-badge&logoColor=white" />
+      <img alt="Ansible Galaxy" src="https://img.shields.io/badge/Ansible-Galaxy-000000?logo=ansible&logoColor=white&style={{ badge_style }}" />
     </a>
     <a href="{{ repository.github }}{{ repository.location.contributing.github }}" title="Learn about contributing" target="_blank">
-      <img alt="Contributing" src="https://img.shields.io/badge/Contributing-Guide-0074D9?logo=github-sponsors&style=for-the-badge&logoColor=white" />
+      <img alt="Contributing" src="https://img.shields.io/badge/Contributing-Guide-0074D9?logo=github-sponsors&logoColor=white&style={{ badge_style }}" />
     </a>
     <a href="{{ profile_link.patreon }}/{{ profile.patreon }}" title="Support us on Patreon" target="_blank">
-      <img alt="Patreon" src="https://img.shields.io/badge/Patreon-Support-052d49?style=for-the-badge&logo=patreon&logoColor=white" />
+      <img alt="Patreon" src="https://img.shields.io/badge/Patreon-Support-052d49?logo=patreon&logoColor=white&style={{ badge_style }}" />
     </a>
     <a href="{{ link.chat }}" title="Slack chat room" target="_blank">
-      <img alt="Slack" src="https://img.shields.io/badge/Slack-Chat-e01e5a?style=for-the-badge&logo=slack&logoColor=white" />
+      <img alt="Slack" src="https://img.shields.io/badge/Slack-Chat-e01e5a?logo=slack&logoColor=white&style={{ badge_style }}" />
     </a>
     <a href="{{ repository.github }}" title="GitHub mirror" target="_blank">
-      <img alt="GitHub" src="https://img.shields.io/badge/Mirror-GitHub-333333?logo=github&style=for-the-badge" />
+      <img alt="GitHub" src="https://img.shields.io/badge/Mirror-GitHub-333333?logo=github&style={{ badge_style }}" />
     </a>
     <a href="{{ repository.gitlab }}" title="GitLab repository" target="_blank">
-      <img alt="GitLab" src="https://img.shields.io/badge/Repo-GitLab-fc6d26?logo=gitlab&style=for-the-badge" />
+      <img alt="GitLab" src="https://img.shields.io/badge/Repo-GitLab-fc6d26?logo=gitlab&style={{ badge_style }}" />
     </a>
   </h4>
   <p align="center">
@@ -36,7 +36,7 @@
       <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
     </a>
     <a title="Linux build status on GitLab" href="{{ repository.gitlab }}{{ repository.location.commits.gitlab }}" target="_blank">
-      <img alt="Linux build status" src="{{ repository.group.ansible_roles }}/{{ galaxy_info.role_name }}/badges/master/pipeline.svg">
+      <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ encoded_gitlab_path }}%2Fpipelines&style={{ badge_style }}">
     </a>
     <a title="Ansible Galaxy quality score (out of 5)" href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" target="_blank">
       <img alt="Ansible Galaxy quality score" src="https://img.shields.io/ansible/quality/{{ ansible_galaxy_project_id }}?logo=ansible&style={{ badge_style }}" />
