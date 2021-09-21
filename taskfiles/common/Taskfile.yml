@@ -143,23 +143,21 @@ tasks:
       - '[[ "${container:=}" == "docker" ]]'
 
   node:dependencies:local:
-    deps:
-      - :install:software:node
     run: once
     cmds:
       - task: :install:local:modules
-    sources:
-      - package.json
 
   node:dependencies:local:install:
+    deps:
+      - :install:software:node
     cmds:
-      - npm install
-      - npm audit fix --force || true
-    status:
-      - '[[ "${container:=}" == "docker" ]]'
+      - |
+        if [ "${container:=}" != "docker" ]; then
+          npm install
+          npm audit fix --force || true
+        fi
     sources:
       - package.json
-      - package-lock.json
     preconditions:
       - sh: test -f package.json
         msg: The package.json file appears to be missing!
@@ -214,8 +212,6 @@ tasks:
     preconditions:
       - sh: test -f requirements.txt
         msg: The requirements.txt file is missing!
-      - sh: test -f .venv/bin/activate
-        msg: "The Python virtualenv '.venv/bin/activate' file is missing!"
 
   python:requirements:venv:
     deps:
@@ -325,21 +321,12 @@ tasks:
       WORKDIR:
         sh: basename $PWD
     cmds:
-      - task: shell:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
+      - |
+        {{if .CLI_ARGS}}
+          docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm megabytelabs/ansible-molecule-{{.CLI_ARGS}}:latest /bin/bash
+        {{else}}
+          node .common/scripts/prompts/shell.js
+        {{end}}
     preconditions:
       - sh: 'type docker &> /dev/null'
         msg: 'Docker is not installed.'
-
-  shell:cli: docker run --cap-drop=ALL -it -v "$PWD:/{{.WORKDIR}}" -w /{{.WORKDIR}} --rm megabytelabs/ansible-molecule-{{.CLI_ARGS}}:latest /bin/bash
-
-  shell:prompt:
-    deps:
-      - :install:software:node
-      - node:dependencies:local
-    cmds:
-      - node .common/scripts/prompts/shell.js
-    status:
-      - '[[ ! -z "{{.CLI_ARGS}}" ]]'
-    preconditions:
-      - sh: 'type node &> /dev/null'
-        msg: 'Node.js is not installed.'

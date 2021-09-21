@@ -18,6 +18,8 @@ tasks:
     cmds:
       - '{{.NPM_PROGRAM}} install'
       - '{{.NPM_PROGRAM}} audit fix{{if eq .NPM_PROGRAM "npm"}} --force{{end}} || true'
+    sources:
+      - package.json
 
   npm:commitizen:
     run: once
