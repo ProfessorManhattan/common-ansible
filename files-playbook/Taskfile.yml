@@ -1,19 +1,6 @@
 ---
 version: '3'
 
-output: interleaved
-
-env:
-  GALAXY_NAMESPACE: installdoctor
-  GITHUB_ORG: ProfessorManhattan
-  GITHUB_USER: ProfessorManhattan
-  NPM_PROGRAM:
-    sh: 'if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi'
-  NPX_PACKAGE: pnpx
-  REPOSITORY_SUBTYPE: playbook
-  REPOSITORY_TYPE: ansible
-  TIMEZONE: America/New_York
-
 includes:
   ansible: ./.common/taskfiles/ansible/Taskfile.yml
   ansible:ansibler: ./.common/taskfiles/ansible/Taskfile-ansibler.yml
@@ -27,6 +14,19 @@ includes:
   lint: ./.common/taskfiles/Taskfile-lint.yml
   security: ./.common/taskfiles/Taskfile-security.yml
   vscode: ./.common/taskfiles/Taskfile-vscode.yml
+
+output: interleaved
+
+env:
+  GALAXY_NAMESPACE: installdoctor
+  GITHUB_ORG: ProfessorManhattan
+  GITHUB_USER: ProfessorManhattan
+  NPM_PROGRAM:
+    sh: 'if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi'
+  NPX_PACKAGE: pnpx
+  REPOSITORY_SUBTYPE: playbook
+  REPOSITORY_TYPE: ansible
+  TIMEZONE: America/New_York
 
 tasks:
   donothing: 'true'
