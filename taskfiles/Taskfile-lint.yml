@@ -42,10 +42,21 @@ tasks:
     deps:
       - :common:node:dependencies:local
       - :install:npm:commitlint
+    summary: |
+      # Lint a commit message
+
+      This task will lint a commit message with `commitlint`. It requires that the commit message be passed as
+      an argument to this task.
+
+      **Example:**
+      `task lint:commit -- 'My commit message'`
     cmds:
       - if [ ! -z '{{.CLI_ARGS}}' ]; then commitlint -e '{{.CLI_ARGS}}' --config .common/commitlint.config.cjs; fi
     status:
       - '[[ -z "{{.CLI_ARGS}}" ]]'
+    preconditions:
+      - sh: '[ ! -z "{{.CLI_ARGS}}" ]'
+        msg: 'A CLI argument must be passed to this task. See `task lint:commit --summary` for details.'
 
   docker:
     deps:
@@ -79,20 +90,38 @@ tasks:
 
       For more information, see [Hadolint's GitHub page](https://github.com/hadolint/hadolint).
     cmds:
-      - task: docker:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  docker:cli: docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim {{.CLI_ARGS}}
-
-  docker:default: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name Dockerfile -o
-    -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work
-    megabytelabs/hadolint:slim
+      - |
+        {{if .CLI_ARGS}}
+          docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim {{.CLI_ARGS}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name Dockerfile -o \
+            -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 docker run -v "$PWD:/work" -w /work \
+            megabytelabs/hadolint:slim
+        {{end}}
 
   eslint:
     deps:
       - :common:node:dependencies:local
       - :install:npm:eslint
-  cmds:
-    - eslint --format pretty .
+    desc: 'Lint with `eslint`'
+    summary: |
+      # Lint with `eslint`
+
+      This task will lint the project or a specific pattern of files with `eslint`. It is capable of
+      linting JSON, YML, JS, TS, and HTML as long as the correct `package.json` dependencies are
+      installed. By default, all projects have the libraries necessary for linting JSON and YML. In
+      order to lint JS and TS, first run `task install:npm:eslint:dev-dependencies`.
+
+      **Example linting entire project:**
+      `task lint:eslint`
+
+      **Example linting specific file:**
+      `task lint:eslint -- my_file.ts`
+
+      **Example linting specific pattern of files:**
+      `task lint:eslint -- '**/*.js'`
+    cmds:
+      - eslint --format pretty {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   lint-staged:
     deps:
@@ -122,12 +151,12 @@ tasks:
 
       For more information on `remark-lint`, see the [GitHub page](https://github.com/remarkjs/remark-lint).
     cmds:
-      - task: markdown:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  markdown:cli: remark {{.CLI_ARGS}}
-
-  markdown:default: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 |
-    xargs -0 -r -n1 remark
+      - |
+        {{if .CLI_ARGS}}
+          remark {{.CLI_ARGS}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 | xargs -0 -r -n1 remark
+        {{end}}
 
   markdown:links:
     deps:
@@ -147,12 +176,12 @@ tasks:
 
       For more information on `markdown-link-check`, see their [GitHub page](https://github.com/tcort/markdown-link-check).
     cmds:
-      - task: markdown:broken-links:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  markdown:links:cli: markdown-link-check {{.CLI_ARGS}}
-
-  markdown:links:default: find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 |
-    xargs -0 -r -n1 markdown-link-check
+      - |
+        {{if .CLI_ARGS}}
+          markdown-link-check {{.CLI_ARGS}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \) -print0 | xargs -0 -r -n1 markdown-link-check
+        {{end}}
 
   packer:
     deps:

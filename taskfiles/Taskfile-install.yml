@@ -314,27 +314,27 @@ tasks:
       - type python3 &> /dev/null
 
   software:python:darwin:
-    vars:
-      BASH_PROFILE: .bash_profile
-      MINICONDA_DOWNLOAD_CHECKSUM: b3bf77cbb81ee235ec6858146a2a84d20f8ecdeb614678030c39baacb5acbed1
-      MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-MacOSX-x86_64.sh
     cmds:
       - task: software:python:miniconda
+        vars:
+          BASH_PROFILE: .bash_profile
+          MINICONDA_DOWNLOAD_CHECKSUM: b3bf77cbb81ee235ec6858146a2a84d20f8ecdeb614678030c39baacb5acbed1
+          MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-MacOSX-x86_64.sh
 
   software:python:linux:
-    vars:
-      BASH_PROFILE: .bashrc
-      MINICONDA_DOWNLOAD_CHECKSUM: 536817d1b14cb1ada88900f5be51ce0a5e042bae178b5550e62f61e223deae7c
-      MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
     cmds:
       - task: software:python:miniconda
+        vars:
+          BASH_PROFILE: .bashrc
+          MINICONDA_DOWNLOAD_CHECKSUM: 536817d1b14cb1ada88900f5be51ce0a5e042bae178b5550e62f61e223deae7c
+          MINICONDA_DOWNLOAD_URL: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
 
   software:python:miniconda: |
     if ! type python3 &> /dev/null; then
       true warn "Python 3 is missing from your computer"
       true info "Installing Python 3 rootlessly using Miniconda"
       curl -sS \{{.MINICONDA_DOWNLOAD_URL}} > miniconda.sh
-      {{if eq OS "darwin"}}echo "\{{.MINICONDA_DOWNLOAD_CHECKSUM}} miniconda.sh" | sha256sum --check{{end}}
+      {{if eq OS "darwin"}}echo "{{.MINICONDA_DOWNLOAD_CHECKSUM}} miniconda.sh" | sha256sum --check{{end}}
       {{if eq OS "linux"}}echo "miniconda.sh  {{.MINICONDA_DOWNLOAD_CHECKSUM}}" | shasum -s -a 256 -c{{end}}
       mkdir -p "$HOME/.local"
       bash miniconda.sh -b -p "$HOME/.local/miniconda"
