@@ -273,7 +273,7 @@ tasks:
         if [[ ! "$COLLECTIONS" =~ '{{.KEY}}' ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.collections = .collections + {{.VAL}}' '{{.REQUIREMENTS_PATH}}'
         fi
-      - task: :fix:yaml:dashes:cli
+      - task: :fix:yaml:dashes
         vars:
           CLI_ARGS: '{{.REQUIREMENTS_PATH}}'
     log:
@@ -350,7 +350,7 @@ tasks:
         if [[ ! "$DEPENDENCIES" =~ '{{.ROLE}}' ]] && [ "$REFERENCES" ]; then
           yq eval -i -P '.dependencies = .dependencies + {{.VAL}}' '{{.META_PATH}}'
         fi
-      - task: :fix:yaml:dashes:cli
+      - task: :fix:yaml:dashes
         vars:
           CLI_ARGS: '{{ .META_PATH }}'
     log:
@@ -451,7 +451,7 @@ tasks:
             yq eval -i -P '.roles = .roles + {"name": '"$ROLE_NAME"'}' '{{.REQUIREMENTS_PATH}}'
           fi
         done
-      - task: :fix:yaml:dashes:cli
+      - task: :fix:yaml:dashes
         vars:
           CLI_ARGS: '{{.REQUIREMENTS_PATH}}'
     log:
