@@ -101,7 +101,7 @@ tasks:
       loops through all the files in the root of this repository that end with `template.json`.
       For each template, the task runs `packer fix`.
 
-      **Example applying fixes to all files:**
+      **Example applying fixes to all files matching `*template.json`:**
       `task fix:packer`
 
       **Example applying fixes to single file:**
@@ -109,17 +109,20 @@ tasks:
 
       For more information on `packer fix`, see [Packer's website](https://www.packer.io/docs/commands/fix).
     cmds:
-      - mkdir -p .tmp
-      - task: packer:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-      - rm -rf .tmp
-
-  packer:cli: packer fix {{.CLI_ARGS}}" > ".tmp/tmp-{{.CLI_ARGS}}" && mv ".tmp/tmp-{{.CLI_ARGS}}"
-
-  packer:default: |
-    for TEMPLATE in *template.json; do
-      (packer fix "$TEMPLATE" > ".tmp/tmp-$TEMPLATE" && mv ".tmp/tmp-$TEMPLATE" "$TEMPLATE") &
-    done
-    wait
+      - |
+        function packerFix() {
+          TMP="$(mktemp)"
+          packer fix "$1" > "$TMP"
+          mv "$TMP" "$1"
+        }
+        {{if .CLI_ARGS}}
+          packerFix '{{.CLI_ARGS}}'
+        {{else}}
+          for TEMPLATE in *template.json; do
+            packerFix "$TEMPLATE" &
+          done
+          wait
+        {{end}}
 
   prettier:
     deps:
@@ -145,11 +148,17 @@ tasks:
 
       For more information, see [Prettier's website](https://prettier.io/).
     cmds:
-      - task: prettier:{{if .CLI_ARGS}}cli{{else}}default{{end}}
-
-  prettier:cli: prettier --write . && prettier-package-json --write package.json
-
-  prettier:default: '{{if eq .CLI_ARGS "package.json" }}prettier-package-json --write package.json{{else}}prettier --write "{{.CLI_ARGS}}"{{end}}'
+      - |
+        {{if .CLI_ARGS}}
+          {{if eq .CLI_ARGS "package.json"}}
+            prettier-package-json --write '{{.CLI_ARGS}}'
+          {{else}}
+            prettier --write '{{.CLI_ARGS}}'
+          {{end}}
+        {{else}}
+          prettier --write .
+          prettier-package-json --write package.json
+        {{end}}
 
   python:
     deps:
