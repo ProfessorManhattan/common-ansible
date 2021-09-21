@@ -4,13 +4,13 @@
       <img alt="Homepage" src="https://img.shields.io/website?down_color=%23FF4136&down_message=Down&label=Homepage&logo=home-assistant&logoColor=white&style=for-the-badge&up_color=%232ECC40&up_message=Up&url=https%3A%2F%2Fmegabyte.space" />
     </a>
     <a href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" title="{{ name }} role on Ansible Galaxy" target="_blank">
-      <img alt="Ansible Galaxy" height="50" src="https://img.shields.io/badge/Ansible-Galaxy-000000?logo=ansible&style=for-the-badge&logoColor=white" />
+      <img alt="Ansible Galaxy" src="https://img.shields.io/badge/Ansible-Galaxy-000000?logo=ansible&style=for-the-badge&logoColor=white" />
     </a>
     <a href="{{ repository.github }}{{ repository.location.contributing.github }}" title="Learn about contributing" target="_blank">
-      <img alt="Contributing" src="https://img.shields.io/badge/Contributing-Guide-333333?logo=github-sponsors&style=for-the-badge&logoColor=white" />
+      <img alt="Contributing" src="https://img.shields.io/badge/Contributing-Guide-0074D9?logo=github-sponsors&style=for-the-badge&logoColor=white" />
     </a>
     <a href="{{ profile_link.patreon }}/{{ profile.patreon }}" title="Support us on Patreon" target="_blank">
-      <img alt="Patreon" src="https://img.shields.io/badge/Patreon-Support-f96854?style=for-the-badge&logo=patreon&logoColor=white" />
+      <img alt="Patreon" src="https://img.shields.io/badge/Patreon-Support-052d49?style=for-the-badge&logo=patreon&logoColor=white" />
     </a>
     <a href="{{ link.chat }}" title="Slack chat room" target="_blank">
       <img alt="Slack" src="https://img.shields.io/badge/Slack-Chat-e01e5a?style=for-the-badge&logo=slack&logoColor=white" />
