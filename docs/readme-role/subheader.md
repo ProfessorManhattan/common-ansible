@@ -1,25 +1,25 @@
 <div align="center">
   <h4 align="center">
     <a href="{{ link.home }}" title="{{ organization }} homepage" target="_blank">
-      <img alt="Homepage" src="{{ repository.project.assets }}/svg/home-solid.svg" />
+      <img alt="Homepage" src="https://img.shields.io/website?down_color=%23FF4136&down_message=Down&label=Homepage&logo=home-assistant&logoColor=white&style=for-the-badge&up_color=%232ECC40&up_message=Up&url=https%3A%2F%2Fmegabyte.space" />
     </a>
     <a href="{{ profile_link.galaxy }}/{{ profile.galaxy }}/{{ galaxy_info.role_name }}" title="{{ name }} role on Ansible Galaxy" target="_blank">
-      <img alt="Ansible Galaxy" height="50" src="{{ repository.project.assets }}/svg/ansible-galaxy.svg" />
+      <img alt="Ansible Galaxy" height="50" src="https://img.shields.io/badge/Ansible-Galaxy-000000?logo=ansible&style=for-the-badge&logoColor=white" />
     </a>
     <a href="{{ repository.github }}{{ repository.location.contributing.github }}" title="Learn about contributing" target="_blank">
-      <img alt="Contributing" src="{{ repository.project.assets }}/svg/contributing-solid.svg" />
+      <img alt="Contributing" src="https://img.shields.io/badge/Contributing-Guide-333333?logo=github-sponsors&style=for-the-badge&logoColor=white" />
     </a>
     <a href="{{ profile_link.patreon }}/{{ profile.patreon }}" title="Support us on Patreon" target="_blank">
-      <img alt="Patreon" src="{{ repository.project.assets }}/svg/support-solid.svg" />
+      <img alt="Patreon" src="https://img.shields.io/badge/Patreon-Support-f96854?style=for-the-badge&logo=patreon&logoColor=white" />
     </a>
     <a href="{{ link.chat }}" title="Slack chat room" target="_blank">
-      <img alt="Slack" src="{{ repository.project.assets }}/svg/chat-solid.svg" />
+      <img alt="Slack" src="https://img.shields.io/badge/Slack-Chat-e01e5a?style=for-the-badge&logo=slack&logoColor=white" />
     </a>
     <a href="{{ repository.github }}" title="GitHub mirror" target="_blank">
-      <img alt="GitHub" src="{{ repository.project.assets }}/svg/github-solid.svg" />
+      <img alt="GitHub" src="https://img.shields.io/badge/Mirror-GitHub-333333?logo=github&style=for-the-badge" />
     </a>
     <a href="{{ repository.gitlab }}" title="GitLab repository" target="_blank">
-      <img alt="GitLab" src="{{ repository.project.assets }}/svg/gitlab-solid.svg" />
+      <img alt="GitLab" src="https://img.shields.io/badge/Repo-GitLab-fc6d26?logo=gitlab&style=for-the-badge" />
     </a>
   </h4>
   <p align="center">
