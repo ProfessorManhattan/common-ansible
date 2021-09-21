@@ -30,7 +30,7 @@
     <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ slug }}/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
   </a>
   <a title="Linux build status on GitLab" href="{{ repository.gitlab }}{{ repository.location.commits.gitlab }}" target="_blank">
-    <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ gitlab_encoded_path }}%Fpipelines&style={{ badge_style }}">
+    <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ gitlab_encoded_path }}%2Fpipelines&style={{ badge_style }}">
   </a>
   <a title="Documentation" href="{{ link.docs }}/{{ group }}" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?logo=readthedocs&style={{ badge_style }}" />
