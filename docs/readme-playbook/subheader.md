@@ -21,7 +21,7 @@
 <br/>
 <div align="center">
   <a title="Version: {{ pkg.version }}" href="{{ repository.github }}" target="_blank">
-    <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?cacheSeconds=2592000&style={{ badge_style }}" />
+    <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAACNJREFUCNdjIACY//+BEp9hhM3hAzYQwoBIAqEDYQrCZLwAAGlFKxU1nF9cAAAAAElFTkSuQmCC&cacheSeconds=2592000&style={{ badge_style }}" />
   </a>
   <a title="Windows 11 build status on GitHub" href="{{ repository.github }}/actions/Windows.yml" target="_blank">
     <img alt="Windows 11 build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ slug }}/Windows/master?color=cyan&label=Windows%20build&logo=windows&style={{ badge_style }}">
@@ -30,7 +30,7 @@
     <img alt="macOS build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ slug }}/macOS/master?label=macOS%20build&logo=apple&style={{ badge_style }}">
   </a>
   <a title="Linux build status on GitLab" href="{{ repository.gitlab }}{{ repository.location.commits.gitlab }}" target="_blank">
-    <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ gitlab_encoded_path }}%2Fpipelines&style={{ badge_style }}">
+    <img alt="Linux build status" src="https://img.shields.io/badge/dynamic/json?color=ffdc00&label=Linux&query=%24%5B0%5D.status&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F{{ gitlab_encoded_path }}%2Fpipelines&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAElBMVEUAAAAwPEEuOEIxOzswPj7///91+pI+AAAABXRSTlMANRkNJejDPNcAAAB+SURBVCjPddHBDYAgDIXhGtMRHMG7S3hvTP79VxFIQVq1wOVLm7wU8QIJpSThC2wGwwJoPQFKRdiAAIhGsAykZNSZAOVNMx4BMjwtpySgr6CDJdB/MAdJwAvSiFoE5aABHUb0ch0WHNQq+KPAOgCgrbEnbjAHArjGz3jr3hpumrQpvwi66rkAAAAASUVORK5CYII=&style={{ badge_style }}">
   </a>
   <a title="Documentation" href="{{ link.docs }}/{{ group }}" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?logo=readthedocs&style={{ badge_style }}" />
@@ -39,7 +39,7 @@
     <img alt="License: {{ license }}" src="https://img.shields.io/badge/license-{{ license }}-yellow.svg?style={{ badge_style }}" />
   </a>
   <a title="Support us on Open Collective" href="{{ profile.opencollective }}" target="_blank">
-    <img alt="Open Collective sponsors" src="https://img.shields.io/opencollective/sponsors/megabytelabs?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAElBMVEUAAACvzfmFsft4pfD////w+P9uc5RAAAABHRSTlMAFBERkdVu1AAAAFxJREFUKM9jgAAXIGBAABYXMHBA4yNEXGBAAU2BMz4FIIYTNhtFgRjZPkagFAuyAhGgHAuKAlQBCBtZB4gzQALoDsN0Oobn0L2PEUCoQYgZyOjRQFiJA67IRrEbAJImNwFBySjCAAAAAElFTkSuQmCC&labl=Open%20Collective%20sponsors&logo=opencollective&style={{ badge_style }}" />
+    <img alt="Open Collective sponsors" src="https://img.shields.io/opencollective/sponsors/megabytelabs?logo=opencollective&logoColor=white&style={{ badge_style }}" />
   </a>
   <a title="Support us on GitHub" href="{{ profile_link.github }}/{{ profile.github }}" target="_blank">
     <img alt="GitHub sponsors" src="https://img.shields.io/github/sponsors/{{ profile.github }}?label=GitHub%20sponsors&logo=github&style={{ badge_style }}" />

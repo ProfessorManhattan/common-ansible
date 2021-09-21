@@ -27,7 +27,7 @@
     <img alt="Ansible Galaxy role: {{ profile.galaxy }}.{{ galaxy_info.role_name }}" src="https://img.shields.io/ansible/role/{{ ansible_galaxy_project_id }}?logo=ansible&style={{ badge_style }}" />
   </a>
   <a title="Version: {{ pkg.version }}" href="{{ repository.github }}" target="_blank">
-    <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?cacheSeconds=2592000&style={{ badge_style }}" />
+    <img alt="Version: {{ pkg.version }}" src="https://img.shields.io/badge/version-{{ pkg.version }}-blue.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAACNJREFUCNdjIACY//+BEp9hhM3hAzYQwoBIAqEDYQrCZLwAAGlFKxU1nF9cAAAAAElFTkSuQmCC&cacheSeconds=2592000&style={{ badge_style }}" />
   </a>
   <a title="Windows 11 build status on GitHub" href="{{ {{ repository.github }}/actions/Windows.yml" target="_blank">
     <img alt="Windows 11 build status" src="https://img.shields.io/github/workflow/status/{{ profile.github }}/{{ repository.prefix.github }}{{ galaxy_info.role_name }}/Windows/master?color=cyan&lbel=Windows%20build&logo=windows&style={{ badge_style }}">
@@ -51,7 +51,7 @@
     <img alt="License: {{ license }}" src="https://img.shields.io/badge/license-{{ license }}-yellow.svg?style={{ badge_style }}" />
   </a>
   <a title="Support us on Open Collective" href="{{ profile_link.opencollective }}/{{ profile.opencollective }}" target="_blank">
-    <img alt="Open Collective sponsors" src="https://img.shields.io/opencollective/sponsors/megabytelabs?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAElBMVEUAAACvzfmFsft4pfD////w+9tuc5RAAAABHRSTlMAFBERkdVu1AAAAFxJREFUKM9jgAAXIGBAABYXMHBA4yNEXGBAAU2BMz4FIIYTNhtFgRjZPkagFAuyAhGgHAuKAlQBCBtZB4gzQALoDsN0Oobn0L2PEUCoQYgZyOjRQFiJA67IRrEbAJImNwFBySjCAAAAAElFTkSuQmCC&lbel=Open%20Collective%20sponsors&logo=opencollective&style={{ badge_style }}" />
+    <img alt="Open Collective sponsors" src="https://img.shields.io/opencollective/sponsors/megabytelabs?logo=opencollective&logoColor=white&style={{ badge_style }}" />
   </a>
   <a title="Support us on GitHub" href="{{ profile_link.github }}/{{ profile.github }}" target="_blank">
     <img alt="GitHub sponsors" src="https://img.shields.io/github/sponsors/{{ profile.github }}?label=GitHub%20sponsors&logo=github&style={{ badge_style }}" />
