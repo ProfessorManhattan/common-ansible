@@ -206,7 +206,7 @@ tasks:
               -f 'enabled=true'
           fi
           curl -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -X PUT --data \
-            "{'mirror': true, 'import_url': 'https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git'}" \
+            "{\"mirror\": true, \"import_url\": \"https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git\"}" \
             'https://gitlab.com/api/v4/projects/{{.GITLAB_REPO_ID}}'
         fi
     sources:
