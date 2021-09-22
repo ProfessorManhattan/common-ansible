@@ -60,8 +60,7 @@ tasks:
     cmds:
       - cmd: >
           if [ ! -z "$GITHUB_TOKEN" ] && test -e .git && ! gh repo view {{.GITHUB_ORG}}/{{.GITHUB_SLUG}} > /dev/null; then
-            gh repo create "{{.GITHUB_SLUG}}" --enable-wiki={{.GITHUB_WIKI}} -y --description "{{.DESCRIPTION}}" --homepage "{{.HOMEPAGE}}"
-              {{.PROJECT_TYPE}}
+            gh repo create "{{.GITHUB_SLUG}}" --enable-wiki={{.GITHUB_WIKI}} -y --description "{{.DESCRIPTION}}" --homepage "{{.HOMEPAGE}}" {{.PROJECT_TYPE}}
           else
             true warn 'The `GITHUB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
           fi
