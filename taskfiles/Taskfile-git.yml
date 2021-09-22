@@ -81,6 +81,7 @@ tasks:
   github:update:
     deps:
       - github:update:meta
+      - github:variables
 
   github:update:meta:
     deps:
@@ -135,6 +136,16 @@ tasks:
         msg: The `.description` in `package.json` must be set.
       - sh: '[ "{{.HOMEPAGE}}" != "null" ]'
         msg: The `.homepage` in `package.json` must be set.
+
+  github:variables:
+    deps:
+      - :install:software:gh
+    cmds:
+      - ! if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$ANSIBLE_GALAXY_TOKEN" ]; then
+        gh secret set ANSIBLE_GALAXY_TOKEN -b "$ANSIBLE_GALAXY_TOKEN"
+        else
+        true info 'Both the `ANSIBLE_GALAXY_TOKEN` and the `GITHUB_TOKEN` environment variables must be set to update the GitHub secret'
+        fi
 
   gitlab:create:
     deps:
