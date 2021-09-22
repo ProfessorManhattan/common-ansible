@@ -17,7 +17,8 @@ tasks:
       - npm:{{.NPM_PROGRAM}}
     cmds:
       - '{{.NPM_PROGRAM}} install'
-      - '{{.NPM_PROGRAM}} audit fix{{if eq .NPM_PROGRAM "npm"}} --force{{end}} || true'
+      - cmd: '{{.NPM_PROGRAM}} audit fix{{if eq .NPM_PROGRAM "npm"}} --force{{end}} || true'
+        ignore_error: true
     sources:
       - package.json
 
