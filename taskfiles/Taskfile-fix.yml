@@ -285,7 +285,6 @@ tasks:
       `task fix:yaml:dashes -- path/filename.yml`
     cmds:
       - |
-        echo "CLI Arguments: {{.CLI_ARGS}}"
         function yamlDashes() {
           if test -f "$1" && [[ "`head -c 14 "$1"`" != '$ANSIBLE_VAULT' ]] && [[ "`head -c 3 "$1"`" != '---' ]]; then
             TMP=$(mktemp)

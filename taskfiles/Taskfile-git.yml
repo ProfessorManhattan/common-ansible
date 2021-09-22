@@ -172,7 +172,7 @@ tasks:
     run: once
     cmds:
       - cmd: >
-          if [ ! -z "$GITLAB_TOKEN" ] && test -d .git && ! glab repo view '{{.GITLAB_PATH}}' > /dev/null; then
+          if [ ! -z "$GITLAB_TOKEN" ] && ! glab repo view '{{.GITLAB_PATH}}' > /dev/null; then
             glab repo create '{{.GITLAB_PATH}}' --group '{{.GITLAB_GROUP}}' --description '{{.DESCRIPTION}}' --name '{{.NAME}}' \
               {{.PROJECT_TYPE}} --tag '$KEYWORDS'
           else
