@@ -92,9 +92,9 @@ tasks:
       - find '.common/files-{{.REPOSITORY_SUBTYPE}}' -type f -name '*.handlebars' -delete
       - |
         {{if eq .REPOSITORY_SUBTYPE "ci-pipeline"}}
-        if [[ "{{.FIRST_LINE}}" == *"debian"* ]] || [[ "{{.FIRST_LINE}}" == *"ubuntu"* ]]; then
-          cp .common/initctl initctl
-        fi
+          if [[ "{{.FIRST_LINE}}" == *"debian"* ]] || [[ "{{.FIRST_LINE}}" == *"ubuntu"* ]]; then
+            cp .common/initctl initctl
+          fi
         {{end}}
       - rsync -aPq ".common/files-{{.REPOSITORY_SUBTYPE}}/" ./
       - task: :common:{{if eq .CONTAINER "docker"}}husky:ci{{else}}husky{{end}}
@@ -104,6 +104,7 @@ tasks:
         .devDependencies = (($devDeps | fromjson) * .devDependencies) | .keywords = .keywords + ($keywords | fromjson) |
         .keywords = (.keywords | sort | unique) | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) |
         .version = $version' package.json > "$TMP"
+      - '{{.NPM_PROGRAM}} install --ignore-scripts'
       - mv "$TMP" package.json
       - prettier-package-json --write
       - |
