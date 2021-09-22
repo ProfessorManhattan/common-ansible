@@ -32,6 +32,8 @@ tasks:
           git pull origin master --no-rebase || true
           cd ..
         fi
+    status:
+      - '[[ "{{.PRODUCTION_MODE}}" != "true" ]]'
 
   contributing:
     deps:

@@ -81,7 +81,7 @@ tasks:
 
   npm:global:
     deps:
-      - npm:global:deps
+      - software:node
     cmds:
       - |
         if [[ "${container:=}" != 'docker' ]]; then
@@ -94,23 +94,6 @@ tasks:
         fi
     status:
       - type {{if .NPM_PACKAGE_BIN}}{{.NPM_PACKAGE_BIN}}{{else}}{{.NPM_PACKAGE}}{{end}} &> /dev/null
-
-  npm:global:clean:
-    vars:
-      NPM_ROOT:
-        sh: '{{.NPM_PROGRAM}} root -g'
-    run: once
-    cmds:
-      - rm -rf "{{.NPM_ROOT}}/.*" 2> /dev/null | true
-    status:
-      - '! ls {{.NPM_ROOT}}/.*'
-
-  npm:global:deps:
-    deps:
-      - software:node
-    run: once
-    cmds:
-      - task: npm:global:clean
 
   npm:hbs:
     run: once

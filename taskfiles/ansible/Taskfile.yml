@@ -373,6 +373,9 @@ tasks:
     log:
       error: Failed to update the `blueprint` variable in `package.json` with meta information
       success: Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information
+    sources:
+      - meta/main.yml
+      - package.json
     preconditions:
       - sh: 'test -f {{.META_PATH}}'
         msg: 'The `{{.META_PATH}}` file is missing. A properly filled out `{{.META_PATH}}` file is required for the
@@ -411,7 +414,7 @@ tasks:
         sh: jq -e 'has("blueprint.ansible_galaxy_project_id")' package.json || true
     env:
       PROJECT_ID:
-        sh: '(ansible-galaxy info "{{.ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}) 2> /dev/null || true'
+        sh: '(ansible-galaxy info "{{.GALAXY_ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}) 2> /dev/null || true'
       TMP:
         sh: mktemp
     cmds:
