@@ -1,0 +1,15 @@
+---
+version: '3'
+
+vars:
+  GITHUB_ORG: ProfessorManhattan
+  GITHUB_USER: ProfessorManhattan
+  NPM_PROGRAM:
+    sh: 'if [[ "${container:=}" == "docker" ]]; then echo "npm"; else echo "pnpm"; fi'
+  NPX_PACKAGE: pnpx
+  REPOSITORY_SUBTYPE: ansible
+  REPOSITORY_TYPE: common
+  TIMEZONE: America/New_York
+
+tasks:
+  start: true
