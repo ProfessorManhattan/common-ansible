@@ -74,15 +74,19 @@ tasks:
     run: once
     cmds:
       - task: :common:python:requirements:venv:activate
-      - cmd: ansible-galaxy install -r requirements.yml --ignore-errors
-        ignore_error: true
-    status:
-      - '[[ "${container:=}" == "docker" ]] || ! type ansible-galaxy &> /dev/null'
+      - task: galaxy:requirements:install
     sources:
       - requirements.yml
     preconditions:
       - sh: test -f requirements.yml
         msg: The requirements.yml file is missing! It should be present even if it is empty (which should almost never be the case).
+
+  galaxy:requirements:install:
+    cmds:
+      - cmd: ansible-galaxy install -r requirements.yml --ignore-errors
+        ignore_error: true
+    status:
+      - '[[ "${container:=}" == "docker" ]]'
 
   keywords:sync:
     deps:

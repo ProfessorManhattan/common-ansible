@@ -354,33 +354,33 @@ tasks:
     cmds:
       - |
         if [ ! -z "$GITLAB_REPO" ]; then
-          if git config remote.origin.url; then
-            git remote set-url origin "${GITLAB_REPO}.git" > /dev/null
+          if git config remote.origin.url > /dev/null; then
+            git remote set-url origin "${GITLAB_REPO}.git"
           else
-            git remote add origin "${GITLAB_REPO}.git" > /dev/null
+            git remote add origin "${GITLAB_REPO}.git"
           fi
-          if git config remote.gitlab.url; then
-            git remote set-url gitlab "${GITLAB_REPO}.git" > /dev/null
+          if git config remote.gitlab.url > /dev/null; then
+            git remote set-url gitlab "${GITLAB_REPO}.git"
           else
-            git remote add gitlab "${GITLAB_REPO}.git" > /dev/null
+            git remote add gitlab "${GITLAB_REPO}.git"
           fi
         fi
       - |
         if [ ! -z "$GITHUB_REPO" ]; then
-          if git config remote.github.url; then
-            git remote set-url github "${GITHUB_REPO}.git" > /dev/null
+          if git config remote.github.url > /dev/null; then
+            git remote set-url github "${GITHUB_REPO}.git"
           else
-            git remote add github "${GITHUB_REPO}.git" > /dev/null
+            git remote add github "${GITHUB_REPO}.git"
           fi
         fi
       - |
         if [ ! -z "$GITLAB_REPO" ] && [ ! -z "$GITHUB_REPO" ]; then
-          if git config remote.all.url; then
+          if git config remote.all.url > /dev/null; then
             git remote rm all
           fi
-          git remote add all "${GITLAB_REPO}.git" > /dev/null
-          git remote set-url --add --push all "${GITHUB_REPO}.git" > /dev/null
-          git remote set-url --add --push all "${GITLAB_REPO}.git" > /dev/null
+          git remote add all "${GITLAB_REPO}.git"
+          git remote set-url --add --push all "${GITHUB_REPO}.git"
+          git remote set-url --add --push all "${GITLAB_REPO}.git"
         fi
     status:
       - '[[ "${container:=}" == "docker" ]]'
