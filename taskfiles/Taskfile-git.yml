@@ -140,6 +140,7 @@ tasks:
   github:variables:
     deps:
       - :install:software:gh
+      - github:create
     cmds:
       - ! if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$ANSIBLE_GALAXY_TOKEN" ]; then
         gh secret set ANSIBLE_GALAXY_TOKEN -b "$ANSIBLE_GALAXY_TOKEN"
