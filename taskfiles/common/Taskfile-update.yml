@@ -50,6 +50,7 @@ tasks:
       start: Generating CONTRIBUTING.md
       success: Generated CONTRIBUTING.md
     sources:
+      - CONTRIBUTING.md
       - .common/docs/**/*
       - .variables.json
     preconditions:
@@ -229,6 +230,7 @@ tasks:
       - .autodoc/*
       - .common/docs/**/*
       - .variables.json
+      - README.md
     preconditions:
       - sh: 'test -f .common/docs/{{.README_TEMPLATE}}'
         msg: 'The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`.'
