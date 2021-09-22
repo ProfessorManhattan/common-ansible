@@ -540,6 +540,6 @@ module.exports = {
     }
   ],
   rules: {
-    'max-lines': ['error', 500],
+    'max-lines': ['error', 500]
   }
 }
