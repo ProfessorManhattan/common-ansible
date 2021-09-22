@@ -383,7 +383,9 @@ tasks:
           git remote set-url --add --push all "${GITLAB_REPO}.git"
         fi
     status:
-      - '[[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.all.url)" == "$GITLAB_REPO" ]] || [[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.github.url)" == "$GITHUB_REPO" ]] || [[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.gitlab.url)" == "$GITLAB_REPO" ]] || [[ "${container:=}" == "docker" ]]'
 
   remove:submodules:
     deps:

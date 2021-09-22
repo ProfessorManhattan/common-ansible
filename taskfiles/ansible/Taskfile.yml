@@ -157,10 +157,10 @@ tasks:
       error: Error running `mod-ansible-autodoc`
       success: Generated documentation partials with `mod-ansible-autodoc` and moved them to the `.autodoc` folder
     sources:
-      - '.common/**/*'
       - '{{.VARIABLES_PATH}}'
-      - '.autodoc/*'
+      - defaults/**/*.yml
       - tasks/**/*.yml
+      - vars/**/*.yml
     preconditions:
       - sh: 'type mod-ansible-autodoc &> /dev/null'
         msg: The Python package `mod-ansible-autodoc` is missing.
