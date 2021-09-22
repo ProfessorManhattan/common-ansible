@@ -59,7 +59,7 @@ tasks:
     run: once
     cmds:
       - cmd: >
-          if [ ! -z "$GITHUB_TOKEN" ] && test -d .git; then
+          if [ ! -z "$GITHUB_TOKEN" ]; then
             if [[ ! "$(gh repo view {{.GITHUB_ORG}}/{{.GITHUB_SLUG}})" ]]; then
               gh repo create "{{.GITHUB_SLUG}}" --enable-wiki={{.GITHUB_WIKI}} -y --description "{{.DESCRIPTION}}" --homepage "{{.HOMEPAGE}}"
                 {{.PROJECT_TYPE}}
