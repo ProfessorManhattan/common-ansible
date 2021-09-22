@@ -17,20 +17,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@megabytelabs/prettier-config": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/eslint-plugin-tslint": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
     "eslint": "^7.32.0",
-    "eslint-config-prettier": "8.3.0",
-    "eslint-formatter-pretty": "^4.1.0",
-    "eslint-plugin-editorconfig": "^3.0.2",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-jsonc": "^1.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsdoc": "^36.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-yml": "0.10.1",
-    "prettier": "^2.4.0",
-    "prettier-plugin-sh": "^0.7.1"
-  },
-  "prettier": "@megabytelabs/prettier-config"
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "eslint-plugin-unicorn": "^35.0.0",
+    "eslint-plugin-yml": "^0.10.0",
+    "prettier": "^2.3.2",
+    "typescript": "^4.4.2"
+  }
 }
