@@ -395,7 +395,7 @@ tasks:
       - |
         yq eval -o=json '.dependencies' '{{.META_PATH}}' | jq -rc '.[] .role' | while read ROLE_NAME; do
           if [[ ! "$ROLES" =~ "$ROLE_NAME" ]]; then
-            yq eval -i -P '.roles = .roles + {"name": '"$ROLE_NAME"'}' '{{.REQUIREMENTS_PATH}}'
+            yq eval -i -P '.roles = .roles + {"name": "'"$ROLE_NAME"'"}' '{{.REQUIREMENTS_PATH}}'
           fi
         done
       - task: :fix:yaml:dashes
