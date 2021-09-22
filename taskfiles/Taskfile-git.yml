@@ -142,10 +142,11 @@ tasks:
       - :install:software:gh
       - github:create
     cmds:
-      - ! if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$ANSIBLE_GALAXY_TOKEN" ]; then
-        gh secret set ANSIBLE_GALAXY_TOKEN -b "$ANSIBLE_GALAXY_TOKEN"
+      - |
+        if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$ANSIBLE_GALAXY_TOKEN" ]; then
+          gh secret set ANSIBLE_GALAXY_TOKEN -b "$ANSIBLE_GALAXY_TOKEN"
         else
-        true info 'Both the `ANSIBLE_GALAXY_TOKEN` and the `GITHUB_TOKEN` environment variables must be set to update the GitHub secret'
+          true info 'Both the `ANSIBLE_GALAXY_TOKEN` and the `GITHUB_TOKEN` environment variables must be set to update the GitHub secret'
         fi
 
   gitlab:create:
