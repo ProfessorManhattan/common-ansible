@@ -145,9 +145,9 @@ tasks:
       - |
         if [ ! -z "$GITHUB_TOKEN" ] && [ ! -z "$ANSIBLE_GALAXY_TOKEN" ]; then
           gh secret set ANSIBLE_GALAXY_TOKEN -b "$ANSIBLE_GALAXY_TOKEN"
-        else
-          true info 'Both the `ANSIBLE_GALAXY_TOKEN` and the `GITHUB_TOKEN` environment variables must be set to update the GitHub secret'
         fi
+    status:
+      - '[ -z "$GITHUB_TOKEN" ] || [ -z "$ANSIBLE_GALAXY_TOKEN" ]'
 
   gitlab:create:
     deps:
@@ -383,9 +383,9 @@ tasks:
           git remote set-url --add --push all "${GITLAB_REPO}.git"
         fi
     status:
-      - '[[ "$(git config remote.all.url)" == "$GITLAB_REPO" ]] || [[ "${container:=}" == "docker" ]]'
-      - '[[ "$(git config remote.github.url)" == "$GITHUB_REPO" ]] || [[ "${container:=}" == "docker" ]]'
-      - '[[ "$(git config remote.gitlab.url)" == "$GITLAB_REPO" ]] || [[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.all.url)" == "${GITLAB_REPO}.git" ]] || [[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.github.url)" == "${GITHUB_REPO}.git" ]] || [[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.gitlab.url)" == "${GITLAB_REPO}.git" ]] || [[ "${container:=}" == "docker" ]]'
 
   remove:submodules:
     deps:
