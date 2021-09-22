@@ -91,7 +91,6 @@ tasks:
   keywords:sync:
     deps:
       - :install:npm:prettier
-      - :install:npm:prettier-package-json
       - :install:software:jq
       - :install:software:yq
     summary: |
@@ -125,7 +124,7 @@ tasks:
         fi
         jq -r --argjson result "$MERGED_TAGS" '.keywords = $result' package.json > "$TMP"
         mv "$TMP" package.json
-        prettier-package-json --write
+        prettier --write package.json
         mkdir -p .cache/megabytelabs
         jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
         yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
@@ -360,7 +359,7 @@ tasks:
 
   populate:meta:
     deps:
-      - :install:npm:prettier-package-json
+      - :install:npm:prettier
       - :install:software:jq
     vars:
       DESCRIPTION:
@@ -373,7 +372,7 @@ tasks:
     cmds:
       - jq --arg a '{{.DESCRIPTION}}' --arg b '{{.GALAXY_ROLE_NAME}}' '.blueprint.description = $a | .blueprint.slug = $b' package.json > "$TMP"
       - mv "$TMP" package.json
-      - prettier-package-json --write package.json
+      - prettier --write package.json
     log:
       error: Failed to update the `blueprint` variable in `package.json` with meta information
       success: Ensured the `blueprint` variable in `package.json` is populated with up-to-date meta information

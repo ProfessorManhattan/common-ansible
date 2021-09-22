@@ -128,7 +128,6 @@ tasks:
     deps:
       - :common:node:dependencies:local
       - :install:npm:prettier
-      - :install:npm:prettier-package-json
     desc: Automatically format most files using Prettier
     summary: |
       # Automatically format most files using Prettier
@@ -148,17 +147,7 @@ tasks:
 
       For more information, see [Prettier's website](https://prettier.io/).
     cmds:
-      - |
-        {{if .CLI_ARGS}}
-          {{if eq .CLI_ARGS "package.json"}}
-            prettier-package-json --write '{{.CLI_ARGS}}'
-          {{else}}
-            prettier --write '{{.CLI_ARGS}}'
-          {{end}}
-        {{else}}
-          prettier --write .
-          prettier-package-json --write package.json
-        {{end}}
+      - prettier --write {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   python:
     deps:

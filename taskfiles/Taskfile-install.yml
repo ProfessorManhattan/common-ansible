@@ -77,7 +77,6 @@ tasks:
           eslint-plugin-typescript-sort-keys
           eslint-plugin-unicorn
           eslint-plugin-unused-imports
-          prettier-plugin-organize-imports
           typescript
 
   npm:global:
@@ -148,13 +147,6 @@ tasks:
       - task: npm:global
         vars:
           NPM_PACKAGE: prettier
-
-  npm:prettier-package-json:
-    run: once
-    cmds:
-      - task: npm:global
-        vars:
-          NPM_PACKAGE: prettier-package-json
 
   npm:readme:
     run: once

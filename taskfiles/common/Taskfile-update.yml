@@ -65,7 +65,7 @@ tasks:
 
   files:
     deps:
-      - :install:npm:prettier-package-json
+      - :install:npm:prettier
       - :install:software:git
       - :install:software:jq
       - :install:software:rsync
@@ -108,7 +108,7 @@ tasks:
         .version = $version' package.json > "$TMP"
       - '{{.NPM_PROGRAM}} install --ignore-scripts'
       - mv "$TMP" package.json
-      - prettier-package-json --write
+      - prettier --write package.json
       - |
         if [[ '{{.PRODUCTION_MODE}}' == 'true' ]]; then
           cd .common && git reset --hard HEAD
@@ -126,8 +126,6 @@ tasks:
     preconditions:
       - sh: 'type rsync &> /dev/null'
         msg: '`rsync` is not installed!'
-      - sh: 'type prettier-package-json &> /dev/null'
-        msg: '`prettier-package-json` is not installed globally.'
 
   files:handlebars:
     deps:

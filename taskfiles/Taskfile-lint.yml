@@ -229,7 +229,6 @@ tasks:
       For more information, see [Prettier's website](https://prettier.io/).
     cmds:
       - prettier --list-different .
-      - prettier-package-json --list-different package.json
 
   prose:
     deps:

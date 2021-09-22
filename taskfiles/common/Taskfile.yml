@@ -134,7 +134,6 @@ tasks:
       - task: :install:npm:husky
       - task: :install:npm:lint-staged
       - task: :install:npm:prettier
-      - task: :install:npm:prettier-package-json
       - task: :install:npm:readme
       - task: :install:npm:remark
       - task: :install:npm:shellcheck
