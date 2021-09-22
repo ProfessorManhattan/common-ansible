@@ -59,11 +59,9 @@ tasks:
     run: once
     cmds:
       - cmd: >
-          if [ ! -z "$GITHUB_TOKEN" ]; then
-            if [[ ! "$(gh repo view {{.GITHUB_ORG}}/{{.GITHUB_SLUG}})" ]]; then
-              gh repo create "{{.GITHUB_SLUG}}" --enable-wiki={{.GITHUB_WIKI}} -y --description "{{.DESCRIPTION}}" --homepage "{{.HOMEPAGE}}"
-                {{.PROJECT_TYPE}}
-            fi
+          if [ ! -z "$GITHUB_TOKEN" ] && test -e .git && ! gh repo view {{.GITHUB_ORG}}/{{.GITHUB_SLUG}} > /dev/null; then
+            gh repo create "{{.GITHUB_SLUG}}" --enable-wiki={{.GITHUB_WIKI}} -y --description "{{.DESCRIPTION}}" --homepage "{{.HOMEPAGE}}"
+              {{.PROJECT_TYPE}}
           else
             true warn 'The `GITHUB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
           fi
@@ -172,7 +170,7 @@ tasks:
     run: once
     cmds:
       - cmd: >
-          if [ ! -z "$GITLAB_TOKEN" ] && ! glab repo view '{{.GITLAB_PATH}}' > /dev/null; then
+          if [ ! -z "$GITLAB_TOKEN" ] && test -e .git && ! glab repo view '{{.GITLAB_PATH}}' > /dev/null; then
             glab repo create '{{.GITLAB_PATH}}' --group '{{.GITLAB_GROUP}}' --description '{{.DESCRIPTION}}' --name '{{.NAME}}' \
               {{.PROJECT_TYPE}} --tag '$KEYWORDS'
           else
