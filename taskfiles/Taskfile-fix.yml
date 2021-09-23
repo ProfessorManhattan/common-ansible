@@ -83,7 +83,6 @@ tasks:
           fix-byte-order-marker "$1" &
           mixed-line-ending --fix=lf "$1" &
         }
-        . .venv/bin/activate
         {{if .CLI_ARGS}}
           misc '{{.CLI_ARGS}}'
         {{else}}
@@ -183,7 +182,6 @@ tasks:
       For more information, see [Black's GitHub page](https://github.com/psf/black).
     cmds:
       - |
-        . .venv/bin/activate
         {{if .CLI_ARGS}}
           black {{.CLI_ARGS}}
         {{else}}

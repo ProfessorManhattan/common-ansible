@@ -83,9 +83,7 @@ tasks:
 
   galaxy:requirements:install:
     cmds:
-      - cmd: |
-          . .venv/bin/activate
-          ansible-galaxy install -r requirements.yml --ignore-errors
+      - cmd: ansible-galaxy install -r requirements.yml --ignore-errors
         ignore_error: true
     status:
       - '[[ "${container:=}" == "docker" ]]'
@@ -147,9 +145,7 @@ tasks:
       VARIABLES_DESCRIPTION:
         sh: jq -r '.autodoc_variables_description' '{{.VARIABLES_PATH}}'
     cmds:
-      - |
-        . .venv/bin/activate
-        mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
+      - mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
           --tags-title '### Tags' --tags-description "$TAGS_DESCRIPTION" --todo-title '### TODO'
           --todo-description "$TODO_DESCRIPTION" --variables-title '## Variables' --variables-description
           "$VARIABLES_DESCRIPTION" --variable-example-comment-prefix '#💬'
@@ -416,16 +412,12 @@ tasks:
       success: 'Successfully synchronized requirements from `{{.META_PATH}}` to `{{.REQUIREMENTS_PATH}}`'
 
   update:galaxy-id:
-    deps:
-      - :common:
     vars:
       HAS_PROJECT_ID:
         sh: jq -e 'has("blueprint.ansible_galaxy_project_id")' package.json || true
     env:
       PROJECT_ID:
-        sh: |
-          . .venv/bin/activate
-          (ansible-galaxy info "{{.GALAXY_ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}) 2> /dev/null || true
+        sh: '(ansible-galaxy info "{{.GALAXY_ROLE_NAME}}" | grep -E "id: [0-9]" | awk {"print $2"}) 2> /dev/null || true'
       TMP:
         sh: mktemp
     cmds:
@@ -456,7 +448,7 @@ tasks:
       DESCRIPTION_LOWER: '{{lower (trunc 1 .DESCRIPTION)}}{{substr 1 (len .DESCRIPTION) .DESCRIPTION}}'
       SUBHEADER_PREFIX: An Ansible role that
     env:
-      ALT: '{{.ALT_PREFIX}}. {{.DESCRIPTION_LOWER}}'
+      ALT: '{{.ALT_PREFIX}} {{.DESCRIPTION_LOWER}}'
       GALAXY_INFO:
         sh: yq e -o=json '.galaxy_info' '{{.META_PATH}}'
       SUBHEADER: '{{.SUBHEADER_PREFIX}} {{.DESCRIPTION_LOWER}}'

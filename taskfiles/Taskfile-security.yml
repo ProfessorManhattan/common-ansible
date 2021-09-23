@@ -79,7 +79,6 @@ tasks:
       `task lint:private-keys -- filename.ext`
     cmds:
       - |
-        . .venv/bin/activate
         {{if .CLI_ARGS}}
           detect-private-key {{.CLI_ARGS}}
         {{else}}
