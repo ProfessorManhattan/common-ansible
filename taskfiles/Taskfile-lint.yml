@@ -1,16 +1,17 @@
 ---
-version: '3'
+version: "3"
 
 vars:
   CSPELL_CONFIG: .common/.cspell.json
-  IGNORE_FOLDERS: -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
+  IGNORE_FOLDERS:
+    -name .autodoc -o -name .cache -o -name .common -o -name .git -o -name .husky
     -o -name .modules -o -name .npm -o -name .task -o -name .venv -o -name .vscode -o -name node_modules
     -o -name venv
 
 tasks:
   all:
     deps:
-      - '{{.REPOSITORY_TYPE}}'
+      - "{{.REPOSITORY_TYPE}}"
       - prettier
       - markdown
       - prose
@@ -56,7 +57,7 @@ tasks:
       - '[[ -z "{{.CLI_ARGS}}" ]]'
     preconditions:
       - sh: '[ ! -z "{{.CLI_ARGS}}" ]'
-        msg: 'A CLI argument must be passed to this task. See `task lint:commit --summary` for details.'
+        msg: "A CLI argument must be passed to this task. See `task lint:commit --summary` for details."
 
   docker:
     deps:

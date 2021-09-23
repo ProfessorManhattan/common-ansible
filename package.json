@@ -18,6 +18,5 @@
   },
   "devDependencies": {
     "@megabytelabs/prettier-config": "^14.14.14"
-  },
-  "prettier": "@megabytelabs/prettier-config"
+  }
 }

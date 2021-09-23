@@ -1,5 +1,5 @@
 ---
-version: '3'
+version: "3"
 
 tasks:
   playbook:
@@ -44,8 +44,8 @@ tasks:
       - rm -f "$HOME/.ansible/roles/{{.ROLE_NAME}}"
       - ln -s "$PWD" '~/.ansible/roles/{{.ROLE_NAME}}'
     log:
-      error: 'Failed to symlink `{{.ROLE_NAME}}` to `~/.ansible/roles/{{.ROLE_NAME}}`'
-      success: 'Symlinked `{{.ROLE_NAME}}` to `~/.ansible/roles/{{.ROLE_NAME}}`'
+      error: "Failed to symlink `{{.ROLE_NAME}}` to `~/.ansible/roles/{{.ROLE_NAME}}`"
+      success: "Symlinked `{{.ROLE_NAME}}` to `~/.ansible/roles/{{.ROLE_NAME}}`"
     status:
       - test -d "$HOME/.ansible/roles/{{.ROLE_NAME}}"
       - '[[ "{{.SYMLINK}}" == "$PWD" ]]'

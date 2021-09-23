@@ -18,12 +18,12 @@ To dive a little deeper, take the following block of code that was retrieved fro
 ```yaml
 ---
 - name: Include variables based on the operating system
-  include_vars: '{{ {{ ansible_os_family }} }}.yml'
+  include_vars: "{{ {{ ansible_os_family }} }}.yml"
 
 - name: Include tasks based on the operating system
   become: true
   block:
-    - include_tasks: 'install-{{ {{ ansible_os_family }} }}.yml'
+    - include_tasks: "install-{{ {{ ansible_os_family }} }}.yml"
 ```
 
 If you compare the block of code above to other `tasks/main.yml` files in other roles (which you can find in our [Ansible Roles group]({{ repository.group.ansible_roles }}) or our [main playbook]({{ project.playbooks }})) (a.k.a. [Install Doctor]({{ link.installdoctor }})), you will see that the files are either identical or nearly identical. There is an exception. Some roles will exclude the first task titled "Include variables based on the operating system" when variables are not required for the role. Our goal is to be consistent but not to the point where we are degrading the functionality of our code or including code that is unnecessary.
@@ -37,12 +37,12 @@ If you have a role that only installs software made for Windows 10 then ensure t
 ```yaml
 ---
 - name: Include variables based on the operating system
-  include_vars: 'ansible_os_family.yml'
+  include_vars: "ansible_os_family.yml"
   when: ansible_os_family == 'Windows'
 
 - name: Include tasks based on the operating system
   become: true
   block:
-    - include_tasks: 'install-ansible_os_family.yml'
+    - include_tasks: "install-ansible_os_family.yml"
   when: ansible_os_family == 'Windows'
 ```
