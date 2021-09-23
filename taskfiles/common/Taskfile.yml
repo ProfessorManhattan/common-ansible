@@ -205,7 +205,9 @@ tasks:
   python:requirements:pip:
     run: once
     cmds:
-      - pip3 install -r requirements.txt
+      - |
+        . .venv/bin/activate
+        pip3 install -r requirements.txt
     sources:
       - requirements.txt
     preconditions:

@@ -28,7 +28,9 @@ tasks:
         sh: mktemp
     cmds:
       - mkdir -p molecule/.results
-      - ansibler --generate-compatibility-chart --molecule-results-dir '{{.MOLECULE_RESULTS_PATH}}' --json-file '{{.VARIABLES_PATH}}'
+      - |
+        . .venv/bin/activate
+        ansibler --generate-compatibility-chart --molecule-results-dir '{{.MOLECULE_RESULTS_PATH}}' --json-file '{{.VARIABLES_PATH}}'
     log:
       error: 'Failed to generate the compatibility chart JSON using data from `{{.MOLECULE_RESULTS_PATH}}/`'
       success: 'Generated compatibility chart JSON and injected it into the `{{.VARIABLES_PATH}}` file'
@@ -40,7 +42,9 @@ tasks:
       - :common:python:requirements
       - :install:npm:prettier
     cmds:
-      - ansibler --populate-platforms --json-file '{{.VARIABLES_PATH}}'
+      - |
+        . .venv/bin/activate
+        ansibler --populate-platforms --json-file '{{.VARIABLES_PATH}}'
       - prettier --write '{{.META_PATH}}'
     log:
       error: 'Error populating the `{{.META_PATH}}` platforms variable with `ansibler.'
@@ -53,7 +57,9 @@ tasks:
     deps:
       - :common:python:requirements
     cmds:
-      - cmd: ansibler --role-dependencies --json-file '{{.VARIABLES_PATH}}'
+      - cmd: |
+          . .venv/bin/activate
+          ansibler --role-dependencies --json-file '{{.VARIABLES_PATH}}'
         ignore_error: true
     log:
       error: 'Failed to acquire the `role_dependencies` JSON and inject it into `{{.VARIABLES_PATH}}`'

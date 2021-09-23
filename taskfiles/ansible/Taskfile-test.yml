@@ -22,7 +22,9 @@ tasks:
       - cp tests/test.yml main.yml
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
       - cp tests/ansible.cfg ansible.cfg
-      - ansible-playbook --ask-sudo-pass main.yml
+      - |
+        . .venv/bin/activate
+        ansible-playbook --ask-sudo-pass main.yml
       - mv main.yml.bak main.yml
       - mv ansible.cfg.bak ansible.cfg
     log:
@@ -64,12 +66,14 @@ tasks:
       error: Finished Docker Molecule testing of the Ansible play with error(s)
       success: Docker Molecule testing of the Ansible play was successful!
 
-  molecule:docker:default: molecule test -s "docker{{if .SNAP_REFS}}-snap{{end}}"
+  molecule:docker:default: . .venv/bin/activate && molecule test -s "docker{{if .SNAP_REFS}}-snap{{end}}"
 
   molecule:docker:matrix:
     cmds:
       - mkdir -p molecule/.results
-      - PY_COLORS=0 molecule test -s "docker{{if .SNAP_REFS}}-snap{{end}}" > "molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt"
+      - |
+        . .venv/bin/activate
+        PY_COLORS=0 molecule test -s "docker{{if .SNAP_REFS}}-snap{{end}}" > "molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt"
     log:
       error: 'Test returned a non-zero exit code. See `molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt` for more details.'
       start: 'Storing Docker test results to `molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt`'
@@ -111,7 +115,7 @@ tasks:
       error: There was an error using VirtualBox to test the Ansible play. The machine has been left open.
       success: VirtualBox testing of the Ansible play was successful! The machine has been left open.
 
-  molecule:virtualbox:converge:cli: molecule converge -s {{.CLI_ARGS}}-desktop
+  molecule:virtualbox:converge:cli: . .venv/bin/activate && molecule converge -s {{.CLI_ARGS}}-desktop
 
   molecule:virtualbox:converge:prompt: node .common/scripts/prompts/molecule-desktop.js
 
@@ -145,7 +149,9 @@ tasks:
   molecule:virtualbox:e2e:cli:
     cmds:
       - mkdir -p molecule/.results
-      - PY_COLORS=0 molecule test > molecule/.results/{{.MOLECULE_DATE}}-default.txt
+      - |
+        . .venv/bin/activate
+        PY_COLORS=0 molecule test > molecule/.results/{{.MOLECULE_DATE}}-default.txt
     log:
       error: 'Test finished with error(s). See the log at `molecule/.results/{{.MOLECULE_DATE}}-default.txt`.'
       start: 'Storing full E2E test results to `molecule/.results/{{.MOLECULE_DATE}}-default.txt`. This can take awhile..'

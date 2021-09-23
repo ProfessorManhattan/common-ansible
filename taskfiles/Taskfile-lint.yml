@@ -36,7 +36,9 @@ tasks:
 
       For more information, see [Ansible Lint's GitHub page](https://github.com/ansible-community/ansible-lint).
     cmds:
-      - ansible-lint
+      - |
+        . .venv/bin/activate
+        ansible-lint
 
   commit:
     deps:
@@ -129,7 +131,9 @@ tasks:
       - :common:node:dependencies:local
       - :common:python:requirements
     cmds:
-      - lint-staged
+      - |
+        . .venv/bin/activate
+        lint-staged
 
   markdown:
     deps:
@@ -250,6 +254,7 @@ tasks:
     cmds:
       - task: prose:config
       - |
+        . .venv/bin/activate
         {{if .CLI_ARGS}}
           proselint {{.CLI_ARGS}}
         {{else}}
@@ -304,6 +309,7 @@ tasks:
       For more information, see [Flake8's GitHub page](https://github.com/PyCQA/flake8).
     cmds:
       - |
+        . .venv/bin/activate
         {{if .CLI_ARGS}}
           flake8 {{.CLI_ARGS}}
         {{else}}
@@ -423,6 +429,7 @@ tasks:
       For more information, see the [YAML Lint GitHub page](https://github.com/adrienverge/yamllint).
     cmds:
       - |
+        . .venv/bin/activate
         {{if .CLI_ARGS}}
           yamllint -s {{.CLI_ARGS}}
         {{else}}
