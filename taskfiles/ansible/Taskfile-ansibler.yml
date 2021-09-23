@@ -27,6 +27,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
+      - mkdir -p molecule/.results
       - ansibler --generate-compatibility-chart --molecule-results-dir '{{.MOLECULE_RESULTS_PATH}}' --json-file '{{.VARIABLES_PATH}}'
     log:
       error: 'Failed to generate the compatibility chart JSON using data from `{{.MOLECULE_RESULTS_PATH}}/`'
