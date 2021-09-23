@@ -188,6 +188,11 @@ tasks:
           find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.py' \) -print0 | xargs -0 -r -n1 black
         {{end}}
 
+  shell:
+    cmds:
+      - task: shellcheck
+      - task: prettier
+
   shellcheck:
     deps:
       - :install:npm:shellcheck
@@ -234,6 +239,24 @@ tasks:
           find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.sh' -o -name '*.sh.j2' \) \
             -print0 | xargs -0 shellcheck -f diff | git apply
         {{end}}
+
+  xml:
+    deps:
+      - :install:npm:eslint
+    desc: Autofix XML files
+    summary: |
+      # Autofix XML files
+
+      This task will automatically apply updates to XML files. It uses Prettier and the Prettier plugin
+      named `@prettier/plugin-xml` for auto-formatting.
+
+      **Example fixing all `.xml` files:**
+      `task fix:xml`
+
+      **Example fixing specific `.xml` file(s):**
+      `task fix:xml -- 'file_name.xml'`
+    cmds:
+      - eslint --fix --format pretty --ext .xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   yaml:
     desc: Autofix YML files

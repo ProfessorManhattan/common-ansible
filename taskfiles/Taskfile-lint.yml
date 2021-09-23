@@ -123,6 +123,13 @@ tasks:
     cmds:
       - eslint --format pretty {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
+  js:
+    deps:
+      - :common:node:dependencies:local
+      - :install:npm:eslint
+    cmds:
+      - eslint --format pretty --ext .js,.jsx,.ts {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+
   lint-staged:
     deps:
       - :common:node:dependencies:global
@@ -228,7 +235,7 @@ tasks:
 
       For more information, see [Prettier's website](https://prettier.io/).
     cmds:
-      - prettier --list-different .
+      - prettier --list-different {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   prose:
     deps:
@@ -310,6 +317,11 @@ tasks:
           flake8 .
         {{end}}
 
+  shell:
+    cmds:
+      - task: shellcheck
+      - task: prettier
+
   shellcheck:
     deps:
       - :install:npm:shellcheck
@@ -382,6 +394,24 @@ tasks:
           fi
         ignore_errors: true
 
+  toml:
+    deps:
+      - :common:python:requirements
+    desc: Lint TOML files
+    summary: |
+      # Lint TOML files
+
+      This task verifies the syntax of TOML documents using the `check-toml` module from the
+      Python `pre-commit-hook` library.
+
+      **Example scanning all '**/*.toml' files:**
+      `task lint:toml`
+
+      **Example scanning specific file:**
+      `task lint:toml -- myfile.toml`
+    cmds:
+      - check-toml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+
   vagrant:
     deps:
       - :install:software:vagrant
@@ -396,6 +426,24 @@ tasks:
       For more information on `vagrant validate`, see the [Vagrant website](https://www.vagrantup.com/docs/cli/validate).
     cmds:
       - vagrant validate
+
+  xml:
+    deps:
+      - :common:python:requirements
+    desc: Lint XML files
+    summary: |
+      # Lint XML files
+
+      This task verifies the syntax of XML documents using the `check-xml` module from
+      the Python `pre-commit-hook` library.
+
+      **Example scanning all '**/*.xml' files:**
+      `task lint:xml`
+
+      **Example scanning specific file:**
+      `task lint:xml -- myfile.xml`
+    cmds:
+      - check-xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   yaml:
     deps:
@@ -422,9 +470,4 @@ tasks:
 
       For more information, see the [YAML Lint GitHub page](https://github.com/adrienverge/yamllint).
     cmds:
-      - |
-        {{if .CLI_ARGS}}
-          yamllint -s {{.CLI_ARGS}}
-        {{else}}
-          yamllint -s .
-        {{end}}
+      - yamllint -s {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
