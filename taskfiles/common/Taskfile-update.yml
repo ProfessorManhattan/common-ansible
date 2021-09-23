@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   all:
@@ -61,7 +61,7 @@ tasks:
       - sh: test -f .variables.json
         msg: The `.variables.json` file is not present.
       - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally."
+        msg: '`@appnest/readme` is not installed globally.'
 
   files:
     deps:
@@ -106,7 +106,7 @@ tasks:
         .devDependencies = (($devDeps | fromjson) * .devDependencies) | .keywords = .keywords + ($keywords | fromjson) |
         .keywords = (.keywords | sort | unique) | .scripts = (($scripts | fromjson) * .scripts) | .blueprint = ($blueprint | fromjson) |
         .version = $version' package.json > "$TMP"
-      - "{{.NPM_PROGRAM}} install --ignore-scripts"
+      - '{{.NPM_PROGRAM}} install --ignore-scripts'
       - mv "$TMP" package.json
       - prettier --write package.json
       - |
@@ -124,8 +124,8 @@ tasks:
       - package.json
       - .variables.json
     preconditions:
-      - sh: "type rsync &> /dev/null"
-        msg: "`rsync` is not installed!"
+      - sh: 'type rsync &> /dev/null'
+        msg: '`rsync` is not installed!'
 
   files:handlebars:
     deps:
@@ -144,8 +144,8 @@ tasks:
       - .common/**/*.handlebars
       - .variables.json
     preconditions:
-      - sh: "type hbs &> /dev/null"
-        msg: "`hbs-cli` is not installed globally."
+      - sh: 'type hbs &> /dev/null'
+        msg: '`hbs-cli` is not installed globally.'
 
   init:
     cmds:
@@ -169,9 +169,9 @@ tasks:
     cmds:
       - task: markdown:scrub:{{OS}}
         vars:
-          DIVIDER_SRC: "{{.DIVIDER_SRC}}"
-          REGEX: "{{.REGEX}}"
-          SCRUB_FILE: "{{.SCRUB_FILE}}"
+          DIVIDER_SRC: '{{.DIVIDER_SRC}}'
+          REGEX: '{{.REGEX}}'
+          SCRUB_FILE: '{{.SCRUB_FILE}}'
 
   markdown:scrub:darwin: sed -i .bak 's^{{.REGEX}}^{{.DIVIDER_SRC}}^g' {{.SCRUB_FILE}} && rm {{.SCRUB_FILE}}.bak
 
@@ -202,7 +202,7 @@ tasks:
           done
         fi
     status:
-      - "! ls .modules/*/ > /dev/null 2>&1"
+      - '! ls .modules/*/ > /dev/null 2>&1'
 
   project:
     cmds:
@@ -233,14 +233,14 @@ tasks:
       - .variables.json
       - README.md
     preconditions:
-      - sh: "test -f .common/docs/{{.README_TEMPLATE}}"
-        msg: "The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`."
+      - sh: 'test -f .common/docs/{{.README_TEMPLATE}}'
+        msg: 'The README.md template file is not present at `.common/docs/{{.README_TEMPLATE}}`.'
       - sh: test -f .variables.json
         msg: The `.variables.json` file is not present.
       - sh: type readme &> /dev/null
-        msg: "`@appnest/readme` is not installed globally."
+        msg: '`@appnest/readme` is not installed globally.'
       - sh: type prettier &> /dev/null
-        msg: "`prettier` is not installed globally."
+        msg: '`prettier` is not installed globally.'
 
   repositories:
     cmds:
@@ -334,7 +334,7 @@ tasks:
     deps:
       - :install:software:jq
     vars:
-      SHARED_JSON: ".common/variables.{{.REPOSITORY_SUBTYPE}}.json"
+      SHARED_JSON: '.common/variables.{{.REPOSITORY_SUBTYPE}}.json'
     env:
       BLUEPRINT_DATA:
         sh: jq -r '.blueprint' package.json
@@ -350,10 +350,10 @@ tasks:
       - task: ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:variables{{else}}donothing{{end}}'
       - task: ':{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:update:variables{{else}}donothing{{end}}'
     sources:
-      - "{{.SHARED_JSON}}"
+      - '{{.SHARED_JSON}}'
       - package.json
     preconditions:
-      - sh: "type jq &> /dev/null"
+      - sh: 'type jq &> /dev/null'
         msg: jq is not installed.
-      - sh: "type yq &> /dev/null"
+      - sh: 'type yq &> /dev/null'
         msg: yq is not installed.
