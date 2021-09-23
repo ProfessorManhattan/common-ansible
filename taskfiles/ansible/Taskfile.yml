@@ -346,7 +346,9 @@ tasks:
     cmds:
       - |
         if [[ ! "$DEPENDENCIES" =~ '{{.ROLE}}' ]] && [ "$REFERENCES" ]; then
-          yq eval -i -P '.dependencies = .dependencies + {{.VAL}}' '{{.META_PATH}}'
+          if [[ '{{.GALAXY_NAMESPACE}}.{{.GALAXY_ROLE_NAME}}' != '{{.ROLE}}' ]]; then
+            yq eval -i -P '.dependencies = .dependencies + {{.VAL}}' '{{.META_PATH}}'
+          fi
         fi
       - task: :fix:yaml:dashes
         vars:

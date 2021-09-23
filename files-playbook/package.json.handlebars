@@ -1,10 +1,10 @@
 {
   "name": "@{{profile.npmjs_organization}}/{{repository.prefix.github}}{{slug}}",
-  "version": "0.0.1",
   "description": "{{description}}",
   "license": "{{license}}",
   "author": "{{author.name}} <{{author.email}}> ({{link.home}})",
   "homepage": "{{link.home}}",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+{{repository.github}}.git"
@@ -13,7 +13,7 @@
     "email": "{{email.help}}",
     "url": "{{repository.gitlab}}{{repository.location.issues.gitlab}}"
   },
-  "type": "module",
+  "version": "0.0.1",
   "scripts": {
     "clean": "task common:clean",
     "commit": "task common:commit",
@@ -34,7 +34,6 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^13.1.0",
     "@megabytelabs/prettier-config": "^14.14.14",
-    "@prettier/plugin-xml": "^1.0.2",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "8.3.0",
@@ -45,6 +44,19 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-yml": "0.10.1"
   },
+  "engines": {
+    "node": ">=10"
+  },
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "{{profile_link.opencollective}}/{{profile.opencollective}}"
+    },
+    {
+      "type": "patreon",
+      "url": "{{profile_link.patreon}}/{{profile.patreon}}"
+    }
+  ],
   "keywords": [
     "ansible",
     "archlinux",
@@ -59,19 +71,6 @@
     "professormanhattan",
     "ubuntu",
     "windows"
-  ],
-  "engines": {
-    "node": ">=10"
-  },
-  "funding": [
-    {
-      "type": "opencollective",
-      "url": "{{profile_link.opencollective}}/{{profile.opencollective}}"
-    },
-    {
-      "type": "patreon",
-      "url": "{{profile_link.patreon}}/{{profile.patreon}}"
-    }
   ],
   "lint-staged": {
     "**/*": [

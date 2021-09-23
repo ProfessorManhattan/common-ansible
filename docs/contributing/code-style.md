@@ -70,7 +70,7 @@ androidstudio_dependencies:
 ```yaml
 - name: "Ensure {{ {{ app_name }} }}'s dependencies are installed"
   community.general.pacman:
-    name: '{{ {{ android_studio_deps }} }}'
+    name: "{{ {{ android_studio_deps }} }}"
     state: present
 ```
 
@@ -79,7 +79,7 @@ androidstudio_dependencies:
 ```yaml
 - name: "Ensure {{ {{ app_name }} }}'s dependencies are installed"
   community.general.pacman:
-    name: '{{ {{ androidstudio_dependencies }} }}'
+    name: "{{ {{ androidstudio_dependencies }} }}"
     state: present
 ```
 
@@ -88,7 +88,7 @@ If there are dependencies that are specific to a certain OS, then the dependency
 ```yaml
 - name: "Ensure {{ {{ app_name }} }}'s dependencies are installed (Fedora)"
   dnf:
-    name: '{{ {{ androidstudio_dependencies_fedora }} }}'
+    name: "{{ {{ androidstudio_dependencies_fedora }} }}"
     state: present
   when: ansible_distribution == 'Fedora'
 ```
