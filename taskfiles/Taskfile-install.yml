@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: '3'
 
 tasks:
   install-doctor:
@@ -16,7 +16,7 @@ tasks:
     deps:
       - npm:{{.NPM_PROGRAM}}
     cmds:
-      - "{{.NPM_PROGRAM}} install"
+      - '{{.NPM_PROGRAM}} install'
       - cmd: '{{.NPM_PROGRAM}} audit fix{{if eq .NPM_PROGRAM "npm"}} --force{{end}} || true'
         ignore_error: true
     sources:
@@ -36,7 +36,7 @@ tasks:
     cmds:
       - task: npm:global
         vars:
-          NPM_PACKAGE: "@commitlint/cli"
+          NPM_PACKAGE: '@commitlint/cli'
           NPM_PACKAGE_BIN: commitlint
 
   npm:cspell:
@@ -153,7 +153,7 @@ tasks:
     cmds:
       - task: npm:global
         vars:
-          NPM_PACKAGE: "@appnest/readme"
+          NPM_PACKAGE: '@appnest/readme'
           NPM_PACKAGE_BIN: readme
 
   npm:remark:
