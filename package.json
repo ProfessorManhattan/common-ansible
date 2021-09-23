@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Common files used across Megabyte Labs repositories",
   "license": "ISC",
-  "author": "",
-  "homepage": "https://gitlab.com/megabyte-labs/common/shared#readme",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@gitlab.com/megabyte-labs/common/shared.git"
   },
+  "author": "",
+  "homepage": "https://gitlab.com/megabyte-labs/common/shared#readme",
   "bugs": {
     "url": "https://gitlab.com/megabyte-labs/common/shared/issues"
   },
@@ -18,5 +18,6 @@
   },
   "devDependencies": {
     "@megabytelabs/prettier-config": "^14.14.14"
-  }
+  },
+  "prettier": "@megabytelabs/prettier-config"
 }
