@@ -1,36 +1,36 @@
 {
-  "private": false,
-  "name": "@megabytelabs/ansible-common-files",
+  "name": "@megabytelabs/shared-common-files",
   "version": "1.0.0",
-  "description": "Includes common files used across Ansible repositories",
-  "license": "MIT",
-  "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
-  "homepage": "https://megabyte.space",
-  "repository": {
-    "type": "git",
-    "url": "git+https://gitlab.com/megabyte-labs/common/ansible.git"
-  },
-  "bugs": {
-    "email": "help@megabyte.space",
-    "url": "https://gitlab.com/megabyte-labs/common/ansible/-/issues"
-  },
-  "type": "module",
-  "main": "dist/main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "engines": {
-    "node": ">=14"
-  },
+  "private": false,
   "publishConfig": {
     "access": "public"
   },
+  "description": "Common files used across Megabyte Labs repositories",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/megabyte-labs/common/shared.git"
+  },
+  "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
+  "homepage": "https://gitlab.com/megabyte-labs/common/shared#readme",
+  "bugs": {
+    "email": "help@megabyte.space",
+    "url": "https://gitlab.com/megabyte-labs/common/shared/-/issues"
+  },
+  "main": "dist/main.js",
+  "type": "module",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "fix": "",
+    "lint": "",
+    "lint:eslint": "eslint .",
+    "test": "cd ../eslint && npm run test && cd ../shared && npm install --save-dev @megabytelabs/eslint-config && eslint ."
+  },
   "dependencies": {
+    "esbuild": "^0.12.29",
+    "esbuild-node-externals": "^1.3.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
@@ -41,15 +41,20 @@
     "cz-conventional-changelog": "^3.3.0"
   },
   "blueprint": {
-    "description": "Includes common files used across Ansible repositories",
+    "description": "Includes common files used across Megabyte Labs repositories",
     "overview": "All of the Megabyte Labs repositories share configuration files and sometimes even application files. When this repository is updated, the changes are propagated down to an application-type-specific shared repository which is then used to update all of the repositories by making a single change to this repository. The changes are propagated through GitLab CI.",
-    "name": "Ansible",
+    "name": "Shared",
     "repository": {
-      "github": "https://github.com/ProfessorManhattan/ansible-common-files",
-      "gitlab": "https://gitlab.com/megabyte-labs/common/ansible"
+      "github": "https://github.com/ProfessorManhattan/shared-common-files",
+      "gitlab": "https://gitlab.com/megabyte-labs/common/shared"
     },
-    "slug": "ansible-common-files",
-    "title": "Ansible Common Files"
+    "slug": "shared-common-files",
+    "title": "Shared Common Files"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "eslintConfig": {
     "extends": "@megabytelabs/eslint-config"

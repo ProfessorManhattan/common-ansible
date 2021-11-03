@@ -15,31 +15,31 @@
   },
   "version": "0.0.1",
   "scripts": {
-    "clean": "task common:clean",
-    "commit": "task common:commit",
-    "info": "task --list",
-    "preinstall": "npx -y only-allow pnpm",
+    "help": "task --list",
+    "preinstall": "npx -y only-allow-pnpm",
     "prepare": "task common:husky",
-    "prepare-release": "task common:prepare-release",
-    "requirements": "task common:requirements",
-    "reset": "task common:reset",
-    "reset-force": "task common:reset-force",
-    "update": "task common:update"
+    "start": "bash .start.sh"
   },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "tslib": "^2.3.1"
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "^13.1.0",
     "@megabytelabs/eslint-config": "^1.0.0",
+    "@megabytelabs/jest-preset": "^1.0.0",
     "@megabytelabs/prettier-config": "^14.14.14",
-    "cz-conventional-changelog": "^3.3.0",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "engines": {
     "node": ">=10"
+  },
+  "eslintConfig": {
+    "extends": "@megabytelabs/eslint-config"
   },
   "funding": [
     {

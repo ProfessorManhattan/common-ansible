@@ -79,6 +79,32 @@ tasks:
       start: 'Storing Docker test results to `molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt`'
       success: 'Completed the full molecule test! Results are stored in `molecule/.results/{{.MOLECULE_DATE}}-$SCENARIO.txt`'
 
+  molecule:virtualbox:
+    deps:
+      - :common:python:requirements
+      - :install:software:sshpass
+      - :install:software:vagrant
+      - :install:software:virtualbox
+    label: test:e2e
+    desc: Runs a full E2E Molecule test for all supported operating systems
+    summary: |
+      # Run a full E2E Molecule test for all supported operating systems
+
+      This task uses VirtualBox to run tests for all of our supported operating
+      systems in parallel. It is very RAM intensive so, if you want to run this,
+      your computer should have _at least 32GB of RAM_.
+
+      **Run the full test:**
+      `task ansible:test:molecule:virtualbox`
+
+      **Generate the compatibility matrix used in the README.md:**
+      `task ansible:test:molecule:virtualbox:matrix`
+    env:
+      # yamllint disable-line rule:truthy
+      OBJC_DISABLE_INITIALIZE_FORK_SAFETY: YES
+    cmds:
+      - molecule test
+
   molecule:virtualbox:converge:
     deps:
       - :common:python:requirements
@@ -120,32 +146,6 @@ tasks:
   molecule:virtualbox:converge:cli: molecule converge -s {{.CLI_ARGS}}-desktop
 
   molecule:virtualbox:converge:prompt: node .common/scripts/prompts/molecule-desktop.js
-
-  molecule:virtualbox:
-    deps:
-      - :common:python:requirements
-      - :install:software:sshpass
-      - :install:software:vagrant
-      - :install:software:virtualbox
-    label: test:e2e
-    desc: Runs a full E2E Molecule test for all supported operating systems
-    summary: |
-      # Run a full E2E Molecule test for all supported operating systems
-
-      This task uses VirtualBox to run tests for all of our supported operating
-      systems in parallel. It is very RAM intensive so, if you want to run this,
-      your computer should have _at least 32GB of RAM_.
-
-      **Run the full test:**
-      `task ansible:test:molecule:virtualbox`
-
-      **Generate the compatibility matrix used in the README.md:**
-      `task ansible:test:molecule:virtualbox:matrix`
-    env:
-      # yamllint disable-line rule:truthy
-      OBJC_DISABLE_INITIALIZE_FORK_SAFETY: YES
-    cmds:
-      - molecule test
 
   molecule:virtualbox:matrix:
     deps:

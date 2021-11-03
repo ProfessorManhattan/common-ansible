@@ -118,11 +118,6 @@ tasks:
         vars:
           FILE: .husky/prepare-commit-msg
 
-  man-page:
-    desc: Build `man` page from the README.md file
-    cmds:
-      - echo "See https://github.com/remarkjs/remark-man"
-
   node:dependencies:global:
     run: once
     cmds:
@@ -152,7 +147,7 @@ tasks:
     cmds:
       - |
         if [ "${container:=}" != "docker" ]; then
-          npm install
+          npm install --force
           npm audit fix --force || true
         fi
     sources:
@@ -179,7 +174,7 @@ tasks:
 
       1. Ensures the project is up-to-date with the latest upstream changes
       2. Lints the project with all available linters
-      3. Updates the version of the project in the `package.json` file
+      3. Updates the version of the project in the `package.json` file and other relevant files
       4. Add the appropriate details to the CHANGELOG.md file
     cmds:
       - task: update
@@ -236,7 +231,7 @@ tasks:
       - cmd: . .venv/bin/activate
         ignore_error: true
     status:
-      - true
+      - 'true'
     preconditions:
       - sh: test -f .venv/bin/activate
         msg: '`.venv/bin/activate` is missing!'
@@ -275,7 +270,7 @@ tasks:
   reset-force:
     deps:
       - software:git
-    desc: 'Aggressively reset the project (WARNING: This will wipe uncommitted work)'
+    desc: 'Aggressively reset the project (**WARNING** This will wipe uncommitted work)'
     summary: |
       # Aggressively reset the project
 
@@ -331,3 +326,7 @@ tasks:
     preconditions:
       - sh: 'type docker &> /dev/null'
         msg: Docker is not installed.
+
+  update:
+    deps:
+      - :common:update:update

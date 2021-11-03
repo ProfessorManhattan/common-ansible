@@ -7,10 +7,21 @@ vars:
     -o -name venv
 
 tasks:
+  esprint:
+    deps:
+      - :common:node:dependencies:local
+      - :install:npm:esprint
+    desc: Fix the project using `esprint`
+    vars:
+      DOCKER_CONTAINER:
+        sh: echo $container
+    cmds:
+      - esprint{{if eq .DOCKER_CONTAINER "container"}} check{{end}} --fix
+
   js:
     deps:
+      - :common:node:dependencies:local
       - :install:npm:eslint
-      - :install:npm:eslint:dev-dependencies
     desc: Fix JavaScript/TypeScript errors automatically
     summary: |
       # Fix JavaScript/TypeScript errors automatically with `eslint`
