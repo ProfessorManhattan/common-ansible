@@ -1,22 +1,124 @@
 {
-  "name": "shared",
+  "private": false,
+  "name": "@megabytelabs/ansible-common-files",
   "version": "1.0.0",
-  "description": "Common files used across Megabyte Labs repositories",
-  "license": "ISC",
-  "author": "",
-  "homepage": "https://gitlab.com/megabyte-labs/common/shared#readme",
+  "description": "Includes common files used across Ansible repositories",
+  "license": "MIT",
+  "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
+  "homepage": "https://megabyte.space",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/megabyte-labs/common/shared.git"
+    "url": "git+https://gitlab.com/megabyte-labs/common/ansible.git"
   },
   "bugs": {
-    "url": "https://gitlab.com/megabyte-labs/common/shared/issues"
+    "email": "help@megabyte.space",
+    "url": "https://gitlab.com/megabyte-labs/common/ansible/-/issues"
   },
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "tslib": "^2.3.1"
+  },
   "devDependencies": {
-    "@megabytelabs/prettier-config": "^14.14.14"
+    "@commitlint/config-conventional": "^13.1.0",
+    "@megabytelabs/eslint-config": "^1.0.61",
+    "@megabytelabs/prettier-config": "^14.14.14",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "cz-conventional-changelog": "^3.3.0"
+  },
+  "blueprint": {
+    "description": "Includes common files used across Ansible repositories",
+    "overview": "All of the Megabyte Labs repositories share configuration files and sometimes even application files. When this repository is updated, the changes are propagated down to an application-type-specific shared repository which is then used to update all of the repositories by making a single change to this repository. The changes are propagated through GitLab CI.",
+    "name": "Ansible",
+    "repository": {
+      "github": "https://github.com/ProfessorManhattan/ansible-common-files",
+      "gitlab": "https://gitlab.com/megabyte-labs/common/ansible"
+    },
+    "slug": "ansible-common-files",
+    "title": "Ansible Common Files"
+  },
+  "eslintConfig": {
+    "extends": "@megabytelabs/eslint-config"
+  },
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/megabytelabs"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/ProfessorManhattan"
+    }
+  ],
+  "lint-staged": {
+    "**/*": [
+      "blocklint --wordlist blacklist,slave,whitelist",
+      "check-merge-conflict",
+      "check-added-large-files",
+      "check-symlinks",
+      "destroyed-symlinks"
+    ],
+    "**/*.(css|html|less|md|mjml|php|scss|sh|xml)": [
+      "task fix:prettier --"
+    ],
+    "**/*.(jpg|png)": [
+      "task image:compress --"
+    ],
+    "**/*.(js|jsx|ts)": [
+      "task fix:js --",
+      "task lint:js --"
+    ],
+    "**/*.json": [
+      "task fix:json --"
+    ],
+    "**/*.py": [
+      "black",
+      "flake8"
+    ],
+    "**/*.sh": [
+      "task fix:shell --",
+      "task lint:shell --"
+    ],
+    "**/*.toml": [
+      "task lint:toml --"
+    ],
+    "**/*.xml": [
+      "task fix:xml --",
+      "task lint:xml --"
+    ],
+    "**/*.yml": [
+      "task fix:yaml --",
+      "task lint:yaml --"
+    ],
+    "**/*vault.yml": [
+      "task ansible:vault:lint:file --"
+    ],
+    "logo.png": [
+      "task image:resize -- 200 200",
+      "task image:compress --"
+    ],
+    "requirements.txt": [
+      "requirements-txt-fixer"
+    ]
+  },
+  "prettier": "@megabytelabs/prettier-config",
+  "standard-version": {
+    "scripts": {
+      "prerelease": "git add --all"
+    }
   }
 }
