@@ -1,32 +1,31 @@
 {
+  "private": false,
   "name": "@megabytelabs/shared-common-files",
   "version": "1.0.0",
-  "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
   "description": "Common files used across Megabyte Labs repositories",
   "license": "MIT",
+  "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
+  "homepage": "https://gitlab.com/megabyte-labs/common/shared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/megabyte-labs/common/shared.git"
   },
-  "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
-  "homepage": "https://gitlab.com/megabyte-labs/common/shared#readme",
   "bugs": {
     "email": "help@megabyte.space",
     "url": "https://gitlab.com/megabyte-labs/common/shared/-/issues"
   },
-  "main": "dist/main.js",
   "type": "module",
-  "engines": {
-    "node": ">=10"
-  },
+  "main": "dist/main.js",
   "scripts": {
     "fix": "",
     "lint": "",
     "lint:eslint": "eslint .",
     "test": "cd ../eslint && npm run test && cd ../shared && npm install --save-dev @megabytelabs/eslint-config && eslint ."
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "dependencies": {
     "esbuild": "^0.12.29",
@@ -40,6 +39,12 @@
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "cz-conventional-changelog": "^3.3.0"
   },
+  "engines": {
+    "node": ">=10"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "blueprint": {
     "description": "Includes common files used across Megabyte Labs repositories",
     "overview": "All of the Megabyte Labs repositories share configuration files and sometimes even application files. When this repository is updated, the changes are propagated down to an application-type-specific shared repository which is then used to update all of the repositories by making a single change to this repository. The changes are propagated through GitLab CI.",
@@ -50,11 +55,6 @@
     },
     "slug": "shared-common-files",
     "title": "Shared Common Files"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
   },
   "eslintConfig": {
     "extends": "@megabytelabs/eslint-config"
