@@ -45,7 +45,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "testyTest": "test",
   "blueprint": {
     "description": "Includes common files used across Megabyte Labs repositories",
     "overview": "All of the Megabyte Labs repositories share configuration files and sometimes even application files. When this repository is updated, the changes are propagated down to an application-type-specific shared repository which is then used to update all of the repositories by making a single change to this repository. The changes are propagated through GitLab CI.",
@@ -126,5 +125,6 @@
     "scripts": {
       "prerelease": "git add --all"
     }
-  }
+  },
+  "testyTest": "test"
 }
