@@ -1,0 +1,8 @@
+{
+  "docs": {
+    "header_description_pre": "Brought to you by ",
+    "header_title_pre": "Ansible Playbook: ",
+    "link": "https://megabyte.space/docs/ansible/playbook"
+  },
+  "subgroup": "playbook"
+}

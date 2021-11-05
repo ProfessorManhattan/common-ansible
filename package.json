@@ -48,11 +48,13 @@
     "description": "Includes common files used across different types of common file repositories (e.g. Go, Python, etc.)",
     "overview": "This repository feeds downstream repositories that store programming language specific common files. When this repository is updated, the changes are propagated downstream via CI. This repository contains files that are meant to be global. For instance, if Go projects and Angular projects share a common file (say `.editorconfig`, for example) then that file is stored in this repository and propagated to the Go and Angular common file repositories. Then, for example, the Go common file repository is included in all of the Go projects as a submodule. This is meant to be done with every repository in an eco-system so that meta files, documentation, etc. are all kept in sync.",
     "name": "Shared",
+    "group": "common",
     "repository": {
       "github": "https://github.com/ProfessorManhattan/shared-common-files",
       "gitlab": "https://gitlab.com/megabyte-labs/common/shared"
     },
     "slug": "shared-common-files",
+    "subgroup": "ansible",
     "title": "Shared Common Files"
   },
   "eslintConfig": {
@@ -114,9 +116,6 @@
     "logo.png": [
       "task image:resize -- 200 200",
       "task image:compress --"
-    ],
-    "requirements.txt": [
-      "requirements-txt-fixer"
     ]
   },
   "prettier": "@megabytelabs/prettier-config",

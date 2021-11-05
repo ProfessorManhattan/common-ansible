@@ -1,0 +1,20 @@
+{
+  "ansible_galaxy_project_id": "",
+  "autodoc_actions_description": "",
+  "autodoc_tags_description": "",
+  "autodoc_todo_description": "",
+  "autodoc_variables_description": "",
+  "gitlab_pipelines": [
+    {
+      "active": true,
+      "cron": "0 12 * * 1",
+      "description": "Weekly Docker Molecule test",
+      "ref": "master"
+    }
+  ],
+  "repository": {
+    "prefix": {
+      "github": "ansible-"
+    }
+  }
+}

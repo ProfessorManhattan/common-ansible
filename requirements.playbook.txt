@@ -1,9 +1,0 @@
-ansible
-ansible-lint<5.0.0
-ansibler
-black
-flake8
-molecule-docker
-molecule-vagrant
-python-vagrant
-pywinrm>=0.3.0
