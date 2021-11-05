@@ -109,7 +109,7 @@ provisioner:
   options:
     vvv: true
   playbooks:
-    converge: converge.yml
+    converge: ../converge.vagrant.yml
     prepare: prepare.yml
 scenario:
   check_sequence:

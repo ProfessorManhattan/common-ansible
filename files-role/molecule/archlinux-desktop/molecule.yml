@@ -28,7 +28,7 @@ provisioner:
   options:
     vvv: true
   playbooks:
-    converge: ../converge-vagrant.yml
+    converge: ../converge.vagrant.yml
 scenario:
   check_sequence:
     - dependency

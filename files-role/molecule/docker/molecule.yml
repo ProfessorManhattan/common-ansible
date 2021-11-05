@@ -105,7 +105,7 @@ provisioner:
   options:
     vvv: true
   playbooks:
-    converge: converge.yml
+    converge: ../converge.yml
 scenario:
   check_sequence:
     - dependency
