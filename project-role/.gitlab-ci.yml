@@ -7,6 +7,7 @@ stages:
   - lint
   - test
   - security
+  - publish
 
 include:
   - local: .gitlab/ci/lint/ansible-lint.gitlab-ci.yml
@@ -15,7 +16,9 @@ include:
   - local: .gitlab/ci/lint/prettier.gitlab-ci.yml
   - local: .gitlab/ci/lint/shellcheck.gitlab-ci.yml
   - local: .gitlab/ci/lint/yamllint.gitlab-ci.yml
+  - local: .gitlab/ci/publish/ansible/galaxy.gitlab-ci.yml
   - local: .gitlab/ci/test/ansible/role.gitlab-ci.yml
+  - local: .gitlab/ci/test/ansible/role.macos.gitlab-ci.yml
   - local: .gitlab/ci/test/ansible/role.windows.gitlab-ci.yml
   - local: .gitlab/ci/update/project.gitlab-ci.yml
   - template: Dependency-Scanning.gitlab-ci.yml

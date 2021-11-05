@@ -16,6 +16,8 @@ include:
   - local: .gitlab/ci/lint/shellcheck.gitlab-ci.yml
   - local: .gitlab/ci/lint/yamllint.gitlab-ci.yml
   - local: .gitlab/ci/test/ansible/playbook.gitlab-ci.yml
+  - local: .gitlab/ci/test/ansible/playbook.macos.gitlab-ci.yml
+  - local: .gitlab/ci/test/ansible/playbook.windows.gitlab-ci.yml
   - local: .gitlab/ci/update/project.gitlab-ci.yml
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: Security/License-Scanning.gitlab-ci.yml
