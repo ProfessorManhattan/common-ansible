@@ -15,6 +15,7 @@
       }
     }
   ],
+  "group": "ansible",
   "repository": {
     "prefix": {
       "github": "ansible-"
