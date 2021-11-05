@@ -9,7 +9,10 @@
       "active": true,
       "cron": "0 12 * * 1",
       "description": "Weekly Docker Molecule test",
-      "ref": "master"
+      "ref": "master",
+      "variable": {
+        "WEEKLY_TEST": true
+      }
     }
   ],
   "repository": {
