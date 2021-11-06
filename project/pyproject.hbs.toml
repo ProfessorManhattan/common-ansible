@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "{{repository.prefix.github}}{{slug}}"
+version = "{{version}}"
+description = "{{description}}"
+authors = ["{{author.name}} <{{author.email}}>"]
+license = "{{license}}"
+readme = "README.md"
+homepage = "{{link.home}}"
+documentation = "{{docs.link}}"
+keywords = ["python", "app", "megabytelabs", "professormanhattan"]
+include = ["CHANGELOG.md"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+ansible = "^4.8.0"
+docker = "^5.0.3"
+python-vagrant = "^0.5.15"
+pywinrm = ">=0.3.0"
+
+[tool.poetry.dev-dependencies]
+ansible-lint = "<5.0.0"
+ansibler = "^0.1.14"
+black = "^21.10b0"
+blocklint = "^0.2.3"
+flake8 = "^4.0.1"
+mod-ansible-autodoc = "^0.5.7"
+molecule-docker = "^1.1.0"
+molecule-vagrant = "^0.6.3"
+pre-commit-hooks = "^4.0.1"
+proselint = "^0.12.0"
+yamllint = "^1.26.3"
+
+[tool.poetry.urls]
+"Bug Tracker" = "{{repository.gitlab}}{{repository.location.issues.gitlab}}"
+"GitHub" = "{{profile_link.github}}/{{profile.github}}"
+"GitLab" = "https://gitlab.com/megabyte-labs"
+"Megabyte Labs" = "{{link.home}}"
+"Open Collective" = "{{profile_link.opencollective}}/{{profile.opencollective}}"
+"Patreon" = "{{profile_link.patreon}}/{{profile.patreon}}"
+"PyPi" = "{{profile_link.pypi}}/{{profile.pypi}}"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
