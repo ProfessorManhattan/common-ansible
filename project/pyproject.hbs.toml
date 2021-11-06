@@ -32,12 +32,10 @@ yamllint = "^1.26.3"
 
 [tool.poetry.urls]
 "Bug Tracker" = "{{repository.gitlab}}{{repository.location.issues.gitlab}}"
-"GitHub" = "{{profile_link.github}}/{{profile.github}}"
-"GitLab" = "https://gitlab.com/megabyte-labs"
-"Megabyte Labs" = "{{link.home}}"
+"GitHub" = "{{repository.github}}"
+"GitLab" = "{{repository.gitlab}}"
 "Open Collective" = "{{profile_link.opencollective}}/{{profile.opencollective}}"
 "Patreon" = "{{profile_link.patreon}}/{{profile.patreon}}"
-"PyPi" = "{{profile_link.pypi}}/{{profile.pypi}}"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
