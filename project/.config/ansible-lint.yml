@@ -1,0 +1,23 @@
+---
+exclude_paths:
+  - .autodoc/
+  - .cache/
+  - .common/
+  - .config/
+  - .git/
+  - .github/
+  - .gitlab/
+  - .husky/
+  - .modules/
+  - .npm/
+  - .pnpm-store/
+  - .shared/
+  - .task/
+  - .venv/
+  - .vscode/
+  - molecule/
+  - node_modules/
+  - roles/
+  - venv/
+
+skip_list: []
