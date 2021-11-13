@@ -15,8 +15,11 @@ exclude_paths:
   - .task/
   - .venv/
   - .vscode/
+  - build/
+  - dist/
   - molecule/
   - node_modules/
+  - pnpm-lock.yaml
   - roles/
   - venv/
 
