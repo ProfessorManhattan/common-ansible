@@ -39,6 +39,13 @@
     "handlebars-helpers": "^0.10.0"
   },
   "keywords": [
+    "ansible",
+    "common",
+    "files",
+    "boilerplate",
+    "role",
+    "playbook",
+    "beginner",
     "megabytelabs",
     "npm",
     "package",
