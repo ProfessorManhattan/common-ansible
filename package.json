@@ -33,8 +33,8 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^13.1.0",
-    "@megabytelabs/eslint-config": "^1.0.61",
-    "@megabytelabs/prettier-config": "^14.14.14",
+    "@mblabs/eslint-config": "^1.0.61",
+    "@mblabs/prettier-config": "^14.14.14",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "cz-conventional-changelog": "^3.3.0"
   },
@@ -45,20 +45,20 @@
     "access": "public"
   },
   "blueprint": {
-    "description": "Includes common files used across different types of common file repositories (e.g. Go, Python, etc.)",
-    "overview": "This repository feeds downstream repositories that store programming language specific common files. When this repository is updated, the changes are propagated downstream via CI. This repository contains files that are meant to be global. For instance, if Go projects and Angular projects share a common file (say `.editorconfig`, for example) then that file is stored in this repository and propagated to the Go and Angular common file repositories. Then, for example, the Go common file repository is included in all of the Go projects as a submodule. This is meant to be done with every repository in an eco-system so that meta files, documentation, etc. are all kept in sync.",
-    "name": "Shared",
+    "description": "Shared Ansible files that propagate downstream as well as boilerplate code for new projects",
+    "overview": "This repository is home to common Ansible files as well as boilerplate code for new projects. This repository hosts files that are shared to all our downstream projects (perhaps yours as well). There is also boilerplate code that is added to a project if there is no file structure yet.",
+    "name": "Ansible Common",
     "group": "common",
     "repository": {
-      "github": "https://github.com/ProfessorManhattan/shared-common-files",
-      "gitlab": "https://gitlab.com/megabyte-labs/common/shared"
+      "github": "https://github.com/ProfessorManhattan/common-ansible",
+      "gitlab": "https://gitlab.com/megabyte-labs/common/ansible"
     },
-    "slug": "shared-common-files",
+    "slug": "common-ansible",
     "subgroup": "ansible",
-    "title": "Shared Common Files"
+    "title": "Ansible Common Files and Boilerplate Code"
   },
   "eslintConfig": {
-    "extends": "@megabytelabs/eslint-config"
+    "extends": "@mblabs/eslint-config"
   },
   "funding": [
     {
@@ -84,16 +84,12 @@
     "**/*.(jpg|png)": [
       "task image:compress --"
     ],
-    "**/*.(js|jsx|ts)": [
+    "**/*.(js|jsx|ts|tsx)": [
       "task fix:js --",
       "task lint:js --"
     ],
     "**/*.json": [
       "task fix:json --"
-    ],
-    "**/*.py": [
-      "black",
-      "flake8"
     ],
     "**/*.sh": [
       "task fix:shell --",
@@ -118,7 +114,7 @@
       "task image:compress --"
     ]
   },
-  "prettier": "@megabytelabs/prettier-config",
+  "prettier": "@mblabs/prettier-config",
   "standard-version": {
     "scripts": {
       "prerelease": "git add --all"
