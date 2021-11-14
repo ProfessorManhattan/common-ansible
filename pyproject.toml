@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://megabyte.space"
 documentation = "https://megabyte.space/docs/common/ansible"
-keywords = ["ansible", "boilerplate", "role", "playbook", "samples", "awesome", "megabytelabs", "npm", "package", "professormanhattan"]
+keywords = ["ansible", "awesome", "boilerplate", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples"]
 include = ["CHANGELOG.md", "LICENSE"]
 
 [tool.poetry.dependencies]
