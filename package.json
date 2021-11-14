@@ -39,6 +39,12 @@
     "handlebars-helpers": "^0.10.0"
   },
   "keywords": [
+    "ansible",
+    "boilerplate",
+    "role",
+    "playbook",
+    "samples",
+    "awesome",
     "megabytelabs",
     "npm",
     "package",
