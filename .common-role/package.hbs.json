@@ -1,0 +1,117 @@
+{
+  "author": "{{author.name}} <{{author.email}}> ({{link.home}})",
+  "autodoc_variables_description": "\nThis role contains variables that you can customize. The variables you can customize are located in `defaults/main.yml`. By default, the variables use sensible defaults but you may want to customize the role depending on your use case. The variables, along with descriptions, are listed below:\n\n{{ role_variables }}\n\n### Variable Examples\n\n",
+  "blueprint": {
+    "description": "An NPM package that is part of the Megabyte Labs eco-system",
+    "name": "My Project Name",
+    "overview": "This text shows up at the top of the README.md.",
+    "repository": {
+      "github": "{{#if repository.github}}{{repository.github}}{{else}}https://github.com/{{profile.github}}/{{repository.prefix.github}}{{slug}}{{/if}}",
+      "gitlab": "{{#if repository.gitlab}}{{repository.gitlab}}{{else}}{{repository.gitlabBaseUrl}}/{{group}}/{{subgroup}}/{{slug}}{{/if}}"
+    },
+    "slug": "my-project",
+    "title": "Title of the README.md"
+  },
+  "bugs": {
+    "email": "{{email.help}}",
+    "url": "{{#if repository.gitlab}}{{repository.gitlab}}{{else}}{{repository.gitlabBaseUrl}}/{{group}}/{{subgroup}}/{{slug}}{{/if}}{{repository.location.issues.gitlab}}"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.1"
+  },
+  "description": "{{description}}",
+  "devDependencies": {
+    "@commitlint/config-conventional": "^13.1.0",
+    "@mblabs/eslint-config": "^1.0.0",
+    "@mblabs/prettier-config": "^14.14.14",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "handlebars-helpers": "^0.10.0"
+  },
+  "engines": {
+    "node": ">=14.18.0"
+  },
+  "eslintConfig": {
+    "extends": "@mblabs/eslint-config"
+  },
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "{{profile_link.opencollective}}/{{profile.opencollective}}"
+    },
+    {
+      "type": "patreon",
+      "url": "{{profile_link.patreon}}/{{profile.patreon}}"
+    }
+  ],
+  "homepage": "{{link.home}}",
+  "keywords": [
+    "ansible",
+    "ansible-role",
+    "archlinux",
+    "centos",
+    "debian",
+    "doctor",
+    "fedora",
+    "install",
+    "installdoc",
+    "installdoctor",
+    "macos",
+    "megabytelabs",
+    "molecule",
+    "npm",
+    "package",
+    "professormanhattan",
+    "role",
+    "ubuntu",
+    "windows"
+  ],
+  "license": "{{license}}",
+  "lint-staged": {
+    "**/*": [
+      "blocklint --wordlist blacklist,slave,whitelist",
+      "check-merge-conflict",
+      "check-added-large-files",
+      "check-symlinks",
+      "destroyed-symlinks"
+    ],
+    "**/*.(css|html|less|md|mjml|php|scss|sh|xml)": ["task fix:prettier --"],
+    "**/*.(jpg|png)": ["task image:compress --"],
+    "**/*.(js|jsx|ts|tsx)": ["task fix:js --", "task lint:js --"],
+    "**/*.json": ["task fix:json --"],
+    "**/*.py": ["task fix:python --", "task lint:python --"],
+    "**/*.sh": ["task fix:shell --", "task lint:shell --"],
+    "**/*.toml": ["task lint:toml --"],
+    "**/*.xml": ["task fix:xml --", "task lint:xml --"],
+    "**/*.yml": ["task fix:yaml --", "task lint:yaml --"],
+    "**/*vault.yml": ["task ansible:vault:lint:file --"],
+    "logo.png": ["task image:resize -- 200 200", "task image:compress --"]
+  },
+  "name": "{{#if customPackageName}}{{customPackageName}}{{else}}@{{profile.npmjs_organization}}/{{repository.prefix.github}}{{slug}}{{/if}}",
+  "prettier": "@mblabs/prettier-config",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+{{#if repository.github}}{{repository.github}}{{else}}https://github.com/{{profile.github}}/{{repository.prefix.github}}{{slug}}{{/if}}.git"
+  },
+  "scripts": {
+    "help": "task --list",
+    "prepare": "task common:husky",
+    "start": "bash .config/start.sh"
+  },
+  "standard-version": {
+    "scripts": {
+      "prerelease": "git add --all"
+    }
+  },
+  "type": "module",
+  "version": "0.0.1"
+}

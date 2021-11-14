@@ -1,0 +1,3 @@
+---
+# INFO: You can have Ansible source all the items in a folder titled as the host you want to target or you can simply include
+# a `.yml` file titled as the hostname. The same applies for groups. This file is where you would keep host-specific variables.

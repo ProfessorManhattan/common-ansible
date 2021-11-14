@@ -15,12 +15,7 @@
     "windows"
   ],
   "lint-staged": {
-    "**/*.py": [
-      "task fix:python --",
-      "task lint:python --"
-    ],
-    "**/*vault.yml": [
-      "task ansible:vault:lint:file --"
-    ]
+    "**/*.py": ["task fix:python --", "task lint:python --"],
+    "**/*vault.yml": ["task ansible:vault:lint:file --"]
   }
 }

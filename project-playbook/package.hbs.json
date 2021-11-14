@@ -1,6 +1,3 @@
 {
-  "keywords": [
-    "ansible-playbook",
-    "playbook"
-  ]
+  "keywords": ["ansible-playbook", "playbook"]
 }

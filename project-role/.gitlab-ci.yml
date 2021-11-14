@@ -1,13 +1,13 @@
 ---
-variables:
-  ANSIBLE_CONFIG: ${CI_PROJECT_DIR}/ansible.cfg
-
 stages:
   - update
   - lint
   - test
   - security
   - publish
+
+variables:
+  ANSIBLE_CONFIG: ${CI_PROJECT_DIR}/ansible.cfg
 
 include:
   - local: .gitlab/ci/lint/ansible-lint.gitlab-ci.yml
@@ -25,12 +25,3 @@ include:
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: Security/License-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
-
-dependency_scanning:
-  stage: security
-
-license_scanning:
-  stage: security
-
-.secret-analyzer:
-  stage: security

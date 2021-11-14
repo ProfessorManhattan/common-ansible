@@ -1,0 +1,5 @@
+---
+# INFO: This is the entrypoint to your collection of roles
+- hosts: all
+  roles:
+    - roles/role-folder-name

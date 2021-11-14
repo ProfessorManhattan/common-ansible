@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "common-ansible"
+version = "1.0.0"
+description = "Shared Ansible files that propagate downstream as well as boilerplate code for new projects"
+authors = ["Brian Zalewski <brian@megabyte.space>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://megabyte.space"
+documentation = "https://megabyte.space/docs/common/ansible"
+keywords = []
+include = ["CHANGELOG.md", "LICENSE"]
+
+[tool.poetry.dependencies]
+python = ">=3.7.0,<4.0.0"
+
+[tool.poetry.dev-dependencies]
+blocklint = "^0.2.3"
+pre-commit-hooks = "^4.0.1"
+proselint = "^0.12.0"
+yamllint = "^1.26.3"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://gitlab.com/megabyte-labs/common/ansible/-/issues"
+"GitHub" = "https://github.com/ProfessorManhattan/common-ansible"
+"GitLab" = "https://gitlab.com/megabyte-labs/common/ansible"
+"Open Collective" = "https://opencollective.com/megabytelabs"
+"Patreon" = "https://www.patreon.com/ProfessorManhattan"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

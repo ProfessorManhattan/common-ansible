@@ -1,0 +1,2 @@
+---
+# INFO: Any `.yml` file in this directory will be inherited by hosts that are in the `desktop` group

@@ -1,0 +1,39 @@
+---
+name: Windows Ansible Role Test
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 5 * * 2' # At 5AM on Tuesdays
+
+jobs:
+  integration:
+    name: Integration
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+
+      - name: Setup WinRM.
+        run: |
+          ./tests/windows/test.ps1
+          ipconfig
+
+      - name: Setup WSL.
+        uses: Vampire/setup-wsl@v1
+
+      - name: Test the role.
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
+        shell: wsl-bash {0}
+        run: |
+          apt update
+          apt install net-tools
+          ifconfig
+          bash test/windows/test.sh
