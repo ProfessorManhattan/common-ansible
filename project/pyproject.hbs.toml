@@ -7,7 +7,7 @@ license = "{{license}}"
 readme = "README.md"
 homepage = "{{link.home}}"
 documentation = "{{docs.link}}"
-keywords = ["python", "app", "megabytelabs", "professormanhattan"]
+keywords = [{{{poetryKeywords}}}]
 include = ["CHANGELOG.md", "LICENSE"]
 
 [tool.poetry.dependencies]

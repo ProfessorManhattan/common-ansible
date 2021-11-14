@@ -16,8 +16,8 @@
   ],
   "lint-staged": {
     "**/*.py": [
-      "black",
-      "flake8"
+      "task fix:python --",
+      "task lint:python --"
     ],
     "**/*vault.yml": [
       "task ansible:vault:lint:file --"
