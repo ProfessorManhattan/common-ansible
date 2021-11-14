@@ -1,0 +1,16 @@
+---
+# INFO: If you use this as a starting point to provision your local machine, then make sure you save the variables `admin_password`
+# and `admin_username` as your sudo password/user. Be sure to use `ansible-encrypt` to encrypt the file where you store the variables
+# (preferrably in a file called `vault.yml`).
+all:
+  children:
+    desktop:
+      hosts:
+        myhostname:
+          ansible_host: myhostname
+          ansible_connection: local
+          ansible_password: "{{ admin_password }}"
+          ansible_sudo_pass: "{{ admin_password }}"
+          ansible_become_pass: "{{ admin_password }}"
+          ansible_user: "{{ admin_username }}"
+          ansible_become_method: sudo

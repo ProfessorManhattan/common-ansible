@@ -1,0 +1,3 @@
+---
+# INFO: Name files that you want to encrypt with `ansible-vault` as `vault.yml` and special validations happen
+# via the build tools included in this setup. It'll make sure you do not accidentally commit unencrypted `vault.yml` files

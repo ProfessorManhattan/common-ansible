@@ -1,0 +1,3 @@
+---
+# INFO: Any .yml file in this folder can contain variables that will be inherited by all hosts when the `prod`
+# environment is active via symlinks
