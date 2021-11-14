@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "common-ansible"
-version = "1.0.0"
+version = "0.0.1"
 description = "Shared Ansible files that propagate downstream as well as boilerplate code for new projects"
 authors = ["Brian Zalewski <brian@megabyte.space>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://megabyte.space"
 documentation = "https://megabyte.space/docs/common/ansible"
-keywords = []
+keywords = ["megabytelabs", "npm", "package", "professormanhattan"]
 include = ["CHANGELOG.md", "LICENSE"]
 
 [tool.poetry.dependencies]

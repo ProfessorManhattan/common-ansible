@@ -67,7 +67,9 @@
     "extends": "@mblabs/eslint-config",
     "overrides": [
       {
-        "files": ["**/.boilerplate/**/*.yml"],
+        "files": [
+          "**/.boilerplate/**/*.yml"
+        ],
         "rules": {
           "yml/no-empty-document": "off"
         }
