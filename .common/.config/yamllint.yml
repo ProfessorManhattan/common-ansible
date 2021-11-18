@@ -41,3 +41,5 @@ rules:
   line-length:
     level: error
     max: 160
+  truthy:
+    allowed-values: ['false', 'on', 'true']
