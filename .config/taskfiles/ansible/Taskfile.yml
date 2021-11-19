@@ -67,7 +67,6 @@ tasks:
   galaxy:requirements:
     run: once
     cmds:
-      - task: :install:python:requirements:venv:activate
       - task: galaxy:requirements:install
     sources:
       - requirements.yml
