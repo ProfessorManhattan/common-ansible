@@ -172,7 +172,7 @@ tasks:
         }
         ensureKeywords package.json
       - jq --arg blueprint "$BLUEPRINT" --arg keywords "$(jq '.keywords[]' package.json tmp.package.json | jq -s '. | unique')"
-        -s -S '.[0] * .[1] | .keywords = ($keywords | fromjson) | .blueprint = ($blueprint | fromjson) | .version = $version | .'
+        --arg version "$VERSION" -s -S '.[0] * .[1] | .keywords = ($keywords | fromjson) | .blueprint = ($blueprint | fromjson) | .version = $version | .'
         package.json tmp.package.json > "$TMP"
       - mv "$TMP" package.json
       - rm tmp.package.json
