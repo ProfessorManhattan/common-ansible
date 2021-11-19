@@ -246,6 +246,9 @@ tasks:
       - :install:software:jq
     cmds:
       - task: :upstream:variables
+        vars:
+          INPUT_FILE: .config/variables.json
+          OUTPUT_FILE: .variables.json
       - task: ':{{if eq .REPOSITORY_TYPE "packer"}}packer:update:variables{{else}}donothing{{end}}'
       - task: ':{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:update:variables{{else}}donothing{{end}}'
     sources:

@@ -85,5 +85,5 @@ tasks:
       - task: :upstream:variables
         vars:
           INPUT_FILE: .config/variables.json
-          OUTPUT_FILE: ./.variables.json
+          OUTPUT_FILE: .variables.json
       - task: :upstream:template
