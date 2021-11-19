@@ -26,8 +26,10 @@ TASK_RELEASE_URL="https://github.com/go-task/task/releases/latest"
 # @set PATH string The updated PATH with a reference to ~/.local/bin
 # @set SHELL_PROFILE string The preferred profile
 #
+# @noarg
+#
 # @exitcode 0 If the PATH was appropriately updated or did not need updating
-# @exitcode 1 If the OS is unsupported
+# @exitcode 1+ If the OS is unsupported
 function ensureLocalPath() {
   case "${SHELL}" in
     */bash*)
@@ -72,7 +74,7 @@ function ensureLocalPath() {
 # @arg $1 string The name of the package that must be present
 #
 # @exitcode 0 If the package is already present or if it successfully installs
-# @exitcode 1 If the package needs to be installed manually or if the OS is unsupported
+# @exitcode 1+ If the package needs to be installed manually or if the OS is unsupported
 function ensurePackageInstalled() {
   if ! type "$1" &> /dev/null; then
     if [[ "$OSTYPE" == 'darwin'* ]]; then
@@ -100,42 +102,24 @@ function ensurePackageInstalled() {
   fi
 }
 
-# @description Ensures Task is installed to ~/.local/bin if it is not already installed. If it gets
-# installed by this function then ensureLocalPath is called to ensure that the binary is accessible
-# on the PATH variable.
+# @description Ensures the latest version of Task is installed to `/usr/local/bin` (or `~/.local/bin`, as
+# a fallback. If the user does not have permissions to `/usr/local/bin`, then `~/.local/bin` is used and
+# the ensureLocalPath function is called. ensureLocalPath ensures that `~/.local/bin` is added to the `PATH`
+# environment variable.
 #
 # @see ensureLocalPath
 #
 # @example
 #   ensureTaskInstalled
 #
-# @exitcode 0 If the package is already present or if it is installed
-# @exitcode 1 If the OS is unsupported or if there was an error either installing the package or setting the PATH
+# @noarg
+#
+# @exitcode 0 If the package is already present and up-to-date or if it was installed/updated
+# @exitcode 1+ If the OS is unsupported or if there was an error either installing the package or setting the PATH
 function ensureTaskInstalled() {
   if ! type task &> /dev/null; then
-    local CHECKSUM_DESTINATION=/tmp/megabytelabs/task_checksums.txt
-    local CHECKSUMS_URL="$TASK_RELEASE_URL/download/task_checksums.txt"
-    local DOWNLOAD_DESTINATION=/tmp/megabytelabs/task.tar.gz
-    local TMP_DIR=/tmp/megabytelabs
     if [[ "$OSTYPE" == 'darwin'* ]] || [[ "$OSTYPE" == 'linux-gnu'* ]]; then
-      if [[ "$OSTYPE" == 'darwin'* ]]; then
-        local DOWNLOAD_URL="$TASK_RELEASE_URL/download/task_darwin_amd64.tar.gz"
-      else
-        local DOWNLOAD_URL="$TASK_RELEASE_URL/download/task_linux_amd64.tar.gz"
-      fi
-      mkdir -p "$(dirname "$DOWNLOAD_DESTINATION")"
-      curl "$DOWNLOAD_URL" -o "$DOWNLOAD_DESTINATION"
-      curl "$CHECKSUMS_URL" -o "$CHECKSUM_DESTINATION"
-      local DOWNLOAD_BASENAME="$(basename "$DOWNLOAD_URL")"
-      local DOWNLOAD_SHA256="$(cat "$CHECKSUM_DESTINATION" | grep "$DOWNLOAD_BASENAME" | cut -d ' ' -f 1)"
-      sha256 "$DOWNLOAD_DESTINATION" "$DOWNLOAD_SHA256"
-      mkdir "$TMP_DIR/task"
-      tar -xzvf "$DOWNLOAD_DESTINATION" -C "$TMP_DIR/task"
-      mv "$TMP_DIR/task" "$HOME/.local/bin/task"
-      echo "Successfully installed Task to ~/.local/bin"
-      rm "$CHECKSUM_DESTINATION"
-      rm "$DOWNLOAD_DESTINATION"
-      ensureLocalPath
+      installTask
     elif [[ "$OSTYPE" == 'cygwin' ]] || [[ "$OSTYPE" == 'msys' ]] || [[ "$OSTYPE" == 'win32' ]]; then
       echo "Windows is not directly supported. Use WSL or Docker." && exit 1
     elif [[ "$OSTYPE" == 'freebsd'* ]]; then
@@ -143,7 +127,68 @@ function ensureTaskInstalled() {
     else
       echo "System type not recognized" && exit 1
     fi
+  else
+    local CURRENT_VERSION="$(task --version | cut -d' ' -f3 | cut -c 2-)"
+    local LATEST_VERSION="$(curl -s "$TASK_RELEASE_API" | grep tag_name | cut -c 17- | head -c -3)"
+    if printf '%s\n%s\n' "$LATEST_VERSION" "$CURRENT_VERSION" | sort --check=quiet --version-sort; then
+      echo "Task is already up-to-date"
+    else
+      echo "A new version of Task is available (version $LATEST_VERSION)"
+      if [ ! -w "$(which task)" ]; then
+        local MSG_A="ERROR: Task is currently installed in a location the current user does not have write permissions for."
+        local MSG_B="Manually remove Task from its current location ("$(which task)") and then run this script again."
+        echo ""$MSG_A" "$MSG_B"" && exit 1
+      fi
+      installTask
+    fi
   fi
+}
+
+# @description Helper function for ensureTaskInstalled that performs the installation of Task.
+#
+# @see ensureTaskInstalled
+#
+# @example
+#   installTask
+#
+# @noarg
+#
+# @exitcode 0 If Task installs/updates properly
+# @exitcode 1+ If the installation fails
+function installTask() {
+  local CHECKSUM_DESTINATION=/tmp/megabytelabs/task_checksums.txt
+  local CHECKSUMS_URL="$TASK_RELEASE_URL/download/task_checksums.txt"
+  local DOWNLOAD_DESTINATION=/tmp/megabytelabs/task.tar.gz
+  local TMP_DIR=/tmp/megabytelabs
+  if [[ "$OSTYPE" == 'darwin'* ]]; then
+    local DOWNLOAD_URL="$TASK_RELEASE_URL/download/task_darwin_amd64.tar.gz"
+  else
+    local DOWNLOAD_URL="$TASK_RELEASE_URL/download/task_linux_amd64.tar.gz"
+  fi
+  mkdir -p "$(dirname "$DOWNLOAD_DESTINATION")"
+  curl "$DOWNLOAD_URL" -o "$DOWNLOAD_DESTINATION"
+  curl "$CHECKSUMS_URL" -o "$CHECKSUM_DESTINATION"
+  local DOWNLOAD_BASENAME="$(basename "$DOWNLOAD_URL")"
+  local DOWNLOAD_SHA256="$(cat "$CHECKSUM_DESTINATION" | grep "$DOWNLOAD_BASENAME" | cut -d ' ' -f 1)"
+  sha256 "$DOWNLOAD_DESTINATION" "$DOWNLOAD_SHA256"
+  mkdir "$TMP_DIR/task"
+  tar -xzvf "$DOWNLOAD_DESTINATION" -C "$TMP_DIR/task"
+  if type task &> /dev/null && [ -w "$(which task)" ]; then
+    local TARGET_DEST="$(which task)"
+  else
+    if [ -w /usr/local/bin ]; then
+      local TARGET_BIN_DIR='/usr/local/bin'
+    else
+      local TARGET_BIN_DIR="$HOME/.local/bin"
+      ensureLocalPath
+    fi
+    local TARGET_DEST="$TARGET_BIN_DIR/task"
+  fi
+  mkdir -p "$TARGET_BIN_DIR"
+  mv "$TMP_DIR/task" "$TARGET_DEST"
+  echo "Successfully installed Task to $TARGET_BIN_DIR/task"
+  rm "$CHECKSUM_DESTINATION"
+  rm "$DOWNLOAD_DESTINATION"
 }
 
 # @description Verifies the SHA256 checksum of a file
@@ -155,7 +200,7 @@ function ensureTaskInstalled() {
 # @arg $2 string The SHA256 signature
 #
 # @exitcode 0 If the checksum is valid or if a warning about the checksum software not being present is displayed
-# @exitcode 1 If the OS is unsupported or if the checksum is invalid
+# @exitcode 1+ If the OS is unsupported or if the checksum is invalid
 function sha256() {
   if [[ "$OSTYPE" == 'darwin'* ]]; then
     if ! type sha256sum &> /dev/null; then
