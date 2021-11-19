@@ -146,8 +146,9 @@ tasks:
         sh: jq -r '.blueprint' package.json
       TMP:
         sh: mktemp
+      VERSION:
+        sh: jq -r '.version' package.json | sed 's/^null$/0.0.1/'
     cmds:
-      - cat package.hbs.json
       - if [ -f "package.hbs.json" ]; then mv package.hbs.json tmp.package.hbs.json; fi
       - |
         function handlebars() {
@@ -171,10 +172,9 @@ tasks:
         }
         ensureKeywords package.json
       - jq --arg blueprint "$BLUEPRINT" --arg keywords "$(jq '.keywords[]' package.json tmp.package.json | jq -s '. | unique')"
-        -s -S '.[0] * .[1] | .keywords = ($keywords | fromjson) | .blueprint = ($blueprint | fromjson) | .' package.json
-        tmp.package.json > "$TMP"
+        -s -S '.[0] * .[1] | .keywords = ($keywords | fromjson) | .blueprint = ($blueprint | fromjson) | .version = $version | .'
+        package.json tmp.package.json > "$TMP"
       - mv "$TMP" package.json
-      - cat package.json
       - rm tmp.package.json
 
   template:variables:
