@@ -4,7 +4,6 @@ version: '3'
 tasks:
   common:
     cmds:
-      - task: prune
       - task: :upstream:common:clone
       - task: :upstream:common:copy
       - task: :upstream:common:merge
@@ -15,7 +14,6 @@ tasks:
 
   commondocs:
     cmds:
-      - task: prune
       - task: :upstream:commondocs:clone
       - task: :upstream:commondocs:copy
       - task: :upstream:commondocs:clean
@@ -25,7 +23,6 @@ tasks:
 
   docs:
     cmds:
-      - task: prune
       - task: :upstream:docs:clone
       - task: :upstream:docs:copy
       - task: :upstream:docs:merge
@@ -36,26 +33,18 @@ tasks:
 
   project:
     cmds:
-      - task: prune
       - task: :upstream:project:clone
       - task: :upstream:project:copy
       - task: :upstream:project:clean
       - task: :upstream:project:template
       - task: :upstream:project:boilerplate
       - task: :vscode:generate
-      - task: :upstream:project:merge:package:json-blueprint-overrides
+      - task: :upstream:project:merge:package:overrides
       - task: :common:update:update
       - task: :fix:eslint
 
-  prune:
-    cmds:
-      - rm -rf .config/flake8
-      - rm -rf .config/taskfiles/Taskfile-install.yml
-      - npm install -g eslint
-
   shared:
     cmds:
-      - task: prune
       - task: :upstream:shared:copy
       - task: :upstream:shared:variables
       - task: :upstream:shared:template

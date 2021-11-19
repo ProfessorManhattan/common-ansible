@@ -46,7 +46,7 @@
       }
     }
   ],
-  "group": "ansible",
+  "group": "common",
   "json_top_keys": "",
   "license": "MIT",
   "link": {

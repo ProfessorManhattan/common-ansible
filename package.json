@@ -1,5 +1,5 @@
 {
-  "private": true,
+  "private": "true",
   "name": "@mblabs/common-ansible",
   "version": "0.0.1",
   "description": "Shared Ansible files that propagate downstream as well as boilerplate code for new projects",

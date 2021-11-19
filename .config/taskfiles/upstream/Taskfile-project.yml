@@ -37,7 +37,7 @@ tasks:
       - cp -rT {{.SHARED_FOLDER}}/.common-{{.REPOSITORY_SUBTYPE}} .
       - task: :common:husky:permissions
 
-  merge:package:json-blueprint-overrides:
+  merge:package:overrides:
     summary: |
       # Merge data from package.json's '.blueprint.jsonOverrides' key
 
