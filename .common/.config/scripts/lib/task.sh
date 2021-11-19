@@ -3,8 +3,10 @@
 # @file .config/scripts/lib/task.sh
 # @brief Ensures Task is installed and up-to-date
 # @description
-#   This script ensures [Task](https://github.com/go-task/task) is installed
-#   and the latest version.
+#   This script ensures that the latest version of [Task](https://github.com/go-task/task)
+#   is installed. If an outdated version of Task is installed, the script will attempt
+#   to overwrite the currently installed `task` binary and exit with an error if the
+#   binary is not writable by the current user.
 
 set -eo pipefail
 
