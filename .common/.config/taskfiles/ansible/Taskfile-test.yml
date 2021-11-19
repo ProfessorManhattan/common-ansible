@@ -3,34 +3,52 @@ version: '3'
 
 tasks:
   local:
-    deps:
-      - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
-      - :install:python:requirements
-    label: test:local
-    desc: Run the Ansible play on the local machine
+    desc: Run the Ansible play on the local machine (or via WSL - see task summary)
     summary: |
       # Run the Ansible play on the local machine
 
-      This task will use the inventory stored in `tests/inventory`, the playbook
-      file stored in `tests/test.yml`, and the Ansible configuration file stored in
-      `tests/ansible.cfg` to run the play. At the beginning of the play, you will
+      This task will use the inventory stored in `tests/<OS>/inventory`, the playbook
+      file stored in `tests/<OS>/test.yml`, and the Ansible configuration file stored in
+      `tests/<OS>/ansible.cfg` to run the play. At the beginning of the play, you will
       be prompted for the sudo password.
+
+      If you want to provision a Windows machine from a WSL environment, then run the
+      following:
+
+      `task ansible:local -- windows-wsl`
+
+      Please note that you may have to run the playbook multiple times if any reboots
+      are required. An alternative, which intelligently handles rebooting, can be run
+      by using the `files/quickstart.sh` or `files/quickstart.ps1` files that are detailed
+      in the README.md.
+    cmds:
+      - task: local:{{if eq .CLI_ARGS 'windows-wsl'}}windows-wsl{{else}}nix{{end}}
+
+  local:nix:
+    deps:
+      - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
+      - :install:python:requirements
     cmds:
       - true info "Running the Ansible play locally"
-      - cp tests/inventory inventory
-      - if [ ! -f main.yml.bak ]; then cp main.yml main.yml.bak; fi
-      - cp tests/test.yml main.yml
+      - cp tests/{{OS}}/inventory inventory
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
-      - cp tests/ansible.cfg ansible.cfg
-      - ansible-playbook --ask-sudo-pass main.yml
-      - mv main.yml.bak main.yml
+      - cp tests/{{OS}}/ansible.cfg ansible.cfg
+      - ansible-playbook --ask-sudo-pass tests/{{OS}}/test.yml
       - mv ansible.cfg.bak ansible.cfg
-    # log:
-    #   error: Finished local testing of the Ansible play with error(s)
-    #   success: Local testing of the Ansible play was successful!
-    preconditions:
-      - sh: typeof ansible &> /dev/null
-        msg: Ansible is not available.
+      - rm inventory
+
+  local:windows-wsl:
+    deps:
+      - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
+      - :install:python:requirements
+    cmds:
+      - true info "Provisioning Windows host machine from WSL environment"
+      - cp tests/windows/inventory inventory
+      - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
+      - cp tests/windows/ansible.cfg ansible.cfg
+      - ansible-playbook --ask-sudo-pass tests/windows/test.yml
+      - mv ansible.cfg.bak ansible.cfg
+      - rm inventory
 
   molecule:docker:
     deps:

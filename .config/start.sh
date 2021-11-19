@@ -43,6 +43,8 @@ function ensureLocalPath() {
     fi
   elif [ "$SYSTEM" == 'Win32' ] || [ "$SYSTEM" == 'Win64' ]; then
     echo "Windows support not added yet"
+  elif [ "$SYSTEM" == 'FreeBSD' ]; then
+    echo "FreeBSD support not added"
   else
     echo "System type not recognized"
   fi
