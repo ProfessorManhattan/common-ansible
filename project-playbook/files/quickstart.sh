@@ -210,6 +210,7 @@ fi
 
 # @description Ensure Task is installed and properly configured and then run the `ansible:quickstart`
 # task. The source to the `ansible:quickstart` task can be found
+# [here](https://gitlab.com/megabyte-labs/common/shared/-/blob/master/common/.config/taskfiles/ansible/Taskfile.yml).
 cd "~/$PLAYBOOKS_DIR" || exit
 ensureTaskInstalled
 task ansible:quickstart
