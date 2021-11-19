@@ -29,7 +29,7 @@ tasks:
       - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
       - :install:python:requirements
     cmds:
-      - true info "Running the Ansible play locally"
+      - true info "Testing Ansible playbook locally"
       - cp test/{{OS}}/inventory inventory
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
       - cp test/{{OS}}/ansible.cfg ansible.cfg
