@@ -36,6 +36,7 @@ yamllint = "^1.26.3"
 "GitLab" = "{{repository.gitlab}}"
 "Open Collective" = "{{profile_link.opencollective}}/{{profile.opencollective}}"
 "Patreon" = "{{profile_link.patreon}}/{{profile.patreon}}"
+"Give Directly" = "https://givedirectly.org"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
