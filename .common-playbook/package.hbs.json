@@ -93,7 +93,7 @@
   },
   "name": "{{#if customPackageName}}{{customPackageName}}{{else}}@{{profile.npmjs_organization}}/{{repository.prefix.github}}{{slug}}{{/if}}",
   "prettier": "@mblabs/prettier-config",
-  "private": "{{npm_private}}",
+  "private": true,
   "publishConfig": {
     "access": "{{npm_publish_config_access}}"
   },
