@@ -4,7 +4,7 @@
 # @brief Ensures Task is installed and up-to-date
 # @description
 #   This script ensures [Task](https://github.com/go-task/task) is installed
-#   and the latest version.
+#   and is the latest version.
 
 set -eo pipefail
 
