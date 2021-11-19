@@ -14,6 +14,8 @@ set -eo pipefail
 
 # @description The folder to store the Playbook files in the current user's home directory
 PLAYBOOKS_DIR="Playbooks"
+# @description Release API URL used to get the latest release's version
+TASK_RELEASE_API="https://api.github.com/repos/go-task/task/releases/latest"
 # @description Release URL to use when downloading [Task](https://github.com/go-task/task)
 TASK_RELEASE_URL="https://github.com/go-task/task/releases/latest"
 
@@ -128,16 +130,19 @@ function ensureTaskInstalled() {
       echo "System type not recognized" && exit 1
     fi
   else
-    local CURRENT_VERSION="$(task --version | cut -d' ' -f3 | cut -c 2-)"
-    local LATEST_VERSION="$(curl -s "$TASK_RELEASE_API" | grep tag_name | cut -c 17- | head -c -3)"
+    local CURRENT_VERSION
+    CURRENT_VERSION="$(task --version | cut -d' ' -f3 | cut -c 2-)"
+    local LATEST_VERSION
+    LATEST_VERSION="$(curl -s "$TASK_RELEASE_API" | grep tag_name | cut -c 17- | head -c -3)"
     if printf '%s\n%s\n' "$LATEST_VERSION" "$CURRENT_VERSION" | sort --check=quiet --version-sort; then
       echo "Task is already up-to-date"
     else
       echo "A new version of Task is available (version $LATEST_VERSION)"
       if [ ! -w "$(which task)" ]; then
         local MSG_A="ERROR: Task is currently installed in a location the current user does not have write permissions for."
-        local MSG_B="Manually remove Task from its current location ("$(which task)") and then run this script again."
-        echo ""$MSG_A" "$MSG_B"" && exit 1
+        local MSG_B
+        MSG_B="Manually remove Task from its current location ($(which task)) and then run this script again."
+        echo """$MSG_A"" ""$MSG_B""" && exit 1
       fi
       installTask
     fi
@@ -168,13 +173,16 @@ function installTask() {
   mkdir -p "$(dirname "$DOWNLOAD_DESTINATION")"
   curl "$DOWNLOAD_URL" -o "$DOWNLOAD_DESTINATION"
   curl "$CHECKSUMS_URL" -o "$CHECKSUM_DESTINATION"
-  local DOWNLOAD_BASENAME="$(basename "$DOWNLOAD_URL")"
-  local DOWNLOAD_SHA256="$(cat "$CHECKSUM_DESTINATION" | grep "$DOWNLOAD_BASENAME" | cut -d ' ' -f 1)"
+  local DOWNLOAD_BASENAME
+  DOWNLOAD_BASENAME="$(basename "$DOWNLOAD_URL")"
+  local DOWNLOAD_SHA256
+  DOWNLOAD_SHA256="$(grep "$DOWNLOAD_BASENAME" < "$CHECKSUM_DESTINATION" | cut -d ' ' -f 1)"
   sha256 "$DOWNLOAD_DESTINATION" "$DOWNLOAD_SHA256"
   mkdir "$TMP_DIR/task"
   tar -xzvf "$DOWNLOAD_DESTINATION" -C "$TMP_DIR/task"
   if type task &> /dev/null && [ -w "$(which task)" ]; then
-    local TARGET_DEST="$(which task)"
+    local TARGET_DEST
+    TARGET_DEST="$(which task)"
   else
     if [ -w /usr/local/bin ]; then
       local TARGET_BIN_DIR='/usr/local/bin'
@@ -186,7 +194,7 @@ function installTask() {
   fi
   mkdir -p "$TARGET_BIN_DIR"
   mv "$TMP_DIR/task" "$TARGET_DEST"
-  echo "Successfully installed Task to $TARGET_BIN_DIR/task"
+  echo "Successfully installed Task to $TARGET_DEST"
   rm "$CHECKSUM_DESTINATION"
   rm "$DOWNLOAD_DESTINATION"
 }
@@ -232,7 +240,7 @@ function sha256() {
 # @description Clone the repository if `git` is available, otherwise, use `curl` and `tar`. Also,
 # if the repository is already cloned then attempt to pull the latest changes if `git` is installed.
 cd ~ || exit
-if [ ! -d "~/$PLAYBOOKS_DIR" ]; then
+if [ ! -d "$HOME/$PLAYBOOKS_DIR" ]; then
   if type git &> /dev/null; then
     git clone https://gitlab.com/ProfessorManhattan/Playbooks.git "$PLAYBOOKS_DIR"
   else
@@ -244,8 +252,8 @@ if [ ! -d "~/$PLAYBOOKS_DIR" ]; then
   fi
 else
   if type git &> /dev/null; then
-    if [ -d "~/$PLAYBOOKS_DIR/.git" ]; then
-      cd "~/$PLAYBOOKS_DIR"
+    if [ -d "$HOME/$PLAYBOOKS_DIR/.git" ]; then
+      cd "$HOME/$PLAYBOOKS_DIR"
       git pull origin master --ff-only
       git submodule update --init --recursive
       cd ..
@@ -256,6 +264,6 @@ fi
 # @description Ensure Task is installed and properly configured and then run the `ansible:quickstart`
 # task. The source to the `ansible:quickstart` task can be found
 # [here](https://gitlab.com/megabyte-labs/common/shared/-/blob/master/common/.config/taskfiles/ansible/Taskfile.yml).
-cd "~/$PLAYBOOKS_DIR" || exit
+cd "$HOME/$PLAYBOOKS_DIR" || exit
 ensureTaskInstalled
 task ansible:quickstart
