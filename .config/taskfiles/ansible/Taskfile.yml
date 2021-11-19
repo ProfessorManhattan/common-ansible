@@ -119,7 +119,7 @@ tasks:
         mv "$TMP" package.json
         {{.NPX_HANDLE}}prettier --write package.json
         mkdir -p .cache/megabytelabs
-        jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '. = $gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
+        jq -n --argjson result "$RESULT" --argjson gi "$GALAXY_INFO" '$gi | .galaxy_info.galaxy_tags = $result' > .cache/megabytelabs/galaxy-meta.json
         yq eval -P .cache/megabytelabs/galaxy-meta.json > meta/main.yml
       - '{{.NPX_HANDLE}}prettier --write meta/main.yml'
       - task fix:yaml:dashes -- meta/main.yml
