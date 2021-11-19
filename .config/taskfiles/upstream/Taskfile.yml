@@ -18,7 +18,6 @@ tasks:
       - task: prune
       - task: :upstream:commondocs:clone
       - task: :upstream:commondocs:copy
-      - task: :upstream:commondocs:merge
       - task: :upstream:commondocs:clean
       - task: :upstream:commondocs:template
       - task: :vscode:generate
@@ -40,7 +39,6 @@ tasks:
       - task: prune
       - task: :upstream:project:clone
       - task: :upstream:project:copy
-      - task: :upstream:project:merge
       - task: :upstream:project:clean
       - task: :upstream:project:template
       - task: :upstream:project:boilerplate
@@ -59,10 +57,70 @@ tasks:
     cmds:
       - task: prune
       - task: :upstream:shared:copy
-      - task: :upstream:shared:prepare
+      - task: :upstream:shared:variables
       - task: :upstream:shared:template
       - task: :vscode:generate
       - task: :fix:eslint
+
+  template:
+    deps:
+      - template:handlebars
+      - template:hbs
+
+  template:handlebars:
+    deps:
+      - :install:modules:local
+      - :install:npm:hbs
+    cmds:
+      - |
+        function handlebars() {
+          FILE="$1"
+          {{.NPX_HANDLE}}hbs --data .variables.json --helper ./.config/hbs.cjs "$FILE" --stdout > "${FILE%.*}"
+          rm "$FILE"
+        }
+        find . -type f -not \( {{.ADDITIONAL_IGNORE_FOLDERS}} {{.IGNORE_FOLDERS}} \) -prune -name '*.handlebars' | while read FILE; do
+          handlebars "$FILE" &
+        done
+        wait
+
+  template:hbs:
+    deps:
+      - :install:modules:local
+      - :install:npm:hbs
+    env:
+      TMP:
+        sh: mktemp
+    cmds:
+      - if [ -f "package.hbs.json" ]; then mv package.hbs.json tmp.package.hbs.json; fi
+      - |
+        function handlebars() {
+          FILE="$1"
+          {{.NPX_HANDLE}}hbs --data .variables.json --helper ./.config/hbs.cjs "$FILE" --stdout > "${FILE//.hbs}"
+          rm "$FILE"
+        }
+        find . -type f -not \( {{.ADDITIONAL_IGNORE_FOLDERS}} {{.IGNORE_FOLDERS}} \) -prune -name '*.hbs.*' | while read FILE; do
+          handlebars "$FILE" &
+        done
+        wait
+      - |
+        function ensureKeywords() {
+          if [ ! -f "$1" ]; then echo "{}" > "$1"; fi
+          KEYWORDS="$(jq -r '.keywords' "$1")"
+          if [ "$KEYWORDS" == 'null' ] || [ "$KEYWORDS" == '' ]; then
+            TMP="$(mktemp)"
+            jq -r '.keywords = [] | .' "$1" > "$TMP"
+            mv "$TMP" "$1"
+          fi
+        }
+        ensureKeywords package.json
+      - jq -s -S --arg blueprint "$(jq -r '.blueprint' package.json)"
+        --arg keywords "$(jq '.keywords[]' package.json tmp.package.json | jq -s '. | unique')"
+        --arg private "$(jq -r '.private' package.json | sed 's/^null$/true/')"
+        --arg version "$(jq -r '.version' package.json | sed 's/^null$/0.0.1/')"
+        '.[0] * .[1] | .keywords = ($keywords | fromjson) | .blueprint = ($blueprint | fromjson) | .private = $private | .version = $version | .'
+        package.json tmp.package.json > "$TMP"
+      - mv "$TMP" package.json
+      - rm tmp.package.json
 
   variables:
     deps:
