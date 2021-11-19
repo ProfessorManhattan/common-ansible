@@ -80,7 +80,7 @@ tasks:
       TMP:
         sh: mktemp
     cmds:
-      - if [ -f "package.hbs.json" ]; then mv package.hbs.json tmp.package.hbs.json; fi
+      - cp package.json package.json.bak
       - |
         function handlebars() {
           FILE="$1"
@@ -101,15 +101,15 @@ tasks:
             mv "$TMP" "$1"
           fi
         }
-        ensureKeywords package.json
-      - jq -s -S --arg blueprint "$(jq -r '.blueprint' package.json)"
-        --arg keywords "$(jq '.keywords[]' package.json tmp.package.json | jq -s '. | unique')"
-        --arg private "$(jq -r '.private' package.json | sed 's/^null$/true/')"
-        --arg version "$(jq -r '.version' package.json | sed 's/^null$/0.0.1/')"
+        ensureKeywords package.json.bak
+      - jq -s -S --arg blueprint "$(jq -r '.blueprint' package.json.bak)"
+        --arg keywords "$(jq '.keywords[]' package.json.bak package.json | jq -s '. | unique')"
+        --arg private "$(jq -r '.private' package.json.bak | sed 's/^null$/true/')"
+        --arg version "$(jq -r '.version' package.json.bak | sed 's/^null$/0.0.1/')"
         '.[0] * .[1] | .keywords = ($keywords | fromjson) | .blueprint = ($blueprint | fromjson) | .private = $private | .version = $version | .'
-        package.json tmp.package.json > "$TMP"
+        package.json.bak package.json > "$TMP"
       - mv "$TMP" package.json
-      - rm tmp.package.json
+      - rm package.json.bak
 
   variables:
     deps:
