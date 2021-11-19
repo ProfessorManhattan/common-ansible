@@ -5,7 +5,7 @@ tasks:
   local:
     deps:
       - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
-      - :common:python:requirements
+      - :install:python:requirements
     label: test:local
     desc: Run the Ansible play on the local machine
     summary: |
@@ -34,7 +34,7 @@ tasks:
 
   molecule:docker:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:docker
       - :install:software:sshpass
     label: test:docker
@@ -60,7 +60,7 @@ tasks:
 
   molecule:docker:matrix:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:docker
       - :install:software:sshpass
     vars:
@@ -74,7 +74,7 @@ tasks:
 
   molecule:virtualbox:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox
@@ -100,7 +100,7 @@ tasks:
 
   molecule:virtualbox:converge:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox
@@ -139,7 +139,7 @@ tasks:
 
   molecule:virtualbox:matrix:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox
@@ -152,7 +152,7 @@ tasks:
 
   vagrant:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox

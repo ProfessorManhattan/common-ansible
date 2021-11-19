@@ -71,7 +71,7 @@ tasks:
   galaxy:requirements:
     run: once
     cmds:
-      - task: :common:python:requirements:venv:activate
+      - task: :install:python:requirements:venv:activate
       - task: galaxy:requirements:install
     sources:
       - requirements.yml
@@ -131,7 +131,7 @@ tasks:
 
   mod-ansible-autodoc:
     deps:
-      - :common:python:requirements
+      - :install:python:requirements
       - :install:software:jq
     env:
       ACTIONS_DESCRIPTION:
@@ -206,7 +206,7 @@ tasks:
 
   playbook:environment:prompt:
     deps:
-      - :install:local:modules
+      - :install:modules:local
     env:
       ENVIRONMENT:
         sh: node .common/scripts/prompts/environment.js
