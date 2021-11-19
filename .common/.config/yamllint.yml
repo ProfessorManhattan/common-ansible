@@ -43,4 +43,7 @@ rules:
     level: error
     max: 160
   truthy:
-    allowed-values: ['true', 'false', 'on']
+    allowed-values:
+      - 'false'
+      - 'on'
+      - 'true'
