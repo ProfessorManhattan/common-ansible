@@ -177,9 +177,9 @@ tasks:
         sh: if test -f install_in_progress; then echo 'true'; else echo 'false'; fi
     cmds:
       - true info "Running the Ansible play locally"
-      - cp tests/{{OS}}/inventory inventory
+      - cp test/{{OS}}/inventory inventory
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
-      - cp tests/{{OS}}/ansible.cfg ansible.cfg
+      - cp test/{{OS}}/ansible.cfg ansible.cfg
       - touch install_in_progress
       - ansible-playbook --ask-sudo-pass{{if eq .INSTALLING 'false'}} --skip-tags "skip_on_init" playbooks/init.yml{{else}} main.yml{{end}}
       - if [ -f ansible.cfg.bak ]; then mv ansible.cfg.bak ansible.cfg; fi

@@ -7,9 +7,9 @@ tasks:
     summary: |
       # Run the Ansible play on the local machine
 
-      This task will use the inventory stored in `tests/<OS>/inventory`, the playbook
-      file stored in `tests/<OS>/test.yml`, and the Ansible configuration file stored in
-      `tests/<OS>/ansible.cfg` to run the play. At the beginning of the play, you will
+      This task will use the inventory stored in `test/<OS>/inventory`, the playbook
+      file stored in `test/<OS>/test.yml`, and the Ansible configuration file stored in
+      `test/<OS>/ansible.cfg` to run the play. At the beginning of the play, you will
       be prompted for the sudo password.
 
       If you want to provision a Windows machine from a WSL environment, then run the
@@ -30,10 +30,10 @@ tasks:
       - :install:python:requirements
     cmds:
       - true info "Running the Ansible play locally"
-      - cp tests/{{OS}}/inventory inventory
+      - cp test/{{OS}}/inventory inventory
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
-      - cp tests/{{OS}}/ansible.cfg ansible.cfg
-      - ansible-playbook --ask-sudo-pass tests/{{OS}}/test.yml
+      - cp test/{{OS}}/ansible.cfg ansible.cfg
+      - ansible-playbook --ask-sudo-pass test/{{OS}}/test.yml
       - mv ansible.cfg.bak ansible.cfg
       - rm inventory
 
@@ -43,10 +43,10 @@ tasks:
       - :install:python:requirements
     cmds:
       - true info "Provisioning Windows host machine from WSL environment"
-      - cp tests/windows/inventory inventory
+      - cp test/windows/inventory inventory
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
-      - cp tests/windows/ansible.cfg ansible.cfg
-      - ansible-playbook --ask-sudo-pass tests/windows/test.yml
+      - cp test/windows/ansible.cfg ansible.cfg
+      - ansible-playbook --ask-sudo-pass test/windows/test.yml
       - mv ansible.cfg.bak ansible.cfg
       - rm inventory
 

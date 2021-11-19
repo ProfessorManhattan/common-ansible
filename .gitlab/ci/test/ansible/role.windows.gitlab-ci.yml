@@ -35,4 +35,4 @@ windows:
     - wsl --set-default-version 2
     - wsl ls -la
     - wsl sudo apt-get update
-    - ./tests/windows/test.ps1
+    - ./test/windows/test.ps1
