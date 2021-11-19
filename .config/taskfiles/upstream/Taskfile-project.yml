@@ -36,6 +36,7 @@ tasks:
       - cp -rT {{.SHARED_FOLDER}}/.common .
       - cp -rT {{.SHARED_FOLDER}}/.common-{{.REPOSITORY_SUBTYPE}} .
       - task: :common:husky:permissions
+      - task: save:common:keywords
 
   merge:package:overrides:
     summary: |
@@ -77,7 +78,7 @@ tasks:
       KEYWORDS:
         sh: jq -r '.keywords' package.hbs.json
     cmds:
-      - jq -n --arg keywords "$KEYWORDS" '.keywords = ($keywords | fromjson | unique)' > .config/common-keywords.json
+      - jq -n --arg keywords "$KEYWORDS" '.keywords = ($keywords | fromjson | unique)' > .config/common-keywords.hbs.json
 
   template:
     cmds:
@@ -86,4 +87,3 @@ tasks:
           INPUT_FILE: .config/variables.json
           OUTPUT_FILE: ./.variables.json
       - task: :upstream:template
-      - task: save:common:keywords
