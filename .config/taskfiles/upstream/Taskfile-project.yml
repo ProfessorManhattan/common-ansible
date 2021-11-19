@@ -13,7 +13,7 @@ tasks:
   clone:
     cmds:
       - rm -rf {{.SHARED_FOLDER}}
-      - git clone --depth=1 {{.SHARED_COMMON_URL}} {{.SHARED_FOLDER}}
+      - git clone --depth=1 {{.PROJECT_COMMON_URL}} {{.SHARED_FOLDER}}
       - rm -rf ./{{.SHARED_FOLDER}}/.git
 
   copy:
