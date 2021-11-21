@@ -38,8 +38,8 @@ tasks:
 
   copy:
     cmds:
-      - cp -rT {{.SHARED_FOLDER}}/.common .
-      - cp -rT {{.SHARED_FOLDER}}/.common-{{.REPOSITORY_SUBTYPE}} .
+      - cp -rT {{.SHARED_FOLDER}}/_generated_/common .
+      - cp -rT {{.SHARED_FOLDER}}/_generated_/{{.REPOSITORY_SUBTYPE}} .
       - task: :common:husky:permissions
       - task: save:common:keywords
 
