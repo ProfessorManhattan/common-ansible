@@ -300,16 +300,16 @@ tasks:
     vars:
       DESCRIPTION:
         sh: jq -r '.description' package.json
-      ISSUES_TEMPLATE: # # Steps to reproduce\\r\\n\\r\\n(How one can reproduce the issue - this is very
-        important)\\r\\n\\r\\n## Example Project\\r\\n\\r\\n(If possible, please create an example project
-        here on GitLab.com that exhibits the problematic\\r\\nbehavior, and link to it here in the bug
-        report.\\r\\nIf you are using an older version of GitLab, this will also determine whether the bug
-        has been fixed\\r\\nin a more recent version)\\r\\n\\r\\n## What is the current bug
-        behavior?\\r\\n\\r\\n(What actually happens)\\r\\n\\r\\n## What is the expected correct
-        behavior?\\r\\n\\r\\n(What you should see instead)\\r\\n\\r\\n## Relevant logs and/or
-        screenshots\\r\\n\\r\\n(Paste any relevant logs - please use code blocks (```) to format console
-        output, logs, and code, as\\r\\nit's very hard to read otherwise.)\\r\\n\\r\\n## Possible
-        fixes\\r\\n\\r\\n(If you can, link to the line of code that might be responsible for the problem)
+      ISSUES_TEMPLATE: '## Summary\r\n\r\n(Summarize the bug encountered concisely)\r\n\r\n##
+        Steps to reproduce\r\n\r\n(How one can reproduce the issue - this is very important)\r\n\r\n##
+        Example Project\r\n\r\n(If possible, please create an example project here on GitLab.com that
+        exhibits the problematic\r\nbehavior, and link to it here in the bug report.\r\nIf you are using
+        an older version of GitLab, this will also determine whether the bug has been fixed\r\nin a more
+        recent version)\r\n\r\n## What is the current bug behavior?\r\n\r\n(What actually happens)\r\n\r\n##
+        What is the expected correct behavior?\r\n\r\n(What you should see instead)\r\n\r\n## Relevant
+        logs and/or screenshots\r\n\r\n(Paste any relevant logs - please use code blocks (```) to format
+        console output, logs, and code, as\r\nit is very hard to read otherwise.)\r\n\r\n## Possible
+        fixes\r\n\r\n(If you can, link to the line of code that might be responsible for the problem)'
       NAME:
         sh: jq -r '.blueprint.name' package.json
       PROJECT_TYPE:
@@ -326,7 +326,7 @@ tasks:
           -f wiki_enabled={{.GITLAB_WIKI}} -f visibility="{{.PROJECT_TYPE}}" -f topics="$KEYWORDS" | jq '.id')"
           curl -s -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -X PUT --data \
           '{"description": "{{.DESCRIPTION}}", "issues_template": "{{.ISSUES_TEMPLATE}}", "name": "{{.NAME}}"}' \
-          "https://gitlab.com/api/v4/projects/$PROJECT_ID"
+          "https://gitlab.com/api/v4/projects/$PROJECT_ID" > /dev/null
         else
           true warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
         fi
