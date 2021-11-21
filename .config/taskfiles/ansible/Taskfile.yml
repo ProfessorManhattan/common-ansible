@@ -208,9 +208,9 @@ tasks:
       - jq -e 'has("blueprint.ansible_galaxy_project_id")' package.json
 
   update:variables:
-    deps:
-      - :ansible:ansibler:ansibler
-      - update:variables:descriptions
+    cmds:
+      - task: :ansible:ansibler:ansibler
+      - task: update:variables:descriptions
 
   update:variables:descriptions:
     deps:
