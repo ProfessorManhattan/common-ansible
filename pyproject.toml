@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://megabyte.space"
 documentation = "https://megabyte.space/docs/common/ansible"
-keywords = ["ansible", "awesome", "boilerplate", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples"]
+keywords = ["ansible", "awesome", "boilerplate", "mblabs", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples"]
 include = ["CHANGELOG.md", "LICENSE"]
 classifiers = [
   "Development Status :: 4 - Beta",
