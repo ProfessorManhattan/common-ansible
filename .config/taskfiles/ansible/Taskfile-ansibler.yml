@@ -101,5 +101,9 @@ tasks:
   tasks:role:
     deps:
       - :ansible:collection-dependencies
-      - populate-platforms
-      - role-dependencies
+      - tasks:role:updates
+
+  tasks:role:updates:
+    cmds:
+      - task: populate-platforms
+      - task: role-dependencies
