@@ -3,9 +3,8 @@
 # @file test/windows/test.sh
 # @brief A script that is used to test an Ansible role on Windows from a Docker container.
 #
-# @description
-#   This script is intended to be run in a WSL environment on a Windows host to provision the Windows
-#   host via Ansible using WinRM and CredSSP.
+# @description This script is intended to be run in a WSL environment on a Windows host to provision the Windows
+# host via Ansible using WinRM and CredSSP.
 
 TEST_TYPE='windows'
 

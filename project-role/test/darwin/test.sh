@@ -2,7 +2,7 @@
 
 # @file test/darwin/test.sh
 # @brief A script that is used to test the role's macOS compatibility via a
-#   [GitHub action](https://gitlab.com/megabyte-labs/common/ansible/-/blob/master/files-role/.github/workflows/macOS.yml).
+# [GitHub action](https://gitlab.com/megabyte-labs/common/ansible/-/blob/master/files-role/.github/workflows/macOS.yml).
 
 TEST_TYPE='darwin'
 
