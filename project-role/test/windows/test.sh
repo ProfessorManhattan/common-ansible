@@ -4,14 +4,11 @@
 # @brief A script that is used to test an Ansible role on Windows from a Docker container.
 #
 # @description
-# This script is intended to be run by a Docker container on a Windows host to provision the Windows
-# host via Ansible (which is installed on the Docker container). It is also intended to be used in a
-# GitLab CI task that uses a Windows shared runner.
+#   This script is intended to be run in a WSL environment on a Windows host to provision the Windows
+#   host via Ansible using WinRM and CredSSP.
 
 # Ensure Ansible is installed
-if ! type ansible &> /dev/null; then
-  pip3 install ansible pywinrm
-fi
+pip3 install ansible pywinrm[credssp]
 
 # Ensure Ansible Galaxy dependencies are installed
 if [ -f requirements.yml ]; then
