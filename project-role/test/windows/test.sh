@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # @file test/windows/test.sh
-# @brief A script that is used to test an Ansible role on Windows from a Docker container.
+# @brief A script that is used to test an Ansible role on Windows from a WSL environment (or possibly Docker)
 #
 # @description This script is intended to be run in a WSL environment on a Windows host to provision the Windows
 # host via Ansible using WinRM and CredSSP.
@@ -35,7 +35,13 @@ function restoreFiles() {
   fi
 }
 
+# @description Calls [restoreFiles] and exits with an error
+function restoreFilesAndExitError() {
+  restoreFiles
+  exit 1
+}
+
 # @description Back up files, run the play, and then restore files
 backupAndCopyFiles
-ansible-playbook -i "test/$TEST_TYPE/inventory" "test/$TEST_TYPE/test.yml" || { restoreFiles; exit 1 }
+ansible-playbook -i "test/$TEST_TYPE/inventory" "test/$TEST_TYPE/test.yml" || restoreFilesAndExitError
 restoreFiles

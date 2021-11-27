@@ -35,8 +35,13 @@ function restoreFiles() {
   fi
 }
 
+# @description Calls [restoreFiles] and exits with an error
+function restoreFilesAndExitError() {
+  restoreFiles
+  exit 1
+}
+
 # @description Back up files, run the play, and then restore files
 backupAndCopyFiles
-ansible-playbook -i "test/$TEST_TYPE/inventory" "test/$TEST_TYPE/test.yml" || { restoreFiles; exit 1 }
+ansible-playbook -i "test/$TEST_TYPE/inventory" "test/$TEST_TYPE/test.yml" || restoreFilesAndExitError
 restoreFiles
-
