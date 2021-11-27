@@ -9,7 +9,7 @@
 TEST_TYPE='windows'
 
 # @description Ensure Ansible is installed along with required dependencies
-pip3 install ansible pywinrm[credssp]
+pip3 install ansible 'pywinrm[credssp]'
 
 # @description Ensure Ansible Galaxy dependencies are installed
 if [ -f requirements.yml ]; then
