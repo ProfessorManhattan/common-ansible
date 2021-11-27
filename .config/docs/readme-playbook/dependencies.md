@@ -13,7 +13,7 @@ if type poetry &> /dev/null; then poetry install --no-root; else pip3 install -r
 ansible-galaxy install requirements.yml
 ```
 
-### Host Requirements (Easy Way)
+#### Easier Method of Installing the Host Requirements
 
 You can also run `bash .config/scripts/start.sh` if you do not mind development dependencies being installed as well. This method will even handle installing Python 3 and Ansible.
 
