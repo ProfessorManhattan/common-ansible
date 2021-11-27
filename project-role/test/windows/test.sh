@@ -29,7 +29,7 @@ function backupAndCopyFiles() {
   cp "test/$TEST_TYPE/ansible.cfg" ansible.cfg
 }
 
-# @description Restore files that were backed up (i.e. ansible.cfg)
+# @description Restores files that were backed up (i.e. ansible.cfg)
 function restoreFiles() {
   if [ -f ansible.cfg.bak ]; then
     mv ansible.cfg.bak ansible.cfg
