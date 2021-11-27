@@ -1,4 +1,4 @@
 ---
-- hosts: windows-docker
+- hosts: windows-ci
   roles:
     - role: '{{galaxy_info.namespace}}.{{galaxy_info.role_name}}'
