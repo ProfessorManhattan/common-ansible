@@ -9,6 +9,7 @@ vars:
 tasks:
   extensions:
     deps:
+      - :install:npm:prettier
       - :install:software:jq
       - :install:software:yq
     summary: |
@@ -28,9 +29,7 @@ tasks:
         TMP_JQ="$(mktemp)"
         cat "$TMP_YQ" | jq -cRrs 'split("\n") | "{ \"recommendations\": \(.) }"' > "$TMP_JQ"
         cat "$TMP_JQ" | sed 's/,""//' > '{{.EXTENSIONS_FILE}}'
-      - task: :fix:prettier
-        vars:
-          CLI_ARGS: '{{.EXTENSIONS_FILE}}'
+      - prettier --write '{{.EXTENSIONS_FILE}}'
 
   generate:
     deps:
@@ -39,6 +38,7 @@ tasks:
 
   tasks:
     deps:
+      - :install:npm:prettier
       - :install:software:jq
     summary: |
       # Populate the `.vscode/tasks.json` file
@@ -71,6 +71,4 @@ tasks:
           fi
         done <<< "$TASK_LIST"
         jq --arg tasks "${TASKS%?}]" '.tasks = ($tasks | fromjson)' "$TMP" > '{{.TASKS_FILE}}'
-      - task: :fix:prettier
-        vars:
-          CLI_ARGS: '{{.TASKS_FILE}}'
+      - prettier --write '{{.TASKS_FILE}}'
