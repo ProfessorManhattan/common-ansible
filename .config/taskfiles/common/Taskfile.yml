@@ -224,7 +224,6 @@ tasks:
     cmds:
       - node .config/scripts/prompts/shell.js
 
-
   update:
     deps:
       - :common:update:update
