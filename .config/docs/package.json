@@ -16,9 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "fix": "task fix",
     "help": "task --list",
-    "lint": "task lint",
     "prepare": "task common:husky",
     "start": "bash .config/start.sh"
   },
@@ -46,17 +44,9 @@
     "semantic-release": "^18.0.0"
   },
   "keywords": [
-    "ansible",
-    "awesome",
-    "boilerplate",
     "mblabs",
     "megabytelabs",
-    "npm",
-    "package",
-    "playbook",
-    "professormanhattan",
-    "role",
-    "samples"
+    "professormanhattan"
   ],
   "engines": {
     "node": ">=14.18.0"
@@ -65,33 +55,18 @@
     "access": "public"
   },
   "blueprint": {
-    "description": "Shared Ansible files that propagate downstream as well as boilerplate code for new projects",
-    "group": "common",
-    "name": "Ansible Common",
-    "overview": "This repository is home to common Ansible files as well as boilerplate code for new projects. This repository hosts files that are shared to all our downstream projects (perhaps yours as well). There is also boilerplate code that is added to a project if there is no file structure yet.",
-    "profile": {
-      "npmjs_organization": "mblabs"
-    },
+    "description": "An NPM package that is part of the Megabyte Labs eco-system",
+    "name": "My Project Name",
+    "overview": "This text shows up at the top of the README.md.",
     "repository": {
       "github": "https://github.com/ProfessorManhattan/common-ansible",
       "gitlab": "https://gitlab.com/megabyte-labs/common/ansible"
     },
-    "slug": "common-ansible",
-    "subgroup": "ansible",
-    "title": "Ansible Common Files and Boilerplate Code"
+    "slug": "my-project",
+    "title": "Title of the README.md"
   },
   "eslintConfig": {
-    "extends": "@mblabs/eslint-config",
-    "overrides": [
-      {
-        "files": [
-          "**/.boilerplate/**/*.yml"
-        ],
-        "rules": {
-          "yml/no-empty-document": "off"
-        }
-      }
-    ]
+    "extends": "@mblabs/eslint-config"
   },
   "funding": [
     {
