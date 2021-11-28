@@ -21,9 +21,9 @@ tasks:
         jq '.recommendations = ([ .recommendations[] | select(length > 0) ])' > '{{.EXTENSIONS_FILE}}'
 
   generate:
-    deps:
-      - extensions
-      - tasks
+    cmds:
+      - task: extensions
+      - task: tasks
 
   tasks:
     deps:
