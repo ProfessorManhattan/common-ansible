@@ -56,21 +56,22 @@ if test -d .config/docs; then
   rm -rf LICENSE Taskfile.yml package-lock.json package.json poetry.lock pyproject.toml
   cd ../..
 fi
-ls -la
-# @description Ensure documentation is in appropriate location
-if test -f CODE_OF_CONDUCT.md; then
-  mkdir -p docs
-  mv CODE_OF_CONDUCT.md docs
-fi
-if test -f CONTRIBUTING.md; then
-  mkdir -p docs
-  mv CODE_OF_CONDUCT.md docs
-fi
-if test -f ARCHITECTURE.md; then
-  mkdir -p docs
-  mv CODE_OF_CONDUCT.md docs
-fi
 
+# @description Ensure documentation is in appropriate location
+if test -f "CODE_OF_CONDUCT.md"; then
+  echo "in here"
+  mkdir -p docs
+  mv CODE_OF_CONDUCT.md docs
+fi
+if test -f "CONTRIBUTING.md"; then
+  mkdir -p docs
+  mv CODE_OF_CONDUCT.md docs
+fi
+if test -f "ARCHITECTURE.md"; then
+  mkdir -p docs
+  mv CODE_OF_CONDUCT.md docs
+fi
+echo "Here also"
 # @description Commit and push the changes
 if [ -n "$GITLAB_CI" ]; then
   task ci:commit
