@@ -44,7 +44,7 @@ tasks:
             curl -s "$UPDATE_INIT_SCRIPT" | bash
           fi
         else
-          curl -s '{{.INIT_SCRIPT}}' | bash
+          curl -s '\{{.INIT_SCRIPT}}' | bash
         fi
 
   start:
