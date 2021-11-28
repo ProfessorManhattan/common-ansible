@@ -58,20 +58,17 @@ if test -d .config/docs; then
 fi
 
 # @description Ensure documentation is in appropriate location
+mkdir -p docs
 if test -f "CODE_OF_CONDUCT.md"; then
-  echo "in here"
-  mkdir -p docs
   mv CODE_OF_CONDUCT.md docs
 fi
 if test -f "CONTRIBUTING.md"; then
-  mkdir -p docs
-  mv CODE_OF_CONDUCT.md docs
+  mv CONTRIBUTING.md docs
 fi
 if test -f "ARCHITECTURE.md"; then
-  mkdir -p docs
-  mv CODE_OF_CONDUCT.md docs
+  mv ARCHITECTURE.md docs
 fi
-echo "Here also"
+
 # @description Commit and push the changes
 if [ -n "$GITLAB_CI" ]; then
   task ci:commit
