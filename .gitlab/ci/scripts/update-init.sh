@@ -42,6 +42,7 @@ npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 echo "Ensuring Taskfile is properly configured"
 task donothing || EXIT_CODE=$?
 if [ "$EXIT_CODE" != '0' ]; then
+  echo "Copying shared Taskfile.yml"
   cp common-shared/Taskfile.yml Taskfile.yml
 fi
 
