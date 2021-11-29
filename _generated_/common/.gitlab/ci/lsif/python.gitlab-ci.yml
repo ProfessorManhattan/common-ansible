@@ -6,6 +6,9 @@ lsif:python:
       lsif: dump.lsif
   image: megabytelabs/lsif-python:latest
   needs: []
+  rules:
+    - if: $DO_CI == 'false'
+      when: never
   script:
     - lsif-py .
   stage: lsif

@@ -6,6 +6,9 @@ lsif:javascript:
       lsif: dump.lsif
   image: sourcegraph/lsif-node:latest
   needs: []
+  rules:
+    - if: $DO_CI == 'false'
+      when: never
   script:
     - lsif-tsc **/*.js --AllowJs --checkJs
   stage: lsif

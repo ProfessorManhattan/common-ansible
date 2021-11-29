@@ -6,6 +6,9 @@ lsif:typescript:
       lsif: dump.lsif
   image: sourcegraph/lsif-node:latest
   needs: []
+  rules:
+    - if: $DO_CI == 'false'
+      when: never
   script:
     - lsif-tsc -p .
   stage: lsif
