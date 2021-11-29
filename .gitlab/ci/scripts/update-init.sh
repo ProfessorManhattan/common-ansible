@@ -50,7 +50,7 @@ if [ "$EXIT_CODE" != '0' ]; then
   rm Taskfile-shared.yml
   npm install --ignore-scripts
   echo "Trying to run ESLint on Taskfile.yml"
-  task fix:eslint -- Taskfile.yml &> /dev/null || EXIT_CODE=$?
+  task fix:eslint -- Taskfile.yml &> /dev/null || EXIT_CODE=$? && echo hey
   if [ "$EXIT_CODE" != '0' ]; then
     curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/update/package-requirements.json > package-requirements.json
     if ! type jq &> /dev/null; then
@@ -113,3 +113,5 @@ mv "$TMP" package.json
 TMP="$(mktemp)"
 jq 'del(."lint-staged")' package.json > "$TMP"
 mv "$TMP" package.json
+
+echo "Finished"
