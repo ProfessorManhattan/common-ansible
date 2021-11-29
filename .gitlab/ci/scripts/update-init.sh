@@ -85,8 +85,5 @@ fi
 if [ -n "$GITLAB_CI" ]; then
   task ci:commit
 else
-  TMP="$(mktemp)"
-  sed 's/task: upstream:shared/task: upstream:project/' < Taskfile.yml > "$TMP"
-  mv "$TMP" Taskfile.yml
   task prepare
 fi

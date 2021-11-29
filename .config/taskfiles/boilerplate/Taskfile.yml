@@ -77,3 +77,14 @@ tasks:
         if [ "$SUBGROUP" != "$TASK_SUBGROUP" ]; then
           yq e -i ".vars.REPOSITORY_SUBTYPE = \"$SUBGROUP\"" Taskfile.yml
         fi
+        UPSTREAM_TYPE='upstream:project'
+        if [ '{{.REPOSITORY_TYPE}}.{{.REPOSITORY_SUBTYPE}}' == 'common.shared' ]; then
+          UPSTREAM_TYPE='upstream:shared'
+        elif [ '{{.REPOSITORY_TYPE}}.{{.REPOSITORY_SUBTYPE}}' == 'documentation.shared' ]; then
+          UPSTREAM_TYPE='upstream:commondocs'
+        elif [ '{{.REPOSITORY_TYPE}}' == 'common' ]; then
+          UPSTREAM_TYPE='upstream:common'
+        elif [ '{{.REPOSITORY_TYPE}}' == 'documentation' ]; then
+          UPSTREAM_TYPE='upstream:docs'
+        fi
+        yq e -i ".tasks.start.cmds[0].task = \"$UPSTREAM\"" Taskfile.yml
