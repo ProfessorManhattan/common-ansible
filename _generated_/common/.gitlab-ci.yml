@@ -10,4 +10,5 @@ include:
   - local: .gitlab/ci/lint/shellcheck.gitlab-ci.yml
   - local: .gitlab/ci/lint/yamllint.gitlab-ci.yml
   - local: .gitlab/ci/propagate/groups.gitlab-ci.yml
+  - local: .gitlab/ci/propagate/projects.gitlab-ci.yml
   - local: .gitlab/ci/update/common.gitlab-ci.yml
