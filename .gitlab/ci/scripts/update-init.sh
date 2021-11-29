@@ -25,6 +25,7 @@ git clone --depth=1 https://gitlab.com/megabyte-labs/common/shared.git common-sh
 mkdir -p .config
 rm -rf .config/taskfiles
 cp -rT common-shared/common/.config/taskfiles .config/taskfiles
+cp -rT common-shared/common/.config/scripts .config/scripts
 mkdir -p .gitlab
 rm -rf .gitlab/ci
 cp -rT common-shared/common/.gitlab/ci .gitlab/ci
@@ -39,35 +40,15 @@ npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
 echo "Ensuring Taskfile is properly configured"
-task donothing &> /dev/null || EXIT_CODE=$?
+task donothing || EXIT_CODE=$?
 if [ "$EXIT_CODE" != '0' ]; then
-  curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml > Taskfile-shared.yml
-  TMP="$(mktemp)"
-  yq eval-all 'select(fileIndex==0).includes = select(fileIndex==1).includes | select(fileIndex==0)' Taskfile.yml Taskfile-shared.yml > "$TMP"
-  mv "$TMP" Taskfile.yml
-  rm Taskfile-shared.yml
-  npm install --ignore-scripts
-  echo "Trying to run ESLint on Taskfile.yml"
-  task fix:eslint -- Taskfile.yml &> /dev/null || EXIT_CODE=$?
-  echo "$EXIT_CODE"
-  if [ "$EXIT_CODE" != '0' ]; then
-    curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/update/package-requirements.json > package-requirements.json
-    if ! type jq &> /dev/null; then
-      echo "ERROR: jq must be installed"
-      exit 1
-    else
-      TMP="$(mktemp)"
-      jq -s '.[0] * .[1]' package.json package-requirements.json > "$TMP"
-      mv "$TMP" package.json
-    fi
-    rm package-requirements.json
-  fi
+  curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml > Taskfile.yml
 fi
 
 # @description Clean up
 rm -rf common-shared
 
-# @description Ensure files from old file structure are removed
+# @description Ensure files from old file structure are removed (temporary code)
 rm -f .ansible-lint
 rm -f .eslintrc.cjs
 rm -f .flake8
@@ -82,13 +63,13 @@ rm -rf .config/esbuild
 rm -rf .husky
 rm -rf tests
 if test -d .config/docs; then
-  cd .config/docs
+  cd .config/docs || exit
   rm -rf .git .config .github .gitlab .vscode .editorconfig .gitignore .gitlab-ci.yml
   rm -rf LICENSE Taskfile.yml package-lock.json package.json poetry.lock pyproject.toml
   cd ../..
 fi
 
-# @description Ensure documentation is in appropriate location
+# @description Ensure documentation is in appropriate location (temporary code)
 mkdir -p docs
 if test -f "CODE_OF_CONDUCT.md"; then
   mv CODE_OF_CONDUCT.md docs
@@ -103,14 +84,9 @@ fi
 # @description Commit and push the changes
 if [ -n "$GITLAB_CI" ]; then
   task ci:commit
+else
+  TMP="$(mktemp)"
+  sed 's/task: upstream:shared/task: upstream:project/' < Taskfile.yml > "$TMP"
+  mv "$TMP" Taskfile.yml
+  task prepare
 fi
-
-# @description Perform post commit tasks that will always cause changes
-TMP="$(mktemp)"
-jq 'del(."standard-version")' package.json > "$TMP"
-mv "$TMP" package.json
-TMP="$(mktemp)"
-jq 'del(."lint-staged")' package.json > "$TMP"
-mv "$TMP" package.json
-
-echo "Finished"
