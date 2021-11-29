@@ -4,8 +4,6 @@
 # @brief Script that executes before the start task if the UPDATE_INIT_SCRIPT is set to the URL
 # of this script
 
-set -eo pipefail
-
 # @description Configure git if environment is GitLab CI
 if [ -n "$GITLAB_CI" ]; then
   git remote set-url origin "https://root:$GROUP_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
@@ -51,6 +49,7 @@ if [ "$EXIT_CODE" != '0' ]; then
   npm install --ignore-scripts
   echo "Trying to run ESLint on Taskfile.yml"
   task fix:eslint -- Taskfile.yml &> /dev/null || EXIT_CODE=$?
+  echo "$EXIT_CODE"
   if [ "$EXIT_CODE" != '0' ]; then
     curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/update/package-requirements.json > package-requirements.json
     if ! type jq &> /dev/null; then
@@ -113,3 +112,5 @@ mv "$TMP" package.json
 TMP="$(mktemp)"
 jq 'del(."lint-staged")' package.json > "$TMP"
 mv "$TMP" package.json
+
+echo "Finished"
