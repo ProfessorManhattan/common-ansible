@@ -33,8 +33,11 @@ cp -rT common-shared/common/.gitlab/ci .gitlab/ci
 
 # @description Ensure proper NPM dependencies are installed
 echo "Installing NPM packages"
-npm install --save-dev @mblabs/eslint-config@latest
-npm install --save-optional chalk inquirer signale string-break
+if [ ! -f 'package.json' ]; then
+  echo "{}" > package.json
+fi
+npm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest
+npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
 echo "Ensuring Taskfile is properly configured"
@@ -45,11 +48,9 @@ if ! task donothing &> /dev/null; then
   mv "$TMP" Taskfile.yml
   rm Taskfile-shared.yml
   npm install --ignore-scripts
+  echo "Trying to run ESLint on Taskfile.yml"
   if ! task fix:eslint -- Taskfile.yml; then
     curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/update/package-requirements.json > package-requirements.json
-    if [ ! -f 'package.json' ]; then
-      echo "{}" > package.json
-    fi
     if ! type jq &> /dev/null; then
       echo "ERROR: jq must be installed"
       exit 1
