@@ -1,14 +1,14 @@
 ---
 lint:black:
-  stage: lint
   image:
     name: megabytelabs/black:slim
     entrypoint: ['']
   rules:
     - exists:
         - '**/*.py'
-  variables:
-    GIT_DEPTH: 1
   script:
     - set -eo pipefail
     - black . --check
+  stage: lint
+  variables:
+    GIT_DEPTH: 1

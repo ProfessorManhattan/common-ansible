@@ -4,10 +4,9 @@
     - shared-macos-amd64
 
 test:molecule:darwin:
-  stage: test
+  allow_failure: true
   extends:
     - .shared_macos_runners
-  allow_failure: true
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule' || $CI_PIPELINE_SOURCE == 'web'
     - if: $CI_COMMIT_TITLE =~ /^(automation|chore).*/
@@ -21,3 +20,4 @@ test:molecule:darwin:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
   script:
     - bash test/darwin/test.sh
+  stage: test

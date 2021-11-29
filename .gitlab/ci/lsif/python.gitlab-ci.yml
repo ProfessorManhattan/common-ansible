@@ -1,11 +1,11 @@
 ---
 lsif:python:
-  stage: lsif
-  image: megabytelabs/lsif-python:latest
   allow_failure: true
-  needs: []
-  script:
-    - lsif-py .
   artifacts:
     reports:
       lsif: dump.lsif
+  image: megabytelabs/lsif-python:latest
+  needs: []
+  script:
+    - lsif-py .
+  stage: lsif
