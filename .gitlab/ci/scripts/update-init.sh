@@ -32,10 +32,12 @@ rm -rf .gitlab/ci
 cp -rT common-shared/common/.gitlab/ci .gitlab/ci
 
 # @description Ensure proper NPM dependencies are installed
+echo "Installing NPM packages"
 npm install --save-dev @mblabs/eslint-config@latest
 npm install --save-optional chalk inquirer signale string-break
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
+echo "Ensuring Taskfile is properly configured"
 if ! task donothing &> /dev/null; then
   curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml > Taskfile-shared.yml
   TMP="$(mktemp)"
