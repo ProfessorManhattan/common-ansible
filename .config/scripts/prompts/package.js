@@ -138,6 +138,7 @@ async function promptForGroup(gitUrl) {
     .map((value) => (gitUrl.includes(value[1]) ? value[0] : false))
     .find((exists) => exists)
   if (guess) {
+    // eslint-disable-next-line security/detect-object-injection
     signale.info('Setting group to `' + guess + '` because the GitLab URL contained `' + guesses[guess] + '`')
     writeField(guess, 'group')
     return guess
@@ -236,6 +237,7 @@ async function promptForSubgroup(gitUrl, group) {
     .map((value) => (gitUrl.includes(value[1]) ? value[0] : false))
     .find((exists) => exists)
   if (guess) {
+    // eslint-disable-next-line security/detect-object-injection
     signale.info('Setting subgroup to `' + guess + '` because the GitLab URL contained `' + guesses[guess] + '`')
     writeField(guess, 'subgroup')
     return guess
