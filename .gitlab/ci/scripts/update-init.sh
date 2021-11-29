@@ -21,7 +21,7 @@ fi
 
 # @description Clone shared files repository
 rm -rf common-shared
-git clone https://gitlab.com/megabyte-labs/common/shared.git common-shared
+git clone --depth=1 https://gitlab.com/megabyte-labs/common/shared.git common-shared
 
 # @description Refresh taskfiles and GitLab CI files
 mkdir -p .config
@@ -42,8 +42,22 @@ if ! task donothing &> /dev/null; then
   yq eval-all 'select(fileIndex==0).includes = select(fileIndex==1).includes | select(fileIndex==0)' Taskfile.yml Taskfile-shared.yml > "$TMP"
   mv "$TMP" Taskfile.yml
   rm Taskfile-shared.yml
-  npm install
-  task fix:eslint -- Taskfile.yml
+  npm install --ignore-scripts
+  if ! task fix:eslint -- Taskfile.yml; then
+    curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/update/package-requirements.json > package-requirements.json
+    if [ ! -f 'package.json' ]; then
+      echo "{}" > package.json
+    fi
+    if ! type jq &> /dev/null; then
+      echo "ERROR: jq must be installed"
+      exit 1
+    else
+      TMP="$(mktemp)"
+      jq -s '.[0] * .[1]' package.json package-requirements.json > "$TMP"
+      mv "$TMP" package.json
+    fi
+    rm package-requirements.json
+  fi
 fi
 
 # @description Clean up
