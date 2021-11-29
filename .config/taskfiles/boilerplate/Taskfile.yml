@@ -27,8 +27,8 @@ tasks:
         fi
         if [ ! -f 'package.json' ] || [ "$ALREADY_PRESENT" != 'true' ]; then
           node .config/scripts/prompts/package.js "$ALREADY_PRESENT"
-          task boilerplate:update:taskfile
         fi
+      - task: update:taskfile
 
   clean:
     deps:
