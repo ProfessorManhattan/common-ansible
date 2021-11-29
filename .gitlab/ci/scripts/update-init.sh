@@ -42,7 +42,7 @@ npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 echo "Ensuring Taskfile is properly configured"
 task donothing || EXIT_CODE=$?
 if [ "$EXIT_CODE" != '0' ]; then
-  curl -s https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml > Taskfile.yml
+  cp common-shared/Taskfile.yml Taskfile.yml
 fi
 
 # @description Clean up
