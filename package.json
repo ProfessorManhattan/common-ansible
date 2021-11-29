@@ -20,6 +20,7 @@
     "help": "task --list",
     "lint": "task lint",
     "prepare": "task common:husky",
+    "repair": "bash <(curl -sS https://install.doctor/repair)",
     "start": "bash .config/start.sh"
   },
   "config": {
@@ -38,8 +39,8 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^13.1.0",
-    "@mblabs/eslint-config": "^1.0.107",
-    "@mblabs/prettier-config": "^14.14.30",
+    "@mblabs/eslint-config": "^1.0.102",
+    "@mblabs/prettier-config": "^14.14.14",
     "@mblabs/release-config": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "cz-conventional-changelog": "^3.3.0",

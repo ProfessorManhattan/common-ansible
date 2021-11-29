@@ -17,7 +17,10 @@ vars:
     -o -path './build/*' -o -path './dist/*' -o -path './node_modules/*' -o -path './venv/*' -o -name pnpm-lock.yaml
     -o -name package-lock.json -o -name poetry.lock -o -name '.variables.json'
   INIT_SCRIPT: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/common/.gitlab/ci/scripts/update-init.sh
+  NPM_KEEP_UPDATED: '@installdoc/* @mblabs/* @washingtondc/ping cz-conventional-changelog'
   NPM_PROGRAM: npm
+  NPM_PROGRAM_LOCAL:
+    sh: if [ -z "$GITLAB_CI" ]; then echo "pnpm"; else echo "npm"; fi
   NPX_HANDLE: ''
   NPX_PACKAGE: npx
   REPOSITORY_SUBTYPE: {{subgroup}}
@@ -37,18 +40,20 @@ tasks:
       - task: git:gitlab:group:exec
 
   init:
-    desc: Initialize a project for the first time (use when creating a new project)
+    desc: Ensures project is initialized with upstream files and migrates pre-existing projects
     cmds:
       - |
         if [ -n "$GITLAB_CI" ]; then
-          if [ -n "$UPDATE_INIT_SCRIPT" ]; then
-            curl -s "$UPDATE_INIT_SCRIPT" | bash
-          fi
+          if [ -n "$UPDATE_INIT_SCRIPT" ]; then curl -s "$UPDATE_INIT_SCRIPT" | bash; fi
         else
-          curl -s '\{{.INIT_SCRIPT}}' | bash
+          bash <(curl -s \{{.INIT_SCRIPT}})
         fi
+
+  prepare:
+    desc: Prepares the project for the normal start command
+    cmds:
       - task: boilerplate:check:package
-      - task start
+      - task: boilerplate:clean
 
   start:
     desc: Set up the project and refresh it with the latest changes

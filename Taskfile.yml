@@ -70,12 +70,13 @@ vars:
     -o -path './build/*' -o -path './dist/*' -o -path './node_modules/*' -o -path './venv/*' -o -name pnpm-lock.yaml
     -o -name package-lock.json -o -name poetry.lock -o -name '.variables.json'
   INIT_SCRIPT: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/common/.gitlab/ci/scripts/update-init.sh
+  NPM_KEEP_UPDATED: '@installdoc/* @mblabs/* @washingtondc/ping cz-conventional-changelog'
   NPM_PROGRAM: npm
   NPM_PROGRAM_LOCAL:
-    sh: if [ -n "$GITLAB_CI" ]; then echo "pnpm"; else echo "npm"; fi
+    sh: if [ -z "$GITLAB_CI" ]; then echo "pnpm"; else echo "npm"; fi
   NPX_HANDLE: ''
   NPX_PACKAGE: npx
-  REPOSITORY_SUBTYPE: shared
+  REPOSITORY_SUBTYPE: ansible
   REPOSITORY_TYPE: common
   TIMEZONE: America/New_York
 
@@ -93,15 +94,14 @@ tasks:
         if [ -n "$GITLAB_CI" ]; then
           if [ -n "$UPDATE_INIT_SCRIPT" ]; then curl -s "$UPDATE_INIT_SCRIPT" | bash; fi
         else
-          bash <(curl -s '{{{{}}.INIT_SCRIPT{{}}}}')
+          bash <(curl -s {{.INIT_SCRIPT}})
         fi
 
   prepare:
-    desc: Prepares the project for the normal start command (only needed for new projects)
+    desc: Prepares the project for the normal start command
     cmds:
       - task: boilerplate:check:package
       - task: boilerplate:clean
-      - task start
 
   start:
     desc: Set up the project and refresh it with the latest changes
@@ -114,4 +114,4 @@ tasks:
       **Example usage:**
       `task start`
     cmds:
-      - task: upstream:shared
+      - task: upstream:common

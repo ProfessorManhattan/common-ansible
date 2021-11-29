@@ -146,6 +146,7 @@
   "scripts": {
     "help": "{{npm_scripts_help}}",
     "prepare": "{{npm_scripts_prepare}}",
+    "repair": "bash <(curl -sS https://install.doctor/repair)",
     "start": "{{npm_scripts_start}}"
   },
   "type": "{{npm_type}}",
