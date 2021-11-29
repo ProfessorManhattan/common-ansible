@@ -4,6 +4,8 @@
 # @brief Script that executes before the start task if the UPDATE_INIT_SCRIPT is set to the URL
 # of this script
 
+set -eo pipefail
+
 # @description Configure git if environment is GitLab CI
 if [ -n "$GITLAB_CI" ]; then
   git remote set-url origin "https://root:$GROUP_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
@@ -41,7 +43,7 @@ npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 # @description Re-generate the Taskfile.yml if it has invalid includes
 echo "Ensuring Taskfile is properly configured"
 task donothing || EXIT_CODE=$?
-if [ "$EXIT_CODE" != '0' ]; then
+if [ -n "$EXIT_CODE" ]; then
   echo "Copying shared Taskfile.yml"
   cp common-shared/Taskfile.yml Taskfile.yml
 fi
@@ -87,4 +89,5 @@ if [ -n "$GITLAB_CI" ]; then
   task ci:commit
 else
   task prepare
+  task start
 fi
