@@ -36,7 +36,6 @@ tasks:
     deps:
       - :install:npm:{{.NPM_PROGRAM_LOCAL}}
       - modules:local:package
-      - modules:local:sync
     cmds:
       - '{{.NPM_PROGRAM_LOCAL}} install'
       - task: modules:local:sync
