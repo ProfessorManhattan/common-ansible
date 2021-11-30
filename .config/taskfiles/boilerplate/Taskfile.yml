@@ -11,7 +11,7 @@ tasks:
     cmds:
       - |
         if [ "$(jq -r '.type' package.json)" != 'module' ]; then
-          TMP = "$(mktemp)"
+          TMP="$(mktemp)"
           jq '.type = "module"' package.json > "$TMP"
           mv "$TMP" package.json
         fi
