@@ -15,6 +15,11 @@ tasks:
           jq '.type = "module"' package.json > "$TMP"
           mv "$TMP" package.json
         fi
+        if [ "$(jq -r '.dependencies' package.json)" == 'null' ]; then
+          TMP="$(mktemp)"
+          jq '.dependencies = {}' package.json > "$TMP"
+          mv "$TMP" package.json
+        fi
         ALREADY_PRESENT=true
         for ITEM in {{.BLUEPRINT_REQUIRED_FIELDS}}; do
           VALUE="$(jq --arg item "$ITEM" -r '.blueprint[$item]' package.json)"
