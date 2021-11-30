@@ -38,6 +38,7 @@ if [ ! -f 'package.json' ]; then
   echo "{}" > package.json
 fi
 npm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers
+npm install --save-dev --ignore-scripts @commitlint/config-conventional cz-conventional-changelog
 npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
