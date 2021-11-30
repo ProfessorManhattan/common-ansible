@@ -37,7 +37,7 @@ echo "Installing NPM packages"
 if [ ! -f 'package.json' ]; then
   echo "{}" > package.json
 fi
-npm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest
+npm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers
 npm install --save-optional --ignore-scripts chalk inquirer signale string-break
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
@@ -70,6 +70,11 @@ if test -d .config/docs; then
   rm -rf .git .config .github .gitlab .vscode .editorconfig .gitignore .gitlab-ci.yml
   rm -rf LICENSE Taskfile.yml package-lock.json package.json poetry.lock pyproject.toml
   cd ../..
+fi
+
+# @description Ensure pnpm field is populated
+if [ "$(yq e '.vars.NPM_PROGRAM_LOCAL' Taskfile.yml)" == 'null' ]; then
+  yq e -i '.vars.NPM_PROGRAM_LOCAL = npm' Taskfile.yml
 fi
 
 # @description Ensure documentation is in appropriate location (temporary code)
