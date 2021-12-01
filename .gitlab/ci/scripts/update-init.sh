@@ -40,7 +40,7 @@ fi
 if [ -f 'package-lock.json' ]; then
   rm package-lock.json
 fi
-
+npm install -g glob
 pnpm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers
 pnpm install --save-dev --ignore-scripts @commitlint/config-conventional cz-conventional-changelog
 pnpm install --save-optional --ignore-scripts chalk inquirer signale string-break
