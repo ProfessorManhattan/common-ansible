@@ -17,7 +17,7 @@ tasks:
       - git-notify checkout --prefix "@notify" --color "{{.GIT_NOTIFY_COLOR}}" "$GIT_PARAMS"
       - yarnhook
 
-  post-commit: echo "post-commit"
+  post-commit: 'true'
 
   post-merge:
     deps:
