@@ -9,6 +9,7 @@ includes:
   ansible:test: ./.config/taskfiles/ansible/Taskfile-test.yml
   boilerplate: ./.config/taskfiles/boilerplate/Taskfile.yml
   ci: ./.config/taskfiles/ci/Taskfile.yml
+  ci:github: ./.config/taskfiles/ci/Taskfile-github.yml
   common: ./.config/taskfiles/common/Taskfile.yml
   common:code: ./.config/taskfiles/common/Taskfile-code.yml
   common:update: ./.config/taskfiles/common/Taskfile-update.yml
