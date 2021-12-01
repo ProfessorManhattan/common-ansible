@@ -78,8 +78,8 @@ if test -d .config/docs; then
 fi
 
 # @description Ensure pnpm field is populated
-if [ "$(yq e '.vars.NPM_PROGRAM_LOCAL' Taskfile.yml)" == 'null' ]; then
-  yq e -i '.vars.NPM_PROGRAM_LOCAL = npm' Taskfile.yml
+if [ "$(yq e '.vars.NPM_PROGRAM_LOCAL' Taskfile.yml)" != 'pnpm' ]; then
+  yq e -i '.vars.NPM_PROGRAM_LOCAL = "pnpm"' Taskfile.yml
 fi
 
 # @description Ensure documentation is in appropriate location (temporary code)
