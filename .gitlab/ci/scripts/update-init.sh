@@ -37,10 +37,13 @@ echo "Installing NPM packages"
 if [ ! -f 'package.json' ]; then
   echo "{}" > package.json
 fi
+if [ -f 'package-lock.json' ]; then
+  rm package-lock.json
+fi
 
-npm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers
-npm install --save-dev --ignore-scripts @commitlint/config-conventional cz-conventional-changelog
-npm install --save-optional --ignore-scripts chalk inquirer signale string-break
+pnpm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers
+pnpm install --save-dev --ignore-scripts @commitlint/config-conventional cz-conventional-changelog
+pnpm install --save-optional --ignore-scripts chalk inquirer signale string-break
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
 echo "Ensuring Taskfile is properly configured"
