@@ -56,6 +56,7 @@ fi
 rm -rf common-shared
 
 # @description Ensure files from old file structure are removed (temporary code)
+echo "Removing files from old project structures"
 rm -f .ansible-lint
 rm -f .eslintrc.cjs
 rm -f .flake8
@@ -77,7 +78,7 @@ if test -d .config/docs; then
 fi
 
 # @description Ensure pnpm field is populated
-yq e -i '.vars.NPM_PROGRAM_LOCAL.sh = "pnpm"; fi' Taskfile.yml
+yq e -i '.vars.NPM_PROGRAM_LOCAL = "pnpm"' Taskfile.yml
 
 # @description Ensure documentation is in appropriate location (temporary code)
 mkdir -p docs
