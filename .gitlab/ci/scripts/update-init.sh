@@ -40,7 +40,6 @@ fi
 if [ -f 'package-lock.json' ]; then
   rm package-lock.json
 fi
-npm install -g glob
 pnpm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers glob
 pnpm install --save-dev --ignore-scripts @commitlint/config-conventional cz-conventional-changelog
 pnpm install --save-optional --ignore-scripts chalk inquirer signale string-break
@@ -78,9 +77,7 @@ if test -d .config/docs; then
 fi
 
 # @description Ensure pnpm field is populated
-if [ "$(yq e '.vars.NPM_PROGRAM_LOCAL' Taskfile.yml)" != 'pnpm' ]; then
-  yq e -i '.vars.NPM_PROGRAM_LOCAL = "pnpm"' Taskfile.yml
-fi
+yq e -i '.vars.NPM_PROGRAM_LOCAL.sh = "pnpm"; fi' Taskfile.yml
 
 # @description Ensure documentation is in appropriate location (temporary code)
 mkdir -p docs
