@@ -213,6 +213,10 @@ tasks:
       - task: :ansible:ansibler:ansibler
       - task: update:variables:descriptions
 
+  update:variables:playbook:
+    cmds:
+      - task: :ansible:playbook:docs
+
   update:variables:descriptions:
     deps:
       - :install:software:jq
