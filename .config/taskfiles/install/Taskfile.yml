@@ -40,16 +40,18 @@ tasks:
       - :install:npm:{{.NPM_PROGRAM_LOCAL}}
       - modules:local:package
     cmds:
-      - '{{.NPM_PROGRAM_LOCAL}} install'
-      - task install:npm:cz-emoji &
-      - task: modules:local:sync
+      - cmd: '{{.NPM_PROGRAM_LOCAL}} install'
+        ignore_error: true
+      - |
+        task install:npm:cz-emoji &
+        task install:modules:local:sync &
     sources:
       - .cache/package-deps.json
 
   modules:local:package:
     deps:
       - :install:software:jq
-    vars:
+    env:
       NPM_DEPS:
         sh: jq -r '.dependencies | keys[] as $k | "\($k), \(.[$k])"' package.json
       NPM_DEVDEPS:
@@ -59,9 +61,9 @@ tasks:
     run: when_changed
     cmds:
       - mkdir -p .cache
-      - echo '{{.NPM_DEPS}}' > .cache/package-deps.json
-      - echo '{{.NPM_DEVDEPS}}' >> .cache/package-deps.json
-      - echo '{{.NPM_OPTDEPS}}' >> .cache/package-deps.json
+      - echo "$NPM_DEPS" > .cache/package-deps.json
+      - echo "$NPM_DEVDEPS" >> .cache/package-deps.json
+      - echo "$NPM_OPTDEPS" >> .cache/package-deps.json
     sources:
       - package.json
     generates:
