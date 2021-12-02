@@ -133,6 +133,6 @@ platforms:
 provisioner:
   connection_options:
     ansible_connection: docker
-    ansible_password: ansible
-    ansible_ssh_user: ansible
-    ansible_user: ansible
+    ansible_password: ${TEST_PASSWORD:-ansible}
+    ansible_ssh_user: ${TEST_SSH_USER:-ansible}
+    ansible_user: ${TEST_USER:-ansible}
