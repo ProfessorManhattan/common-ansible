@@ -94,11 +94,3 @@ provisioner:
       Windows-10:
         ansible_host: 127.0.0.1
         ansible_port: 55985
-  name: ansible
-  options:
-    vvv: true
-  playbooks:
-    converge: ../converge.yml
-    prepare: ../prepare.yml
-verifier:
-  name: ansible
