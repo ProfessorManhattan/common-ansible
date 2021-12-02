@@ -41,10 +41,14 @@ if [ -f 'package-lock.json' ]; then
   rm package-lock.json
 fi
 if type pnpm &> /dev/null; then
-  pnpm install --save-dev --ignore-scripts @mblabs/eslint-config@latest @mblabs/prettier-config@latest handlebars-helpers glob
+  pnpm install --save-dev --ignore-scripts @mblabs/eslint-config@latest \
+  @mblabs/prettier-config@latest handlebars-helpers glob
   pnpm install --save-optional --ignore-scripts chalk inquirer signale string-break
 fi
-sed 's/.*cz-conventional-changelog.*//' < package.json
+
+# @description Remove old packages
+TMP="$(mktemp)" && sed 's/.*cz-conventional-changelog.*//' < package.json > "$TMP" && mv "$TMP" package.json
+
 # @description Re-generate the Taskfile.yml if it has invalid includes
 echo "Ensuring Taskfile is properly configured"
 task donothing || EXIT_CODE=$?
@@ -96,7 +100,9 @@ if test -d .config/docs; then
 fi
 
 # @description Ensure pnpm field is populated
-yq e -i '.vars.NPM_PROGRAM_LOCAL = "pnpm"' Taskfile.yml
+if type yq &> /dev/null; then
+  yq e -i '.vars.NPM_PROGRAM_LOCAL = "pnpm"' Taskfile.yml
+fi
 
 # @description Ensure documentation is in appropriate location (temporary code)
 mkdir -p docs
