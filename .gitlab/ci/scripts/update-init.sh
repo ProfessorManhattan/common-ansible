@@ -42,12 +42,13 @@ if [ -f 'package-lock.json' ]; then
 fi
 if type pnpm &> /dev/null; then
   pnpm install --save-dev --ignore-scripts @mblabs/eslint-config@latest \
-  @mblabs/prettier-config@latest handlebars-helpers glob
+  @mblabs/prettier-config@latest handlebars-helpers glob typescript
   pnpm install --save-optional --ignore-scripts chalk inquirer signale string-break
 fi
 
 # @description Remove old packages
 TMP="$(mktemp)" && sed 's/.*cz-conventional-changelog.*//' < package.json > "$TMP" && mv "$TMP" package.json
+TMP="$(mktemp)" && sed 's/.*config-conventional.*//' < package.json > "$TMP" && mv "$TMP" package.json
 
 # @description Re-generate the Taskfile.yml if it has invalid includes
 echo "Ensuring Taskfile is properly configured"
