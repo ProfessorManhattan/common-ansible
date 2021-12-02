@@ -5,7 +5,7 @@
   tasks:
     - become: true
       changed_when: false
-      name: Bootstrap python for Ansible
+      name: Bootstrap Python for Ansible
       raw: |
         command -v python3 python || (
         command -v apk >/dev/null && sudo apk add --no-progress --update python3 ||
