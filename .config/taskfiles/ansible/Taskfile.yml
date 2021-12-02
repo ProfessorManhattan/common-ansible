@@ -213,10 +213,6 @@ tasks:
       - task: :ansible:ansibler:ansibler
       - task: update:variables:descriptions
 
-  update:variables:playbook:
-    cmds:
-      - task: :ansible:playbook:docs
-
   update:variables:descriptions:
     deps:
       - :install:software:jq
@@ -252,6 +248,10 @@ tasks:
           example of one at {{.SAMPLE_PROJECT}}.'
       - sh: 'test -f "{{.VARIABLES_PATH}}"'
         msg: 'The `{{.VARIABLES_PATH}}` file is missing!'
+
+  update:variables:playbook:
+    cmds:
+      - task: :ansible:playbook:docs
 
   vault:lint:file:
     summary: |
