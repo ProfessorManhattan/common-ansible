@@ -1,7 +1,6 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@commitlint/config-conventional': ^13.2.0
   '@mblabs/eslint-config': ^1.0.115
   '@mblabs/prettier-config': ^14.14.30
   '@mblabs/release-config': ^1.0.0
@@ -27,7 +26,6 @@ optionalDependencies:
   string-break: 1.2.0
 
 devDependencies:
-  '@commitlint/config-conventional': 13.2.0
   '@mblabs/eslint-config': 1.0.115_typescript@4.5.2
   '@mblabs/prettier-config': 14.14.30_typescript@4.5.2
   '@mblabs/release-config': 1.1.14
@@ -280,13 +278,6 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.15.7
       to-fast-properties: 2.0.0
-    dev: true
-
-  /@commitlint/config-conventional/13.2.0:
-    resolution: {integrity: sha512-7u7DdOiF+3qSdDlbQGfpvCH8DCQdLFvnI2+VucYmmV7E92iD6t9PBj+UjIoSQCaMAzYp27Vkall78AkcXBh6Xw==}
-    engines: {node: '>=v12'}
-    dependencies:
-      conventional-changelog-conventionalcommits: 4.6.1
     dev: true
 
   /@es-joy/jsdoccomment/0.12.0:
@@ -1842,15 +1833,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       compare-func: 2.0.0
-      q: 1.5.1
-    dev: true
-
-  /conventional-changelog-conventionalcommits/4.6.1:
-    resolution: {integrity: sha512-lzWJpPZhbM1R0PIzkwzGBCnAkH5RKJzJfFQZcl/D+2lsJxAwGnDKBqn/F4C1RD31GJNn8NuKWQzAZDAVXPp2Mw==}
-    engines: {node: '>=10'}
-    dependencies:
-      compare-func: 2.0.0
-      lodash: 4.17.21
       q: 1.5.1
     dev: true
 
