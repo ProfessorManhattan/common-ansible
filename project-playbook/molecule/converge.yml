@@ -1,7 +1,3 @@
 ---
 - name: Converge
-  hosts: all
-  vars:
-    ansible_user: ansible
-  roles:
-    - role: TODO --- figure out how to run the main.yml from here
+  import_playbook: ../main.yml

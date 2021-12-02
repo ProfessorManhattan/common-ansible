@@ -1,0 +1,15 @@
+---
+# TODO: This should connect via WinRM or SSH and provision the host remotely
+driver:
+  name: delegated
+  options:
+    managed: False
+    ansible_connection_options:
+      ansible_connection: local
+platforms:
+  - instance
+provisioner:
+  connection_options:
+    ansible_password: ansible
+    ansible_ssh_user: ansible
+    ansible_user: ansible
