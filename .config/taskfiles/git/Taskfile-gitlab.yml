@@ -44,7 +44,7 @@ tasks:
             {{trimPrefix "'" (trimSuffix "'" (index (splitList " ---- " .CLI_ARGS) 1))}}
             cd "$BASE_PWD"
           )
-          . .info/log info "Finished running bash command on $REPO_PATH"
+          . .config/log info "Finished running bash command on $REPO_PATH"
         }
         cat {{.REPOSITORY_LIST}} | while IFS= read -r REPO_DETAILS; do
           . .config/log info "Executing logic on $REPO_DETAILS"
