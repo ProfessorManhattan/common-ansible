@@ -1,5 +1,4 @@
 ---
-# TODO: This should test on the localhost
 driver:
   name: delegated
   options:

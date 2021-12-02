@@ -1,5 +1,4 @@
 ---
-# TODO: This should connect via WinRM or SSH and provision the host remotely
 driver:
   name: delegated
   options:
