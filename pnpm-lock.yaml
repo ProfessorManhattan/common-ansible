@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@mblabs/eslint-config': ^1.0.115
-  '@mblabs/prettier-config': ^14.14.30
+  '@mblabs/prettier-config': ^14.14.31
   '@mblabs/release-config': ^1.0.0
   '@typescript-eslint/eslint-plugin': ^5.2.0
   chalk: ^4.1.2
@@ -27,7 +27,7 @@ optionalDependencies:
 
 devDependencies:
   '@mblabs/eslint-config': 1.0.115_typescript@4.5.2
-  '@mblabs/prettier-config': 14.14.30_typescript@4.5.2
+  '@mblabs/prettier-config': 14.14.31_typescript@4.5.2
   '@mblabs/release-config': 1.1.14
   '@typescript-eslint/eslint-plugin': 5.5.0_typescript@4.5.2
   commitlint-config-gitmoji: 2.2.5
@@ -406,24 +406,18 @@ packages:
       - typescript
     dev: true
 
-  /@mblabs/prettier-config/14.14.30_typescript@4.5.2:
-    resolution: {integrity: sha512-+DwDmSK19yjGrgKuABDPODx/zybtW70UxKBajUwpsdsFJWIF5mvLW4Ytz75z7CsFUnamGzP5jR3YRKgqhvEzmA==}
+  /@mblabs/prettier-config/14.14.31_typescript@4.5.2:
+    resolution: {integrity: sha512-4UaVrZZEqISHB5NWSCJpT8m5Ks8MEtZDuzY8gDfp1MC61O575oDgIdHOWjVxYJkMhINn4m25XekEGv3OYeKiAg==}
     engines: {node: '>=10'}
     dependencies:
-      '@prettier/plugin-php': 0.17.6_prettier@2.5.0
-      '@prettier/plugin-pug': 1.18.0_prettier@2.5.0
-      '@prettier/plugin-ruby': 1.6.1
       '@prettier/plugin-xml': 1.1.0
       prettier: 2.5.0
-      prettier-package-json: 2.6.0
       prettier-plugin-go-template: 0.0.11_prettier@2.5.0
       prettier-plugin-ini: 0.3.1
-      prettier-plugin-java: 1.6.0
       prettier-plugin-organize-imports: 2.3.4_prettier@2.5.0+typescript@4.5.2
       prettier-plugin-package-perfection: 1.0.6
       prettier-plugin-properties: 0.1.0_prettier@2.5.0
       prettier-plugin-sh: 0.7.1_prettier@2.5.0
-      prettier-plugin-solidity: 1.0.0-beta.19_prettier@2.5.0
     transitivePeerDependencies:
       - typescript
     dev: true
@@ -580,32 +574,6 @@ packages:
       typescript: 4.5.2
     dev: true
 
-  /@prettier/plugin-php/0.17.6_prettier@2.5.0:
-    resolution: {integrity: sha512-Nxkq+Gl8bGbutRV7e3/p5d+Bcftn75oH61RT8xzk44T5ET7fVP50pUdaOdvt704GSNr6wwmfBW8MhBz5IKt+fA==}
-    peerDependencies:
-      prettier: ^1.15.0 || ^2.0.0
-    dependencies:
-      linguist-languages: 7.15.0
-      mem: 8.1.1
-      php-parser: github.com/glayzzle/php-parser/27abcb2337ac6450c068ef064982dfabf77916a5
-      prettier: 2.5.0
-    dev: true
-
-  /@prettier/plugin-pug/1.18.0_prettier@2.5.0:
-    resolution: {integrity: sha512-67uxCVZRNS9CwvEGHZCeABeiBKODuxuxVagP7xd1GBbPCOy0MHkwNAduYldRQJbCLuz1+WNqADCwgZXmdpWipg==}
-    peerDependencies:
-      prettier: ^2.3.0
-    dependencies:
-      prettier: 2.5.0
-      pug-lexer: 5.0.1
-    dev: true
-
-  /@prettier/plugin-ruby/1.6.1:
-    resolution: {integrity: sha512-PGDCATgVTQz0s/NB9nStiXVCIr+hG/XnKeAO/kguaHrNf8VwCpP5Ul+/KQao0z0QFBy2PDY8kWptfDQCa7WMXg==}
-    dependencies:
-      prettier: 2.5.0
-    dev: true
-
   /@prettier/plugin-xml/1.1.0:
     resolution: {integrity: sha512-ftQAIB3icdzvfMWmQ6HhxWFwIkVE2bZaPb2Z2YgX9BVqq3ucf33eQAdPwD1wWvPwXwbeZvDoz60vYZv/Qjq+rg==}
     dependencies:
@@ -708,12 +676,6 @@ packages:
       semantic-release: 18.0.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@solidity-parser/parser/0.14.0:
-    resolution: {integrity: sha512-cX0JJRcmPtNUJpzD2K7FdA7qQsTOk1UZnFx2k7qAg9ZRvuaH5NBe5IEdBMXGlmf2+FmjhqbygJ26H8l2SV7aKQ==}
-    dependencies:
-      antlr4ts: 0.5.0-alpha.4
     dev: true
 
   /@testing-library/dom/7.31.2:
@@ -1345,10 +1307,6 @@ packages:
     resolution: {integrity: sha1-ZlWX3oap/+Oqm/vmyuXG6kJrSXk=}
     dev: true
 
-  /antlr4ts/0.5.0-alpha.4:
-    resolution: {integrity: sha512-WPQDt1B74OfPv/IMS2ekXAKkTZIHl88uMetg6q3OTqgFxZ/dxDXI0EWLyZid/1Pe6hTftyg5N7gel5wNAGxXyQ==}
-    dev: true
-
   /argparse/1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
     dependencies:
@@ -1639,22 +1597,10 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  /character-parser/2.2.0:
-    resolution: {integrity: sha1-x84o821LzZdE5f/CxfzeHHMmH8A=}
-    dependencies:
-      is-regex: 1.1.4
-    dev: true
-
   /chardet/0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: false
     optional: true
-
-  /chevrotain/6.5.0:
-    resolution: {integrity: sha512-BwqQ/AgmKJ8jcMEjaSnfMybnKMgGTrtDKowfTP3pX4jwVy0kNjRsT/AP6h+wC3+3NC+X8X15VWBnTCQlX+wQFg==}
-    dependencies:
-      regexp-to-ast: 0.4.0
-    dev: true
 
   /chevrotain/7.1.1:
     resolution: {integrity: sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==}
@@ -2174,10 +2120,6 @@ packages:
       emojilib: 2.4.0
       iterate-object: 1.3.4
       map-o: 2.0.10
-    dev: true
-
-  /emoji-regex/10.0.0:
-    resolution: {integrity: sha512-KmJa8l6uHi1HrBI34udwlzZY1jOEuID/ft4d8BSSEdRyap7PwBEt910453PJa5MuGvxkLqlt4Uvhu7tttFHViw==}
     dev: true
 
   /emoji-regex/7.0.3:
@@ -4045,13 +3987,6 @@ packages:
       is-odd: 0.1.2
     dev: true
 
-  /is-expression/4.0.0:
-    resolution: {integrity: sha512-zMIXX63sxzG3XrkHkrAPvm/OVZVSCPNkwMHU8oTX7/U3AL78I0QXCEICXUM13BIa8TYGZ68PiTKfQz3yaTNr4A==}
-    dependencies:
-      acorn: 7.4.1
-      object-assign: 4.1.1
-    dev: true
-
   /is-extendable/0.1.1:
     resolution: {integrity: sha1-YrEQ4omkcUGOPsNqYX1HLjAd/Ik=}
     engines: {node: '>=0.10.0'}
@@ -4292,13 +4227,6 @@ packages:
 
   /iterate-object/1.3.4:
     resolution: {integrity: sha512-4dG1D1x/7g8PwHS9aK6QV5V94+ZvyP4+d19qDv43EzImmrndysIl4prmJ1hWWIGCqrZHyaHBm6BSEWHOLnpoNw==}
-    dev: true
-
-  /java-parser/2.0.0:
-    resolution: {integrity: sha512-5sTEggUlp+uns7tfHGwRTN+cMlgPHw00oNjAz6YdwEyQyWQ9VzUNbYuPuDyJDWfcFyZTlHKD5f7VbtChKZf4xw==}
-    dependencies:
-      chevrotain: 6.5.0
-      lodash: 4.17.21
     dev: true
 
   /java-properties/1.0.2:
@@ -4651,13 +4579,6 @@ packages:
     hasBin: true
     dev: true
 
-  /map-age-cleaner/0.1.3:
-    resolution: {integrity: sha512-bJzx6nMoP6PDLPBFmg7+xRKeFZvFboMrGlxmNj9ClvX53KrmvM5bXFXEWjbz4cz1AFn+jWJ9z/DJSz7hrs0w3w==}
-    engines: {node: '>=6'}
-    dependencies:
-      p-defer: 1.0.0
-    dev: true
-
   /map-cache/0.2.2:
     resolution: {integrity: sha1-wyq9C9ZSXZsFFkW7TyasXcmKDb8=}
     engines: {node: '>=0.10.0'}
@@ -4704,14 +4625,6 @@ packages:
     resolution: {integrity: sha512-/Q+7MGzaETqifOMWYEA7HVMaZb4XbcRfaOzcSsHZEith83KGlvaSG33u0SKu89Mj5h+T8V2hM+8O45Qc5XTgwA==}
     engines: {node: '>= 10'}
     hasBin: true
-    dev: true
-
-  /mem/8.1.1:
-    resolution: {integrity: sha512-qFCFUDs7U3b8mBDPyz5EToEKoAkgCzqquIgi9nkkR9bixxOVOre+09lbuH7+9Kn2NFpm56M3GUWVbU2hQgdACA==}
-    engines: {node: '>=10'}
-    dependencies:
-      map-age-cleaner: 0.1.3
-      mimic-fn: 3.1.0
     dev: true
 
   /meow/8.1.2:
@@ -4776,11 +4689,6 @@ packages:
   /mimic-fn/2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
-
-  /mimic-fn/3.1.0:
-    resolution: {integrity: sha512-Ysbi9uYW9hFyfrThdDEQuykN4Ey6BuwPD2kpI5ES/nFTDn/98yxYNLZJcgUAKPT/mcrLLKaGzJR9YVxJrIdASQ==}
-    engines: {node: '>=8'}
-    dev: true
 
   /min-indent/1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
@@ -5120,11 +5028,6 @@ packages:
     dev: false
     optional: true
 
-  /p-defer/1.0.0:
-    resolution: {integrity: sha1-n26xgvbJqozXQwBKfU+WsZaw+ww=}
-    engines: {node: '>=4'}
-    dev: true
-
   /p-each-series/2.2.0:
     resolution: {integrity: sha512-ycIL2+1V32th+8scbpTvyHNaHe02z0sjgh91XXjAk+ZeXoPN4Z46DVUnzdso0aX4KckKw0FNNFHdjZ2UsZvxiA==}
     engines: {node: '>=8'}
@@ -5373,14 +5276,6 @@ packages:
       prettier: 2.5.0
     dev: true
 
-  /prettier-plugin-java/1.6.0:
-    resolution: {integrity: sha512-yxeoei7bgQ8DGXEbUVs1m21ZhGknx8YUELlRP5CfHUUK7/yIpUvn+9tuYhPVO9v0nSfphBDAciwYcQH9RUMBLw==}
-    dependencies:
-      java-parser: 2.0.0
-      lodash: 4.17.21
-      prettier: 2.3.1
-    dev: true
-
   /prettier-plugin-organize-imports/2.3.4_prettier@2.5.0+typescript@4.5.2:
     resolution: {integrity: sha512-R8o23sf5iVL/U71h9SFUdhdOEPsi3nm42FD/oDYIZ2PQa4TNWWuWecxln6jlIQzpZTDMUeO1NicJP6lLn2TtRw==}
     peerDependencies:
@@ -5414,27 +5309,6 @@ packages:
     dependencies:
       mvdan-sh: 0.5.0
       prettier: 2.5.0
-    dev: true
-
-  /prettier-plugin-solidity/1.0.0-beta.19_prettier@2.5.0:
-    resolution: {integrity: sha512-xxRQ5ZiiZyUoMFLE9h7HnUDXI/daf1tnmL1msEdcKmyh7ZGQ4YklkYLC71bfBpYU2WruTb5/SFLUaEb3RApg5g==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      prettier: ^2.3.0
-    dependencies:
-      '@solidity-parser/parser': 0.14.0
-      emoji-regex: 10.0.0
-      escape-string-regexp: 4.0.0
-      prettier: 2.5.0
-      semver: 7.3.5
-      solidity-comments-extractor: 0.0.7
-      string-width: 4.2.3
-    dev: true
-
-  /prettier/2.3.1:
-    resolution: {integrity: sha512-p+vNbgpLjif/+D+DwAZAbndtRrR0md0MwfmOVN9N+2RgyACMT+7tfaRnT+WDPkqnuVwleyuBIG2XBxKDme3hPA==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
     dev: true
 
   /prettier/2.5.0:
@@ -5477,18 +5351,6 @@ packages:
 
   /pseudomap/1.0.2:
     resolution: {integrity: sha1-8FKijacOYYkX7wqKw0wa5aaChrM=}
-    dev: true
-
-  /pug-error/2.0.0:
-    resolution: {integrity: sha512-sjiUsi9M4RAGHktC1drQfCr5C5eriu24Lfbt4s+7SykztEOwVZtbFk1RRq0tzLxcMxMYTBR+zMQaG07J/btayQ==}
-    dev: true
-
-  /pug-lexer/5.0.1:
-    resolution: {integrity: sha512-0I6C62+keXlZPZkOJeVam9aBLVP2EnbeDw3An+k0/QlqdwH6rv8284nko14Na7c0TtqtogfWXcRoFE4O4Ff20w==}
-    dependencies:
-      character-parser: 2.2.0
-      is-expression: 4.0.0
-      pug-error: 2.0.0
     dev: true
 
   /punycode/2.1.1:
@@ -5607,10 +5469,6 @@ packages:
     dependencies:
       refa: 0.9.1
       regexpp: 3.2.0
-    dev: true
-
-  /regexp-to-ast/0.4.0:
-    resolution: {integrity: sha512-4qf/7IsIKfSNHQXSwial1IFmfM1Cc/whNBQqRwe0V2stPe7KmN1U0tWQiIx6JiirgSrisjE0eECdNf7Tav1Ntw==}
     dev: true
 
   /regexp-to-ast/0.5.0:
@@ -5977,10 +5835,6 @@ packages:
       source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
-    dev: true
-
-  /solidity-comments-extractor/0.0.7:
-    resolution: {integrity: sha512-wciNMLg/Irp8OKGrh3S2tfvZiZ0NEyILfcRCXCD4mp7SgK/i9gzLfhY2hY7VMCQJ3kH9UB9BzNdibIVMchzyYw==}
     dev: true
 
   /sort-object-keys/1.1.3:
@@ -6677,9 +6531,3 @@ packages:
     engines: {node: '>=10'}
     dev: true
     optional: true
-
-  github.com/glayzzle/php-parser/27abcb2337ac6450c068ef064982dfabf77916a5:
-    resolution: {tarball: https://codeload.github.com/glayzzle/php-parser/tar.gz/27abcb2337ac6450c068ef064982dfabf77916a5}
-    name: php-parser
-    version: 3.0.2
-    dev: true

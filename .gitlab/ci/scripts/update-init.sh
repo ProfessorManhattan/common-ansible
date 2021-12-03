@@ -101,7 +101,7 @@ if test -d .config/docs; then
 fi
 
 # @description Ensure pnpm field is populated
-if type yq &> /dev/null; then
+if type yq &> /dev/null && [ "$(yq e '.vars.NPM_PROGRAM_LOCAL' Taskfile.yml)" != 'pnpm' ]; then
   yq e -i '.vars.NPM_PROGRAM_LOCAL = "pnpm"' Taskfile.yml
 fi
 

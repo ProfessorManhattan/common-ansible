@@ -38,9 +38,8 @@
     "string-break": "^1.2.0"
   },
   "devDependencies": {
-
     "@mblabs/eslint-config": "^1.0.115",
-    "@mblabs/prettier-config": "^14.14.30",
+    "@mblabs/prettier-config": "^14.14.31",
     "@mblabs/release-config": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "commitlint-config-gitmoji": "^2.2.5",
