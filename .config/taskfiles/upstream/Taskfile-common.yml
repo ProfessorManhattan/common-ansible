@@ -50,23 +50,22 @@ tasks:
 
   copy:common:
     cmds:
-      - cp -rf ./{{.SHARED_FOLDER}}/common/ .
+      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} ./{{.SHARED_FOLDER}}/common/ .
       - task: :common:husky:permissions
 
   copy:project:
     cmds:
-      - cp -rf ./{{.SHARED_FOLDER}}/common/ ./{{.COMMON_FOLDER}}
+      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} ./{{.SHARED_FOLDER}}/common{{if OS "darwin"}}/{{end}} ./{{.COMMON_FOLDER}}
       - if [ ! -d project ]; then mkdir project; fi
-      - cp -rf project/ ./{{.COMMON_FOLDER}}
+      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} project{{if OS "darwin"}}/{{end}} ./{{.COMMON_FOLDER}}
 
   copy:project:subtype:
     cmds:
       - |
         for FOLDER in project-*/; do
           SUBTYPE="$(echo "$FOLDER" | sed 's/project-\(.*\)\//\1/')"
-          cp -rf "$FOLDER/" "./{{.COMMON_FOLDER}}-$SUBTYPE" &
+          cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} "$FOLDER{{if OS "darwin"}}/{{end}}" "./{{.COMMON_FOLDER}}-$SUBTYPE"
         done
-        wait
 
   merge:
     deps:
