@@ -50,21 +50,21 @@ tasks:
 
   copy:common:
     cmds:
-      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} ./{{.SHARED_FOLDER}}/common/ .
+      - cp {{if eq OS "darwin"}}-rf{{else}}-rT{{end}} ./{{.SHARED_FOLDER}}/common/ .
       - task: :common:husky:permissions
 
   copy:project:
     cmds:
-      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} ./{{.SHARED_FOLDER}}/common{{if OS "darwin"}}/{{end}} ./{{.COMMON_FOLDER}}
+      - cp {{if eq OS "darwin"}}-rf{{else}}-rT{{end}} ./{{.SHARED_FOLDER}}/common{{if eq OS "darwin"}}/{{end}} ./{{.COMMON_FOLDER}}
       - if [ ! -d project ]; then mkdir project; fi
-      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} project{{if OS "darwin"}}/{{end}} ./{{.COMMON_FOLDER}}
+      - cp {{if eq OS "darwin"}}-rf{{else}}-rT{{end}} project{{if eq OS "darwin"}}/{{end}} ./{{.COMMON_FOLDER}}
 
   copy:project:subtype:
     cmds:
       - |
         for FOLDER in project-*/; do
           SUBTYPE="$(echo "$FOLDER" | sed 's/project-\(.*\)\//\1/')"
-          cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} "$FOLDER{{if OS "darwin"}}/{{end}}" "./{{.COMMON_FOLDER}}-$SUBTYPE"
+          cp {{if eq OS "darwin"}}-rf{{else}}-rT{{end}} "$FOLDER{{if eq OS "darwin"}}/{{end}}" "./{{.COMMON_FOLDER}}-$SUBTYPE"
         done
 
   merge:
