@@ -75,7 +75,7 @@
     "name": "Ansible Common",
     "overview": "This repository is home to common Ansible files as well as boilerplate code for new projects. This repository hosts files that are shared to all our downstream projects (perhaps yours as well). There is also boilerplate code that is added to a project if there is no file structure yet.",
     "profile": {
-      "npmjs_organization": "washingtondc"
+      "npmjs_organization": "installdoc"
     },
     "repository": {
       "github": "https://github.com/ProfessorManhattan/common-ansible",
