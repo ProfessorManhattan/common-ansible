@@ -61,6 +61,9 @@
     "description": "Shared Ansible files that propagate to downstream projects (including boilerplate code for new projects)",
     "emoji_end": "",
     "emoji_start": "🖥️▶️ ",
+    "github_id": "R_kgDOGet0ww",
+    "gitlab_group_id": "11097242",
+    "gitlab_project_id": "24680321",
     "group": "common",
     "name": "Ansible Common",
     "overview": "This repository is home to common Ansible files as well as boilerplate code for new projects. This repository hosts files that are shared to all our downstream projects (perhaps yours as well). There is also boilerplate code that is added to a project if there is no file structure yet.",
@@ -73,10 +76,7 @@
     },
     "slug": "common-ansible",
     "subgroup": "ansible",
-    "title": "Ansible Common Files and Boilerplate Code",
-    "github_id": "R_kgDOGet0ww",
-    "gitlab_project_id": "24680321",
-    "gitlab_group_id": "11097242"
+    "title": "Ansible Common Files and Boilerplate Code"
   },
   "commitlint": {
     "extends": [
