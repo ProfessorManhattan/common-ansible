@@ -11,8 +11,8 @@ if [ -n "$GITLAB_CI" ]; then
   git remote set-url origin "https://root:$GROUP_ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
   git config user.email "$GITLAB_CI_EMAIL"
   git config user.name "$GITLAB_CI_NAME"
+  git fetch --all
   git checkout master
-  git pull origin master
 fi
 
 # @description Clone shared files repository

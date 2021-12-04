@@ -18,6 +18,7 @@ update:common:
   script:
     - task start
     - task ci:commit
+    - task ci:synchronize
   stage: update
   variables:
     GIT_DEPTH: 1

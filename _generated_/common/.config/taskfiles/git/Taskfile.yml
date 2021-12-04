@@ -5,7 +5,7 @@ version: '3'
 vars:
   EMOJI_END:
     sh: |
-      BP_END="$(jq -r '.blueprint.emoji_end' package.json)"
+      BP_END="$(jq -r '.blueprint.emoji_end' .variables.json)"
       if [ "$BP_START" != 'null' ]; then
         echo "$BP_START"
       else
@@ -17,7 +17,7 @@ vars:
       fi
   EMOJI_START:
     sh: |
-      BP_START="$(jq -r '.blueprint.emoji_start' package.json)"
+      BP_START="$(jq -r '.blueprint.emoji_start' .variables.json)"
       if [ "$BP_START" != 'null' ]; then
         echo "$BP_START"
       else
@@ -179,6 +179,9 @@ tasks:
   gitlab:branches:
     deps:
       - :install:software:glab
+    vars:
+      REPO_ID:
+        sh: glab api projects/:fullpath | jq '.id'
     run: once
     cmds:
       - |
@@ -186,9 +189,12 @@ tasks:
           glab api projects/:fullpath/protected_branches/master -X DELETE
           glab api projects/:fullpath/protected_branches -X POST -f name=master -f code_owner_approval_required=true > /dev/null
         fi
+      - glab api projects/:fullpath/repository/branches -X POST -f id={{.REPO_ID}} -f branch=main -f ref=master
       - glab api projects/:fullpath/protected_branches -X POST -f name=main -f code_owner_approval_required=true > /dev/null
+      - glab api projects/:fullpath/repository/branches -X POST -f id={{.REPO_ID}} -f branch=next -f ref=master
       - glab api projects/:fullpath/protected_branches -X POST -f name=next -f code_owner_approval_required=true > /dev/null
       - glab api projects/:fullpath/protected_branches -X POST -f name=protected-* -f code_owner_approval_required=true > /dev/null
+      - glab api projects/:fullpath/repository/branches -X POST -f id={{.REPO_ID}} -f branch=synchronize -f ref=master
       - glab api projects/:fullpath/protected_branches -X POST -f name=synchronize -f code_owner_approval_required=true > /dev/null
       - .config/log info "Set up protected branches"
 
@@ -275,6 +281,9 @@ tasks:
           if [ "{{.PUSH_MIRROR_COUNT}}" == '0' ]; then
             glab api projects/:fullpath/remote_mirrors --method POST --header "Content-Type: application/json" \
               -f "url=https://{{.GITHUB_USER}}:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git" \
+              -f 'enabled=true' > /dev/null
+            glab api projects/:fullpath/remote_mirrors --method POST --header "Content-Type: application/json" \
+              -f "url=https://root:$GITHUB_TOKEN@github.com/{{.GITHUB_ORG}}/{{.GITHUB_SLUG}}.git" \
               -f 'enabled=true' > /dev/null
           fi
           curl -s -H 'Content-Type: application/json' -H "Authorization: Bearer $GITLAB_TOKEN" -X PUT --data \

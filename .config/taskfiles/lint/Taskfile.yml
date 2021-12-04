@@ -57,7 +57,7 @@ tasks:
         if [ ! -z '{{.CLI_ARGS}}' ] && [ '{{.CLI_ARGS}}' != '.git/MERGE_MSG' ]; then
           cp '{{.CLI_ARGS}}' '{{.CLI_ARGS}}.bak'
           TMP="$(mktemp)"
-          COMMIT_MSG_NOEMOJI="$(sed 's/^..//' < '{{.CLI_ARGS}}')"
+          COMMIT_MSG_NOEMOJI="$(sed 's/^..//' < '{{.CLI_ARGS}}' | xargs)"
           echo "$COMMIT_MSG_NOEMOJI" | {{.NPX_PACKAGE}} commitlint
         elif [ '{{.CLI_ARGS}}' == '.git/MERGE_MSG' ]; then
           .config/log info 'Bypassing commitlint since the message is a merge message'
