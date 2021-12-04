@@ -102,11 +102,6 @@
       "command": "bash .config/scripts/vscode.sh && task update:modules"
     },
     {
-      "label": "(update:services): Update elements of the repository that require API access",
-      "type": "shell",
-      "command": "bash .config/scripts/vscode.sh && task update:services"
-    },
-    {
       "label": "(update): Refresh the project with the latest upstream code and ensure blueprint data has propagated",
       "type": "shell",
       "command": "bash .config/scripts/vscode.sh && task update"
@@ -185,6 +180,11 @@
       "label": "(git:remove:submodules): Remove all submodules in the current directory and optionally filter by RegEx",
       "type": "shell",
       "command": "bash .config/scripts/vscode.sh && task git:remove:submodules"
+    },
+    {
+      "label": "(group:exec): Execute group commands on any group (including repositories in sub-groups)",
+      "type": "shell",
+      "command": "bash .config/scripts/vscode.sh && task group:exec"
     },
     {
       "label": "(image:compress): Compress JPG/PNG images via TinyPNG",
@@ -520,6 +520,11 @@
       "label": "(security:trivy): Analyze the Docker container for security vulnerabilities with Trivy",
       "type": "shell",
       "command": "bash .config/scripts/vscode.sh && task security:trivy"
+    },
+    {
+      "label": "(services): Update elements of the repository that require API access",
+      "type": "shell",
+      "command": "bash .config/scripts/vscode.sh && task services"
     },
     {
       "label": "(start): Set up the project and refresh it with the latest changes",

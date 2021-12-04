@@ -33,7 +33,7 @@ tasks:
     cmds:
       - |
         if [ -f ~/.config/proselint/config ]; then
-          true info 'Backing up `proselint` from `~/.config/proselint/config` to `~/.config/proselint/config.backup`'
+          .config/log info 'Backing up `proselint` from `~/.config/proselint/config` to `~/.config/proselint/config.backup`'
           mv ~/.config/proselint/config ~/.config/proselint/config.backup
         fi
       - mkdir -p ~/.config/proselint
@@ -43,6 +43,6 @@ tasks:
     cmds:
       - |
         if [ -f ~/.config/proselint/config.backup ]; then
-          true info "Restoring original Proselint configuration"
+          .config/log info "Restoring original Proselint configuration"
           mv ~/.config/proselint/config.backup ~/.config/proselint/config
         fi

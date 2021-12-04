@@ -18,8 +18,14 @@ tasks:
 
   checkout:
     cmds:
-      - git checkout "$CI_COMMIT_REF_NAME"
-      - git pull origin "$CI_COMMIT_REF_NAME"
+      - |
+        if [ "$CI_COMMIT_REF_NAME" == 'synchronize' ]; then
+          git checkout master
+          git pull origin master
+        else
+          git checkout "$CI_COMMIT_REF_NAME"
+          git pull origin "$CI_COMMIT_REF_NAME"
+        fi
 
   commit:
     deps:
@@ -30,8 +36,8 @@ tasks:
       - git diff --cached "*"
       - |
         if [[ $(git status --porcelain) ]]; then
-          git commit -m "automation(upstream-sync) Applying changes from upstream repository."
-          git push -o ci.variable="DO_CI=false" origin "$CI_COMMIT_REF_NAME"
+          git commit -m "⤵️ automation(synchronize) Applying changes from upstream repository."
+          git push origin master
         fi
 
   commit:config:

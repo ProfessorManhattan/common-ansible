@@ -66,7 +66,7 @@ tasks:
         {{if .CLI_ARGS}}
           for ITEM in environments/{{.CLI_ARGS}}/*; do
             if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              true info "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
+              .config/log info "Skipping environments/{{.CLI_ARGS}}/$ITEM because it already exists as a file/folder in the root of the project."
             else
               rm -f $ITEM
               ln -s "./environments/{{.CLI_ARGS}}/$ITEM" "$ITEM"
@@ -77,7 +77,6 @@ tasks:
   environment:prompt:
     deps:
       - :install:modules:local
-      - :install:modules:prompt
     interactive: true
     cmds:
       - |
@@ -85,7 +84,7 @@ tasks:
         if [ ! -z "$ENVIRONMENT" ]; then
           for ITEM in "environments/$ENVIRONMENT/*"; do
             if [ -d "$ITEM" ] || [ -f "$ITEM" ]; then
-              true info 'Skipping `environments/'"$ENVIRONMENT/$ITEM"'` because it already exists as a file/folder in the root of the project.'
+              .config/log info 'Skipping `environments/'"$ENVIRONMENT/$ITEM"'` because it already exists as a file/folder in the root of the project.'
             else
               rm -f $ITEM
               ln -s "./environments/$ENVIRONMENT/$ITEM" "$ITEM"
@@ -115,7 +114,7 @@ tasks:
     cmds:
       - |
         FILES=$(find ./roles -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/{{.CLI_ARGS}}" ';' -print)
-        true log info 'Found '"$(echo "$FILES" | wc -l | xargs)"' roles missing {{.CLI_ARGS}}'
+        .config/log info 'Found '"$(echo "$FILES" | wc -l | xargs)"' roles missing {{.CLI_ARGS}}'
         echo "$FILES"
     preconditions:
       - sh: test -d roles

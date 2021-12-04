@@ -1,7 +1,7 @@
 ---
 test:molecule:darwin:
   allow_failure: true
-  image: megabytelabs/molecule:latest
+  image: macos-10.15-xcode-11
   rules:
     - if: $DO_CI == 'false'
       when: never
@@ -10,12 +10,13 @@ test:molecule:darwin:
     - changes:
         - main.yml
     - if: $CI_PIPELINE_SOURCE == 'schedule' || $CI_PIPELINE_SOURCE == 'web'
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
   script:
     - set -eo pipefail
   services:
     - docker:dind
   stage: test
+  tags:
+    - shared-macos-amd64
   variables:
     DOCKER_CERT_PATH: $DOCKER_TLS_CERTDIR/client
     DOCKER_HOST: tcp://docker:2376

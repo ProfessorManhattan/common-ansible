@@ -100,7 +100,7 @@ tasks:
     cmds:
       - xcode-select --install
     status:
-      - xcode-select -p 2&>1 /dev/null
+      - xcode-select -p 1> /dev/null
 
   common:linux:
     vars:
@@ -121,7 +121,7 @@ tasks:
   common:linux:archlinux:
     interactive: true
     cmds:
-      - true warn "Archlinux support for Homebrew is not very well documented.. if this does not work and you can get it working, please open a PR :)"
+      - .config/log warn "Archlinux support for Homebrew is not very well documented.. if this does not work and you can get it working, please open a PR :)"
       - |
         sudo pacman update
         sudo pacman -S base-devel curl file git procps-ng
@@ -165,12 +165,12 @@ tasks:
 
   common:linux:unknown:
     cmds:
-      - true warn 'You are using an operating system that we do not directly support. Please make sure
+      - .config/log warn 'You are using an operating system that we do not directly support. Please make sure
         the equivalent of `build-essential`, `curl`, `file`, `git`, and `procps` are installed.'
 
   common:windows:
     cmds:
-      - true error "Windows is not supported. Try using a Windows WSL environment."
+      - .config/log error "Windows is not supported. Try using a Windows WSL environment."
       - exit 1
 
   docker:

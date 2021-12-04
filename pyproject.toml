@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "common-ansible"
 version = "0.0.1"
-description = "Shared Ansible files that propagate downstream as well as boilerplate code for new projects"
+description = "Shared Ansible files that propagate to downstream projects (including boilerplate code for new projects)"
 authors = ["Brian Zalewski <brian@megabyte.space>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://megabyte.space"
 documentation = "https://megabyte.space/docs/common/ansible"
-keywords = ["ansible", "awesome", "boilerplate", "mblabs", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples"]
+keywords = ["ansible", "awesome", "boilerplate", "mblabs", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples", "washingtondc"]
 include = ["CHANGELOG.md", "LICENSE"]
 classifiers = [
   "Development Status :: 4 - Beta",

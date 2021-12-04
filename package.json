@@ -1,8 +1,8 @@
 {
-  "private": true,
-  "name": "@mblabs/common-ansible",
+  "private": false,
+  "name": "@installdoc/common-ansible",
   "version": "0.0.1",
-  "description": "Shared Ansible files that propagate downstream as well as boilerplate code for new projects",
+  "description": "Shared Ansible files that propagate to downstream projects (including boilerplate code for new projects)",
   "license": "MIT",
   "author": "Brian Zalewski <brian@megabyte.space> (https://megabyte.space)",
   "homepage": "https://megabyte.space",
@@ -25,7 +25,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "cz-emoji"
+      "path": "node_modules/cz-emoji-conventional"
     }
   },
   "dependencies": {},
@@ -48,7 +48,8 @@
     "playbook",
     "professormanhattan",
     "role",
-    "samples"
+    "samples",
+    "washingtondc"
   ],
   "engines": {
     "node": ">=14.18.0"
@@ -72,13 +73,19 @@
     },
     "slug": "common-ansible",
     "subgroup": "ansible",
-    "title": "Ansible Common Files and Boilerplate Code"
+    "title": "Ansible Common Files and Boilerplate Code",
+    "github_id": "R_kgDOGet0ww",
+    "gitlab_project_id": "24680321",
+    "gitlab_group_id": "11097242"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "helpUrl": "https://megabyte.space/docs/contributing/commits"
   },
   "eslintConfig": {
-    "extends": "@mblabs/eslint-config",
-    "rules": {
-      "import/no-extraneous-dependencies": "off"
-    },
+    "extends": "eslint-config-strict-mode",
     "overrides": [
       {
         "files": [
@@ -88,7 +95,10 @@
           "yml/no-empty-document": "off"
         }
       }
-    ]
+    ],
+    "rules": {
+      "import/no-extraneous-dependencies": "off"
+    }
   },
   "funding": [
     {
@@ -122,7 +132,6 @@
       "task fix:json --"
     ],
     "**/*.sh": [
-      "task fix:shell --",
       "task lint:shell --"
     ],
     "**/*.toml": [
@@ -141,12 +150,12 @@
       "task image:compress --"
     ]
   },
-  "prettier": "@mblabs/prettier-config",
+  "prettier": "@washingtondc/prettier",
   "release": {
     "branches": [
       "master",
       "next"
     ],
-    "extends": "@mblabs/release-config"
+    "extends": "@washingtondc/release"
   }
 }

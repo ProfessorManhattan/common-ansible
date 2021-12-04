@@ -19,18 +19,11 @@ tasks:
 
   template:files:
     deps:
-      - template:files:handlebars
-      - template:files:hbs
+      - template:files:liquidjs
 
-  template:files:handlebars:
+  template:files:liquidjs:
     cmds:
-      - task: :upstream:template:handlebars
-        vars:
-          ADDITIONAL_IGNORE_FOLDERS: -path './{{.SHARED_COMMON_FOLDER}}*' -o -path './deprecated*' -o
-
-  template:files:hbs:
-    cmds:
-      - task: :upstream:template:hbs
+      - task: :upstream:template:liquidjs
         vars:
           ADDITIONAL_IGNORE_FOLDERS: -path './{{.SHARED_COMMON_FOLDER}}*' -o -path './deprecated*' -o
 

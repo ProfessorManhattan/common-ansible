@@ -19,7 +19,7 @@ tasks:
       - :ansible:symlink:{{.REPOSITORY_SUBTYPE}}
       - :install:python:requirements
     cmds:
-      - true info "Testing Ansible playbook locally"
+      - .config/log info "Testing Ansible playbook locally"
       - cp test/{{OS}}/inventory inventory
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
       - cp test/{{OS}}/ansible.cfg ansible.cfg
@@ -140,13 +140,13 @@ tasks:
         if test -d "molecule/$SCENARIO"; then
           molecule converge -s "$SCENARIO"
         else
-          true error "The `$SCENARIO` scenario is not present in the `molecule/` folder"
+          .config/log error "The `$SCENARIO` scenario is not present in the `molecule/` folder"
         fi
 
   molecule:virtualbox:converge:prompt:
     interactive: true
     deps:
-      - :install:modules:prompt
+      - :install:modules:local
     cmds:
       - node .config/scripts/prompts/molecule-desktop.js
 
@@ -210,7 +210,7 @@ tasks:
 
   vagrant:prompt:
     deps:
-      - :install:modules:prompt
+      - :install:modules:local
     interactive: true
     cmds:
       - node .config/scripts/prompts/vagrant-up.js

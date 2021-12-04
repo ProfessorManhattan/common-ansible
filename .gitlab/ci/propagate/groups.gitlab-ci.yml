@@ -9,7 +9,7 @@ propagate:groups:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $PROPAGATE_FILES == 'true'
   script:
     - set -eo pipefail
-    - curl -o propagate.sh https://gitlab.com/megabyte-labs/ci/gitlab-ci-templates/-/raw/master/scripts/propagate-groups.sh
+    - curl -o propagate.sh https://gitlab.com/megabyte-labs/common/shared/-/raw/master/common/.gitlab/ci/scripts/propagate-groups.sh
     - bash propagate.sh
   stage: deploy
   variables:
