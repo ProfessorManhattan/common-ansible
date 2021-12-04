@@ -6,11 +6,11 @@ driver:
     ansible_connection_options:
       ansible_connection: local
 platforms:
-  - instance
+  - name: instance
 provisioner:
   connection_options:
     ansible_password: ${TEST_PASSWORD:-ansible}
-    ansible_ssh_user: ${TEST_SSH_USER:-ansible}
+    ansible_ssh_user: ${TEST_USER:-ansible}
     ansible_user: ${TEST_USER:-ansible}
 scenario:
   create_sequence:
