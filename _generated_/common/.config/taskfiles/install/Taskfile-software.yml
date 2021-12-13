@@ -150,10 +150,13 @@ tasks:
     cmds:
       - mkdir -p .cache
       - |
-        yum grouplist 'Development Tools' &> /tmp/yum-devtools-check
-        DEV_TOOLS_NOT_INSTALLED="$(grep 'No groups match' < /tmp/yum-devtools-check > /dev/null)"
-        if [ "$DEV_TOOLS_NOT_INSTALLED" == '0' ]; then
-          sudo yum groupinstall -y 'Development Tools'
+        if [ ! -f '.cache/yum-devtools-check-ran' ]; then
+          yum grouplist 'Development Tools' &> .cache/yum-devtools-check
+          DEV_TOOLS_NOT_INSTALLED="$(grep 'No groups match' < .cache/yum-devtools-check > /dev/null)"
+          if [ "$DEV_TOOLS_NOT_INSTALLED" == '0' ]; then
+            sudo yum groupinstall -y 'Development Tools'
+          fi
+          touch .cache/yum-devtools-check-ran
         fi
         if ! rpm --quiet --query curl file git procps-ng; then
           sudo yum install -y curl file git procps-ng
@@ -166,8 +169,6 @@ tasks:
             fi
           fi
         fi
-    status:
-      - rpm --quiet --query curl git file libxcrypt-compat procps-ng
 
   common:linux:unknown:
     cmds:
