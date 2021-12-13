@@ -65,7 +65,7 @@
     "gitlab_group_id": "11097242",
     "gitlab_project_id": "24680321",
     "group": "common",
-    "name": "Ansible Common Files",
+    "name": "Ansible Common",
     "overview": "This repository is home to common Ansible files as well as boilerplate code for new projects. This repository hosts files that are shared to all our downstream projects (perhaps yours as well). There is also boilerplate code that is added to a project if there is no file structure yet.",
     "profile": {
       "npmjs_organization": "installdoc"
