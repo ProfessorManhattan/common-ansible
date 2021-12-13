@@ -123,9 +123,9 @@
   "ntl": {
     "descriptions": {
       "help": "Display a list of tasks that can be run via the Taskfile.yml",
-      "prepare": "Hook that runs logic like installing pre-commit hooks which is triggered by running npm install",
-      "repair": "Attempts to fix projects that are having trouble running basic commands like 'task start'",
-      "start": "Entrypoint for brand new machines that installs mandatory requirements (e.g. go-task, git, curl) and then ensures the project is in sync with upstream sources by running 'task start'"
+      "prepare": "Hook, triggered by running npm install, that runs logic such as installing pre-commit hooks",
+      "repair": "Fixes basic issues in projects that are having trouble running basic commands like 'task start'",
+      "start": "Entrypoint for new developers that installs requirements and then runs 'task start'"
     }
   },
   "optionalDependencies": {},
