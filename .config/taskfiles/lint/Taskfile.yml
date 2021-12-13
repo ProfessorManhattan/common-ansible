@@ -40,6 +40,17 @@ tasks:
     cmds:
       - poetry run ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}
 
+  any:
+    deps:
+      - :install:python:requirements
+    desc: Generic linting of files for things like destroyed-symlinks, merge conflicts, etc.
+    cmds:
+      - poetry run blocklint --wordlist blacklist,slave,whitelist {{.CLI_ARGS}}
+      - poetry run check-merge-conflict {{.CLI_ARGS}}
+      - poetry run check-added-large-files {{.CLI_ARGS}}
+      - poetry run check-symlinks {{.CLI_ARGS}}
+      - poetry run destroyed-symlinks {{.CLI_ARGS}}
+
   commit:
     deps:
       - :install:modules:local

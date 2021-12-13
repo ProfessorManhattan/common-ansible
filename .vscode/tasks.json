@@ -212,6 +212,11 @@
       "command": "bash .config/scripts/vscode.sh && task lint:ansible"
     },
     {
+      "label": "(lint:any): Generic linting of files for things like destroyed-symlinks, merge conflicts, etc.",
+      "type": "shell",
+      "command": "bash .config/scripts/vscode.sh && task lint:any"
+    },
+    {
       "label": "(lint:docker): Lint Dockerfiles using Hadolint (requires Docker)",
       "type": "shell",
       "command": "bash .config/scripts/vscode.sh && task lint:docker"

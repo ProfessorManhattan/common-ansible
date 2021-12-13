@@ -76,11 +76,7 @@
   "license": "{{license}}",
   "lint-staged": {
     "**/*": [
-      "blocklint --wordlist blacklist,slave,whitelist",
-      "check-merge-conflict",
-      "check-added-large-files",
-      "check-symlinks",
-      "destroyed-symlinks"
+      "task lint:any --"
     ],
     "**/*.(css|html|less|md|mjml|php|scss|sh|xml)": [
       "task fix:prettier --"
