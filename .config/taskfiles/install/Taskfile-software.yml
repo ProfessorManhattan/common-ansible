@@ -173,6 +173,18 @@ tasks:
       - .config/log error "Windows is not supported. Try using a Windows WSL environment."
       - exit 1
 
+  coreutils:
+    deps:
+      - brew
+    run: once
+    cmds:
+      - |
+        if [ '{{OS}}' == 'darwin' ] && ! type gsed > /dev/null; then
+          brew install coreutils
+        fi
+    status:
+      - '[ "{{OS}}" == "darwin" ] || type gsed > /dev/null'
+
   docker:
     run: once
     cmds:
