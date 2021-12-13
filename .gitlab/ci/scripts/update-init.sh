@@ -37,6 +37,8 @@ else
   cp -rT common-shared/common/.gitlab/ci .gitlab/ci
 fi
 
+cp common-shared/common/.config/log .config/log
+
 # @description Ensure proper NPM dependencies are installed
 echo "Installing NPM packages"
 if [ ! -f 'package.json' ]; then
