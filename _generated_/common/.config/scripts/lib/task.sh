@@ -135,7 +135,7 @@ function installTask() {
   local DOWNLOAD_SHA256
   DOWNLOAD_SHA256="$(grep "$DOWNLOAD_BASENAME" < "$CHECKSUM_DESTINATION" | cut -d ' ' -f 1)"
   sha256 "$DOWNLOAD_DESTINATION" "$DOWNLOAD_SHA256"
-  .config success 'Validated checksum'
+  .config/log success 'Validated checksum'
   mkdir -p "$TMP_DIR/task"
   tar -xzvf "$DOWNLOAD_DESTINATION" -C "$TMP_DIR/task"
   if type task &> /dev/null && [ -w "$(which task)" ]; then

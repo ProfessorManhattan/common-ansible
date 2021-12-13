@@ -90,14 +90,45 @@ tasks:
           NPM_PACKAGE: git-notify
 
   global:
-    run: once
+    deps:
+      - global:package-manager
+    vars:
+      PACKAGE_BIN: '{{if index . "NPM_PACKAGE_BIN"}}{{.NPM_PACKAGE_BIN}}{{else}}{{.NPM_PACKAGE}}{{end}}'
+    run: when_changed
     cmds:
-      - 'true'
+      - |
+        if ! type {{.PACKAGE_BIN}} > /dev/null; then
+          . .config/log info 'Installing _NPM CLI_ package `{{.NPM_PACKAGE}}` globally'
+          {{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}
+        fi
+    status:
+      - type {{.PACKAGE_BIN}} > /dev/null
 
   global:library:
+    env:
+      LIST_GREP:
+        sh: if npm list -g | grep '{{.NPM_PACKAGE}}'; then echo "0"; else echo "1"; fi
     run: once
     cmds:
-      - 'true'
+      - |
+        if [ "$LIST_GREP" == '1' ]; then
+          . .config/log info "Installing _NPM library_ package `{{.NPM_PACKAGE}}` globally"
+          {{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}
+        fi
+    status:
+      - '[ "$LIST_GREP" != "1" ]'
+
+  global:package-manager:
+    deps:
+      - :install:software:node
+    run: once
+    cmds:
+      - |
+        if ! type {{.NPM_PROGRAM}}; then
+          npm install -g {{.NPM_PROGRAM}}
+        fi
+    status:
+      - type {{.NPM_PROGRAM}} > /dev/null
 
   husky:
     run: once

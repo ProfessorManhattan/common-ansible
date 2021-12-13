@@ -154,7 +154,9 @@ tasks:
         if [ -f '/etc/os-release' ]; then
           source /etc/os-release
           if [ "$ID" == 'fedora' ] && [ "$VERSION_ID" -gt "29" ]; then
-            sudo yum install libxcrypt-compat
+            if ! yum list installed libxcrypt-compat; then
+              sudo yum -y install libxcrypt-compat
+            fi
           fi
         fi
     status:
