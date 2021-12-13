@@ -69,4 +69,4 @@ tasks:
     cmds:
       - git checkout -b synchronize || git checkout synchronize
       - git pull origin master
-      - git push origin synchronize
+      - git push origin synchronize --force
