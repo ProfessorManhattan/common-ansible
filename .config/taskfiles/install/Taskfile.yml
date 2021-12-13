@@ -41,7 +41,7 @@ tasks:
       - :install:npm:cz-emoji
     run: once
     cmds:
-      - cmd: '{{.NPM_PROGRAM_LOCAL}} i --shamefully-hoist'
+      - cmd: '{{.NPM_PROGRAM_LOCAL}} i --shamefully-hoist --no-frozen-lockfile'
         ignore_error: true
       - task: modules:local:sync
     sources:
