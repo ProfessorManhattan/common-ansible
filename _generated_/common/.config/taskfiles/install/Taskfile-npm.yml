@@ -208,6 +208,13 @@ tasks:
         vars:
           NPM_PACKAGE: npm
 
+  ntl:
+    run: once
+    cmds:
+      - task: global
+        vars:
+          NPM_PACKAGE: ntl
+
   only-allow:
     run: once
     cmds:
