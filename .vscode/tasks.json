@@ -492,6 +492,11 @@
       "command": "bash .config/scripts/vscode.sh && task python:test"
     },
     {
+      "label": "(scripts): Run and view descriptions for `npm scripts` via an interactive dialog",
+      "type": "shell",
+      "command": "bash .config/scripts/vscode.sh && task scripts"
+    },
+    {
       "label": "(security:bandit): Check for Python code security issues",
       "type": "shell",
       "command": "bash .config/scripts/vscode.sh && task security:bandit"

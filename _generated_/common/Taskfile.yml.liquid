@@ -62,7 +62,7 @@ tasks:
       - install:npm:ntl
     desc: Run and view descriptions for `npm scripts` via an interactive dialog
     cmds:
-      - NTL_RUNNER={{.NPM_PROGRAM}} {{.NPX_HANDLE}}ntl
+      - NTL_RUNNER=\{{.NPM_PROGRAM}} \{{.NPX_HANDLE}}ntl
 
   services:
     desc: Update elements of the repository that require API access
