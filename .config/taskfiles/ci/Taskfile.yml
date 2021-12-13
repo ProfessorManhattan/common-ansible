@@ -67,6 +67,6 @@ tasks:
 
   synchronize:
     cmds:
-      - git checkout synchronize
+      - git checkout -b synchronize || git checkout synchronize
       - git pull origin master
       - git push origin synchronize
