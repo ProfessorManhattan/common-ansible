@@ -17,6 +17,7 @@ update:common:
     - if: ($CI_PIPELINE_SOURCE == 'pipeline' || $CI_PIPELINE_SOURCE == 'web') && $CI_COMMIT_REF_NAME == 'synchronize'
   script:
     - task start
+    - if [ "$UPDATE_SERVICES" == 'true' ]; then task services; fi
     - task ci:commit
     - task ci:synchronize
   stage: update
