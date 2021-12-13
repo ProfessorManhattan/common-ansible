@@ -183,7 +183,7 @@ function sha256() {
     if ! type shasum &> /dev/null; then
       .config/log warn "WARNING: checksum validation is being skipped for $1 because the shasum program is not installed"
     else
-      echo "$1  $2" | shasum -s -a 256 -c
+      echo "$2  $1" | shasum -s -a 256 -c
     fi
   elif [[ "$OSTYPE" == 'cygwin' ]] || [[ "$OSTYPE" == 'msys' ]] || [[ "$OSTYPE" == 'win32' ]]; then
     .config/log error "Windows is not directly supported. Use WSL or Docker." && exit 1
