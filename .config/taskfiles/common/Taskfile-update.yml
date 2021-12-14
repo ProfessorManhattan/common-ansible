@@ -85,6 +85,7 @@ tasks:
       - :install:npm:remark
       - :install:npm:prettier
       - :install:npm:readme
+    # @desc_when [common/Taskfile-update.yml] subtype.cli
     desc: Build `man` page from the README.md file
     vars:
       MAN_TEMPLATE: '{{.REPOSITORY_SUBTYPE}}-blueprint-man.md'
