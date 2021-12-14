@@ -143,9 +143,6 @@ tasks:
       - defaults/**/*.yml
       - tasks/**/*.yml
       - vars/**/*.yml
-    preconditions:
-      - sh: 'type mod-ansible-autodoc &> /dev/null'
-        msg: The Python package `mod-ansible-autodoc` is missing.
 
   mod-ansible-autodoc:variables:
     cmds:
