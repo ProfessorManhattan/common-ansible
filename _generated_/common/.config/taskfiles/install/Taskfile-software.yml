@@ -255,6 +255,13 @@ tasks:
         vars:
           FORMULAE: glab
 
+  grype:
+    run: once
+    cmds:
+      - task: brew:formulae
+        vars:
+          FORMULAE: anchore/grype/grype
+
   go:
     run: once
     cmds:
