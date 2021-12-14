@@ -40,8 +40,8 @@ tasks:
 
   copy:
     cmds:
-      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} {{.SHARED_FOLDER}}/_generated_/common{{if eq OS "darwin"}}/{{end}} .
-      - cp {{if OS "darwin"}}-rf{{else}}-rT{{end}} {{.SHARED_FOLDER}}/_generated_/{{.REPOSITORY_SUBTYPE}}{{if eq OS "darwin"}}/{{end}} .
+      - cp {{if eq OS "darwin"}}-rf{{else}}-rT{{end}} {{.SHARED_FOLDER}}/_generated_/common{{if eq OS "darwin"}}/{{end}} .
+      - cp {{if eq OS "darwin"}}-rf{{else}}-rT{{end}} {{.SHARED_FOLDER}}/_generated_/{{.REPOSITORY_SUBTYPE}}{{if eq OS "darwin"}}/{{end}} .
       - task: :common:husky:permissions
       - task: save:common:keywords
 

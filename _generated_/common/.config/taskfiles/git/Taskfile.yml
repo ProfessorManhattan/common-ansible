@@ -6,7 +6,7 @@ vars:
   EMOJI_END:
     sh: |
       if [ -f '.variables.json' ]; then
-        BP_END="$(jq -r '.blueprint.emoji_end' .variables.json)"
+        BP_END="$(jq -r '.emoji_end' .variables.json)"
         if [ "$BP_START" != 'null' ]; then
           echo "$BP_START"
         else
@@ -20,7 +20,7 @@ vars:
   EMOJI_START:
     sh: |
       if [ -f '.variables.json' ]; then
-        BP_START="$(jq -r '.blueprint.emoji_start' .variables.json)"
+        BP_START="$(jq -r '.emoji_start' .variables.json)"
         if [ "$BP_START" != 'null' ]; then
           echo "$BP_START"
         else
