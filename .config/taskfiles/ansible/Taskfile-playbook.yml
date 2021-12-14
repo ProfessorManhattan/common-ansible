@@ -99,6 +99,7 @@ tasks:
         msg: This task has dependencies in the `node_modules` folder which is missing.
 
   find-missing:
+    # @desc ansible/playbook
     desc: Find roles that are missing files
     summary: |
       # Find roles that are missing any given file
