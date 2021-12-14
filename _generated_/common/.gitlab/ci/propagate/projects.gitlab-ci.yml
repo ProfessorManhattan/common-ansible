@@ -3,6 +3,8 @@ propagate:projects:
   stage: deploy
   image: megabytelabs/propagate:slim
   rules:
+    - if: $REPOSITORY_TYPE == 'documentation' && $PIPELINE_SOURCE == $COMMON_SHARED_PROJECT_ID
+      when: never
     - if: $DO_CI == 'false'
       when: never
     - if: $CI_COMMIT_TITLE =~ /^chore.*/
