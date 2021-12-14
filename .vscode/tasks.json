@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "(ansible:playbook:environment:cli): Prompts for which environment to use and then symlinks to it",
+      "label": "(ansible:playbook:environment): Prompts for which environment to use and then symlinks to it",
       "type": "shell",
-      "command": "bash .config/scripts/vscode.sh && task ansible:playbook:environment:cli"
+      "command": "bash .config/scripts/vscode.sh && task ansible:playbook:environment"
     },
     {
       "label": "(ansible:playbook:find-missing): Find roles that are missing files",
@@ -22,24 +22,24 @@
       "command": "bash .config/scripts/vscode.sh && task ansible:test:local"
     },
     {
-      "label": "(test:docker): Performs a full test, including a test for idempotency, on all available Linux systems using Docker",
+      "label": "(ansible:test:molecule:docker): Performs a full test, including a test for idempotency, on all available Linux systems using Docker",
       "type": "shell",
-      "command": "bash .config/scripts/vscode.sh && task test:docker"
+      "command": "bash .config/scripts/vscode.sh && task ansible:test:molecule:docker"
     },
     {
-      "label": "(test:e2e): Runs a full E2E Molecule test for all supported operating systems",
+      "label": "(ansible:test:molecule:virtualbox): Runs a full E2E Molecule test for all supported operating systems",
       "type": "shell",
-      "command": "bash .config/scripts/vscode.sh && task test:e2e"
+      "command": "bash .config/scripts/vscode.sh && task ansible:test:molecule:virtualbox"
     },
     {
-      "label": "(test:virtualbox): Provisions a desktop VirtualBox VM and then runs a Molecule test",
+      "label": "(ansible:test:molecule:virtualbox:converge): Provisions a desktop VirtualBox VM and then runs a Molecule test",
       "type": "shell",
-      "command": "bash .config/scripts/vscode.sh && task test:virtualbox"
+      "command": "bash .config/scripts/vscode.sh && task ansible:test:molecule:virtualbox:converge"
     },
     {
-      "label": "(test:vagrant): Runs the playbook using Vagrant",
+      "label": "(ansible:test:vagrant): Runs the playbook using Vagrant",
       "type": "shell",
-      "command": "bash .config/scripts/vscode.sh && task test:vagrant"
+      "command": "bash .config/scripts/vscode.sh && task ansible:test:vagrant"
     },
     {
       "label": "(ci:github:actions:test): Locally test the on-push GitHub Action event (only works for Linux containers)",

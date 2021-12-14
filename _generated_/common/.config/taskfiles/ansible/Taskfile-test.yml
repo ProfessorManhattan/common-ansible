@@ -3,6 +3,7 @@ version: '3'
 
 tasks:
   local:
+    # @desc_when [ansible/Taskfile-test.yml] ansible
     desc: Run the Ansible play on the local machine (or via WSL - see task summary)
     summary: |
       # Run the Ansible play on the local machine
@@ -32,7 +33,7 @@ tasks:
       - :install:python:requirements
       - :install:software:docker
       - :install:software:sshpass
-    label: test:docker
+    # @desc_when [ansible/Taskfile-test.yml] ansible
     desc: Performs a full test, including a test for idempotency, on all available Linux systems using Docker
     summary: |
       # Perform a full test, including an idempotency test, on all available Linux systems using Docker
@@ -78,7 +79,7 @@ tasks:
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox
-    label: test:e2e
+    # @desc_when [ansible/Taskfile-test.yml] ansible
     desc: Runs a full E2E Molecule test for all supported operating systems
     summary: |
       # Run a full E2E Molecule test for all supported operating systems
@@ -104,7 +105,7 @@ tasks:
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox
-    label: test:virtualbox
+    # @desc_when [ansible/Taskfile-test.yml] ansible
     desc: Provisions a desktop VirtualBox VM and then runs a Molecule test
     summary: |
       # Provision a desktop VirtualBox VM and then run a Molecule test
@@ -169,7 +170,7 @@ tasks:
       - :install:software:sshpass
       - :install:software:vagrant
       - :install:software:virtualbox
-    label: test:vagrant
+    # @desc_when [ansible/Taskfile-test.yml] ansible/playbook
     desc: Runs the playbook using Vagrant
     summary: |
       # Run the playbook using Vagrant

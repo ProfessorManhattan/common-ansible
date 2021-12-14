@@ -43,10 +43,7 @@ tasks:
         done
 
   environment:
-    cmds:
-      - task: environment:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
-
-  environment:cli:
+    # @desc_when [ansible/Taskfile-playbook.yml] ansible/playbook
     desc: Prompts for which environment to use and then symlinks to it
     summary: |
       # Switch environments using an interactive dialogue
@@ -61,6 +58,10 @@ tasks:
 
       **You can directly switch enironments to `environments/prod/` by running:**
       `task ansible:environment -- prod`
+    cmds:
+      - task: environment:{{if .CLI_ARGS}}cli{{else}}prompt{{end}}
+
+  environment:cli:
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -99,7 +100,7 @@ tasks:
         msg: This task has dependencies in the `node_modules` folder which is missing.
 
   find-missing:
-    # @desc ansible/playbook
+    # @desc_when [ansible/Taskfile-playbook.yml] ansible/playbook
     desc: Find roles that are missing files
     summary: |
       # Find roles that are missing any given file
