@@ -7,7 +7,7 @@ if type poetry &> /dev/null; then poetry install --no-root; else pip3 install -r
 ansible-galaxy install -r requirements.yml
 ```
 
-Alternatively, you can simply run `bash .config/scripts/start.sh` if you are new to Ansible and do not mind the development requirements also being installed.
+Alternatively, you can simply run `bash .config/scripts/start.sh` if you are new to Ansible and do not mind the development requirements also being installed. This is the easy way of making sure that everything works properly.
 
 ### Python Dependencies
 
