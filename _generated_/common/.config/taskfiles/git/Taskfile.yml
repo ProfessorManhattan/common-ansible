@@ -7,8 +7,8 @@ vars:
     sh: |
       if [ -f '.variables.json' ]; then
         BP_END="$(jq -r '.emoji_end' .variables.json)"
-        if [ "$BP_START" != 'null' ]; then
-          echo "$BP_START"
+        if [ "$BP_END" != 'null' ]; then
+          echo "$BP_END"
         else
           if [ "$(jq -r '.emoji_endings[15]' .variables.json)" != 'null' ]; then
             echo "$(jq --arg place "$(shuf -i 0-15 -n 1)" -r '.emoji_endings[($place | tonumber)]' .variables.json)"
