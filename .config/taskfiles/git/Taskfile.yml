@@ -93,6 +93,7 @@ tasks:
           fi
         ignore_error: true
     sources:
+      - .variables.json
       - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
@@ -161,6 +162,7 @@ tasks:
         fi
     sources:
       - .config/common-keywords.json
+      - .variables.json
       - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
@@ -229,6 +231,7 @@ tasks:
           fi
         ignore_error: true
     sources:
+      - .variables.json
       - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
@@ -391,6 +394,7 @@ tasks:
           .config/log warn 'The `GITLAB_TOKEN` environment variable is not set so the GitLab repository cannot be updated via the API.'
         fi
     sources:
+      - .variables.json
       - package.json
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
