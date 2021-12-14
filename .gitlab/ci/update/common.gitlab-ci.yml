@@ -22,6 +22,6 @@ update:common:
     - task ci:before
   script:
     - task start
-    - if [ "$UPDATE_SERVICES" == 'true' ]; then task services; fi
+    - if [ "$REPOSITORY_UPDATE" == 'true' ]; then task services; fi
     - task ci:commit
     - task ci:synchronize

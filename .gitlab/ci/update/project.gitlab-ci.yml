@@ -23,6 +23,6 @@ update:project:
   script:
     - task ci:submodules
     - task start
-    - if [ "$UPDATE_SERVICES" == 'true' ]; then task services; fi
+    - if [ "$REPOSITORY_UPDATE" == 'true' ]; then task services; fi
     - task ci:commit
     - task ci:synchronize
