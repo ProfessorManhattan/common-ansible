@@ -118,7 +118,7 @@
     ["<b><a href=\"https://pypi.org/project/molecule-vagrant/\" title=\"molecule-vagrant on PyPi.org\" target=\"_blank\">molecule-vagrant</a></b>", "Molecule plugin for provisioning Vagrant VMs", ""],
     ["<b><a href=\"https://pypi.org/project/pre-commit-hooks/\" title=\"pre-commit-hooks on PyPi.org\" target=\"_blank\">pre-commit-hooks</a></b>", "Suite of tools useful for linting", ""],
     ["<b><a href=\"https://pypi.org/project/proselint/\" title=\"proselint on PyPi.org\" target=\"_blank\">proselint</a></b>", "Linter used to generate English-language improvements (used to improve documentation)", ""],
-    ["<b><a href=\"https://pypi.org/project/yamllint/\" title=\"yamllint on PyPi.org\" target=\"_blank\">yamllint</a></b>", "Linter for YAML files that ensures proper syntax and styling is used", ""],
+    ["<b><a href=\"https://pypi.org/project/yamllint/\" title=\"yamllint on PyPi.org\" target=\"_blank\">yamllint</a></b>", "Linter for YAML files that ensures proper syntax and styling is used", ""]
   ],
   "repository": {
     "prefix": "ansible-"
