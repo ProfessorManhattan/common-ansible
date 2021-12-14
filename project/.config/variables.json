@@ -8,10 +8,19 @@
     {
       "active": true,
       "cron": "0 12 * * 1",
-      "description": "Weekly Docker Molecule test",
+      "description": "Weekly Docker Molecule Test",
       "ref": "master",
       "variable": {
         "WEEKLY_TEST": true
+      }
+    },
+    {
+      "active": true,
+      "cron": "0 5 1 * *",
+      "description": "Monthly Repository Update",
+      "ref": "synchronize",
+      "variable": {
+        "REPOSITORY_UPDATE": true
       }
     }
   ],
