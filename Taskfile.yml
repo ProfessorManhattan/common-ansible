@@ -79,6 +79,7 @@ vars:
   NPM_PROGRAM_LOCAL: pnpm
   NPX_HANDLE: 'pnpx '
   NPX_PACKAGE: pnpx
+  PYTHON_HANDLE: 'poetry run '
   REPOSITORY_SUBTYPE: ansible
   REPOSITORY_TYPE: common
   TIMEZONE: America/New_York

@@ -130,7 +130,8 @@ tasks:
       VARIABLES_DESCRIPTION:
         sh: jq -r '.autodoc_variables_description' '{{.VARIABLES_PATH}}'
     cmds:
-      - mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
+      - >
+        {{.PYTHON_HANDLE}}mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
         --tags-title '### Tags' --tags-description "$TAGS_DESCRIPTION" --todo-title '### TODO'
         --todo-description "$TODO_DESCRIPTION" --variables-title '## Variables' --variables-description
         "$VARIABLES_DESCRIPTION" --variable-example-comment-prefix '#💬'
@@ -167,7 +168,8 @@ tasks:
       - if [ ! -f ansible.cfg.bak ]; then cp ansible.cfg ansible.cfg.bak; fi
       - cp test/{{OS}}/ansible.cfg ansible.cfg
       - touch install_in_progress
-      - ansible-playbook --ask-sudo-pass{{if eq .INSTALLING 'false'}} --skip-tags "skip_on_init" playbooks/init.yml{{else}} main.yml{{end}}
+      - |
+        {{.PYTHON_HANDLE}}ansible-playbook --ask-sudo-pass{{if eq .INSTALLING 'false'}} --skip-tags "skip_on_init" playbooks/init.yml{{else}} main.yml{{end}}
       - if [ -f ansible.cfg.bak ]; then mv ansible.cfg.bak ansible.cfg; fi
       - if [ -f inventory ]; then rm inventory; fi
 

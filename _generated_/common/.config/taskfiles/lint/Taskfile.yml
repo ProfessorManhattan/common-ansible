@@ -38,18 +38,18 @@ tasks:
 
       For more information, see [Ansible Lint's GitHub page](https://github.com/ansible-community/ansible-lint).
     cmds:
-      - poetry run ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}
+      - '{{.PYTHON_HANDLE}}ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}'
 
   any:
     deps:
       - :install:python:requirements
     desc: Generic linting of files for things like destroyed-symlinks, merge conflicts, etc.
     cmds:
-      - poetry run blocklint --wordlist blacklist,slave,whitelist {{.CLI_ARGS}}
-      - poetry run check-merge-conflict {{.CLI_ARGS}}
-      - poetry run check-added-large-files {{.CLI_ARGS}}
-      - poetry run check-symlinks {{.CLI_ARGS}}
-      - poetry run destroyed-symlinks {{.CLI_ARGS}}
+      - '{{.PYTHON_HANDLE}}blocklint --wordlist blacklist,slave,whitelist {{.CLI_ARGS}}'
+      - '{{.PYTHON_HANDLE}}check-merge-conflict {{.CLI_ARGS}}'
+      - '{{.PYTHON_HANDLE}}check-added-large-files {{.CLI_ARGS}}'
+      - '{{.PYTHON_HANDLE}}check-symlinks {{.CLI_ARGS}}'
+      - '{{.PYTHON_HANDLE}}destroyed-symlinks {{.CLI_ARGS}}'
 
   commit:
     deps:
@@ -238,9 +238,9 @@ tasks:
     cmds:
       - |
         {{if .CLI_ARGS}}
-          poetry run flake8 --config {{.FLAKE8_CONFIG}} {{.CLI_ARGS}}
+          {{.PYTHON_HANDLE}}flake8 --config {{.FLAKE8_CONFIG}} {{.CLI_ARGS}}
         {{else}}
-          poetry run flake8 --config {{.FLAKE8_CONFIG}} .
+          {{.PYTHON_HANDLE}}flake8 --config {{.FLAKE8_CONFIG}} .
         {{end}}
 
   shell:
@@ -348,7 +348,8 @@ tasks:
       **Example scanning specific file:**
       `task lint:toml -- myfile.toml`
     cmds:
-      - poetry run check-toml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+      - |
+        {{.PYTHON_HANDLE}}check-toml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   vagrant:
     deps:
@@ -381,7 +382,8 @@ tasks:
       **Example scanning specific file:**
       `task lint:xml -- myfile.xml`
     cmds:
-      - poetry run check-xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+      - |
+        {{.PYTHON_HANDLE}}check-xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   yaml:
     deps:
@@ -408,4 +410,5 @@ tasks:
 
       For more information, see the [YAML Lint GitHub page](https://github.com/adrienverge/yamllint).
     cmds:
-      - poetry run yamllint -c {{.YAMLLINT_CONFIG}} -s {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+      - |
+        {{.PYTHON_HANDLE}}yamllint -c {{.YAMLLINT_CONFIG}} -s {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
