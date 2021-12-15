@@ -14,10 +14,10 @@ const MENU_ENTRY_TITLE_WIDTH = 24
 async function promptForTestType() {
   const descriptionMap = ['VirtualBox (Headless)', 'VirtualBox (Desktop)', 'Docker', 'Local', 'SSH']
   const choices = execSync(`yq eval -o=j '.description' molecule/*/molecule.yml`).split('\n').map(
+    // eslint-disable-next-line security/detect-object-injection
     (description, index) => descriptionMap[index].padEnd(MENU_ENTRY_TITLE_WIDTH) + chalk.gray(description.slice(1,-1))
   )
   const choicesDecorated = choices.map((choice) => decorateSystem(choice))
-  // eslint-disable-next-line security/detect-object-injection
   const response = await inquirer.prompt([
     {
       choices: choicesDecorated,
