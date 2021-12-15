@@ -1,4 +1,5 @@
 ---
 - name: Converge
+  hosts: all
   roles:
     - role: '{{galaxy_info.namespace}}.{{galaxy_info.role_name}}'

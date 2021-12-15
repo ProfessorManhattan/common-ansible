@@ -8,10 +8,37 @@
     {
       "active": true,
       "cron": "0 12 * * 1",
-      "description": "Weekly Docker Molecule Test",
+      "description": "Weekly Build Test",
       "ref": "master",
       "variable": {
         "WEEKLY_TEST": true
+      }
+    },
+    {
+      "active": true,
+      "cron": "0 12 * * 1",
+      "description": "Weekly Linux Molecule Test",
+      "ref": "test/linux",
+      "variable": {
+        "WEEKLY_LINUX_TEST": true
+      }
+    },
+    {
+      "active": true,
+      "cron": "0 12 * * 2",
+      "description": "Weekly macOS Molecule Test",
+      "ref": "test/darwin",
+      "variable": {
+        "WEEKLY_DARWIN_TEST": true
+      }
+    },
+    {
+      "active": true,
+      "cron": "0 12 * * 4",
+      "description": "Weekly Windows Molecule Test",
+      "ref": "test/windows",
+      "variable": {
+        "WEEKLY_WINDOWS_TEST": true
       }
     },
     {
