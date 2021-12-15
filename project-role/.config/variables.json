@@ -1,7 +1,7 @@
 {
   "autodoc_variables_description": "\nThis role contains variables that you can customize. The variables you can customize are located in `defaults/main.yml`. By default, the variables use sensible defaults but you may want to customize the role depending on your use case. The variables, along with descriptions, are listed below:\n\n{{ role_variables }}\n\n### Variable Examples\n\n",
   "docs": {
-    "header_description_pre": "An Ansible role brought to you by ",
+    "header_description_pre": "Crafted by ",
     "link": "https://megabyte.space/docs/ansible/roles"
   },
   "subgroup": "role"
