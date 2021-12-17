@@ -135,10 +135,12 @@ tasks:
     cmds:
       - >
         .config/log info 'Compiling `mod-ansible-autodoc` documentation from comments in the play source files'
+
         {{.PYTHON_HANDLE}}mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
         --tags-title '### Tags' --tags-description "$TAGS_DESCRIPTION" --todo-title '### TODO'
         --todo-description "$TODO_DESCRIPTION" --variables-title '## Variables' --variables-description
         "$VARIABLES_DESCRIPTION" --variable-example-comment-prefix '#💬'
+
         .config/log success 'Successfully generated documentation partials with `mod-ansible-autodoc`'
       - mkdir -p .autodoc
       - mv ansible_actions.md ansible_tags.md ansible_todo.md ansible_variables.json ansible_variables.md .autodoc
