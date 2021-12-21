@@ -58,9 +58,7 @@ async function promptForEnvironment() {
 
   const DECORATION_LENGTH = 2
 
-  const environment = response.environment
-    .replace(LOG_DECORATOR_REGEX, '')
-    .slice(DECORATION_LENGTH)
+  const environment = response.environment.replace(LOG_DECORATOR_REGEX, '').slice(DECORATION_LENGTH)
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const elements = fs.readdirSync(`environments/${environment}/`).map((element) => {
