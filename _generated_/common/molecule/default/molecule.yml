@@ -27,7 +27,6 @@ driver:
   name: vagrant
   provider:
     name: virtualbox
-lint: task lint:all
 platforms:
   - box: archLinux/archLinux
     cpus: 1
