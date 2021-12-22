@@ -25,7 +25,7 @@ driver:
   auth_kind: serviceaccount
   service_account_file: ~/.config/gcp.json
   scopes:
-    - "https://www.googleapis.com/auth/compute"
+    - 'https://www.googleapis.com/auth/compute'
   external_access: true
   instance_os_type: linux
 platforms:

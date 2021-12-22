@@ -13,7 +13,7 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  no_log: "{{ molecule_no_log }}"
+  no_log: '{{ molecule_no_log }}'
   vars:
     ssh_identity_file: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/ssh_key"
     gcp_project_id: "{{ molecule_yml.driver.project_id | default(lookup('env', 'GCE_PROJECT_ID')) }}"
@@ -24,7 +24,7 @@
         that:
           - molecule_yml.driver.instance_os_type | lower == "linux" or
             molecule_yml.driver.instance_os_type | lower == "windows"
-        fail_msg: "instance_os_type is possible only to specify linux or windows either"
+        fail_msg: instance_os_type is possible only to specify linux or windows either
 
     - name: Include create_linux_instance tasks
       ansible.builtin.include_tasks: tasks/create_linux_instance.yml
