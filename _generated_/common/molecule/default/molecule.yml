@@ -28,7 +28,7 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - box: archLinux/archLinux
+  - box: archlinux/archlinux
     cpus: 1
     groups:
       - ArchLinux
