@@ -133,21 +133,6 @@ tasks:
           .config/log success 'Finished running Google Cloud Platform Molecule test'
         fi
 
-  molecule:local:
-    cmds:
-      - node .config/scripts/prompts/molecule/local.js
-
-  molecule:local:test:
-    cmds:
-      - |
-        .config/log info 'Running Molecule test locally'
-        {{.PYTHON_HANDLE}}molecule test -s local
-        if [ $? != '0' ]; then
-          .config/log error 'There was an error while running the Molecule test locally'
-        else
-          .config/log success 'The local Molecule test was successful!'
-        fi
-
   molecule:gcp:matrix:
     deps:
       - :install:modules:local
@@ -189,6 +174,21 @@ tasks:
         msg: The GCE_CREDENTIALS_FILE environment variable is defined but is not pointing to a file that exists.
       - sh: '[ -n "$GCE_PROJECT_ID" ]'
         msg: The GCE_PROJECT_ID environment variable must be set (e.g. export GCE_PROJECT_ID=megabyte-labs)
+
+  molecule:local:
+    cmds:
+      - node .config/scripts/prompts/molecule/local.js
+
+  molecule:local:test:
+    cmds:
+      - |
+        .config/log info 'Running Molecule test locally'
+        {{.PYTHON_HANDLE}}molecule test -s local
+        if [ $? != '0' ]; then
+          .config/log error 'There was an error while running the Molecule test locally'
+        else
+          .config/log success 'The local Molecule test was successful!'
+        fi
 
   molecule:ssh:cli:
     deps:
