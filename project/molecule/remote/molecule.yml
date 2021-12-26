@@ -3,13 +3,12 @@ description: Run the play remotely via SSH
 driver:
   name: delegated
   options:
-    managed: false
     ansible_connection_options:
       ansible_connection: ssh
-      ansible_host: ${TEST_HOST}
-      ansible_password: ${TEST_PASSWORD}
       ansible_port: ${TEST_PORT:-22}
+      ansible_ssh_host: ${TEST_SSH_HOST}
       ansible_ssh_user: ${TEST_SSH_USER}
+    managed: false
 platforms:
   - name: SSH-Connection
 provisioner:
@@ -19,9 +18,6 @@ provisioner:
         ansible_become_pass: ${TEST_BECOME_PASSWORD}
         ansible_user: ${TEST_USER}
 scenario:
-  create_sequence:
-    - dependency
-    - prepare
   check_sequence:
     - dependency
     - cleanup
@@ -32,6 +28,9 @@ scenario:
     - dependency
     - prepare
     - converge
+  create_sequence:
+    - dependency
+    - prepare
   destroy_sequence:
     - dependency
     - cleanup
