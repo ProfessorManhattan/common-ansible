@@ -11,7 +11,7 @@ driver:
       ansible_port: ${TEST_PORT:-22}
       ansible_ssh_user: ${TEST_SSH_USER}
 platforms:
-  - instance
+  - name: SSH-Connection
 provisioner:
   inventory:
     group_vars:

@@ -1,7 +1,7 @@
 ---
 description: Test on full desktop VirtualBox images (useful for UAT)
 groups:
-  Archlinux: Test on Archlinux desktop
+  ArchLinux: Test on ArchLinux desktop
   CentOS: Test on CentOS Stream desktop
   Debian: Test on Debian desktop
   Fedora: Test on Fedora desktop
@@ -12,13 +12,13 @@ driver:
   provider:
     name: virtualbox
 platforms:
-  - box: Megabyte/Archlinux-Desktop
+  - box: Megabyte/ArchLinux-Desktop
     cpus: 2
     groups:
-      - Archlinux
+      - ArchLinux
       - Linux
     memory: 4096
-    name: Archlinux-Latest
+    name: ArchLinux-Latest
     provider_raw_config_args:
       - "customize [ 'modifyvm', :id, '--natdnshostresolver1', 'on' ]"
   - box: Megabyte/CentOS-Desktop
@@ -86,8 +86,7 @@ provisioner:
         ansible_become_password: ${TEST_PASSWORD:-vagrant}
         ansible_password: ${TEST_PASSWORD:-vagrant}
         ansible_user: ${TEST_USER:-vagrant}
-        virtualbox_molecule_test: true
-      windows:
+      Windows:
         ansible_become_method: runas
         ansible_connection: winrm
         ansible_winrm_scheme: http

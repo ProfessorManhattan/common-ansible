@@ -48,7 +48,7 @@ async function promptForTestType() {
 
 /**
  * Main script logic
- * 
+ *
  * @returns {Promise} Promise that resolves to an execSync call that runs a Taskfile.yml task
  */
 // eslint-disable-next-line max-statements, require-jsdoc, max-lines-per-function
