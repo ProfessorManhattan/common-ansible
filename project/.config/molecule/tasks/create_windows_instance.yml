@@ -1,5 +1,5 @@
 ---
-# yamllint disable rule:max-len
+# yamllint disable rule:line-length
 - name: create ssh keypair
   community.crypto.openssh_keypair:
     comment: "{{ lookup('env','USER') }} user for Molecule"
