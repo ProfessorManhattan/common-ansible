@@ -16,6 +16,7 @@ test:molecule:windows:
         - main.yml
   variables:
     GIT_DEPTH: 1
+  needs: []
   tags:
     - shared-windows
     - windows

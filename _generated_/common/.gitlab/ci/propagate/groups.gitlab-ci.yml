@@ -12,6 +12,7 @@ propagate:groups:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $PROPAGATE_FILES == 'true'
   variables:
     GIT_DEPTH: 1
+  needs: []
   script:
     - set -eo pipefail
     - curl -o propagate.sh https://gitlab.com/megabyte-labs/common/shared/-/raw/master/common/.gitlab/ci/scripts/propagate-groups.sh

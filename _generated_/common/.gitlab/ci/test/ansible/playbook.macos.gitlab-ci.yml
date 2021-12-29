@@ -16,6 +16,7 @@ test:molecule:darwin:
         - main.yml
   variables:
     GIT_DEPTH: 1
+  needs: []
   tags:
     - shared-macos-amd64
   before_script:
