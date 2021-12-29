@@ -13,6 +13,7 @@ lint:flake8:
         - '**/*.py'
   variables:
     GIT_DEPTH: 1
+  needs: []
   script:
     - set -eo pipefail
     - flake8 --config .config/flake8.toml .

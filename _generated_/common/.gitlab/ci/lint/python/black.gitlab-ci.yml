@@ -13,6 +13,7 @@ lint:black:
         - '**/*.py'
   variables:
     GIT_DEPTH: 1
+  needs: []
   script:
     - set -eo pipefail
     - black . --check

@@ -13,6 +13,7 @@ lint:shellcheck:
         - '**/*.{sh,sh.j2}'
   variables:
     GIT_DEPTH: 1
+  needs: []
   script:
     - set -eo pipefail
     - printenv

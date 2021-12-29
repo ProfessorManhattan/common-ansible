@@ -13,6 +13,7 @@ lint:standard:
         - '**/*.js'
   variables:
     GIT_DEPTH: 1
+  needs: []
   before_script:
     - git config pull.ff only
     - git checkout "$CI_COMMIT_REF_NAME"

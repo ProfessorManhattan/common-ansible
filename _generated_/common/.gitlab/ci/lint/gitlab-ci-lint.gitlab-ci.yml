@@ -13,6 +13,7 @@ lint:gitlab-ci:
         - '**/*gitlab-ci.yml'
   variables:
     GIT_DEPTH: 1
+  needs: []
   script:
     - set -eo pipefail
     - printenv

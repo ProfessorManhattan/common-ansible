@@ -14,6 +14,7 @@ vagrant:validate:
         - '**/Vagrantfile'
   variables:
     GIT_DEPTH: 1
+  needs: []
   script:
     - set -eo pipefail
     - find . -type f -name 'Vagrantfile' -exec bash -c 'INITIAL_DIR=$PWD; VAGRANTFILE_PATH=$1;

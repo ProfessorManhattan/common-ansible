@@ -16,6 +16,7 @@ sonarcloud:
   variables:
     GIT_DEPTH: '0'
     SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
+  needs: []
   cache:
     key: '${CI_JOB_NAME}'
     paths:

@@ -14,6 +14,7 @@ lint:prettier:
     GIT_DEPTH: 1
     NODE_MODULES_PATH: /usr/local/lib/node_modules
     PRETTIER_CONFIG: '@mblabs/prettier-config'
+  needs: []
   before_script:
     - git config pull.ff only
     - git checkout "$CI_COMMIT_REF_NAME"
