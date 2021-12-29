@@ -63,15 +63,20 @@ tasks:
       - task: :fix:eslint
 
   pull:
+    deps:
+      - :install:software:git
     cmds:
       - |
         if [ ! -n "$(grep "^gitlab.com " ~/.ssh/known_hosts)" ] || [[ "${container:=}" == "docker" ]]; then
-          ssh-keyscan gitlab.com >> ~/.ssh/known_hosts 2> /dev/null
-          git config url."https://gitlab.com/".insteadOf git@gitlab.com:
+          if [ -z "$GITLAB_CI" ]; then
+            ssh-keyscan gitlab.com >> ~/.ssh/known_hosts 2> /dev/null
+            git config url."https://gitlab.com/".insteadOf git@gitlab.com:
+          fi
         fi
       - cmd: git pull --ff-only
         ignore_error: true
-      - git config --unset url."https://gitlab.com/".insteadOf
+      - cmd: git config --unset url."https://gitlab.com/".insteadOf
+        ignore_error: true
 
   shared:
     cmds:
