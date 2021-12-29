@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:max-len
 - name: Populate instance config dict Linux
   ansible.builtin.set_fact:
     instance_conf_dict: {
