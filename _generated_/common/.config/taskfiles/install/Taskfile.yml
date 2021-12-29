@@ -205,9 +205,9 @@ tasks:
         addToProfile
 
   subrepo:
-    run: once
     deps:
       - :install:software:git
+    run: once
     cmds:
       - mkdir -p ~/.local/git-subrepo
       - git clone https://github.com/ingydotnet/git-subrepo ~/.local/git-subrepo
@@ -216,7 +216,6 @@ tasks:
           PROFILE_STRING: ~/.local/git-subrepo/.rc
     status:
       - git subrepo --version > /dev/null
-
 
   tslib:
     env:
