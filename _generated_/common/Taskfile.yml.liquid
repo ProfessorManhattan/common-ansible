@@ -8,7 +8,8 @@ vars:
   GALAXY_NAMESPACE:
     sh: "if [ -f meta/main.yml ]; then grep namespace < meta/main.yml | sed 's/.*namespace: \\(.*\\)$/\\1/g'; fi"
   GALAXY_ROLE_NAME:
-    sh: "if [ -f meta/main.yml ]; then grep role_name < meta/main.yml | sed 's/.*role_name: \\(.*\\)$/\\1/g'; fi"{{/eq}}{{/eq}}
+    sh: "if [ -f meta/main.yml ]; then grep role_name < meta/main.yml | sed 's/.*role_name: \\(.*\\)$/\\1/g'; fi"{{/eq}}{{#eq subgroup 'playbook'}}
+  GALAXY_NAMESPACE: {{profile.galaxy}}{{/eq}}{{/eq}}
   GITHUB_ORG: {{profile.github}}
   GITHUB_USER: {{profile.github}}
   IGNORE_FOLDERS: -path './.autodoc/*' -o -path './.cache/*' -o -path './.common*' -o -path './.config/*' -o -path './.git/*'
