@@ -1,14 +1,24 @@
 ---
 description: Test on Google Cloud Platform (Linux)
+driver:
+  auth_kind: serviceaccount
+  external_access: false
+  instance_os_type: linux
+  name: gce
+  project_id: megabyte-labs
+  region: us-east4
+  scopes:
+    - 'https://www.googleapis.com/auth/compute'
+  service_account_file: ~/gcp.json
 groups:
   CentOS: Test on all CentOS images
   CentOS-7: Test on CentOS 7
   CentOS-8: Test on CentOS 8
   CentOS-Stream-8: Test on CentOS Stream 8
   Debian: Test on all Debian images
-  Debian-9: Test on Debian 9
   Debian-10: Test on Debian 10
   Debian-11: Test on Debian 11
+  Debian-9: Test on Debian 9
   Debian-Flavor: Test on all Debian-flavored images
   Fedora: Test on all Fedora images
   Fedora-35: Test on Fedora 35 (Core OS)
@@ -19,121 +29,103 @@ groups:
   Ubuntu-20.04: Test on Ubuntu 20.04
   Ubuntu-21.04: Test on Ubuntu 21.04
   Ubuntu-21.10: Test on Ubuntu 21.10
-driver:
-  name: gce
-  region: us-central1
-  auth_kind: serviceaccount
-  service_account_file: ~/.config/gcp.json
-  scopes:
-    - 'https://www.googleapis.com/auth/compute'
-  external_access: true
-  instance_os_type: linux
 platforms:
-  - name: centos-7-ansible-molecule
-    alias: CentOS-7
-    groups:
+  - groups:
       - CentOS
       - CentOS-7
       - Linux
       - RedHat-Flavor
-    machine_type: n1-standard-1
     image: projects/centos-cloud/global/images/family/centos-7
-  - name: centos-8-ansible-molecule
-    alias: CentOS-8
-    groups:
+    machine_type: e2-small
+    name: centos-7
+    zone: us-east4-a
+  - groups:
       - CentOS
       - CentOS-8
       - Linux
       - RedHat-Flavor
-    machine_type: n1-standard-1
     image: projects/centos-cloud/global/images/family/centos-8
-  - name: centos-stream-8-ansible-molecule
-    alias: CentOS-Stream-8
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: centos-8
+    zone: us-east4-a
+  - groups:
       - CentOS
       - CentOS-Stream-8
       - Linux
       - RedHat-Flavor
-    machine_type: n1-standard-1
     image: projects/centos-cloud/global/images/family/centos-stream-8
-  - name: debian-9-ansible-molecule
-    alias: Debian-9-Stretch
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: centos-stream-8
+    zone: us-east4-a
+  - groups:
       - Debian
       - Debian-9
       - Debian-Flavor
       - Linux
-    machine_type: n1-standard-1
     image: projects/debian-cloud/global/images/family/debian-9
-  - box: debian-10-ansible-molecule
-    alias: Debian-10-Buster
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: debian-9-stretch
+    zone: us-east4-a
+  - groups:
       - Debian
       - Debian-10
       - Debian-Flavor
       - Linux
-    machine_type: n1-standard-1
     image: projects/debian-cloud/global/images/family/debian-10
-  - name: debian-11-ansible-molecule
-    alias: Debian-11-Bullseye
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: debian-10-buster
+    zone: us-east4-a
+  - groups:
       - Debian
       - Debian-11
       - Debian-Flavor
       - Linux
-    machine_type: n1-standard-1
     image: projects/debian-cloud/global/images/family/debian-11
-  - name: fedora-coreos-35-ansible-molecule
-    alias: Fedora-35
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: debian-11-bullseye
+    zone: us-east4-a
+  - groups:
       - Fedora
       - Fedora-35
       - Linux
       - RedHat-Flavor
-    machine_type: n1-standard-1
     image: projects/fedora-coreos-cloud/global/images/family/fedora-coreos-stable
-  - name: ubuntu-1804-ansible-molecule
-    alias: Ubuntu-18.04-Bionic-Beaver
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: fedora-coreos-35
+    zone: us-east4-a
+  - groups:
       - Debian-Flavor
       - Linux
       - Ubuntu
       - Ubuntu-18.04
-    machine_type: n1-standard-1
     image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
-  - name: ubuntu-2004-ansible-molecule
-    alias: Ubuntu-20.04-Focal-Fossa
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: ubuntu-1804-bionic-beaver
+    zone: us-east4-a
+  - groups:
       - Debian-Flavor
       - Linux
       - Ubuntu
       - Ubuntu-20.04
-    machine_type: n1-standard-1
     image: projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts
-  - name: ubuntu-2104-ansible-molecule
-    alias: Ubuntu-21.04-Hirsute-Hippo
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: ubuntu-2004-focal-fossa
+    zone: us-east4-a
+  - groups:
       - Debian-Flavor
       - Linux
       - Ubuntu
       - Ubuntu-21.04
-    machine_type: n1-standard-1
     image: projects/ubuntu-os-cloud/global/images/family/ubuntu-2104
-  - name: ubuntu-2110-ansible-molecule
-    alias: Ubuntu-21.10-Impish-Indri
-    zone: us-central1-a
-    groups:
+    machine_type: e2-small
+    name: ubuntu-2104-hirsute-hippo
+    zone: us-east4-a
+  - groups:
       - Debian-Flavor
       - Linux
       - Ubuntu
       - Ubuntu-21.10
-    machine_type: n1-standard-1
     image: projects/ubuntu-os-cloud/global/images/family/ubuntu-2110
+    machine_type: e2-small
+    name: ubuntu-2110-impish-indri
+    zone: us-east4-a
