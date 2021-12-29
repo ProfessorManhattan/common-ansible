@@ -14,19 +14,18 @@ test:molecule:darwin:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
       changes:
         - main.yml
+  needs: []
   variables:
     GIT_DEPTH: 1
-  needs: []
   tags:
     - shared-macos-amd64
-  before_script:
+  script:
     - |
       if [ "$CI_COMMIT_BRANCH" == 'test/darwin' ]; then
         git pull origin master
         git push origin "$CI_COMMIT_BRANCH"
       fi
     - bash .config/scripts/start.sh
-  script:
     - task environment -- dev
     - task ansible:test:molecule:local:test
   artifacts:

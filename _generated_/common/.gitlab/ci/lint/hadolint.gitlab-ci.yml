@@ -11,9 +11,9 @@ lint:hadolint:
       when: never
     - exists:
         - '**/*Dockerfile*'
+  needs: []
   variables:
     GIT_DEPTH: 1
-  needs: []
   script:
     - set -eo pipefail
     - find . -type d \( -name .cache -o -name .git -o -name .modules  -o -name node_modules -o -name .husky -o -name test \)

@@ -11,9 +11,9 @@ lint:gitlab-ci:
       when: never
     - exists:
         - '**/*gitlab-ci.yml'
+  needs: []
   variables:
     GIT_DEPTH: 1
-  needs: []
   script:
     - set -eo pipefail
     - printenv

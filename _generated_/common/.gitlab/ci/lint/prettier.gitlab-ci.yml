@@ -10,11 +10,11 @@ lint:prettier:
       when: never
     - if: $CI_COMMIT_BRANCH == 'synchronize'
       when: never
+  needs: []
   variables:
     GIT_DEPTH: 1
     NODE_MODULES_PATH: /usr/local/lib/node_modules
     PRETTIER_CONFIG: '@mblabs/prettier-config'
-  needs: []
   before_script:
     - git config pull.ff only
     - git checkout "$CI_COMMIT_REF_NAME"
