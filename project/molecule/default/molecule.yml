@@ -196,7 +196,7 @@ provisioner:
         ansible_become_password: ${TEST_USER:-vagrant}
         ansible_password: ${TEST_PASSWORD:-vagrant}
         ansible_user: ${TEST_USER:-vagrant}
-      windows:
+      Windows:
         ansible_become_method: runas
         ansible_connection: winrm
         ansible_winrm_scheme: http
