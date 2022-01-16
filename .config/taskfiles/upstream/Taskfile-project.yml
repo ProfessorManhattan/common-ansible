@@ -40,7 +40,7 @@ tasks:
 
   clone:
     cmds:
-      - rm -rf {{.SHARED_FOLDER}}
+      - if [ -w '{{.SHARED_FOLDER}}' ]; then rm -rf {{.SHARED_FOLDER}}; else sudo rm -rf {{.SHARED_FOLDER}}; fi
       - git clone --depth=1 {{.PROJECT_COMMON_URL}} {{.SHARED_FOLDER}}
       - rm -rf ./{{.SHARED_FOLDER}}/.git
 
