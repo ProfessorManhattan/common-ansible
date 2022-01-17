@@ -13,13 +13,13 @@ tasks:
         sh: jq -r '.blueprint.build_command_output' package.json
     cmds:
       - '{{.BUILD_COMMAND}}'
+    status:
+      - '[[ "{{.BUILD_COMMAND}}" == "null" ]] || [[ "{{.BUILD_OUTPUT}}" == "null" ]]'
+
     sources:
       - '**/*.go'
     generates:
       - '{{.BUILD_OUTPUT}}'
-    status:
-      - '[[ "{{.BUILD_COMMAND}}" == "null" ]] || [[ "{{.BUILD_OUTPUT}}" == "null" ]]'
-
   help:
     deps:
       - build
