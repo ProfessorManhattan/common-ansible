@@ -38,6 +38,7 @@ includes:
 {{/each}}
 
 profile: |
+  PATH="$PATH:$HOME/.local/bin"
   if [[ "$OSTYPE" == 'linux-gnu'* ]] || [[ "$OSTYPE" == 'linux-musl'* ]]; then
     if [ -f /home/linuxbrew/.linuxbrew/bin/brew ] && ! type brew > /dev/null; then
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -51,6 +52,7 @@ profile: |
     PATH="$PATH:$(brew --prefix)/opt/gnu-tar/libexec/gnubin"
     PATH="$PATH:$(brew --prefix)/opt/gawk/libexec/gnubin"
   fi
+  
 
 tasks:
   build:
