@@ -41,6 +41,10 @@ tasks:
         fi
       - task: update:taskfile
 
+    log:
+      error: Error occurred while validating/prompting for blueprint settings
+      start: Ensuring required fields in the blueprint section of `package.json` are present
+      succes: Successfully ensured `package.json` minimum blueprint requirements are present
   clean:
     deps:
       - :install:software:jq

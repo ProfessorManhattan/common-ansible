@@ -4,6 +4,10 @@ version: '3'
 tasks:
   check:package:
     interactive: true
+    log:
+      start: Ensuring required fields in the blueprint section of `package.json` are present
+      succes: Successfully ensured `package.json` minimum blueprint requirements are present
+      error: Error occurred while validating/prompting for blueprint settings
     deps:
       - :install:modules:local
       - :install:software:jq
