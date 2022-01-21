@@ -16,6 +16,10 @@ tasks:
     cmds:
       - pnpm config set store-dir .pnpm-store
 
+    log:
+      error: Error encountered while configuring pnpm to store its cache in `.pnpm-store`
+      start: Configuring pnpm to store its cache in `.pnpm-store`
+      success: Successfully updated pnpm to store its cache in `.pnpm-store`
   checkout:
     cmds:
       - |

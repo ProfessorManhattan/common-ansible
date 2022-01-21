@@ -13,6 +13,10 @@ tasks:
   before:npm:
     deps:
       - :install:software:node
+    log:
+      start: Configuring pnpm to store its cache in `.pnpm-store`
+      success: Successfully updated pnpm to store its cache in `.pnpm-store`
+      error: Error encountered while configuring pnpm to store its cache in `.pnpm-store`
     cmds:
       - pnpm config set store-dir .pnpm-store
 
