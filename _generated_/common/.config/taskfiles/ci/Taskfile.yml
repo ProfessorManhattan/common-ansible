@@ -98,3 +98,4 @@ tasks:
           curl -s --request POST --form "token=${CI_JOB_TOKEN}" --form ref=master --form "variables[PIPELINE_SOURCE]=$PIPELINE_SOURCE" \
             "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/trigger/pipeline"
         fi
+      - git checkout master

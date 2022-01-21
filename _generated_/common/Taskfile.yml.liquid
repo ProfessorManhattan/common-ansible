@@ -4,7 +4,8 @@ version: '3'
 output: interleaved
 
 vars:
-  DOCKERHUB_PROFILE: {{profile.dockerhub}}{{#eq group 'ansible'}}
+  DOCKERHUB_PROFILE: {{profile.dockerhub}}
+  DOCKERHUB_USER: {{profile.dockerHubUser}}{{#eq group 'ansible'}}
   ESLINT_FORMATTER: pretty
   ESLINT_FORMATTER_OPTIONS: git-log pretty summary{{#eq subgroup 'role'}}
   GALAXY_NAMESPACE:
