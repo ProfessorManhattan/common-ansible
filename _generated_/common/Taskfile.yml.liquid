@@ -205,7 +205,7 @@ tasks:
         if [ ! -f Taskfile-project.yml ]; then
           .config/log error '`Taskfile-project.yml` must exist and have a `livereload` task to use with `nodemon`' && exit 1
         fi
-      - nodemon --config {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.config/nodemon.json{{end}}
+      - nodemon --config \{{if .CLI_ARGS}}\{{.CLI_ARGS}}\{{else}}.config/nodemon.json\{{end}}
 
 {{#eq group 'ansible'}}{{#eq subgroup 'playbook'}}
   playbook:
