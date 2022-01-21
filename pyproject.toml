@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://megabyte.space"
 documentation = "https://megabyte.space/docs/common/ansible"
 keywords = ["ansible", "awesome", "boilerplate", "mblabs", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples", "washingtondc"]
-include = ["CHANGELOG.md", "LICENSE"]
+include = ["docs/CHANGELOG.md", "LICENSE"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Development Status :: 5 - Production/Stable",
