@@ -172,8 +172,6 @@ tasks:
     deps:
       - install:npm:nodemon
     desc: Start the project with live-reloading (i.e. watch mode)
-    log:
-      start: Starting `nodemon` live-reload session
     summary: |
       # LiveReload the project
 
@@ -201,6 +199,8 @@ tasks:
 
       **Example using `task --watch`:**
       `task --watch mytask`
+    log:
+      start: Starting `nodemon` live-reload session
     cmds:
       - |
         if [ ! -f Taskfile-project.yml ]; then
