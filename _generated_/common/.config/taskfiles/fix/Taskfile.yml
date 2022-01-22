@@ -7,6 +7,8 @@ vars:
 
 tasks:
   all:
+    log:
+      start: Running all stable fixers in parallel
     deps:
       - eslint
       - misc
@@ -22,6 +24,10 @@ tasks:
       - :install:modules:local
       - :install:npm:eslint
     desc: Fix JavaScript/TypeScript errors automatically
+    log:
+      start: Auto-fixing with ESLint
+      success: ESLint fixing appears to have corrected all the issues {{if .CLI_ARGS}}in `{{.CLI_ARGS}}`{{else}}in the project{{end}}
+      error: ESLint found some issues that need to be fixed manually
     summary: |
       # Fix JavaScript/TypeScript errors automatically with `eslint`
 
@@ -47,6 +53,10 @@ tasks:
       - :install:modules:local
       - :install:npm:eslint
     desc: Alphabetically sort JSON
+    log:
+      start: Linting JSON with ESLint
+      success: ESLint has fixed all of the JSON issues {{if .CLI_ARGS}}in `{{.CLI_ARGS}}`{{else}}in the project{{end}}
+      error: '{{if .CLI_ARGS}}Manual fixing is still required for `{{.CLI_ARGS}}`{{else}}Failed to fix all project JSON issues with ESLint{{end}}'
     summary: |
       # Automatically alphabetize JSON
 
