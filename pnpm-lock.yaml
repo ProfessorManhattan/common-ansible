@@ -4,14 +4,14 @@ specifiers:
   '@washingtondc/development': ^1.0.2
   '@washingtondc/prettier': ^1.0.0
   '@washingtondc/release': ^0.0.2
-  eslint-config-strict-mode: ^1.0.10
+  eslint-config-strict-mode: ^1.0.11
   sleekfast: ^0.0.1
 
 devDependencies:
   '@washingtondc/development': 1.0.10
   '@washingtondc/prettier': 1.0.0
   '@washingtondc/release': 0.0.2
-  eslint-config-strict-mode: 1.0.10
+  eslint-config-strict-mode: 1.0.11
   sleekfast: 0.0.1
 
 packages:
@@ -5123,8 +5123,8 @@ packages:
       eslint: 8.7.0
     dev: true
 
-  /eslint-config-strict-mode/1.0.10:
-    resolution: {integrity: sha512-uTKNiApy+Nno04TCUDj0tGwoZh8hSIqwt8bmxd7yVbTzI8ECUgNiD+m7iQDUgWUUyv6RaG+qCtBSPgE7Yt/k0Q==}
+  /eslint-config-strict-mode/1.0.11:
+    resolution: {integrity: sha512-/bEbo6xHqMPiwNYrJHT/JBc+knaPvvkHQQLKhNo7VqvSC3mb3DgKNDFqOgzs5QAE1SoYAuH3eRmb58Ok3ACj5g==}
     engines: {node: '>=14.18.0'}
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.10.0_dac6134a22fe1289d58145b0b92ae060
