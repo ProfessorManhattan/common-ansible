@@ -56,16 +56,14 @@ tasks:
     deps:
       - :install:software:poetry
     run: once
+    log:
+      start: Configuring Poetry and running `poetry install`
+      success: Successfully ran `poetry install`
+      error: Failed to configure / install via `poetry`
     cmds:
-      - |
-        .config/log info 'Running `poetry install`'
-        if [ '{{.PYTHON_VIRTUALENV}}' != 'true' ]; then
-          poetry config virtualenvs.create false
-        else
-          poetry config --local virtualenvs.in-project true
-        fi
-        poetry install
-        .config/log success '`poetry install` completed successfully'
+      - poetry config virtualenvs.create {{.PYTHON_VIRTUALENV}}
+      - poetry config virtualenvs.in-project true
+      - poetry install
     sources:
       - pyproject.toml
     preconditions:
