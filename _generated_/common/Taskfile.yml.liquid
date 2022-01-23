@@ -102,13 +102,13 @@ tasks:
       ```
   cmds:
     - |
-      {{if .CLI_ARGS}}
+      \{{if .CLI_ARGS}}
       git add --all
-      HUSKY=0 git commit -m "{{.CLI_ARGS}}" --no-verify
-      {{else}}
+      HUSKY=0 git commit -m "\{{.CLI_ARGS}}" --no-verify
+      \{{else}}
       git add --all
       git commit
-      {{end}}
+      \{{end}}
 
   donothing: 'true'
 
