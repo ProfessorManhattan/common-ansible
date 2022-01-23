@@ -153,6 +153,11 @@
     }
   ],
   "group": "common",
+  "homebrew": {
+    "folder": "Formula",
+    "name": "homebrew-tap",
+    "owner": "installdoc"
+  },
   "hostapp_var_chart": [
     [
       "App",

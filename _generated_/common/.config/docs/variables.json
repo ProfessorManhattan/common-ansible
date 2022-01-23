@@ -64,6 +64,11 @@
     }
   ],
   "group": "ansible",
+  "homebrew": {
+    "folder": "Formula",
+    "name": "homebrew-tap",
+    "owner": "installdoc"
+  },
   "hostapp_var_chart": [
     ["App", "Description"],
     ["**[Authelia](https://www.authelia.com/)**", "An authentication portal that supports SSO and 2FA"],
