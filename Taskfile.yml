@@ -11,9 +11,6 @@ includes:
   ci: ./.config/taskfiles/ci/Taskfile.yml
   ci:github: ./.config/taskfiles/ci/Taskfile-github.yml
   common: ./.config/taskfiles/common/Taskfile.yml
-  project:
-    taskfile: Taskfile-project.yml
-    optional: true
   common:code: ./.config/taskfiles/common/Taskfile-code.yml
   common:update: ./.config/taskfiles/common/Taskfile-update.yml
   docker: ./.config/taskfiles/docker/Taskfile.yml
@@ -24,6 +21,9 @@ includes:
   git: ./.config/taskfiles/git/Taskfile.yml
   git:github: ./.config/taskfiles/git/Taskfile-github.yml
   git:gitlab: ./.config/taskfiles/git/Taskfile-gitlab.yml
+  project:
+    taskfile: Taskfile-project.yml
+    optional: true
   git:hook: ./.config/taskfiles/git/Taskfile-hook.yml
   go: ./.config/taskfiles/go/Taskfile.yml
   go:test: ./.config/taskfiles/go/Taskfile-test.yml
