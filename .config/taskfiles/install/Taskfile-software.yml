@@ -514,7 +514,7 @@ tasks:
     cmds:
       - exit 1
 
-  python:continue:
+  python:
     run: once
     cmds:
       - task: brew
