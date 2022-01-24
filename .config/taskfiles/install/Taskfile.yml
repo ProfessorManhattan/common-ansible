@@ -19,14 +19,12 @@ tasks:
   install-doctor:
     log:
       error: Error encountered while installing {{.SOFTWARE}} via https://install.doctor
-      start: Ensuring {{.SOFTWARE}} is installed
+      start: Ensuring {{.SOFTWARE}} is installed using Install Doctor
+      success: Successfully installed `{{.SOFTWARE}}` via Install Doctor
     cmds:
       - |
-        if ! type {{.SOFTWARE}} &> /dev/null; then
-          .config/log info 'Installing `{{.SOFTWARE}}` by running `curl -sS https://install.doctor/{{.SOFTWARE}} | bash`'
-          curl -sS https://install.doctor/{{.SOFTWARE}} | bash
-          .config/log success 'Successfully installed `{{.SOFTWARE}}`'
-        fi
+        .config/log info 'Installing `{{.SOFTWARE}}` by running `curl -sS https://install.doctor/{{.SOFTWARE}} | bash`'
+        curl -sS https://install.doctor/{{.SOFTWARE}} | bash
     status:
       - type {{.SOFTWARE}} &> /dev/null || [[ "${container:=}" == "docker" ]]
 

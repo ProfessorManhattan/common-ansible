@@ -134,14 +134,13 @@ tasks:
       - '[[ "$PACKAGE_EXISTS" == "true" ]]'
 
   global:package-manager:
-    deps:
-      - :install:software:node
     run: once
     log:
       start: Installing `{{.NPM_PROGRAM}}`
       success: Successfully installed `{{.NPM_PROGRAM}}`
       error: Failed to install `{{.NPM_PROGRAM}}`
     cmds:
+      - task: :install:software:node
       - npm install -g {{.NPM_PROGRAM}}
     status:
       - type {{.NPM_PROGRAM}} > /dev/null
