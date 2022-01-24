@@ -34,6 +34,10 @@ tasks:
 
       **Example using a template file named `another_template.json`:**
       `task build:all -- another_template.json`
+    log:
+      start: Running `packer build {{.TEMPLATE_FILE}}`
+      success: Packer finished building
+      error: Packer reported an error while running `packer build {{.TEMPLATE_FILE}}`
     cmds:
       - packer build {{.TEMPLATE_FILE}}
 
