@@ -10,6 +10,10 @@ tasks:
     deps:
       - :install:python:dependencies
     desc: Check for Python code security issues
+    log:
+      start: Running `bandit -r run.py`
+      success: No security issues found with `bandit`!
+      error: '`bandit` reported some security issues that need to be fixed!'
     cmds:
       - poetry run bandit -r run.py
       - poetry run bandit -r src
@@ -19,6 +23,10 @@ tasks:
       - :install:software:dockle
       - :install:software:jq
     desc: Analyze and lint the Docker container using Dockle
+    log:
+      start: Scanning image(s) with Dockle
+      success: Successfully completed scan with Dockle
+      error: Dockle found some errors that need to be fixed!
     summary: |
       # Analyze and lint Docker containers with Dockle
 
@@ -61,6 +69,10 @@ tasks:
       `task lint:gitleaks -- https://github.com/ProfessorManhattan/Windows12`
 
       For more information, see the [Gitleaks GitHub page](https://github.com/zricethezav/gitleaks).
+    log:
+      start: Scanning repository with `gitleaks`
+      success: Successfully completed `gitleaks` repository scan for secrets
+      error: Possible leak detected by `gitleaks`
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -81,6 +93,10 @@ tasks:
 
       **Example usage:**
       `task grype -- ubuntu:latest --fail-on medium`
+    log:
+      start: Scanning with Grype
+      success: Scan completed by Grype
+      error: Grype found some potential issues!
     cmds:
       - grype {{.CLI_ARGS}}
 
@@ -100,6 +116,10 @@ tasks:
 
       **Example scanning single file:**
       `task lint:private-keys -- filename.ext`
+    log:
+      start: Scanning for private keys
+      success: No private keys were found!
+      error: Private keys were found - make sure you do not commit private keys!
     cmds:
       - |
         {{if .CLI_ARGS}}

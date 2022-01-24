@@ -17,6 +17,10 @@ tasks:
       TOKEN_STATUS:
         sh: glab api projects/:fullpath/access_tokens | jq -r '.[] | select(.name=="PROJECT_CI_ACCESS_TOKENX") | .id'
     run: once
+    log:
+      error: Failed to configure project-specific access token
+      start: Configuring project-specific access token
+      success: Configured project-specific access token
     cmds:
       - |
         curl -sSL --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" --header \
@@ -33,6 +37,10 @@ tasks:
       REPO_ID:
         sh: glab api projects/:fullpath | jq '.id'
     run: once
+    log:
+      error: Error encountered while setting up protected branches
+      start: Setting up protected branches
+      success: Set up protected branches
     cmds:
       - |
         if [[ "$(glab api projects/:fullpath/protected_branches/master | jq '.code_owner_approval_required')" == 'false' ]]; then
@@ -62,7 +70,6 @@ tasks:
         glab api projects/:fullpath/repository/branches -X POST -f id={{.REPO_ID}} -f branch=synchronize -f ref=master > /dev/null &
         glab api projects/:fullpath/protected_branches -X POST -f name=synchronize -f code_owner_approval_required=true -f allow_force_push=true > /dev/null &
         wait
-        .config/log success "Successfully set up GitLab protected branches"
 
   create:
     deps:
@@ -83,22 +90,20 @@ tasks:
       TMP:
         sh: mktemp
     run: once
+    log:
+      error: Encountered error while creating GitLab repository
+      start: Ensuring GitLab repository has been created
+      success: Ensured GitLab repository exists
     cmds:
-      - cmd: |
-          KEYWORDS="$(jq -r '.keywords | tostring' package.json | sed 's/\[//' | sed 's/\]//')"
-          if [ ! -z "$GITLAB_TOKEN" ] && test -e .git && ! glab repo view '{{.GITLAB_PATH}}' > /dev/null; then
-            NO_PROMPT=1 glab repo create '{{.GITLAB_PATH}}' --group '{{.GITLAB_GROUP}}' \
-              --description '{{.EMOJI_START}}{{.DESCRIPTION}}{{.EMOJI_END}}' --name '{{.NAME}}' \
-              {{.PROJECT_TYPE}} --tag "$KEYWORDS"
-            git add --all
-            git commit --quiet -m "🎂 Birth" -n
-            git push --quiet -u --no-progress gitlab master
-            .config/log success 'Created new GitLab repository - `https://gitlab.com/{{.GITLAB_PATH}}`'
-          fi
+      - cmd: NO_PROMPT=1 glab repo create '{{.GITLAB_PATH}}' --group '{{.GITLAB_GROUP}}'
+          --description '{{.EMOJI_START}}{{.DESCRIPTION}}{{.EMOJI_END}}' --name '{{.NAME}}'
+          {{.PROJECT_TYPE}} --tag "$(jq -r '.keywords | tostring' package.json | sed 's/\[//' | sed 's/\]//')"
         ignore_error: true
-    sources:
-      - .variables.json
-      - package.json
+      - git add --all
+      - git commit --quiet -m "🎂 Birth" -n
+      - git push --quiet -u --no-progress gitlab master
+    status:
+      - '[ -z "$GITLAB_TOKEN" ] || ! test -e .git && glab repo view "{{.GITLAB_PATH}}" > /dev/null'
     preconditions:
       - sh: '[ "{{.DESCRIPTION}}" != "null" ]'
         msg: The `.description` in `package.json` must be set.
@@ -122,6 +127,7 @@ tasks:
     log:
       error: Failed to run group:exec logic
       start: Running group:exec logic
+      success: Successfully ran group:exec logic
     cmds:
       - task git:gitlab:group:repositories -- {{index (splitList " ---- " .CLI_ARGS) 0}}
       - |
@@ -172,6 +178,10 @@ tasks:
 
       **Example specifying a group and subgroup:**
       `task {{.TASK}} -- megabyte-labs/ansible-roles`
+    log:
+      error: Encountered error while generating a list of repositories
+      start: Generating list of repositories
+      success: List of repositories generated
     cmds:
       - mkdir -p .cache
       - rm -f {{.REPOSITORY_LIST}}
@@ -195,16 +205,20 @@ tasks:
       - :install:software:glab
       - :install:software:jq
       - create
+    log:
+      error: Error acquiring GitLab project and group IDs
+      start: Acquiring GitLab project and group IDs
+      success: Saved GitLab project and group IDs to package.json
     cmds:
       - |
         API_RES="$(glab api projects/:fullpath)"
         PROJECT_ID="$(echo "$API_RES" | jq '.id')"
         TMP="$(mktemp)" && jq --arg projectId "$PROJECT_ID" '.blueprint.gitlab_project_id = $projectId' package.json > "$TMP"
         mv "$TMP" package.json
+      - |
         GROUP_ID="$(echo "$API_RES" | jq '.namespace.id')"
         TMP="$(mktemp)" && jq --arg groupId "$GROUP_ID" '.blueprint.gitlab_group_id = $groupId' package.json > "$TMP"
         mv "$TMP" package.json
-        .config/log success 'Added GitLab project ID to package.json'
 
   integrations:
     deps:
@@ -217,13 +231,15 @@ tasks:
     deps:
       - :install:software:glab
       - :install:software:jq
+    log:
+      error: Error enabling GitLab's GitHub integration
+      start: Ensuring GitLab's GitHub integration is enabled
+      success: GitLab's GitHub integration is enabled
     cmds:
-      - |
-        GITHUB_REPO="$(jq -r '.blueprint.repository.github' package.json)"
-        if [ ! -z "$GITLAB_TOKEN" ] && [ ! -z "$GITHUB_TOKEN" ]; then
-          glab api projects/:fullpath/integrations/github -X PUT -f token="$GITHUB_TOKEN" -f repository_url="$GITHUB_REPO" --silent
-          .config/log success 'Ensured GitLab'\''s GitHub integration is activated'
-        fi
+      - glab api projects/:fullpath/integrations/github -X PUT -f token="$GITHUB_TOKEN"
+        -f repository_url="$(jq -r '.blueprint.repository.github' package.json)" --silent
+    status:
+      - '[ -z "$GITLAB_TOKEN" ] || [ -z $GITHUB_TOKEN ]'
 
   mirror:
     deps:
