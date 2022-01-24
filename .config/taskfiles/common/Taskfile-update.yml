@@ -19,8 +19,7 @@ tasks:
 
   all:docs:
     cmds:
-      - task: :{{if eq .REPOSITORY_TYPE "common"}}donothing{{else}}
-          {{if eq .REPOSITORY_TYPE "documentation"}}donothing{{else}}common:update:all:docs:generate{{end}}{{end}}
+      - task: '{{if eq .REPOSITORY_TYPE "common"}}:donothing{{else}}{{if eq .REPOSITORY_TYPE "documentation"}}:donothing{{else}}all:docs:generate{{end}}{{end}}'
 
   all:docs:generate:
     deps:
