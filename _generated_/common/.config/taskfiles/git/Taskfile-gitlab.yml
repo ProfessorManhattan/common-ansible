@@ -120,8 +120,8 @@ tasks:
 
   group:exec:cli:
     log:
-      start: Running group:exec logic
       error: Failed to run group:exec logic
+      start: Running group:exec logic
     cmds:
       - task git:gitlab:group:repositories -- {{index (splitList " ---- " .CLI_ARGS) 0}}
       - |

@@ -10,9 +10,9 @@ tasks:
     deps:
       - :install:go:goreleaser
     log:
+      error: GoReleaser encountered an error (config file -> `{{.GORELEASER_CONFIG}}`)
       start: Building with project with GoReleaser
       success: Completed building the project with GoReleaser
-      error: GoReleaser encountered an error (config file -> `{{.GORELEASER_CONFIG}}`)
     cmds:
       - goreleaser build --config {{.GORELEASER_CONFIG}}
 
@@ -20,9 +20,9 @@ tasks:
     deps:
       - :install:go:goreleaser
     log:
+      error: GoReleaser configuration appears to be invalid (config file -> `{{.GORELEASER_CONFIG}})
       start: Validating the configuration file
       success: GoReleaser configuration is valid!
-      error: GoReleaser configuration appears to be invalid (config file -> `{{.GORELEASER_CONFIG}})
     cmds:
       - goreleaser check --config {{.GORELEASER_CONFIG}}
 
@@ -30,8 +30,8 @@ tasks:
     deps:
       - :install:go:goreleaser
     log:
+      error: Encountered error while releasing with GoReleaser (config file -> `{{.GORELEASER_CONFIG}})
       start: Publishing compiled assets with GoReleaser
       success: Successfully published assets with GoReleaser!
-      error: Encountered error while releasing with GoReleaser (config file -> `{{.GORELEASER_CONFIG}})
     cmds:
       - goreleaser release --skip-publish --config {{.GORELEASER_CONFIG}}

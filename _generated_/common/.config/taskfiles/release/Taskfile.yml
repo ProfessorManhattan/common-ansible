@@ -7,8 +7,8 @@ tasks:
       - :install:npm:semantic-release
       - :install:software:poetry
     log:
+      error: Error while running `semantic-release`
       start: Releasing..
       success: Finished running `semantic-release`
-      error: Error while running `semantic-release`
     cmds:
       - semantic-release

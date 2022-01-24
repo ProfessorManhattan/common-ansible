@@ -7,21 +7,13 @@ tasks:
       - :install:software:go
     run: when_changed
     log:
+      error: Failed to acquire Go package named `{{.PACKAGE}}`
       start: Getting Go package named `{{.PACKAGE}}`
       success: Retrieved Go packaged named `{{.PACKAGE}}`
-      error: Failed to acquire Go package named `{{.PACKAGE}}`
     cmds:
       - go get {{.PACKAGE}}
     status:
       - type {{.BIN}} &> /dev/null
-
-  gotestsum:
-    run: once
-    cmds:
-      - task: get
-        vars:
-          BIN: gotestsum
-          PACKAGE: gotest.tools/gotestsum
 
   goreleaser:
     run: once
@@ -31,14 +23,22 @@ tasks:
           BIN: goreleaser
           PACKAGE: github.com/goreleaser/goreleaser@latest
 
+  gotestsum:
+    run: once
+    cmds:
+      - task: get
+        vars:
+          BIN: gotestsum
+          PACKAGE: gotest.tools/gotestsum
+
   install:
     deps:
       - :install:software:go
     run: when_changed
     log:
+      error: Failed to install `{{.PACKAGE}}` with Go
       start: Installing Go package named `{{.PACKAGE}}`
       success: Successfully installed `{{.PACKAGE}}`
-      error: Failed to install `{{.PACKAGE}}` with Go
     cmds:
       - go install {{.PACKAGE}}
     status:
