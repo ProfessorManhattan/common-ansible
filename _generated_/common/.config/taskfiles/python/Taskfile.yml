@@ -18,17 +18,29 @@ tasks:
     deps:
       - :install:python:requirements
     desc: Build standalone binary
+    log:
+      start: Building standalone Python binary with `PyInstaller`
+      success: Successfully build standalone Python binary with `PyInstaller`
+      error: Encountered error while building standalone Python binary with `PyInstaller`
     cmds:
       - task: clean
       - |
         {{.PYTHON_HANDLE}}python -OO -m PyInstaller -F run.py
 
   clean:
+    log:
+      start: Removing `build/` and `dist/`
+      success: Ensured `build/` and `dist/` are removed
+      error: Encountered error while removing `build/` and `dist/`
     cmds:
       - rm -rf build
       - rm -rf dist
 
   global:reset:
+    log:
+      start: Removing pip packages
+      success: Removed pip packages
+      error: Error removing pip packages
     cmds:
       - cmd: if type pip &> /dev/null; then pip uninstall -y -r <(pip freeze); fi
         ignore_error: true
@@ -39,6 +51,10 @@ tasks:
     deps:
       - :install:python:requirements
     desc: Publish the project to PyPi.org
+    log:
+      start: Running `poetry publish`
+      success: '`poetry publish` executed successfully'
+      error: Error running `poetry publish`
     cmds:
       - poetry publish
 
@@ -46,6 +62,10 @@ tasks:
     deps:
       - :install:python:requirements
     desc: Generate the requirements.txt fallback file
+    log:
+      start: Generating `.config/requirements.txt`
+      success: Generated `.config/requirements.txt`
+      error: Failed to generate `.config/requirements.txt`
     cmds:
       - mkdir -p .config
       - poetry export -f requirements.txt --output .config/requirements.txt --without-hashes
@@ -54,6 +74,10 @@ tasks:
     deps:
       - :install:python:requirements
     desc: Runs the project by calling `run.py`
+    log:
+      start: Running `{{.PYTHON_HANDLE}}python run.py`
+      success: Successfully ran `{{.PYTHON_HANDLE}}python run.py`
+      error: Error running `{{.PYTHON_HANDLE}}python run.py`
     cmds:
       - |
         {{.PYTHON_HANDLE}}python run.py
@@ -62,6 +86,9 @@ tasks:
     deps:
       - :install:python:requirements
     desc: Runs tests with `pytest` after fixing and linting
+    log:
+      start: Fixing, linting, and testing Python code
+      success: Successfully fixed, linted, and tested Python code
     cmds:
       - task: :fix:python
       - task: :lint:python
