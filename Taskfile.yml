@@ -98,6 +98,7 @@ vars:
   PYTHON_VIRTUALENV: true
   REPOSITORY_SUBTYPE: ansible
   REPOSITORY_TYPE: common
+  SEMANTIC_CONFIG: semantic-release-config
   TIMEZONE: America/New_York
 
 profile: |
