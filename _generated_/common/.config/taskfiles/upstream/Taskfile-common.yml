@@ -11,6 +11,8 @@ tasks:
   clean:
     log:
       start: Running `rm -rf {{.SHARED_FOLDER}}`
+      success: Removed `{{.SHARED_FOLDER}}`
+      error: Error running `rm -rf {{.SHARED_FOLDER}}`
     cmds:
       - rm -rf {{.SHARED_FOLDER}}
 
@@ -22,6 +24,7 @@ tasks:
   clone:common:
     log:
       start: Cloning Shared Common to `{{.SHARED_FOLDER}}`
+      success: Cloned Shared Common to `{{.SHARED_FOLDER}}`
       error: Error cloning Shared Common to `{{.SHARED_FOLDER}}`
     cmds:
       - rm -rf ./{{.SHARED_FOLDER}}
@@ -31,6 +34,7 @@ tasks:
   clone:docs:
     log:
       start: Cloning {{.REPOSITORY_SUBTYPE}} docs repo and pruning unnecessary files
+      success: Cloned sub-type documentation repository and pruned unnecessary files
       error: Error cloning / cleaning up {{.REPOSITORY_SUBTYPE}} docs repo
     cmds:
       - mkdir -p ./{{.SHARED_FOLDER}}/common/.config
@@ -45,6 +49,7 @@ tasks:
   combine:
     log:
       start: Combining generated files
+      success: Combined generated files
       error: Error combining generated files
     cmds:
       - mkdir -p _generated_
@@ -59,6 +64,8 @@ tasks:
   copy:
     log:
       start: Removing `.config/`
+      success: Removed `.config/`
+      error: Error removing `.config/`
     cmds:
       - rm -rf .config
       - task: copy:begin
@@ -74,6 +81,7 @@ tasks:
       - :install:software:coreutils
     log:
       start: Copying common files
+      success: Copied common files
       error: Error copying common files
     cmds:
       - |
@@ -86,6 +94,7 @@ tasks:
       - :install:software:coreutils
     log:
       start: Copying project files
+      success: Copied project files
       error: Error copying project files
     cmds:
       - |
@@ -99,6 +108,7 @@ tasks:
       - :install:software:coreutils
     log:
       start: Copying project sub-type files
+      success: Copied project sub-type files
       error: Error copying project sub-type files
     cmds:
       - |
@@ -121,6 +131,10 @@ tasks:
   merge:package:project:
     deps:
       - :install:software:jq
+    log:
+      start: Merging `package.json.liquid` templates
+      success: Merged `package.json.liquid` templates
+      error: Error merging `package.json.liquid` templates
     cmds:
       - |
         function ensureKeywords() {
@@ -150,6 +164,10 @@ tasks:
   merge:package:project:subtype:
     deps:
       - :install:software:jq
+    log:
+      start: Merging `package.json.liquid` templates for sub-type
+      success: Merged `package.json.liquid` templates for sub-type
+      error: Error merging `package.json.liquid` templates for sub-type
     cmds:
       - |
         function ensureKeywords() {
@@ -187,6 +205,10 @@ tasks:
   merge:variables:project:
     deps:
       - :install:software:jq
+    log:
+      start: Merging variables.json files
+      success: Merged variables.json files
+      error: Error merging variables files
     cmds:
       - |
         if [ -f "project/.config/variables.json" ]; then
@@ -199,6 +221,10 @@ tasks:
   merge:variables:subtype:
     deps:
       - :install:software:jq
+    log:
+      start: Merging variables.json files for sub-type
+      success: Merged variables.json files for sub-type
+      error: Error merging variables files for sub-type
     cmds:
       - |
         GROUP="$(jq -r '.blueprint.group' package.json)"
@@ -226,6 +252,10 @@ tasks:
         wait
 
   reset:
+    log:
+      start: Removing `.common*` and `_generated_`
+      success: Removed `.common*` and `_generated_`
+      error: Error removing `.common*` and `_generated_`
     cmds:
       - rm -rf .common*
       - rm -rf _generated_
