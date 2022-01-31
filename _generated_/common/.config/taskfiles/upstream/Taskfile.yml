@@ -6,6 +6,7 @@ tasks:
     log:
       start: Updating common repository
       success: Finished updating common repository
+      error: Error updating common repository
     cmds:
       - task: :upstream:common:reset
       - task: :upstream:common:clone
@@ -21,6 +22,7 @@ tasks:
     log:
       start: Updating common documents repository
       success: Finished updating common documents repository
+      error: Error updating common documents repository
     cmds:
       - task: :upstream:commondocs:clone
       - task: :upstream:commondocs:copy
@@ -33,6 +35,7 @@ tasks:
     log:
       start: Updating document repository
       success: Finished updating document repository
+      error: Error updating document repository
     cmds:
       - task: :upstream:docs:clone
       - task: :upstream:docs:copy
@@ -44,8 +47,9 @@ tasks:
 
   project:
     log:
-      start: Running `project` update logic
-      success: Finished running `project` update logic
+      start: Running project update logic
+      success: Finished running project update logic
+      error: Error updating project repository
     cmds:
       - task: pull
       - task: :upstream:project:clone
@@ -65,6 +69,7 @@ tasks:
     log:
       start: Scaffolding project
       success: Finished scaffolding project
+      error: Error scaffolding project
     cmds:
       - task: pull
       - task: :upstream:project:clone
@@ -103,6 +108,7 @@ tasks:
     log:
       start: Running shared repository update logic
       success: Finished running shared repository update logic
+      error: Error running shared repository update logic
     cmds:
       - task: pull
       - task: :upstream:shared:copy

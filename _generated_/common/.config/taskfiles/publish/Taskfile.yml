@@ -13,6 +13,7 @@ tasks:
     log:
       start: Publishing beta release
       success: Finished publishing beta release
+      error: Error publishing beta release
 
   app:release:
     deps:
@@ -27,6 +28,7 @@ tasks:
     log:
       start: Publishing `production` release
       success: Successfully published `production` release
+      error: Error publishing `production` release
 
   semantic-release:
     deps:

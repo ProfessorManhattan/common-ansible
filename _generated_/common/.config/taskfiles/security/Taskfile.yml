@@ -169,6 +169,10 @@ tasks:
     env:
       SNYK_API_TOKEN:
         sh: snyk config get api
+    log:
+      start: Logging in with `{{.NPX_HANDLE}}snyk auth`
+      success: Successfully authenticated with `{{.NPX_HANDLE}}snyk auth`
+      error: Encountered error while logging in with `{{.NPX_HANDLE}}snyk auth`
     cmds:
       - '{{.NPX_HANDLE}}snyk auth'
     status:
@@ -193,6 +197,10 @@ tasks:
       `task security:trivy -- alpine:latest`
 
       For more information, see [Trivy's website](https://aquasecurity.github.io/trivy/).
+    log:
+      start: Analyzing Docker image with Trivy
+      success: Trivy reported no major vulnerabilities
+      error: Trivy detected one or more significant vulnerabilities in the image(s)
     cmds:
       - |
         {{if .CLI_ARGS}}
