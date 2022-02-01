@@ -329,9 +329,6 @@
   ],
   "name": "[[ package.json .blueprint.name - See CONTRIBUTING.md ]]",
   "npm_publish_config_access": "public",
-  "npm_scripts_help": "task --list",
-  "npm_scripts_prepare": "task common:husky",
-  "npm_scripts_start": "bash .config/start.sh",
   "npm_standard_version_prerelease": "git add --all",
   "npm_type": "module",
   "organization": "Megabyte Labs",
@@ -585,6 +582,11 @@
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
+  "scriptsBuild": "task donothing",
+  "scriptsHelp": "task --menu",
+  "scriptsPrepare": "task common:husky",
+  "scriptsStart": "bash start.sh",
+  "scriptsTest": "task donothing",
   "sharp_instructions": [],
   "sponsorship": {
     "author": "Brian Zalewski",

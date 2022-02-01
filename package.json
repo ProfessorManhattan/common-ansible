@@ -17,11 +17,11 @@
   "type": "module",
   "scripts": {
     "fix": "task fix",
-    "help": "task --list",
+    "help": "",
     "lint": "task lint",
-    "prepare": "task common:husky",
+    "prepare": "",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
-    "start": "bash .config/start.sh"
+    "start": ""
   },
   "config": {
     "commitizen": {

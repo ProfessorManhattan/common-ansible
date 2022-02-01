@@ -5885,7 +5885,7 @@ packages:
       '@babel/code-frame': 7.16.7
       '@eslint/eslintrc': 0.2.2
       ajv: 6.12.6
-      chalk: 4.1.0
+      chalk: 4.1.2
       cross-spawn: 7.0.3
       debug: 4.3.3
       doctrine: 3.0.0
