@@ -57,5 +57,6 @@
       "github": "ansible-"
     }
   },
+  "scriptsBuild": "task ansible:build:none",
   "scriptsTest": "[[ $- == *i* ]] && task ansible:test:prompt || task ansible:test:default"
 }
