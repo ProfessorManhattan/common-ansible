@@ -175,6 +175,17 @@ tasks:
 
   build:release: 'true'
 
+  build:tsconfig:
+    deps:
+      - :install:npm:typescript
+    log:
+      start: Removing `dist/` folder and running `tsc -p tsconfig.json`
+      success: Successfully built project
+      error: Error building with `tsconfig.json`
+    cmds:
+      - rm -rf dist
+      - tsc -p tsconfig.json
+
   clean:
     deps:
       - :install:software:rsync
