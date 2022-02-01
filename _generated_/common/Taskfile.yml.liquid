@@ -20,10 +20,10 @@ vars:
     -o -path './.pnpm-store/*' -o -path './.shared/*' -o -path './.task/*' -o -path './.venv/*' -o -path './.vscode/*'
     -o -path './build/*' -o -path './dist/*' -o -path './node_modules/*' -o -path './roles/*' -o -name pnpm-lock.yaml
     -o -name package-lock.json -o -name poetry.lock -o -name '.variables.json'
-  INIT_SCRIPT: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/common/.gitlab/ci/scripts/update-init.sh
+  INIT_SCRIPT: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/scripts/update-init.sh
   LOG_FIX:
     sh: chmod +x .config/log && echo "heyhey"
-  NPM_KEEP_UPDATED: '@washingtondc/* eslint-config-strict-mode semantic-release-config'
+  NPM_KEEP_UPDATED: ''
   NPM_PROGRAM: npm
   NPM_PROGRAM_LOCAL: pnpm
   NPX_HANDLE: 'pnpx '
@@ -68,8 +68,11 @@ profile: |
 tasks:
   build:
     deps:
-      - :install:software:node
+      - install:software:jq
+      - install:software:node
     desc: Build the project
+    vars:
+      NONINTERACTIVE_MISSING_BUILD_CMD: There must be a build command under `.scripts.build` in `package.json`!
     summary: |
       # Build the Project
 
@@ -80,7 +83,12 @@ tasks:
       success: Successfully ran `npm run build`
       error: Encountered error while running `npm run build`
     cmds:
-      - npm run build
+      - |
+        if [ "$(jq '.scripts.build' package.json)" != 'null' ]; then
+          npm run build
+        else
+          [[ $- == *i* ]] && task prepare || (.config/log error '\{{.NONINTERACTIVE_MISSING_BUILD_CMD}}' && exit 1)
+        fi
 
   commit:
     deps:
@@ -174,6 +182,9 @@ tasks:
       - task: git:gitlab:group:exec
 
   init:
+    deps:
+      - install:software:jq
+      - install:software:yq
     desc: Runs the initialization script
     summary: |
       # Initialize the Project and Run the Full Update Sequence
@@ -362,6 +373,8 @@ tasks:
       API keys be set. Generally, only project owners will use this task.
     cmds:
       - task: common:update:services
+    status:
+      - '[ -n "$GITLAB_CI" ] && [ "$REPOSITORY_UPDATE" != "true" ]'
 
   shell:
     desc: Start a terminal session using Docker with any Linux operating system
@@ -423,6 +436,8 @@ tasks:
       - install:software:node
     interactive: true
     desc: Open an interactive dialog to select and run a Molecule test
+    vars:
+      NONINTERACTIVE_MISSING_TEST_CMD: There must be a `.scripts.test` definition in `package.json`!
     summary: |
       # Test the Project
 
@@ -441,4 +456,9 @@ tasks:
       5. Running the play over SSH on a remote target
       {{/eq}}
     cmds:
-      - npm run test
+      - |
+        if [ "$(jq '.scripts.test' package.json)" != 'null' ]; then
+          npm run test
+        else
+          [[ $- == *i* ]] && task prepare || (.config/log error '\{{.NONINTERACTIVE_MISSING_TEST_CMD}}' && exit 1)
+        fi

@@ -39,10 +39,13 @@
   "dependencies": {},
   "description": "{{description}}",
   "devDependencies": {
-    "@washingtondc/development": "^1.0.2",
-    "@washingtondc/prettier": "^1.0.0",
-    "eslint-config-strict-mode": "^1.0.28",
-    "semantic-release-config": "^0.0.12"
+    "@commitlint/config-conventional": "^16.0.0",
+    "@washingtondc/development": "latest",
+    "cz-emoji-conventional": "^1.0.1",
+    "eslint-config-strict-mode": "latest",
+    "handlebars-helpers": "^0.10.0",
+    "prettier-config-sexy-mode": "latest",
+    "semantic-release-config": "latest"
   },
   "engines": {
     "node": ">=14.18.0"
@@ -132,14 +135,16 @@
   "name": "{{#if customPackageName}}{{customPackageName}}{{else}}@{{profile.npmjs_organization}}/{{repository.prefix.github}}{{slug}}{{/if}}",
   "ntl": {
     "descriptions": {
+      "build": "Builds the project, if needed",
       "help": "Display the Bodega Taskfile.yml interactive help menu",
       "prepare": "Hook, triggered by running npm install, that runs logic such as installing pre-commit hooks",
       "repair": "Fixes basic issues in projects that are having trouble running basic commands like 'task start'",
-      "start": "Entrypoint for new developers that installs requirements and then runs 'task start'"
+      "start": "Entrypoint for new developers that installs requirements and then runs 'task start'",
+      "test": "Runs the appropriate test logic"
     }
   },
   "optionalDependencies": {},
-  "prettier": "@washingtondc/prettier",
+  "prettier": "prettier-config-sexy-mode",
   "private": false,
   "publishConfig": {
     "access": "{{npm_publish_config_access}}"
@@ -165,10 +170,12 @@
     "url": "git+{{#if repository.github}}{{repository.github}}{{else}}https://github.com/{{profile.github}}/{{repository.prefix.github}}{{slug}}{{/if}}.git"
   },
   "scripts": {
-    "help": "{{npm_scripts_help}}",
-    "prepare": "{{npm_scripts_prepare}}",
+    "build": "{{scriptsBuild}}",
+    "help": "{{scriptsHelp}}",
+    "prepare": "{{scriptsPrepare}}",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
-    "start": "{{npm_scripts_start}}"
+    "start": "{{scriptsStart}}",
+    "test": "{{scriptsTest}}"
   },
   "type": "{{npm_type}}",
   "version": "{{version}}"

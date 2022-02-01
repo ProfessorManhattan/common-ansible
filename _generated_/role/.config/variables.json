@@ -451,6 +451,8 @@
       ""
     ]
   ],
+  "redditApplicationId": "O3UxD7HlPpcN88gpEkPIXQ",
+  "redditUsername": "tsgangster",
   "releaseRules": [
     {
       "release": false,
@@ -582,17 +584,22 @@
       "wrangler": "https://gitlab.com/megabyte-labs/wrangler"
     }
   },
-  "scriptsBuild": "task donothing",
+  "scriptsBuild": "task ansible:build:none",
   "scriptsHelp": "task --menu",
   "scriptsPrepare": "task common:husky",
   "scriptsStart": "bash start.sh",
-  "scriptsTest": "task donothing",
+  "scriptsTest": "[[ $- == *i* ]] && task ansible:test:prompt || task ansible:test:default",
   "sharp_instructions": [],
+  "slackNotificationChannel": "#misc",
+  "slackNotificationIcon": "https://gitlab.com/megabyte-labs/misc/assets/-/raw/master/logo/megabytelabs-color-icon-350x350.png",
+  "slackNotificationUsername": "Megabyte Labs Release Notification Bot",
   "sponsorship": {
     "author": "Brian Zalewski",
     "text": "I create open source projects out of love. Although I have a job, shelter, and as much fast food as I can handle, it would still be pretty cool to be appreciated by the community for something I have spent a lot of time and money on. Please consider sponsoring me! Who knows? Maybe I will be able to quit my job and publish open source full time."
   },
   "subgroup": "role",
+  "teamsNotificationColor": "#1DA1F2",
+  "teamsNotificationIcon": "https://gitlab.com/megabyte-labs/misc/assets/-/raw/master/logo/megabytelabs-color-icon-350x350.png",
   "title": "[[ package.json .blueprint.title - See CONTRIBUTING.md ]]",
   "version": "0.0.1"
 }
