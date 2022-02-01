@@ -56,5 +56,6 @@
     "prefix": {
       "github": "ansible-"
     }
-  }
+  },
+  "scriptsTest": "[[ $- == *i* ]] && task ansible:test:prompt || task ansible:test:default"
 }
