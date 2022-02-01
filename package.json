@@ -79,6 +79,16 @@
     "subgroup": "ansible",
     "title": "Ansible Common Files and Boilerplate Code"
   },
+  "changelog": {
+    "displayTypes": [
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "revert"
+    ],
+    "showAuthor": true
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
