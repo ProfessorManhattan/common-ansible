@@ -360,4 +360,7 @@ tasks:
       success: Successfully connected to Ansible Galaxy
       error: Failed to connect to Ansible Galaxy with provided token
     cmds:
-      - ansible-galaxy role setup --token "$ANSIBLE_GALAXY_TOKEN" null null null null --list > /dev/null
+      - |
+        which ansible-galaxy
+        ansible-galaxy role setup --token "$ANSIBLE_GALAXY_TOKEN" null null null null --list | EXIT_CODE=$?
+        echo $?
