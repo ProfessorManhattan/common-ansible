@@ -51,12 +51,7 @@
     "node": ">=14.18.0"
   },
   "eslintConfig": {
-    "extends": "eslint-config-strict-mode",
-    "rules": {
-      "import/no-extraneous-dependencies": "warn",
-      "max-len": "warn",
-      "max-lines": "warn"
-    }
+    "extends": "eslint-config-strict-mode"
   },
   "funding": [
     {
@@ -170,12 +165,12 @@
     "url": "git+{{#if repository.github}}{{repository.github}}{{else}}https://github.com/{{profile.github}}/{{repository.prefix.github}}{{slug}}{{/if}}.git"
   },
   "scripts": {
-    "build": "{{scriptsBuild}}",
-    "help": "{{scriptsHelp}}",
-    "prepare": "{{scriptsPrepare}}",
+    "build": "{{{scriptsBuild}}}",
+    "help": "{{{scriptsHelp}}}",
+    "prepare": "{{{scriptsPrepare}}}",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
-    "start": "{{scriptsStart}}",
-    "test": "{{scriptsTest}}"
+    "start": "{{{scriptsStart}}}",
+    "test": "{{{scriptsTest}}}"
   },
   "type": "{{npm_type}}",
   "version": "{{version}}"
