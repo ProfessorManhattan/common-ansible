@@ -5,7 +5,6 @@ specifiers:
   '@washingtondc/development': latest
   cz-emoji-conventional: ^1.0.1
   eslint-config-strict-mode: latest
-  glob: ^7.2.0
   handlebars-helpers: ^0.10.0
   prettier-config-sexy-mode: latest
   semantic-release-config: latest
@@ -15,7 +14,6 @@ devDependencies:
   '@washingtondc/development': 1.0.10
   cz-emoji-conventional: 1.0.1
   eslint-config-strict-mode: 1.0.36
-  glob: 7.2.0
   handlebars-helpers: 0.10.0
   prettier-config-sexy-mode: 1.0.1
   semantic-release-config: 1.1.4
@@ -26,7 +24,7 @@ packages:
     resolution: {integrity: sha512-sE8Gx+qSDMLoJvb3QarJJlDQK7SSY4rK3hxp4XsiANeFOmjU46ZI7Y9adAQRJrmbz8zbtZkp3mJTT+rGxtF0XA==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      '@jridgewell/trace-mapping': 0.2.3
+      '@jridgewell/trace-mapping': 0.2.4
       sourcemap-codec: 1.4.8
     dev: true
 
@@ -755,8 +753,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: true
 
-  /@jridgewell/trace-mapping/0.2.3:
-    resolution: {integrity: sha512-X8ybLjwxY8VNxEddYmlQQI14wVM+VSSTFnOuHTS3eplDSGAXKZuNuedBxgXGlcKdPjJOrgeygu8/dtVkA1YslQ==}
+  /@jridgewell/trace-mapping/0.2.4:
+    resolution: {integrity: sha512-W/qPHey63KLHPC7zzvXeul8ouaugOu232lUPbyBAuoG9s+bmDSP1ANulLjGCf34Je3sGUPtw/Cg52e7ALY9+3w==}
     dependencies:
       '@jridgewell/resolve-uri': 3.0.4
       sourcemap-codec: 1.4.8
@@ -2190,7 +2188,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001305
+      caniuse-lite: 1.0.30001306
       electron-to-chromium: 1.4.63
       escalade: 3.1.1
       node-releases: 2.0.1
@@ -2317,8 +2315,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite/1.0.30001305:
-    resolution: {integrity: sha512-p7d9YQMji8haf0f+5rbcv9WlQ+N5jMPfRAnUmZRlNxsNeBO3Yr7RYG6M2uTY1h9tCVdlkJg6YNNc4kiAiBLdWA==}
+  /caniuse-lite/1.0.30001306:
+    resolution: {integrity: sha512-Wd1OuggRzg1rbnM5hv1wXs2VkxJH/AA+LuudlIqvZiCvivF+wJJe2mgBZC8gPMgI7D76PP5CTx8Luvaqc1V6OQ==}
     dev: true
 
   /cardinal/2.1.1:

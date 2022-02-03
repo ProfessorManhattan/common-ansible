@@ -12,17 +12,6 @@ tasks:
     status:
       - type bin &> /dev/null
 
-  bin:install:
-    run: when_changed
-    log:
-      error: Failed to acquire GitHub release from `{{.RELEASE}}`
-      start: Acquiring GitHub binary release from `{{.RELEASE}}`
-      success: Installed GitHub release from `{{.RELEASE}}`, available as `{{.BIN}}`
-    cmds:
-      - bin install {{.RELEASE}} "$GOPATH/bin/{{.BIN}}"
-    status:
-      - type {{.BIN}} > /dev/null
-
   get:
     run: when_changed
     log:

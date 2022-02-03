@@ -584,6 +584,15 @@ tasks:
     status:
       - type rsync &> /dev/null
 
+  sentry:
+    run: once
+    cmds:
+      - task: brew:formulae
+        vars:
+          FORMULAE: getsentry/tools/sentry-cli
+    status:
+      - type sentry-cli > /dev/null
+
   snapcraft:
     run: once
     cmds:
