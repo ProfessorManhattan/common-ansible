@@ -22,12 +22,11 @@ devDependencies:
 
 packages:
 
-  /@ampproject/remapping/2.0.1:
-    resolution: {integrity: sha512-EldHF4Ufj3NL9yCAmYrPzY+3/Yqrzxu24F4Mu4nRjK3w70AKYRmhuLwGZdA9JeoDsbIwkgGkbqUK2INuF582Og==}
+  /@ampproject/remapping/2.0.2:
+    resolution: {integrity: sha512-sE8Gx+qSDMLoJvb3QarJJlDQK7SSY4rK3hxp4XsiANeFOmjU46ZI7Y9adAQRJrmbz8zbtZkp3mJTT+rGxtF0XA==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      '@jridgewell/resolve-uri': 3.0.4
-      '@jridgewell/trace-mapping': 0.2.2
+      '@jridgewell/trace-mapping': 0.2.3
       sourcemap-codec: 1.4.8
     dev: true
 
@@ -47,7 +46,7 @@ packages:
     resolution: {integrity: sha512-x/5Ea+RO5MvF9ize5DeVICJoVrNv0Mi2RnIABrZEKYvPEpldXwauPkgvYA17cKa6WpU3LoYvYbuEMFtSNFsarA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@ampproject/remapping': 2.0.1
+      '@ampproject/remapping': 2.0.2
       '@babel/code-frame': 7.16.7
       '@babel/generator': 7.17.0
       '@babel/helper-compilation-targets': 7.16.7_@babel+core@7.17.0
@@ -756,8 +755,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: true
 
-  /@jridgewell/trace-mapping/0.2.2:
-    resolution: {integrity: sha512-I9AGQzMPEzQNJgib2YSqciYWazGsXSyu1rEEeaPeM1764ZtnfNTxA5bofzG/POMI3QcvpBUxwecOPZM6ZhkEpg==}
+  /@jridgewell/trace-mapping/0.2.3:
+    resolution: {integrity: sha512-X8ybLjwxY8VNxEddYmlQQI14wVM+VSSTFnOuHTS3eplDSGAXKZuNuedBxgXGlcKdPjJOrgeygu8/dtVkA1YslQ==}
     dependencies:
       '@jridgewell/resolve-uri': 3.0.4
       sourcemap-codec: 1.4.8
