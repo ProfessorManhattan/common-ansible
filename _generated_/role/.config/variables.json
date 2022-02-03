@@ -152,6 +152,7 @@
       }
     }
   ],
+  "gomodProxy": true,
   "group": "common",
   "homebrew": {
     "folder": "Formula",
