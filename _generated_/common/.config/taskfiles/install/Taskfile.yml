@@ -67,7 +67,6 @@ tasks:
             {{.NPM_PROGRAM_LOCAL}} update
           else
             {{.NPM_PROGRAM_LOCAL}} install || EXIT_CODE=$?
-            echo "EXIT CODE $EXIT_CODE"
             if [ -n "$EXIT_CODE" ]; then
               {{.NPM_PROGRAM_LOCAL}} update
             fi
