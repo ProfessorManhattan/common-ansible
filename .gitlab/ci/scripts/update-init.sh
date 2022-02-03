@@ -180,7 +180,10 @@ if test -f "ARCHITECTURE.md"; then
 fi
 
 if type pnpm &> /dev/null && type jq &> /dev/null && [ "$(jq -r '.devDependencies.glob' package.json)" == 'null' ]; then
-  pnpm i -D glob
+  pnpm i --save-dev glob
+else
+  echo "OUTSIDE"
+  pnpm i --save-dev glob
 fi
 
 # @description Commit and push the changes
