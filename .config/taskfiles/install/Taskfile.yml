@@ -62,7 +62,7 @@ tasks:
       start: Installing local NPM dependencies
       success: Successfully installed local NPM dependencies
     cmds:
-      - cmd: '{{.NPM_PROGRAM_LOCAL}} i --shamefully-hoist --no-frozen-lockfile'
+      - cmd: '{{.NPM_PROGRAM_LOCAL}} update'
         ignore_error: true
       - task: modules:local:sync
     sources:

@@ -62,7 +62,7 @@ tasks:
       success: Successfully installed local NPM dependencies
       error: Encountered error while installing local NPM dependencies
     cmds:
-      - cmd: '{{.NPM_PROGRAM_LOCAL}} i --shamefully-hoist --no-frozen-lockfile'
+      - cmd: '{{.NPM_PROGRAM_LOCAL}} update'
         ignore_error: true
       - task: modules:local:sync
     sources:
