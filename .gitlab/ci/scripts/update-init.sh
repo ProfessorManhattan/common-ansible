@@ -179,6 +179,10 @@ if test -f "ARCHITECTURE.md"; then
   mv ARCHITECTURE.md docs
 fi
 
+if type pnpm &> /dev/null && type jq &> /dev/null && [ "$(jq -r '.devDependencies.glob' package.json)" == 'null' ]; then
+  pnpm i -D glob
+fi
+
 # @description Commit and push the changes
 if [ -n "$GITLAB_CI" ]; then
   git add --all

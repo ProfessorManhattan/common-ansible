@@ -4,6 +4,12 @@ version: '3'
 tasks:
   act:
     run: once
+    summary: |
+      ## Act
+
+      A program that allows you to simulate GitHub Actions locally.
+
+      [GitHub](https://github.com/nektos/act)
     cmds:
       - task: brew:formulae
         vars:

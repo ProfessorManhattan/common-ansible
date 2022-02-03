@@ -62,7 +62,12 @@ tasks:
       success: Successfully installed local NPM dependencies
       error: Encountered error while installing local NPM dependencies
     cmds:
-      - cmd: '{{.NPM_PROGRAM_LOCAL}} update'
+      - cmd: |
+          if [ -n "$AUTO_UPDATE_NPM_PACKAGES" ]; then
+            {{.NPM_PROGRAM_LOCAL}} update
+          else
+            {{.NPM_PROGRAM_LOCAL}} install
+          fi
         ignore_error: true
       - task: modules:local:sync
     sources:
