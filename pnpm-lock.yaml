@@ -5,6 +5,7 @@ specifiers:
   '@washingtondc/development': latest
   cz-emoji-conventional: ^1.0.1
   eslint-config-strict-mode: latest
+  glob: ^7.2.0
   handlebars-helpers: ^0.10.0
   prettier-config-sexy-mode: latest
   semantic-release-config: latest
@@ -14,6 +15,7 @@ devDependencies:
   '@washingtondc/development': 1.0.10
   cz-emoji-conventional: 1.0.1
   eslint-config-strict-mode: 1.0.36
+  glob: 7.2.0
   handlebars-helpers: 0.10.0
   prettier-config-sexy-mode: 1.0.1
   semantic-release-config: 1.1.4

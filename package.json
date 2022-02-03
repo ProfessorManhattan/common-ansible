@@ -37,6 +37,7 @@
     "@washingtondc/development": "latest",
     "cz-emoji-conventional": "^1.0.1",
     "eslint-config-strict-mode": "latest",
+    "glob": "^7.2.0",
     "handlebars-helpers": "^0.10.0",
     "prettier-config-sexy-mode": "latest",
     "semantic-release-config": "latest"
@@ -94,7 +95,9 @@
     "showAuthor": true
   },
   "commitlint": {
-    "extends": [],
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
     "helpUrl": "https://megabyte.space/docs/contributing/commits"
   },
   "eslintConfig": {
