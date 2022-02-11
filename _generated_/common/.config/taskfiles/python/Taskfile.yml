@@ -7,9 +7,9 @@ tasks:
       - :install:python:requirements
     desc: Build the project
     log:
+      error: Encountered error while building the project with `poetry build`
       start: Building the project with `poetry build`
       success: Successfully built the project
-      error: Encountered error while building the project with `poetry build`
     cmds:
       - task: clean
       - poetry build
@@ -19,9 +19,9 @@ tasks:
       - :install:python:requirements
     desc: Build standalone binary
     log:
+      error: Encountered error while building standalone Python binary with `PyInstaller`
       start: Building standalone Python binary with `PyInstaller`
       success: Successfully build standalone Python binary with `PyInstaller`
-      error: Encountered error while building standalone Python binary with `PyInstaller`
     cmds:
       - task: clean
       - |
@@ -29,18 +29,18 @@ tasks:
 
   clean:
     log:
+      error: Encountered error while removing `build/` and `dist/`
       start: Removing `build/` and `dist/`
       success: Ensured `build/` and `dist/` are removed
-      error: Encountered error while removing `build/` and `dist/`
     cmds:
       - rm -rf build
       - rm -rf dist
 
   global:reset:
     log:
+      error: Error removing pip packages
       start: Removing pip packages
       success: Removed pip packages
-      error: Error removing pip packages
     cmds:
       - cmd: if type pip &> /dev/null; then pip uninstall -y -r <(pip freeze); fi
         ignore_error: true
@@ -52,9 +52,9 @@ tasks:
       - :install:python:requirements
     desc: Publish the project to PyPi.org
     log:
+      error: Error running `poetry publish`
       start: Running `poetry publish`
       success: '`poetry publish` executed successfully'
-      error: Error running `poetry publish`
     cmds:
       - poetry publish
 
@@ -63,9 +63,9 @@ tasks:
       - :install:python:requirements
     desc: Generate the requirements.txt fallback file
     log:
+      error: Failed to generate `.config/requirements.txt`
       start: Generating `.config/requirements.txt`
       success: Generated `.config/requirements.txt`
-      error: Failed to generate `.config/requirements.txt`
     cmds:
       - mkdir -p .config
       - poetry export -f requirements.txt --output .config/requirements.txt --without-hashes
@@ -75,9 +75,9 @@ tasks:
       - :install:python:requirements
     desc: Runs the project by calling `run.py`
     log:
+      error: Error running `{{.PYTHON_HANDLE}}python run.py`
       start: Running `{{.PYTHON_HANDLE}}python run.py`
       success: Successfully ran `{{.PYTHON_HANDLE}}python run.py`
-      error: Error running `{{.PYTHON_HANDLE}}python run.py`
     cmds:
       - |
         {{.PYTHON_HANDLE}}python run.py

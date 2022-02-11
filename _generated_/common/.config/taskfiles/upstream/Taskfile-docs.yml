@@ -15,17 +15,17 @@ tasks:
 
   clean:common:
     log:
+      error: Error running `rm -rf {{.COMMON_FOLDER}}`
       start: Running `rm -rf {{.COMMON_FOLDER}}`
       success: Successfully ran `rm -rf {{.COMMON_FOLDER}}`
-      error: Error running `rm -rf {{.COMMON_FOLDER}}`
     cmds:
       - rm -rf {{.COMMON_FOLDER}}
 
   clean:shared:
     log:
+      error: Error running `rm -rf {{.SHARED_FOLDER}}`
       start: Running `rm -rf {{.SHARED_FOLDER}}`
       success: Successfully ran `rm -rf {{.SHARED_FOLDER}}`
-      error: Error running `rm -rf {{.SHARED_FOLDER}}`
     cmds:
       - rm -rf {{.SHARED_FOLDER}}
 
@@ -36,9 +36,9 @@ tasks:
 
   clone:common:
     log:
+      error: Error encountered in clone logic for {{.COMMON_FILES_URL}}
       start: Cloning {{.COMMON_FILES_URL}}
       success: Successfully cloned {{.COMMON_FILES_URL}}
-      error: Error encountered in clone logic for {{.COMMON_FILES_URL}}
     cmds:
       - rm -rf {{.COMMON_FOLDER}}
       - git clone --depth=1 {{.COMMON_FILES_URL}} {{.COMMON_FOLDER}}
@@ -46,9 +46,9 @@ tasks:
 
   clone:shared:
     log:
+      error: Error encountered in clone logic for {{.SHARED_DOCS_URL}}
       start: Cloning {{.SHARED_DOCS_URL}}
       success: Successfully cloned {{.SHARED_DOCS_URL}}
-      error: Error encountered in clone logic for {{.SHARED_DOCS_URL}}
     cmds:
       - rm -rf {{.SHARED_FOLDER}}
       - git clone --depth=1 {{.SHARED_DOCS_URL}} {{.SHARED_FOLDER}}
@@ -56,9 +56,9 @@ tasks:
 
   copy:
     log:
+      error: Error encountered in copy sequence
       start: Beginning copy sequence
       success: Completed copy sequence
-      error: Error encountered in copy sequence
     cmds:
       - rm -rf .config
       - task: copy:before
@@ -73,9 +73,9 @@ tasks:
     deps:
       - :install:software:coreutils
     log:
+      error: Error copying common files
       start: Copying common files
       success: Copied common files
-      error: Error copying common files
     cmds:
       - |
         PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
@@ -84,9 +84,9 @@ tasks:
 
   copy:shared:
     log:
+      error: Error encountered while copying shared files
       start: Copying shared files
       success: Copied shared files
-      error: Error encountered while copying shared files
     cmds:
       - rm -rf common
       - mv {{.SHARED_FOLDER}}/common common
@@ -98,9 +98,9 @@ tasks:
     deps:
       - :install:software:jq
     log:
+      error: Error combining common.json files
       start: Combining common.json files
       success: Combined common.json files
-      error: Error combining common.json files
     cmds:
       - jq -s -S '.[0] * .[1]' {{.SHARED_FOLDER}}/common.json common.json > variables.json
 

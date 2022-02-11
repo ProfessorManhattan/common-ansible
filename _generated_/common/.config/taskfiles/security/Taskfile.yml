@@ -11,9 +11,9 @@ tasks:
       - :install:python:dependencies
     desc: Check for Python code security issues
     log:
+      error: '`bandit` reported some security issues that need to be fixed!'
       start: Running `bandit -r run.py`
       success: No security issues found with `bandit`!
-      error: '`bandit` reported some security issues that need to be fixed!'
     cmds:
       - poetry run bandit -r run.py
       - poetry run bandit -r src
@@ -23,10 +23,6 @@ tasks:
       - :install:software:dockle
       - :install:software:jq
     desc: Analyze and lint the Docker container using Dockle
-    log:
-      start: Scanning image(s) with Dockle
-      success: Successfully completed scan with Dockle
-      error: Dockle found some errors that need to be fixed!
     summary: |
       # Analyze and lint Docker containers with Dockle
 
@@ -41,6 +37,10 @@ tasks:
       `task security:dockle -- namespace/image:tag`
 
       For more information, see [Dockle's GitHub page](https://github.com/goodwithtech/dockle).
+    log:
+      error: Dockle found some errors that need to be fixed!
+      start: Scanning image(s) with Dockle
+      success: Successfully completed scan with Dockle
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -70,9 +70,9 @@ tasks:
 
       For more information, see the [Gitleaks GitHub page](https://github.com/zricethezav/gitleaks).
     log:
+      error: Possible leak detected by `gitleaks`
       start: Scanning repository with `gitleaks`
       success: Successfully completed `gitleaks` repository scan for secrets
-      error: Possible leak detected by `gitleaks`
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -94,9 +94,9 @@ tasks:
       **Example usage:**
       `task grype -- ubuntu:latest --fail-on medium`
     log:
+      error: Grype found some potential issues!
       start: Scanning with Grype
       success: Scan completed by Grype
-      error: Grype found some potential issues!
     cmds:
       - grype {{.CLI_ARGS}}
 
@@ -117,9 +117,9 @@ tasks:
       **Example scanning single file:**
       `task lint:private-keys -- filename.ext`
     log:
+      error: Private keys were found - make sure you do not commit private keys!
       start: Scanning for private keys
       success: No private keys were found!
-      error: Private keys were found - make sure you do not commit private keys!
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -150,9 +150,9 @@ tasks:
 
       For more information, see [Snyk's website](https://snyk.io/what-is-snyk/).
     log:
+      error: '`snyk` reported security errors!'
       start: Scanning {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}all tags of the Dockerfile{{end}} with `snyk`
       success: Passed `snyk` security test
-      error: '`snyk` reported security errors!'
     cmds:
       - task: snyk:login
       - |
@@ -170,9 +170,9 @@ tasks:
       SNYK_API_TOKEN:
         sh: snyk config get api
     log:
+      error: Encountered error while logging in with `{{.NPX_HANDLE}}snyk auth`
       start: Logging in with `{{.NPX_HANDLE}}snyk auth`
       success: Successfully authenticated with `{{.NPX_HANDLE}}snyk auth`
-      error: Encountered error while logging in with `{{.NPX_HANDLE}}snyk auth`
     cmds:
       - '{{.NPX_HANDLE}}snyk auth'
     status:
@@ -198,9 +198,9 @@ tasks:
 
       For more information, see [Trivy's website](https://aquasecurity.github.io/trivy/).
     log:
+      error: Trivy detected one or more significant vulnerabilities in the image(s)
       start: Analyzing Docker image with Trivy
       success: Trivy reported no major vulnerabilities
-      error: Trivy detected one or more significant vulnerabilities in the image(s)
     cmds:
       - |
         {{if .CLI_ARGS}}

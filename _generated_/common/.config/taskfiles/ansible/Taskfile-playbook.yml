@@ -197,7 +197,7 @@ tasks:
     deps:
       - task: :install:python:requirements
         env:
-          INSTALL_OPTIONS: '--no-dev'
+          INSTALL_OPTIONS: --no-dev
       - :symlink:playbook
     log:
       error: Error encounted while running `ansible-playbook -i inventories/{{.CLI_ARGS}} --ask-vault-pass main.yml`

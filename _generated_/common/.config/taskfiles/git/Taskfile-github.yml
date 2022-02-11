@@ -18,9 +18,9 @@ tasks:
         sh: if [[ $(jq -r '.private' package.json) == 'true' ]]; then echo '--private'; else echo '--public'; fi
     run: once
     log:
+      error: Error while ensuring GitHub repository exists
       start: Checking for presence of GitHub repository and creating one if it does not exist
       success: Ensure GitHub repository is present
-      error: Error while ensuring GitHub repository exists
     cmds:
       - cmd: gh repo create "{{.GITHUB_SLUG}}" --enable-wiki={{.GITHUB_WIKI}} -y --description "{{.EMOJI_START}}{{.DESCRIPTION}}{{.EMOJI_END}}"
           --homepage "{{.HOMEPAGE}}" {{.PROJECT_TYPE}} > /dev/null
@@ -49,9 +49,9 @@ tasks:
       PROJECT_ID:
         sh: gh repo view --json id | jq -r '.id'
     log:
+      error: Failed to add GitHub project ID to package.json
       start: Saving GitHub project ID to package.json
       success: Added GitHub project ID to package.json
-      error: Failed to add GitHub project ID to package.json
     cmds:
       - TMP="$(mktemp)" && jq --arg projectId "{{.PROJECT_ID}}" '.blueprint.github_id = $projectId' package.json > "$TMP" && mv "$TMP" package.json
     status:
@@ -78,9 +78,9 @@ tasks:
       PRIVATE:
         sh: jq -r '.private' package.json | sed 's/null/false/'
     log:
+      error: Error while updating GitHub repository metadata
       start: Updating GitHub project metadata
       success: Updated GitHub repository metadata
-      error: Error while updating GitHub repository metadata
     cmds:
       - |
         OPTIONAL_TAGS="$(jq '.keywords' .config/common-keywords.json)"
@@ -125,9 +125,9 @@ tasks:
       - :install:software:gh
       - create
     log:
+      error: Error setting GitHub Actions Ansible Galaxy token
       start: Setting GitHub Actions Ansible Galaxy token
       success: GitHub Actions Ansible Galaxy token set
-      error: Error setting GitHub Actions Ansible Galaxy token
     cmds:
       - gh secret set ANSIBLE_GALAXY_TOKEN -b "$ANSIBLE_GALAXY_TOKEN"
     status:

@@ -20,9 +20,9 @@ tasks:
 
       For more information, see [Proselint's GitHub page](https://github.com/amperser/proselint).
     log:
+      error: Error encountered while validating {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with Proselint
       start: Linting {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} prose with Proselint
       success: Successfully validated {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with Proselint
-      error: Error encountered while validating {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with Proselint
     cmds:
       - task: prose:config
       - |
@@ -35,9 +35,9 @@ tasks:
 
   prose:config:
     log:
+      error: Error encountered while ensuring Proselint configuration is in proper location
       start: Moving Proselint configuration to proper location
       success: Ensured Proselint configuration is in proper location
-      error: Error encountered while ensuring Proselint configuration is in proper location
     cmds:
       - |
         if [ -f ~/.config/proselint/config.json ]; then
@@ -49,8 +49,8 @@ tasks:
 
   prose:config:restore:
     log:
-      start: Restoring original Proselint configuration
       error: Error restoring original Proselint configuration
+      start: Restoring original Proselint configuration
     cmds:
       - mv ~/.config/proselint/config.json.backup ~/.config/proselint/config
     status:

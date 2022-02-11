@@ -3,13 +3,13 @@ version: '3'
 
 tasks:
   act:
-    run: once
     summary: |
       ## Act
 
       A program that allows you to simulate GitHub Actions locally.
 
       [GitHub](https://github.com/nektos/act)
+    run: once
     cmds:
       - task: brew:formulae
         vars:
@@ -171,9 +171,9 @@ tasks:
             echo "unknown"
           fi
     log:
+      error: Failed to ensure basic system dependencies are installed
       start: Ensuring basic system dependencies are installed
       success: Basic system dependencies are installed!
-      error: Failed to ensure basic system dependencies are installed
     cmds:
       - task: common:linux:{{.LINUX_FAMILY}}
 

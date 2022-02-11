@@ -18,9 +18,9 @@ tasks:
         sh: glab api projects/:fullpath/access_tokens | jq -r '.[] | select(.name=="PROJECT_CI_ACCESS_TOKENX") | .id'
     run: once
     log:
+      error: Failed to configure project-specific access token
       start: Configuring project-specific access token
       success: Configured project-specific access token
-      error: Failed to configure project-specific access token
     cmds:
       - |
         curl -sSL --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" --header \
@@ -38,9 +38,9 @@ tasks:
         sh: glab api projects/:fullpath | jq '.id'
     run: once
     log:
+      error: Error encountered while setting up protected branches
       start: Setting up protected branches
       success: Set up protected branches
-      error: Error encountered while setting up protected branches
     cmds:
       - |
         glab api projects/:fullpath/protected_branches -X POST -f name=master -f code_owner_approval_required=true > /dev/null &
@@ -88,9 +88,9 @@ tasks:
         sh: mktemp
     run: once
     log:
+      error: Encountered error while creating GitLab repository
       start: Ensuring GitLab repository has been created
       success: Ensured GitLab repository exists
-      error: Encountered error while creating GitLab repository
     cmds:
       - cmd: |
           NO_PROMPT=1 glab repo create '{{.GITLAB_PATH}}' --group '{{.GITLAB_GROUP}}' \
@@ -168,9 +168,9 @@ tasks:
       **Example specifying a group and subgroup:**
       `task {{.TASK}} -- megabyte-labs/ansible-roles`
     log:
+      error: Encountered error while generating a list of repositories
       start: Generating list of repositories
       success: List of repositories generated
-      error: Encountered error while generating a list of repositories
     cmds:
       - mkdir -p .cache
       - rm -f {{.REPOSITORY_LIST}}
@@ -195,9 +195,9 @@ tasks:
       - :install:software:jq
       - create
     log:
+      error: Error acquiring GitLab project and group IDs
       start: Acquiring GitLab project and group IDs
       success: Saved GitLab project and group IDs to package.json
-      error: Error acquiring GitLab project and group IDs
     cmds:
       - |
         API_RES="$(glab api projects/:fullpath)"
@@ -221,9 +221,9 @@ tasks:
       - :install:software:glab
       - :install:software:jq
     log:
+      error: Error enabling GitLab's GitHub integration
       start: Ensuring GitLab's GitHub integration is enabled
       success: GitLab's GitHub integration is enabled
-      error: Error enabling GitLab's GitHub integration
     cmds:
       - glab api projects/:fullpath/integrations/github -X PUT -f token="$GITHUB_TOKEN"
         -f repository_url="$(jq -r '.blueprint.repository.github' package.json)" --silent
@@ -244,9 +244,9 @@ tasks:
       PUSH_MIRROR_COUNT:
         sh: glab api projects/:fullpath/remote_mirrors | jq '. | length'
     log:
+      error: Error ensuring push/pull mirroring is enabled between GitLab and GitHub
       start: Ensuring push/pull mirroring from GitLab to GitHub is set up
       success: Push and pull mirroring from GitLab to GitHub are enabled
-      error: Error ensuring push/pull mirroring is enabled between GitLab and GitHub
     cmds:
       - |
         if [[ "{{.PUSH_MIRROR_COUNT}}" == '0' ]]; then
@@ -271,9 +271,9 @@ tasks:
       PIPELINE_COUNT:
         sh: jq -r '.gitlab_pipelines | length' .variables.json
     log:
+      error: Error setting up GitLab pipelines
       start: Ensuring GitLab pipelines are set up according to the configuration
       success: GitLab pipelines are set up
-      error: Error setting up GitLab pipelines
     cmds:
       - |
         PIPELINES="$(jq -r '.gitlab_pipelines' .variables.json)"
@@ -299,9 +299,9 @@ tasks:
     deps:
       - create
     log:
+      error: Error clearing GitLab pipelines
       start: Clearing GitLab pipelines
       success: Cleared GitLab pipelines
-      error: Error clearing GitLab pipelines
     cmds:
       - |
         TMP="$(mktemp)"
@@ -349,9 +349,9 @@ tasks:
       TEST_COVERAGE_REGEX:
         sh: jq -r '.build_coverage_regex' .variables.json | sed 's/^null$//'
     log:
+      error: Error ensuring GitLab metadata is up-to-date
       start: Ensuring GitLab metadata is up-to-date
       success: GitLab metadata is up-to-date
-      error: Error ensuring GitLab metadata is up-to-date
     cmds:
       - |
         KEYWORDS="$(jq -r '.keywords | tostring' package.json | sed 's/\[//' | sed 's/\]//' | sed 's/"//g')"
@@ -378,9 +378,9 @@ tasks:
       DOCS_URL:
         sh: jq -r '.docs.link' .variables.json
     log:
+      error: Failed to update GitLab wiki settings
       start: Setting GitLab wiki settings
       success: GitLab wiki settings are up-to-date
-      error: Failed to update GitLab wiki settings
     cmds:
       - glab api projects/:fullpath/services/external-wiki -X PUT -f external_wiki_url="{{.DOCS_URL}}" --silent
     status:

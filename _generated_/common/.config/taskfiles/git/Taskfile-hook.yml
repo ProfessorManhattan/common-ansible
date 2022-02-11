@@ -9,24 +9,24 @@ tasks:
     deps:
       - :lint:commit
     log:
-      start: '`commit-msg` hook running..'
       error: '`commit-msg` hook encountered an error!'
 
+      start: '`commit-msg` hook running..'
   post-checkout:
     deps:
       - :install:npm:git-notify
       - :install:npm:yarnhook
     log:
-      start: '`post-checkout` hook running..'
       error: '`post-checkout` hook encountered an error!'
+      start: '`post-checkout` hook running..'
     cmds:
       - git-notify checkout --prefix "@notify" --color "{{.GIT_NOTIFY_COLOR}}" "$GIT_PARAMS"
       - yarnhook
 
   post-commit:
     log:
-      start: '`post-commit` hook running..'
       error: '`post-commit` hook encountered an error!'
+      start: '`post-commit` hook running..'
     cmds:
       - 'true'
 
@@ -35,8 +35,8 @@ tasks:
       - :install:npm:git-notify
       - :install:npm:yarnhook
     log:
-      start: '`post-merge` hook running..'
       error: '`post-merge` hook encountered an error!'
+      start: '`post-merge` hook running..'
     cmds:
       - git-notify merge --prefix "@notify" --color "{{.GIT_NOTIFY_COLOR}}" "$GIT_PARAMS"
       - yarnhook
@@ -46,8 +46,8 @@ tasks:
       - :install:npm:git-notify
       - :install:npm:yarnhook
     log:
-      start: '`post-rewrite` hook running..'
       error: '`post-rewrite` hook encountered an error!'
+      start: '`post-rewrite` hook running..'
     cmds:
       - git-notify rewrite --prefix "@notify" --color "{{.GIT_NOTIFY_COLOR}}" "$GIT_PARAMS"
       - yarnhook
@@ -59,13 +59,12 @@ tasks:
       - :security:gitleaks
       - :security:private-keys
     log:
-      start: '`pre-commit` hook running..'
       error: '`pre-commit` hook encountered an error!'
 
-
+      start: '`pre-commit` hook running..'
   pre-push:
     log:
-      start: '`pre-push` hook running..'
       error: '`pre-push` hook encountered an error!'
+      start: '`pre-push` hook running..'
     cmds:
       - 'true'

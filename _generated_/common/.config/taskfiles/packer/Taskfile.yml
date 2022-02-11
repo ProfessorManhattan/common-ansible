@@ -15,9 +15,9 @@ tasks:
       TAG:
         sh: jq -r '.variables.latestos_tag' {{.TEMPLATE_FILE}}
     log:
+      error: Error running `{{.PYTHON_HANDLE}}latestos {{.TAG}}`
       start: Running `{{.PYTHON_HANDLE}}latestos {{.TAG}}`
       success: Successfully ran `{{.PYTHON_HANDLE}}latestos {{.TAG}}`
-      error: Error running `{{.PYTHON_HANDLE}}latestos {{.TAG}}`
     cmds:
       - '{{.PYTHON_HANDLE}}latestos {{.TAG}}'
     status:

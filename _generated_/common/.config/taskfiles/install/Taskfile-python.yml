@@ -5,9 +5,9 @@ tasks:
   pip:
     run: when_changed
     log:
+      error: Failed to install pip3 package `{{.PACKAGE}}`
       start: Installing pip3 package `{{.PACKAGE}}`
       success: Installed pip3 package `{{.PACKAGE}}`
-      error: Failed to install pip3 package `{{.PACKAGE}}`
     cmds:
       - task: :install:software:python
       - pip3 install {{.PACKAGE}}
@@ -19,9 +19,9 @@ tasks:
       - :install:software:pipx
     run: when_changed
     log:
+      error: Failed to install `{{.PACKAGE}}` with pipx
       start: Installing `{{.PACKAGE}}` with pipx
       success: Successfully installed `{{.PACKAGE}}` with pipx
-      error: Failed to install `{{.PACKAGE}}` with pipx
     cmds:
       - pipx install {{.PACKAGE}}
     status:
@@ -50,11 +50,11 @@ tasks:
       - task: :{{if eq .REPOSITORY_TYPE "ansible"}}ansible:galaxy:requirements{{else}}donothing{{end}}
 
   requirements:poetry:
-    run: once
     summary: |
       # Poetry Requirements
 
       `poetry publish -r gitlab` will publish to GitLab registry on GitLab CI
+    run: once
     log:
       error: Failed to configure / install via `poetry`
       start: Configuring Poetry and running `poetry install`
@@ -94,9 +94,9 @@ tasks:
         It looks like your system is missing gcc-5 but gcc is available. You might be prompted
         for your sudo password to run the following command:
     log:
+      error: Error checking `gcc`
       start: Checking if `gcc` should be symlinked to `gcc-5`
       success: Checked `gcc`
-      error: Error checking `gcc`
     cmds:
       - |
         if which gcc; then

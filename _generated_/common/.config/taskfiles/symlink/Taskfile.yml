@@ -15,9 +15,9 @@ tasks:
       This can cause issues so, in order for everything to work, each folder needs to be symlinked
       to `~/.ansible/roles` with the namespace prepended.
     log:
+      error: Encountered an error while symlinking the roles
       start: Symlinking all roles in the `roles/` folder to `$HOME/.ansible/roles/`
       success: Successfully symlinked all the roles
-      error: Encountered an error while symlinking the roles
     cmds:
       - mkdir -p "$HOME/.ansible/roles"
       - |
@@ -45,9 +45,9 @@ tasks:
       can find the role in both cases, a symlink in `~/.ansible/roles` that points to the folder needs
       to be created.
     log:
+      error: There was an error symlinking `{{.ROLE_NAME}}` to `$HOME/.ansible/roles/{{.ROLE_NAME}}`
       start: Symlinking `{{.ROLE_NAME}}` to `$HOME/.ansible/roles/{{.ROLE_NAME}}`
       success: Symlinked `{{.ROLE_NAME}}`
-      error: There was an error symlinking `{{.ROLE_NAME}}` to `$HOME/.ansible/roles/{{.ROLE_NAME}}`
     cmds:
       - mkdir -p "$HOME/.ansible/roles"
       - rm -rf "$HOME/.ansible/roles/{{.ROLE_NAME}}"

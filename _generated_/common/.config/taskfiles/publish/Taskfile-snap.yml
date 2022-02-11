@@ -12,9 +12,9 @@ tasks:
       use to extract the macaroon/unbound_discharge/email. Once extracted, save
       them as environment variables for use with the other tasks.
     log:
+      error: Error encountered while exporting `snap.login`
       start: Exporting login credentials to unencrpyted file named `snap.login`
       success: Successfully exported `snap.login` (unencrypted)
-      error: Error encountered while exporting `snap.login`
     cmds:
       - snapcraft export-login snap.login
 
@@ -28,9 +28,9 @@ tasks:
         unbound_discharge = {{env "SNAPCRAFT_UNBOUND_DISCHARGE"}}
         email = {{env "SNAPCRAFT_EMAIL"}}
     log:
+      error: Error encountered while logging into Snapcraft
       start: Logging into Snapcraft
       success: Successfully logged into Snapcraft
-      error: Error encountered while logging into Snapcraft
     cmds:
       - |
         echo '{{.SNAP_LOGIN_TEMPLATE}}' > snap.login
@@ -47,9 +47,9 @@ tasks:
     vars:
       SNAP_PACKAGE: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}{{.SNAP}}{{end}}'
     log:
+      error: Error ensuring `{{.SNAP_PACKAGE}}` is registered
       start: Ensuring `{{.SNAP_PACKAGE}}` is registered
       success: Ensured `{{.SNAP_PACKAGE}}` is registered
-      error: Error ensuring `{{.SNAP_PACKAGE}}` is registered
     cmds:
       - task: login
       - snapcraft register --yes {{.SNAP_PACKAGE}}

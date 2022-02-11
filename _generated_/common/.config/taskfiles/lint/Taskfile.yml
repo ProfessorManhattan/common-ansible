@@ -38,9 +38,9 @@ tasks:
 
       For more information, see [Ansible Lint's GitHub page](https://github.com/ansible-community/ansible-lint).
     log:
+      error: Ansible Lint has detected possible errors!
       start: Linting project with Ansible Lint
       success: Validated project with Ansible Lint
-      error: Ansible Lint has detected possible errors!
     cmds:
       - '{{.PYTHON_HANDLE}}ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}'
 
@@ -49,8 +49,8 @@ tasks:
       - :install:python:requirements
     desc: Generic linting of files for things like destroyed-symlinks, merge conflicts, etc.
     log:
-      start: Linting `{{.CLI_ARGS}}` with global linters
       error: Errors were reported by the global linters for `{{.CLI_ARGS}}`
+      start: Linting `{{.CLI_ARGS}}` with global linters
     cmds:
       - '{{.PYTHON_HANDLE}}blocklint --wordlist blacklist,slave,whitelist {{.CLI_ARGS}}'
       - '{{.PYTHON_HANDLE}}check-merge-conflict {{.CLI_ARGS}}'
@@ -62,9 +62,9 @@ tasks:
     deps:
       - :install:software:codeclimate
     log:
+      error: '`codeclimate` has detected errors'
       start: Running `codeclimate`
       success: Successfully validated the project by running `codeclimate`
-      error: '`codeclimate` has detected errors'
     cmds:
       - codeclimate
 
@@ -133,9 +133,9 @@ tasks:
 
       For more information, see [Hadolint's GitHub page](https://github.com/hadolint/hadolint).
     log:
+      error: Hadolint reported errors
       start: Linting {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with Hadolint
       success: Hadolint reported no errors
-      error: Hadolint reported errors
     cmds:
       - |
         .config/log info 'Linting {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}all Dockerfiles{{end}} with a Hadolint Docker image'
@@ -172,9 +172,9 @@ tasks:
       **Example linting specific pattern of files:**
       `task lint:eslint -- '**/*.js'`
     log:
+      error: ESLint has detected errors that need to be addressed
       start: Linting {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}the project{{end}} with ESLint
       success: Successfully passed the ESLint test (please still address warnings)
-      error: ESLint has detected errors that need to be addressed
     cmds:
       - >
         {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format {{.ESLINT_FORMATTER}} --cache
@@ -216,9 +216,9 @@ tasks:
       - :install:modules:local
       - :install:npm:eslint
     log:
+      error: Errors were reported by ESLint for {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}JavaScript/TypeScript files{{end}}
       start: Linting {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}JavaScript/TypeScript files{{end}} with ESLint
       success: Successfully passed ESLint checks for {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}JavaScript/TypeScript files{{end}}
-      error: Errors were reported by ESLint for {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}JavaScript/TypeScript files{{end}}
     cmds:
       - >
         {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format pretty --ext .js,.jsx,.ts,.tsx --cache
@@ -230,9 +230,9 @@ tasks:
       - :install:modules:local
       - :install:python:requirements
     log:
+      error: Errors were encountered when validating the staged files
       start: Linting staged files
       success: The staged files appear to be good!
-      error: Errors were encountered when validating the staged files
     cmds:
       - '{{.NPX_HANDLE}}lint-staged'
 
@@ -256,9 +256,9 @@ tasks:
 
       For more information on `packer validate`, see the [Packer website](https://www.packer.io/docs/commands/validate).
     log:
+      error: Error while running `packer validate`
       start: Running {{if .CLI_ARGS}}`packer validate {{.CLI_ARGS}}`{{else}}`packer validate` on all files ending with `template.json`{{end}}
       success: '`packer validate` reported no issues'
-      error: Error while running `packer validate`
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -289,9 +289,9 @@ tasks:
 
       For more information, see [Prettier's website](https://prettier.io/).
     log:
+      error: Errors were encountered by Prettier
       start: Linting {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}the project{{end}} with Prettier
       success: Prettier successfully finished
-      error: Errors were encountered by Prettier
     cmds:
       - '{{.NPX_HANDLE}}prettier --ignore-path {{.PRETTIERIGNORE_CONFIG}} --list-different {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
 
@@ -324,9 +324,9 @@ tasks:
 
       For more information, see [Flake8's GitHub page](https://github.com/PyCQA/flake8).
     log:
+      error: flake8 detected some issues
       start: Linting {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with flake8
       success: flake8 validation was successful
-      error: flake8 detected some issues
     cmds:
       - |
         {{if .CLI_ARGS}}
@@ -363,9 +363,9 @@ tasks:
 
       For more information, see [Shellcheck's GitHub page](https://github.com/koalaman/shellcheck).
     log:
+      error: Shellcheck reported errors for {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}}
       start: Linting {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with Shellcheck
       success: Linted {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with no errors from Shellcheck
-      error: Shellcheck reported errors for {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}}
     cmds:
       - |
         .config/log info 'Linting with Shellcheck'
@@ -449,9 +449,9 @@ tasks:
       **Example scanning specific file:**
       `task lint:toml -- myfile.toml`
     log:
+      error: Possible TOML errors were detected
       start: Ensuring {{if .CLI_ARGS}}`{{.CLI_ARGS}}` is valid TOML{{else}}the project'\''s TOML files are valid{{end}}
       success: The TOML appears to be valid!
-      error: Possible TOML errors were detected
     cmds:
       - '{{.PYTHON_HANDLE}}check-toml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
 
@@ -470,9 +470,9 @@ tasks:
 
       For more information on `vagrant validate`, see the [Vagrant website](https://www.vagrantup.com/docs/cli/validate).
     log:
+      error: '`vagrant validate` detected one or more issues with the Vagrantfile'
       start: Validating the Vagrantfile
       success: The Vagrantfile passed `vagrant validate`
-      error: '`vagrant validate` detected one or more issues with the Vagrantfile'
     cmds:
       - vagrant validate
 
@@ -491,9 +491,9 @@ tasks:
       **Example scanning specific file:**
       `task lint:xml -- myfile.xml`
     log:
+      error: Possible issues were detected with the XML{{if .CLI_ARGS}}(`{{.CLI_ARGS}}`){{end}}
       start: Ensuring {{if .CLI_ARGS}}{{.CLI_ARGS}} is valid XML{{else}}the project contains only valid XML{{end}}
       success: The XML appears to be valid
-      error: Possible issues were detected with the XML{{if .CLI_ARGS}}(`{{.CLI_ARGS}}`){{end}}
     cmds:
       - '{{.PYTHON_HANDLE}}check-xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
 
@@ -522,8 +522,8 @@ tasks:
 
       For more information, see the [YAML Lint GitHub page](https://github.com/adrienverge/yamllint).
     log:
+      error: Possible issues were detected by `yamllint`
       start: Linting {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}the project{{end}} with `yamllint`
       success: No issues were detected by `yamllint`
-      error: Possible issues were detected by `yamllint`
     cmds:
       - '{{.PYTHON_HANDLE}}yamllint -c {{.YAMLLINT_CONFIG}} -s {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'

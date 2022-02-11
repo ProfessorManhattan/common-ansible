@@ -103,9 +103,9 @@ tasks:
       PACKAGE_BIN: '{{if index . "NPM_PACKAGE_BIN"}}{{.NPM_PACKAGE_BIN}}{{else}}{{.NPM_PACKAGE}}{{end}}'
     run: when_changed
     log:
+      error: Failed to install NPM package `{{.NPM_PACKAGE}}` globally
       start: Installing NPM package `{{.NPM_PACKAGE}}` globally
       success: Installed NPM package `{{.NPM_PACKAGE}}` globally
-      error: Failed to install NPM package `{{.NPM_PACKAGE}}` globally
     cmds:
       - '{{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}'
     status:
@@ -125,9 +125,9 @@ tasks:
           fi
     run: once
     log:
+      error: Error installing `{{.NPM_PACKAGE}}` globally
       start: Installing NPM global library `{{.NPM_PACKAGE}}` which does not have a CLI
       success: '`{{.NPM_PACKAGE}}` has been installed globally'
-      error: Error installing `{{.NPM_PACKAGE}}` globally
     cmds:
       - '{{.NPM_PROGRAM}} install -g {{.NPM_PACKAGE}}'
     status:
@@ -136,9 +136,9 @@ tasks:
   global:package-manager:
     run: once
     log:
+      error: Failed to install `{{.NPM_PROGRAM}}`
       start: Installing `{{.NPM_PROGRAM}}`
       success: Successfully installed `{{.NPM_PROGRAM}}`
-      error: Failed to install `{{.NPM_PROGRAM}}`
     cmds:
       - task: :install:software:node
       - npm install -g {{.NPM_PROGRAM}}
@@ -283,9 +283,9 @@ tasks:
   pnpm:import:
     run: once
     log:
+      error: Error running `pnpm import`
       start: Running `pnpm import`
       success: '`pnpm import` finished successfully!'
-      error: Error running `pnpm import`
     cmds:
       - pnpm import
     status:

@@ -14,9 +14,9 @@ tasks:
       - clean
     desc: Build the application
     log:
+      error: Error building the application
       start: Building the application
       success: Successfully built the application
-      error: Error building the application
     cmds:
       - task: depcheck:dependencies
       - mkdir -p dist
@@ -34,9 +34,9 @@ tasks:
       - :install:modules:local
       - :install:npm:esbuild
     log:
+      error: Error running `esbuild` (config -> ./.config/esbuild/bundled.js)
       start: Running `esbuild` with bundle script (config -> ./.config/esbuild/bundled.js)
       success: Finished running `esbuild` (config -> ./.config/esbuild/bundled.js)
-      error: Error running `esbuild` (config -> ./.config/esbuild/bundled.js)
     cmds:
       - node .config/esbuild/bundled.js
 
@@ -45,9 +45,9 @@ tasks:
       - :install:modules:local
       - :install:npm:esbuild
     log:
+      error: Error running `esbuild` (config -> ./.config/esbuild/minified.js)
       start: Running `esbuild` with minify script (config -> ./.config/esbuild/minified.js)
       success: Finished running `esbuild with minify script (config -> ./.config/esbuild/minified.js)
-      error: Error running `esbuild` (config -> ./.config/esbuild/minified.js)
     cmds:
       - node .config/esbuild/minified.js
 
@@ -124,9 +124,9 @@ tasks:
           NPM_PACKAGE_VERSION: '{{.NPM_PACKAGE_VERSION}}'
           SYSTEM: source
     log:
+      error: Encountered error while building binaries with FPM
       start: Building binaries with FPM
       success: Successfully built binaries with FPM
-      error: Encountered error while building binaries with FPM
     cmds:
       - |
         .config/log success 'Running gzip on `{{.NPM_PACKAGE_NAME}}-{{.NPM_PACKAGE_VERSION}}-source-all.tar`'
@@ -136,9 +136,9 @@ tasks:
     deps:
       - :install:software:fpm
     log:
+      error: Encountered error while compiling {{.ARCHITECTURE}} {{.FPM_TARGET}} binary with FPM for {{.NPM_PACKAGE_NAME}}, version {{.NPM_PACKAGE_VERSION}}
       start: Compiling {{.ARCHITECTURE}} {{.FPM_TARGET}} binary with FPM for {{.NPM_PACKAGE_NAME}}, version {{.NPM_PACKAGE_VERSION}}
       success: Finished compiling {{.ARCHITECTURE}} {{.FPM_TARGET}} binary with FPM for {{.NPM_PACKAGE_NAME}}, version {{.NPM_PACKAGE_VERSION}}
-      error: Encountered error while compiling {{.ARCHITECTURE}} {{.FPM_TARGET}} binary with FPM for {{.NPM_PACKAGE_NAME}}, version {{.NPM_PACKAGE_VERSION}}
     cmds:
       - >
         {{.NPX_HANDLE}}fpm -s npm -t {{.FPM_TARGET}}
@@ -150,9 +150,9 @@ tasks:
       - :install:modules:local
       - :install:npm:nest
     log:
+      error: Encountered error while building NestJS project
       start: Building NestJS project
       success: Finished building NestJS project
-      error: Encountered error while building NestJS project
     cmds:
       - '{{.NPX_HANDLE}}nest build'
       - task: build:nest:after
@@ -173,9 +173,9 @@ tasks:
       - :install:modules:local
       - :install:npm:pkg
     log:
+      error: Encountered error while generating standalone executables for macOS, Linux, and Windows using `pkg`
       start: Generating standalone executables for macOS, Linux, and Windows using `pkg`
       success: Generated standalone executables for macOS, Linux, and Windows using `pkg`
-      error: Encountered error while generating standalone executables for macOS, Linux, and Windows using `pkg`
     cmds:
       - '{{.NPX_HANDLE}}pkg package.json'
 
@@ -185,9 +185,9 @@ tasks:
     deps:
       - :install:npm:typescript
     log:
+      error: Error building with `tsconfig.json`
       start: Removing `dist/` folder and running `tsc -p tsconfig.json`
       success: Successfully built project
-      error: Error building with `tsconfig.json`
     cmds:
       - rm -rf dist
       - tsc -p tsconfig.json
@@ -200,9 +200,9 @@ tasks:
       RANDOM_STRING:
         sh: openssl rand -hex 14
     log:
+      error: Error removing `{{.BUILD_FOLDERS}}` with rsync
       start: Removing `{{.BUILD_FOLDERS}}` with rsync
       success: Successfully removed `{{.BUILD_FOLDERS}}`
-      error: Error removing `{{.BUILD_FOLDERS}}` with rsync
     cmds:
       - mkdir -p '/tmp/{{.RANDOM_STRING}}'
       - mkdir -p '/tmp/{{.RANDOM_STRING}}-empty'
@@ -221,9 +221,9 @@ tasks:
       - :install:software:jq
     desc: Remove unused dependencies
     log:
+      error: Error uninstalling unused dependencies in package.json
       start: Uninstalling unused dependencies in package.json
       success: Successfully uninstalled unused dependencies in package.json
-      error: Error uninstalling unused dependencies in package.json
     cmds:
       - |
         {{.NPX_HANDLE}}depcheck --json | jq -r '.dependencies[]' | xargs -n1 {{.NPM_PROGRAM_LOCAL}} uninstall --save
@@ -232,9 +232,9 @@ tasks:
     deps:
       - :install:npm:only-allow
     log:
+      error: '`pnpm` must be used as the package manager'
       start: Forcing `pnpm` as the package manager by running `only-allow pnpm`
       success: Successfully enforced `pnpm` as the package manager
-      error: '`pnpm` must be used as the package manager'
     cmds:
       - only-allow pnpm
 
@@ -244,9 +244,9 @@ tasks:
       - :install:npm:nest
     desc: Run the application
     log:
+      error: Encountered error while running `{{.NPX_HANDLE}}nest start`
       start: Running `{{.NPX_HANDLE}}nest start`
       success: Successfully ran `{{.NPX_HANDLE}}nest start`
-      error: Encountered error while running `{{.NPX_HANDLE}}nest start`
     cmds:
       - '{{.NPX_HANDLE}}nest start'
 
@@ -255,9 +255,9 @@ tasks:
       - :install:modules:local
       - :install:npm:nest
     log:
+      error: Encountered error while running `{{.NPX_HANDLE}}nest start --watch`
       start: Running `{{.NPX_HANDLE}}nest start --watch`
       success: Successfully ran `{{.NPX_HANDLE}}nest start --watch`
-      error: Encountered error while running `{{.NPX_HANDLE}}nest start --watch`
     cmds:
       - '{{.NPX_HANDLE}}nest start --watch'
 
@@ -269,9 +269,9 @@ tasks:
       - :install:npm:ts-node
     desc: Run the application in `watch` mode and open DevTools
     log:
+      error: Error encountered while running `{{.NPX_HANDLE}}ndb nest start --watch`
       start: Running `{{.NPX_HANDLE}}ndb nest start --watch`
       success: Successfully ran `{{.NPX_HANDLE}}ndb nest start --watch`
-      error: Error encountered while running `{{.NPX_HANDLE}}ndb nest start --watch`
     cmds:
       - '{{.NPX_HANDLE}}ndb nest start --watch'
 
@@ -280,9 +280,9 @@ tasks:
       - :install:modules:local
       - :install:npm:nest
     log:
+      error: Encountered error while running `{{.NPX_HANDLE}}nest start --debug --watch`
       start: Running `{{.NPX_HANDLE}}nest start --debug --watch`
       success: Successfully ran `{{.NPX_HANDLE}}nest start --debug --watch`
-      error: Encountered error while running `{{.NPX_HANDLE}}nest start --debug --watch`
     cmds:
       - '{{.NPX_HANDLE}}nest start --debug --watch'
 
@@ -292,9 +292,9 @@ tasks:
       - :install:npm:nest
     desc: Run the application in `production` mode
     log:
+      error: Error encountered while building and running `node dist/main`
       start: Running `production` build by building the project and then running `node dist/main`
       success: Successfully ran `production` build
-      error: Error encountered while building and running `node dist/main`
     cmds:
       - task: build
       - node dist/main
@@ -305,9 +305,9 @@ tasks:
       - :install:npm:nest
     desc: Run the application in `production` and `watch` mode and open DevTools
     log:
+      error: Error encountered while running `{{.NPX_HANDLE}}ndb nodemon`
       start: Running `{{.NPX_HANDLE}}ndb nodemon`
       success: Successfully ran `{{.NPX_HANDLE}}ndb nodemon`
-      error: Error encountered while running `{{.NPX_HANDLE}}ndb nodemon`
     cmds:
       - '{{.NPX_HANDLE}}ndb nodemon'
 
@@ -317,9 +317,9 @@ tasks:
       - :install:npm:jest
     desc: Run the unit tests for an NPM project
     log:
+      error: Errors were detected by Jest
       start: Running `{{.NPX_HANDLE}}jest`
       success: Successfully ran `{{.NPX_HANDLE}}jest`
-      error: Errors were detected by Jest
     cmds:
       - '{{.NPX_HANDLE}}jest'
 
@@ -328,9 +328,9 @@ tasks:
       - :install:modules:local
       - :install:npm:jest
     log:
+      error: Encountered error while running `{{.NPX_HANDLE}}jest --collectCoverage --ci --reporters=default --reporters=jest-junit`
       start: Running `{{.NPX_HANDLE}}jest --collectCoverage --ci --reporters=default --reporters=jest-junit`
       success: Successfully ran `{{.NPX_HANDLE}}jest --collectCoverage --ci --reporters=default --reporters=jest-junit`
-      error: Encountered error while running `{{.NPX_HANDLE}}jest --collectCoverage --ci --reporters=default --reporters=jest-junit`
     cmds:
       - '{{.NPX_HANDLE}}jest --collectCoverage --ci --reporters=default --reporters=jest-junit'
 
@@ -340,9 +340,9 @@ tasks:
       - :install:npm:jest
     desc: Generate code coverage assets
     log:
+      error: Error running `{{.NPX_HANDLE}}jest --coverage`
       start: Generating code coverage assets by running `{{.NPX_HANDLE}}jest --coverage`
       success: Successfully ran `{{.NPX_HANDLE}}jest --coverage`
-      error: Error running `{{.NPX_HANDLE}}jest --coverage`
     cmds:
       - '{{.NPX_HANDLE}}jest --coverage'
 
@@ -352,9 +352,9 @@ tasks:
       - :install:npm:majestic
     desc: Run and manage test cases from a web interface (powered by `majestic`)
     log:
+      error: Error running `{{.NPX_HANDLE}}majestic --debug`
       start: Launching web interface for debugging test cases by running `{{.NPX_HANDLE}}majestic --debug`
       success: Successfully ran `{{.NPX_HANDLE}}majestic --debug`
-      error: Error running `{{.NPX_HANDLE}}majestic --debug`
     cmds:
       - '{{.NPX_HANDLE}}majestic --debug'
 
@@ -364,9 +364,9 @@ tasks:
       - :install:npm:jest
     desc: Debug tests in `watch` mode
     log:
+      error: Error running `{{.NPX_HANDLE}}jest --watch`
       start: Running `{{.NPX_HANDLE}}jest --watch`
       success: Successfully ran `{{.NPX_HANDLE}}jest --watch`
-      error: Error running `{{.NPX_HANDLE}}jest --watch`
     cmds:
       - '{{.NPX_HANDLE}}jest --watch'
 
@@ -381,9 +381,9 @@ tasks:
       - :install:npm:ts-node
     desc: Debug tests with DevTools in `watch` mode
     log:
+      error: Error running `{{.NPX_HANDLE}}ndb nodemon --config .config/nodemon-jest.json`
       start: Running `{{.NPX_HANDLE}}ndb nodemon --config .config/nodemon-jest.json` to enable debugging with Chrome DevTools in watch mode
       success: Successfully ran `{{.NPX_HANDLE}}ndb nodemon --config .config/nodemon-jest.json`
-      error: Error running `{{.NPX_HANDLE}}ndb nodemon --config .config/nodemon-jest.json`
     cmds:
       - '{{.NPX_HANDLE}}ndb nodemon --config .config/nodemon-jest.json'
 
@@ -398,8 +398,8 @@ tasks:
       - :install:npm:typesync
     desc: Install missing type definitions
     log:
+      error: Error running `{{.NPX_HANDLE}}typesync`
       start: Installing missing type definitions by running `{{.NPX_HANDLE}}typesync`
       success: Successfully ran `{{.NPX_HANDLE}}typesync`
-      error: Error running `{{.NPX_HANDLE}}typesync`
     cmds:
       - '{{.NPX_HANDLE}}typesync'

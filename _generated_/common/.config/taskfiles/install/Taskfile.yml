@@ -34,9 +34,9 @@ tasks:
       - :install:software:yq
     run: once
     log:
+      error: Error pre-loading NPM global packages
       start: Pre-loading NPM global packages
       success: Finished pre-loading NPM global packages
-      error: Error pre-loading NPM global packages
     cmds:
       - |
         PKGS="$(yq eval '.tasks[].cmds[0].vars.NPM_PACKAGE' .config/taskfiles/install/Taskfile-npm.yml | tr '\n' ' ')"
@@ -59,9 +59,9 @@ tasks:
       - :install:software:jq
     run: once
     log:
+      error: Encountered error while installing local NPM dependencies
       start: Installing local NPM dependencies
       success: Successfully installed local NPM dependencies
-      error: Encountered error while installing local NPM dependencies
     cmds:
       - cmd: |
           if [ -n "$AUTO_UPDATE_NPM_PACKAGES" ]; then
@@ -83,9 +83,9 @@ tasks:
 
   modules:local:sync:
     log:
+      error: Error while synchronizing `NPM_KEEP_UPDATED` packages with the latest version(s)
       start: Ensuring `NPM_KEEP_UPDATED` NPM packages are the latest version
       success: '`NPM_KEEP_UPDATED` packages are all the latest version'
-      error: Error while synchronizing `NPM_KEEP_UPDATED` packages with the latest version(s)
     cmds:
       - |
         TMP_REFRESH="$(mktemp)"
@@ -138,8 +138,8 @@ tasks:
       UNAME:
         sh: uname
     log:
-      start: Adding `$HOME/{{.PATH_STRING}}` to the PATH in $HOME/.profile
       error: Failed to modify PATH
+      start: Adding `$HOME/{{.PATH_STRING}}` to the PATH in $HOME/.profile
     cmds:
       - |
         if [[ '{{.UNAME}}' == 'Darwin' ]] || [[ '{{.UNAME}}' == 'Linux' ]]; then
@@ -166,9 +166,9 @@ tasks:
         mod-ansible-autodoc molecule molecule-docker molecule-vagrant pre-commit-hooks
         proselint python-vagrant pywinrm
     log:
+      error: Error encountered while pre-loading common pipx packages
       start: Pre-loading common pipx packages
       success: Finished pre-loading common pipx packages
-      error: Error encountered while pre-loading common pipx packages
     cmds:
       - |
         for PKG in {{.PIPX_PACKAGES}}; do
@@ -183,9 +183,9 @@ tasks:
 
   profile:add:
     log:
+      error: Error modifying $HOME/.profile
       start: Adding `{{.PROFILE_STRING}}` to $HOME/.profile
       success: Successfully modified $HOME/.profile
-      error: Error modifying $HOME/.profile
     cmds:
       - |
         if [[ "$OSTYPE" == 'darwin'* ]] || [[ "$OSTYPE" == 'linux-gnu'* ]]; then
@@ -210,8 +210,8 @@ tasks:
         install tslib.
     run: once
     log:
-      start: Checking if `tslib` is being used
       error: Failed to probe `tslib`
+      start: Checking if `tslib` is being used
     cmds:
       - |
         if [[ "$(jq -r '.dependencies.tslib' package.json)" == 'null' ]]; then

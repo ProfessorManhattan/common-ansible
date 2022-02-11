@@ -5,6 +5,6 @@ tasks:
   release:
     desc: Publishes Opera extension
     log:
+      error: Encountered error while publishing Opera extension
       start: Publishing Opera extension
       success: Successfully published Opera extension
-      error: Encountered error while publishing Opera extension

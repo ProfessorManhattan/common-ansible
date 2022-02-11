@@ -5,13 +5,13 @@ tasks:
   cask:
     desc: Publishes a Homebrew Cask
     log:
-      start: Publishing Homebrew Cask
-      success: Published Homebrew Cask successfully
       error: Encountered error while publishing Homebrew Cask
 
+      start: Publishing Homebrew Cask
+      success: Published Homebrew Cask successfully
   formula:
     desc: Publishes a Homebrew Formulae
     log:
+      error: Encountered error while publishing Homebrew Formulae
       start: Publishing Homebrew Formulae
       success: Published Homebrew Formulae
-      error: Encountered error while publishing Homebrew Formulae

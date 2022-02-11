@@ -8,9 +8,9 @@ vars:
 tasks:
   copy:
     log:
+      error: Finished copying common files
       start: Copying common files
       success: Copied common files
-      error: Finished copying common files
     cmds:
       - mv .gitlab-ci.yml .gitlab-ci.yml.bak
       - cd ./{{.SHARED_COMMON_FOLDER}} && cp -rf . .. && cd ..
@@ -33,9 +33,9 @@ tasks:
 
   variables:
     log:
+      error: Encountered error in `.variables.json` generation sequence
       start: Beginning `.variables.json` generation sequence
       success: Completed `.variables.json` generation sequence
-      error: Encountered error in `.variables.json` generation sequence
     cmds:
       - curl -s {{.VARIABLES_URL}} > .variables.json
       - task: :upstream:variables

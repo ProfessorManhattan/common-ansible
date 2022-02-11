@@ -46,7 +46,7 @@ tasks:
       - :install:software:sentry
       - task: :install:python:requirements
         env:
-          INSTALL_OPTIONS: '--no-dev'
+          INSTALL_OPTIONS: --no-dev
     log:
       error: Encountered error while testing the Ansible playbook locally
       start: Testing the Ansible playbook locally
@@ -694,7 +694,7 @@ tasks:
     deps:
       - task: :install:python:requirements
         vars:
-          INSTALL_OPTIONS: '--no-dev'
+          INSTALL_OPTIONS: --no-dev
       - :install:software:sentry
       - :install:software:sshpass
       - :install:software:vagrant
