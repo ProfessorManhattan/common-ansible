@@ -257,7 +257,7 @@ tasks:
         fi
 
   lint:
-    desc: Lints the project using all error-prone linters
+    desc: Lints the project using all linters
     summary: |
       # Lint the Project Using Most of the Linters
 
@@ -406,11 +406,11 @@ tasks:
       # Aggressively Reset Project
 
       This task will completely wipe the project by:
-      
+
       1. Resetting to the HEAD
       2. Removing all files that are not included in source control (i.e. `node_modules/` etc.)
       3. Pulling the latest changes from `master`
-      
+
       This task is essentially the equivalent of deleteing the project and re-cloning it.
     prompt:
       type: confirm
