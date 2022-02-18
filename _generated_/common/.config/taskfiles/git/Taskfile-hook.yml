@@ -101,4 +101,3 @@ tasks:
             .config/log star "View commit ----> \`https://$HOST/$ORG/$PROJECT/commit/$local_sha\`"
           fi
         done
-
