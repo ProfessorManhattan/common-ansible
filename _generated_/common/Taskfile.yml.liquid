@@ -29,6 +29,7 @@ vars:
   NPM_PROGRAM_LOCAL: pnpm
   NPX_HANDLE: 'pnpx '
   NPX_PACKAGE: pnpx
+  PROJECT_TYPE: {{#eq group "common"}}{{#eq subgroup "shared"}}shared{{else}}common{{/eq}}{{else}}{{#eq group "documentation"}}{{#eq subgroup "shared"}}commondocs{{else}}docs{{/eq}}{{else}}project{{/eq}}{{/eq}}
   PYTHON_HANDLE: 'poetry run '
   PYTHON_VIRTUALENV: true
   REPOSITORY_SUBTYPE: {{subgroup}}
