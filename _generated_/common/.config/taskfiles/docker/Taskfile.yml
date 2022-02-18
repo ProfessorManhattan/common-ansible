@@ -122,6 +122,8 @@ tasks:
           - docker run -v "${PWD}:/work" -w /work -it --entrypoint /bin/sh --rm {{.ANSWER}}
 
   test:
+    deps:
+      - :install:software:docker
     desc: Perform all available tests on the Docker image
     summary: |
       # Test the Dockerfile
