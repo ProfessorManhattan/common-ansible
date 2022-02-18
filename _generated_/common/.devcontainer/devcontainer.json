@@ -1,0 +1,19 @@
+{
+	"name": "Megabyte Labs DevContainer",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "16gb"
+  },
+	"settings": {},
+	"extensions": [
+		"dbaeumer.vscode-eslint"
+	],
+	"forwardPorts": [8814],
+	"postCreateCommand": "task init",
+	"remoteUser": "megabyte",
+  "runArgs": ["--privileged"]
+}
