@@ -133,6 +133,7 @@ tasks:
   slim:sizes:assets:
     deps:
       - :install:software:docker
+      - :install:software:gzip
     vars:
       DOCKER_IMAGE:
         sh: echo "{{.DOCKERHUB_PROFILE}}/{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}$(jq -r '.blueprint.slug' package.json){{end}}"
@@ -169,6 +170,14 @@ tasks:
         jq --arg a '{{.SLIM_SIZE}}' --arg b '{{.REGULAR_SIZE}}' --arg slug '{{.DOCKER_IMAGE_SLUG}}' \
         '.blueprint.dockerSlimSize[$slug] = $a | .blueprint.dockerLatestSize[$slug] = $b' package.json > "$TMP"
         mv "$TMP" package.json
+      - |
+        if [ -f "{{.DOCKER_IMAGE_SLUG}}-latest.tar.gz" ]; then
+          rm "{{.DOCKER_IMAGE_SLUG}}-latest.tar.gz"
+        fi
+      - |
+        if [ -f "{{.DOCKER_IMAGE_SLUG}}-slim.tar.gz" ]; then
+          rm "{{.DOCKER_IMAGE_SLUG}}-slim.tar.gz"
+        fi
       - task: :common:update:update
     status:
       - '[[ "{{.PREVIOUS_SLIM_SIZE}}" == "{{.SLIM_SIZE}}" ]]'
