@@ -5,7 +5,8 @@
       "ENABLE_NONROOT_DOCKER": "true",
       "INSTALL_ZSH": "true",
       "UPGRADE_PACKAGES": "true",
-      "USE_MOBY": "true"
+      "USE_MOBY": "true",
+      "USERNAME": "megabyte"
     }
   },
   "dockerFile": "Dockerfile",
