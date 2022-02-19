@@ -21,7 +21,7 @@
     "fix": "task fix",
     "help": "task --menu",
     "lint": "task lint",
-    "prepare": "npm run start && task common:husky",
+    "prepare": "npm run start && (test -f Taskfile.yml && task common:husky) || true",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
     "start": "bash start.sh",
     "test": "task donothing"

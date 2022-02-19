@@ -343,6 +343,15 @@ tasks:
     cmds:
       - task: common:windows
 
+  docker-slim:
+    run: once
+    cmds:
+      - task: brew:formulae
+        vars:
+          FORMULAE: docker-slim
+    status:
+      - type docker-slim > /dev/null
+
   dockle:
     run: once
     cmds:
