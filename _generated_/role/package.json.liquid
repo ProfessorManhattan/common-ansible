@@ -214,12 +214,12 @@
     "url": "git+{{#if repository.github}}{{repository.github}}{{else}}https://github.com/{{profile.github}}/{{repository.prefix.github}}{{slug}}{{/if}}.git"
   },
   "scripts": {
-    "build": "{{{replace scriptsBuild '\"' '\\\"'}}}",
-    "help": "{{{replace scriptsHelp '\"' '\\\"'}}}",
-    "prepare": "{{{replace scriptsPrepare '\"' '\\\"'}}}",
+    "build": "{{{replace scriptsBuild scriptsReplaceThis scriptsReplaceWith}}}",
+    "help": "{{{replace scriptsHelp scriptsReplaceThis scriptsReplaceWith}}}",
+    "prepare": "{{{replace scriptsPrepare scriptsReplaceThis scriptsReplaceWith}}}",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
-    "start": "{{{replace scriptsStart '\"' '\\\"'}}}",
-    "test": "{{{replace scriptsTest '\"' '\\\"'}}}"
+    "start": "{{{replace scriptsStart scriptsReplaceThis scriptsReplaceWith}}}",
+    "test": "{{{replace scriptsTest scriptsReplaceThis scriptsReplaceWith}}}"
   },
   "type": "{{npm_type}}",
   "version": "{{version}}"

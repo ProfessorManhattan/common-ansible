@@ -34,6 +34,8 @@ tasks:
       - type fusion > /dev/null
 
   install:
+    deps:
+      - :install:software:jq
     run: when_changed
     log:
       error: Failed to acquire GitHub release from `{{.GITHUB}}`
@@ -41,7 +43,8 @@ tasks:
       success: Installed GitHub release from `{{.GITHUB}}`, available as `{{.BIN}}`
     cmds:
       - task: :install:go:bin
-      - bin install {{.GITHUB}} "$GOPATH/bin/{{.BIN}}"
+      - jq '. | .default_path = "./.bin" | .bins = {}' <<< $(echo '{}') > "$HOME/.config/bin/config.json"
+      - bin install -f {{.GITHUB}} "$GOPATH/bin/{{.BIN}}"
     status:
       - type {{.BIN}} > /dev/null || [ -n "$NO_INSTALL_HOMEBREW" ]
 
