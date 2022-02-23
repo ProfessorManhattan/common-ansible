@@ -47,4 +47,5 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
         shell: wsl-bash {0}
         run: |
+          export WINDOWS_ANSIBLE_TEST=true
           task ansible:test:local
