@@ -58,5 +58,5 @@
     }
   },
   "scriptsBuild": "task ansible:build:none",
-  "scriptsTest": "[[ $- == *i* ]] && task ansible:test:prompt || task ansible:test:default"
+  "scriptsTest": "[ -z \"$PS1\" ] && task ansible:test:prompt || task ansible:test:default"
 }
