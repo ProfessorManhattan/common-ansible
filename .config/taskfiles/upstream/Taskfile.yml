@@ -194,6 +194,7 @@ tasks:
     cmds:
       - task: template:pyproject:config
       - task: template:pyproject:local
+      - task: template:pyproject:fix
 
   template:pyproject:config:
     log:
@@ -205,6 +206,17 @@ tasks:
       - mv pyproject.next.toml pyproject.toml
     status:
       - '[ ! -f .config/pyproject.partial.toml ] || [ ! -f pyproject.toml ]'
+
+  template:pyproject:fix:
+    cmds:
+      - task: :fix:toml
+        vars:
+          CLI_ARGS: pyproject.toml
+      - task: :fix:prettier
+        vars:
+          CLI_ARGS: pyproject.toml
+    status:
+      - '[ -n "$NO_INSTALL_HOMEBREW" ]'
 
   template:pyproject:local:
     vars:
