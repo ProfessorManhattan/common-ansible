@@ -89,7 +89,7 @@ tasks:
 
   local:test:logic:
     vars:
-      ANSIBLE_CFG: |
+      ANSIBLE_CFG: |-
         [winrm_connection]
         scheme = https
         server_cert_validation = ignore

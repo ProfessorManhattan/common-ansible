@@ -432,6 +432,11 @@
       "command": "bash .config/scripts/start.sh && task prepare"
     },
     {
+      "label": "(publish): Publish a semantic release via `semantic-release`",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task publish"
+    },
+    {
       "label": "(publish:android:beta): Publishes Android app to Firebase beta channel",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task publish:android:beta"

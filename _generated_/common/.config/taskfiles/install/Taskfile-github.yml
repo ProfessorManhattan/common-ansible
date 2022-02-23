@@ -23,18 +23,27 @@ tasks:
         type -f /usr/lib/docker/cli-plugins/docker-pushrm ||
         type -f /usr/libexec/docker/cli-plugins/docker-pushrm
 
+  fusion:
+    run: once
+    cmds:
+      - task: install
+        vars:
+          BIN: fusion
+          GITHUB: github.com/edgelaboratories/fusion
+    status:
+      - type fusion > /dev/null
+
   install:
-    deps:
-      - :install:go:bin
     run: when_changed
     log:
       error: Failed to acquire GitHub release from `{{.GITHUB}}`
       start: Acquiring GitHub binary release from `{{.GITHUB}}`
       success: Installed GitHub release from `{{.GITHUB}}`, available as `{{.BIN}}`
     cmds:
+      - task: :install:go:bin
       - bin install {{.GITHUB}} "$GOPATH/bin/{{.BIN}}"
     status:
-      - type {{.BIN}} > /dev/null
+      - type {{.BIN}} > /dev/null || [ -n "$NO_INSTALL_HOMEBREW" ]
 
   sentry:
     run: once
