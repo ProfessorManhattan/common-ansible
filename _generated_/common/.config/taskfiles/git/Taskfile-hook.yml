@@ -64,10 +64,10 @@ tasks:
 
   pre-push:
     vars:
-      GITLAB_TOKEN:
-        sh: echo "$GITLAB_TOKEN"
       GITHUB_TOKEN:
         sh: echo "$GITHUB_TOKEN"
+      GITLAB_TOKEN:
+        sh: echo "$GITLAB_TOKEN"
     log:
       error: '`pre-push` hook encountered an error!'
       start: '`pre-push` hook running..'
