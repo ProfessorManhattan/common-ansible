@@ -97,6 +97,9 @@ tasks:
       ROLE_NAME: '{{.GALAXY_NAMESPACE}}.{{.GALAXY_ROLE_NAME}}'
       SUDO_PASS_PARAM:
         sh: if [ -z "$CI" ]; then echo ' --ask-sudo-pass'; else echo ''; fi
+      WINDOWS_INVENTORY: windows-ci ansible_host=localhost ansible_user=runneradmin
+        ansible_password=AnsibleTest999 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore
+        ansible_winrm_transport=credssp
     log:
       error: Encountered error while testing the Ansible playbook locally
       start: Testing the Ansible playbook locally
@@ -104,7 +107,7 @@ tasks:
     cmds:
       - |
         if [ -n "$WINDOWS_ANSIBLE_TEST" ]; then
-          echo 'windows-ci ansible_host=localhost ansible_user=runneradmin ansible_password=AnsibleTest999 ansible_connection=winrm ansible_winrm_server_cert_validation=ignore ansible_winrm_transport=credssp' > inventory
+          echo '{{.WINDOWS_INVENTORY}}' > inventory
           echo '{{.ANSIBLE_CFG}}' > ansible.cfg
         else
           echo 'localhost ansible_connection=local' > inventory
