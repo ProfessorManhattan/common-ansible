@@ -258,7 +258,12 @@ function installTask() {
     mkdir -p "$TARGET_BIN_DIR"
   fi
   mv "$TMP_DIR/task/task" "$TARGET_DEST"
-  logger success "Installed Task to $TARGET_DEST"
+  if sudo -n true; then
+    mv "$TARGET_DEST" /usr/local/bin/task
+    logger success "Installed Task to /usr/local/bin/task"
+  else
+    logger success "Installed Task to $TARGET_DEST"
+  fi
   rm "$CHECKSUM_DESTINATION"
   rm "$DOWNLOAD_DESTINATION"
 }
@@ -393,7 +398,9 @@ ensureTaskInstalled
 if [ -z "$GITLAB_CI" ] && [ -z "$INIT_CWD" ] && [ -f Taskfile.yml ]; then
   # shellcheck disable=SC1091
   . "$HOME/.profile"
-  task start
-  # shellcheck disable=SC2016
-  logger info 'There may have been changes to your PATH variable. You may have to reload your terminal or run:\n\n`. "$HOME/.profile"`'
+  if task donothing &> /dev/null; then
+    task start
+    # shellcheck disable=SC2016
+    logger info 'There may have been changes to your PATH variable. You may have to reload your terminal or run:\n\n`. "$HOME/.profile"`'
+  fi
 fi
