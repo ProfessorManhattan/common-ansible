@@ -578,6 +578,8 @@
   "scriptsBuild": "task ansible:build:none",
   "scriptsHelp": "task --menu",
   "scriptsPrepare": "npm run start && (test -f Taskfile.yml && task common:husky) || true",
+  "scriptsReplaceThis": "\"",
+  "scriptsReplaceWith": "\\\"",
   "scriptsStart": "bash start.sh",
   "scriptsTest": "[ -z \"$PS1\" ] && task ansible:test:prompt || task ansible:test:default",
   "sharp_instructions": [],
