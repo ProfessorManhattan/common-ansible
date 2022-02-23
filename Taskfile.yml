@@ -1,6 +1,5 @@
 ---
 version: '3'
-
 includes:
   ansible: ./.config/taskfiles/ansible/Taskfile.yml
   ansible:ansibler: ./.config/taskfiles/ansible/Taskfile-ansibler.yml
@@ -11,9 +10,6 @@ includes:
   boilerplate:populate: ./.config/taskfiles/boilerplate/Taskfile-populate.yml
   boilerplate:prompt: ./.config/taskfiles/boilerplate/Taskfile-prompt.yml
   ci: ./.config/taskfiles/ci/Taskfile.yml
-  project:
-    taskfile: ./local/Taskfile-project.yml
-    optional: true
   ci:github: ./.config/taskfiles/ci/Taskfile-github.yml
   common: ./.config/taskfiles/common/Taskfile.yml
   common:code: ./.config/taskfiles/common/Taskfile-code.yml
@@ -24,6 +20,9 @@ includes:
   docker:update: ./.config/taskfiles/docker/Taskfile-update.yml
   fix: ./.config/taskfiles/fix/Taskfile.yml
   git: ./.config/taskfiles/git/Taskfile.yml
+  project:
+    taskfile: ./local/Taskfile-project.yml
+    optional: true
   git:github: ./.config/taskfiles/git/Taskfile-github.yml
   git:gitlab: ./.config/taskfiles/git/Taskfile-gitlab.yml
   git:hook: ./.config/taskfiles/git/Taskfile-hook.yml
@@ -77,9 +76,7 @@ includes:
   web:ionic: ./.config/taskfiles/web/Taskfile-ionic.yml
   web:nx: ./.config/taskfiles/web/Taskfile-nx.yml
   web:profile: ./.config/taskfiles/web/Taskfile-profile.yml
-
 output: interleaved
-
 vars:
   DOCKERHUB_PROFILE: megabytelabs
   DOCKERHUB_USER: professormanhattan
@@ -88,11 +85,7 @@ vars:
   GITHUB_ORG: ProfessorManhattan
   GITHUB_USER: ProfessorManhattan
   GROUP_EXEC_ASYNC: 'false'
-  IGNORE_FOLDERS: -path './.autodoc/*' -o -path './.cache/*' -o -path './.common*' -o -path './.config/*' -o -path './.git/*'
-    -o -path './.github/*' -o -path './.gitlab/*' -o -path './.husky/*' -o -path './.modules/*' -o -path './.npm/*'
-    -o -path './.pnpm-store/*' -o -path './.shared/*' -o -path './.task/*' -o -path './.venv/*' -o -path './.vscode/*'
-    -o -path './build/*' -o -path './dist/*' -o -path './node_modules/*' -o -path './roles/*' -o -name pnpm-lock.yaml
-    -o -name package-lock.json -o -name poetry.lock -o -name '.variables.json'
+  IGNORE_FOLDERS: -path './.autodoc/*' -o -path './.cache/*' -o -path './.common*' -o -path './.config/*' -o -path './.git/*' -o -path './.github/*' -o -path './.gitlab/*' -o -path './.husky/*' -o -path './.modules/*' -o -path './.npm/*' -o -path './.pnpm-store/*' -o -path './.shared/*' -o -path './.task/*' -o -path './.venv/*' -o -path './.vscode/*' -o -path './build/*' -o -path './dist/*' -o -path './node_modules/*' -o -path './roles/*' -o -name pnpm-lock.yaml -o -name package-lock.json -o -name poetry.lock -o -name '.variables.json'
   INIT_SCRIPT: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/scripts/update-init.sh
   LOG_FIX:
     sh: chmod +x .config/log && echo "heyhey"
@@ -108,10 +101,8 @@ vars:
   REPOSITORY_TYPE: common
   SEMANTIC_CONFIG: semantic-release-config
   TIMEZONE: America/New_York
-
 env:
   SENTRY_DSN: ''
-
 profile: |
   PATH="$PATH:$HOME/.local/bin:$HOME/.poetry/bin"
   if [[ "$OSTYPE" == 'linux-gnu'* ]] || [[ "$OSTYPE" == 'linux-musl'* ]]; then
@@ -131,7 +122,6 @@ profile: |
   if [ -f .venv/bin/activate ]; then
     . .venv/bin/activate
   fi
-
 tasks:
   build:
     deps:
@@ -156,7 +146,6 @@ tasks:
         else
           [[ $- == *i* ]] && task prepare || (.config/log error '{{.NONINTERACTIVE_MISSING_BUILD_CMD}}' && exit 1)
         fi
-
   clean:
     desc: Removes optional folders that are cached during various tasks
     summary: |
@@ -167,13 +156,11 @@ tasks:
       which will re-generate the project from scratch. Ideally, this task and the reset task
       should never be necessary. The `start` task should be used instead.
     vars:
-      CLEAN_TARGETS: .autodoc .cache .task .venv node_modules tsconfig.tsbuildinfo venv
-        .variables.json
+      CLEAN_TARGETS: .autodoc .cache .task .venv node_modules tsconfig.tsbuildinfo venv .variables.json
     cmds:
       - task: common:clean
         vars:
           CLEAN_TARGETS: '{{.CLEAN_TARGETS}}'
-
   commit:
     desc: Lint staged files, report spelling errors, and open a _required_ commit dialoge
     summary: |
@@ -190,7 +177,6 @@ tasks:
       to your regular `git commit -m` command to bypass the pre-commit hook.
     cmds:
       - task: common:commit
-
   commit:all:
     deps:
       - install:software:git
@@ -226,9 +212,7 @@ tasks:
         git add --all
         git commit
         {{end}}
-
   donothing: 'true'
-
   fix:
     desc: Run code auto-fixers / auto-formatters
     summary: |
@@ -239,7 +223,6 @@ tasks:
       an error so the auto-fixes still have to be validated.
     cmds:
       - task: fix:all
-
   group:exec:
     desc: Execute group commands on any GitLab group (including repositories in sub-groups)
     summary: |
@@ -260,7 +243,6 @@ tasks:
       Be sure to wrap the command in quotes or you might observe some odd behavior.
     cmds:
       - task: git:gitlab:group:exec
-
   init:
     deps:
       - install:software:jq
@@ -299,7 +281,6 @@ tasks:
           bash <(curl -sSL {{.INIT_SCRIPT}})
         fi
       - git push origin master
-
   lint:
     desc: Lints the project using all linters
     summary: |
@@ -313,7 +294,6 @@ tasks:
       `task lint`
     cmds:
       - task: lint:all
-
   livereload:
     deps:
       - install:npm:nodemon
@@ -353,7 +333,6 @@ tasks:
           .config/log error '`Taskfile-project.yml` must exist and have a `livereload` task to use with `nodemon`' && exit 1
         fi
       - nodemon --config {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.config/nodemon.json{{end}}
-
   preload:
     deps:
       - install:brewfile
@@ -391,7 +370,6 @@ tasks:
       - task: install:brewfile
       - task: install:modules:global
       - task: install:pipx:global
-
   prepare:
     desc: Prepares the project for the normal start command
     summary: |
@@ -408,7 +386,6 @@ tasks:
     cmds:
       - task: boilerplate:check:package
       - task: boilerplate:clean
-
   reset:
     desc: Resets the project by removing all caches and then re-generating templated files
     summary: |
@@ -420,7 +397,6 @@ tasks:
       updates, it re-generates any templated files.
     cmds:
       - task: common:reset
-
   reset:force:
     desc: 'Aggressively reset the project (**WARNING** This will wipe uncommitted work)'
     summary: |
@@ -439,7 +415,6 @@ tasks:
       answer:
         cmds:
           - task: common:reset:force
-
   scripts:
     interactive: true
     deps:
@@ -457,7 +432,6 @@ tasks:
       start: Running `NTL_RUNNER={{.NPM_PROGRAM}} {{.NPX_HANDLE}}ntl`
     cmds:
       - NTL_RUNNER={{.NPM_PROGRAM}} {{.NPX_HANDLE}}ntl
-
   services:
     desc: Update elements of the repository that require API access
     summary: |
@@ -470,7 +444,6 @@ tasks:
       - task: common:update:services
     status:
       - '[ -n "$GITLAB_CI" ] && [ "$REPOSITORY_UPDATE" != "true" ]'
-
   shell:
     desc: Start a terminal session using Docker with any Linux operating system
     compile: |
@@ -504,7 +477,6 @@ tasks:
       * ubuntu-21.04
     cmds:
       - task: common:shell
-
   start:
     desc: Set up the project and refresh it with the latest changes
     summary: |
@@ -525,7 +497,6 @@ tasks:
       success: Successfully synchronized the project with upstream file changes and also bootstrapped the project
     cmds:
       - task: upstream:common
-
   test:
     deps:
       - install:software:node
