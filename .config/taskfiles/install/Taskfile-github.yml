@@ -35,3 +35,13 @@ tasks:
       - bin install {{.GITHUB}} "$GOPATH/bin/{{.BIN}}"
     status:
       - type {{.BIN}} > /dev/null
+
+  sentry:
+    run: once
+    cmds:
+      - task: install
+        vars:
+          BIN: sentry-cli
+          GITHUB: github.com/getsentry/sentry-cli
+    status:
+      - type sentry-cli > /dev/null

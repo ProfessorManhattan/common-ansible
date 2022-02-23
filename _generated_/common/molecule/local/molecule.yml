@@ -7,7 +7,7 @@ driver:
     ansible_connection_options:
       ansible_connection: local
 platforms:
-  - name: Local-Connection
+  - name: ${TEST_PLATFORM:-Local-Connection}
 provisioner:
   inventory:
     group_vars:

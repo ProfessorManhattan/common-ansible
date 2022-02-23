@@ -76,11 +76,12 @@ tasks:
         if [ -n "$GITLAB_CI" ]; then
           poetry config http-basic.gitlab gitlab-ci-token "${CI_JOB_TOKEN}"
         fi
-      - .config/log info "Installing/updating poetry install options -> {{.INSTALL_OPTIONS}}"
       - |
         if [ -n "$AUTO_UPDATE_PIP_PACKAGES" ]; then
+          .config/log info 'Updating Poetry dependencies{{if .INSTALL_OPTIONS}} with options `{{.INSTALL_OPTIONS}}`{{end}}'
           poetry update{{if .INSTALL_OPTIONS}} {{.INSTALL_OPTIONS}}{{end}}
         else
+          .config/log info 'Installing Poetry dependencies{{if .INSTALL_OPTIONS}} with options `{{.INSTALL_OPTIONS}}`{{end}}'
           poetry install{{if .INSTALL_OPTIONS}} {{.INSTALL_OPTIONS}}{{end}}
         fi
     sources:

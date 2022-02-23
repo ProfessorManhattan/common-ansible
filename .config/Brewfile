@@ -10,6 +10,7 @@ tap "caskroom/cask"
 brew "act"
 # @brew [appium](https://appium.io/) - A framework focused on native Android/iOS testing
 brew "appium"
+# @brew [azure-cli](https://docs.microsoft.com/en-us/cli/azure/) - The official CLI for interacting with Microsoft Azure
 brew "azure-cli"
 # @brew [bat](https://github.com/sharkdp/bat) - Clone of cat with syntax highlighting and Git integration
 brew "bat"

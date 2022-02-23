@@ -395,7 +395,7 @@ fi
 ensureTaskInstalled
 
 # @description Run the start logic, if appropriate
-if [ -z "$GITLAB_CI" ] && [ -z "$INIT_CWD" ] && [ -f Taskfile.yml ]; then
+if [ -z "$CI" ] && [ -z "$INIT_CWD" ] && [ -f Taskfile.yml ]; then
   # shellcheck disable=SC1091
   . "$HOME/.profile"
   if task donothing &> /dev/null; then
