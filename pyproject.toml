@@ -51,7 +51,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.10.0,<4.0.0"
 
-# Semantic Extras -> `poetry install -E semantic`
+# Semantic Extras
 pip = { version = "^21.3.0", optional = true }
 setuptools = { version = "^58.2.0", optional = true }
 twine = { version = "^3.8.0", optional = true }
