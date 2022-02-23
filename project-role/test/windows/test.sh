@@ -19,8 +19,10 @@ if [ -f requirements.yml ]; then
 fi
 
 # @description Symlink the Ansible Galaxy role name to the working directory one level up
+mkdir -p "$HOME/.ansible/roles"
 ROLE_NAME="$(grep "role:" test/windows/test.yml | sed 's^- role: ^^' | xargs)"
-ln -s "$(basename "$PWD")" "../$ROLE_NAME"
+rm -rf "$HOME/.ansible/roles/${ROLE_NAME}"
+ln -sf "$PWD" "$HOME/.ansible/roles/${ROLE_NAME}"
 
 # @description Back up files and then copy replacements
 function backupAndCopyFiles() {
