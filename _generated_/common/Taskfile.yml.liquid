@@ -8,6 +8,8 @@ vars:
   DOCKERHUB_USER: {{profile.dockerHubUser}}
   ESLINT_FORMATTER: pretty
   ESLINT_FORMATTER_OPTIONS: git-log gitlab pretty summary{{#eq group 'ansible'}}{{#eq subgroup 'role'}}
+  GALAXY_AUTHOR: ProfessorManhattan
+  GALAXY_COMPANY: Megabyte Labs
   GALAXY_NAMESPACE:
     sh: "if [ -f meta/main.yml ]; then grep namespace < meta/main.yml | sed 's/.*namespace: \\(.*\\)$/\\1/g'; fi"
   GALAXY_ROLE_NAME:
