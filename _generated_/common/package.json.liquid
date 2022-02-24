@@ -1,17 +1,10 @@
 {
   "author": "{{author.name}} <{{author.email}}> ({{link.home}})",
   "blueprint": {
-    "description": "An NPM package that is part of the Megabyte Labs eco-system",
-    "group": "Repository group here (e.g. ansible, npm, python)",
-    "name": "My Project Name",
-    "overview": "This text shows up at the top of the README.md.",
     "repository": {
       "github": "{{#if repository.github}}{{repository.github}}{{else}}https://github.com/{{profile.github}}/{{repository.prefix.github}}{{slug}}{{/if}}",
       "gitlab": "{{#if repository.gitlab}}{{repository.gitlab}}{{else}}{{repository.gitlabBaseUrl}}/{{group}}/{{subgroup}}/{{slug}}{{/if}}"
-    },
-    "slug": "my-project",
-    "subgroup": "Repository subgroup here (e.g. cli, library, plugin)",
-    "title": "Add title of the README.md here"
+    }
   },
   "bugs": {
     "email": "{{email.help}}",

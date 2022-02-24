@@ -1,8 +1,8 @@
 # Standard Homebrew taps
+tap "homebrew/cask"
 tap "homebrew/core"
 tap "homebrew/bundle"
 tap "homebrew/services"
-tap "caskroom/cask"
 
 # Homebrew Formulae
 # e.g. `brew install <program>`
