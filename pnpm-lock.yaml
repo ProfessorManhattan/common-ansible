@@ -2217,7 +2217,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001312
-      electron-to-chromium: 1.4.71
+      electron-to-chromium: 1.4.72
       escalade: 3.1.1
       node-releases: 2.0.2
       picocolors: 1.0.0
@@ -3289,8 +3289,8 @@ packages:
       sigmund: 1.0.1
     dev: true
 
-  /electron-to-chromium/1.4.71:
-    resolution: {integrity: sha512-Hk61vXXKRb2cd3znPE9F+2pLWdIOmP7GjiTj45y6L3W/lO+hSnUSUhq+6lEaERWBdZOHbk2s3YV5c9xVl3boVw==}
+  /electron-to-chromium/1.4.72:
+    resolution: {integrity: sha512-9LkRQwjW6/wnSfevR21a3k8sOJ+XWSH7kkzs9/EUenKmuDkndP3W9y1yCZpOxufwGbX3JV8glZZSDb4o95zwXQ==}
     dev: true
 
   /elegant-spinner/1.0.1:

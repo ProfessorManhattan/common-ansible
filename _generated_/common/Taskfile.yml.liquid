@@ -6,7 +6,8 @@ output: interleaved
 vars:
   DOCKERHUB_PROFILE: {{profile.dockerhub}}
   DOCKERHUB_USER: {{profile.dockerHubUser}}
-  ESLINT_FORMATTER: pretty
+  ESLINT_FIX_RECURSIVE: 'true'
+  ESLINT_FORMATTER: stylish
   ESLINT_FORMATTER_OPTIONS: git-log gitlab pretty summary{{#eq group 'ansible'}}{{#eq subgroup 'role'}}
   GALAXY_AUTHOR: ProfessorManhattan
   GALAXY_COMPANY: Megabyte Labs
