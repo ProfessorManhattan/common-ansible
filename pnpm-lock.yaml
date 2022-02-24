@@ -8240,7 +8240,7 @@ packages:
       conventional-changelog-emoji-config: 1.4.8
       git-cz-emoji: 1.1.24
       semantic-release: 19.0.2
-      semantic-release-gh: 0.0.7_semantic-release@19.0.2
+      semantic-release-gh: 1.0.15_semantic-release@19.0.2
       semantic-release-npm-deprecate-old-versions: 1.3.2
       semantic-release-python: 2.5.30
       tslib: 2.3.1
@@ -8252,8 +8252,8 @@ packages:
       - supports-color
     dev: true
 
-  /semantic-release-gh/0.0.7_semantic-release@19.0.2:
-    resolution: {integrity: sha512-T3eQwyiMXwWMzvDIFMPVn7mzJERVRZYtNEF58bVV0SL3I9UzUkM3UAY1idJUcG3ovbz7BeerfTdIAhE2GrD/sg==}
+  /semantic-release-gh/1.0.15_semantic-release@19.0.2:
+    resolution: {integrity: sha512-VuKk2i/E4TCX9QgvBtWUZhGVI2OIZf0VWnk/X71OB2NVpopBgmfquBuQX9NZLkcHMj7XU+LkWjoq/CPL372hQA==}
     engines: {node: '>=14.18.0'}
     peerDependencies:
       semantic-release: '>=18.0.0-beta.1'
