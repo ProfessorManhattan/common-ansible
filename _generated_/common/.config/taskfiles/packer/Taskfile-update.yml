@@ -17,9 +17,9 @@ tasks:
         DESCRIPTION_TEMPLATE="$(jq -r '.description_template' '{{.VARIABLES_PATH}}')"
         VERSION_DESCRIPTION="$(jq -r '.version_description' '{{.VARIABLES_PATH}}')"
         TMP="$(mktemp)"
-        jq --arg a "$DESCRIPTION_TEMPLATE" --arg b "$VERSION_DESCRIPTION" '.variables.description = $a
-        | .variables.version_description = $b' {{.TEMPLATE_FILE}} > "$TMP"
-      - mv "$TMP" {{.TEMPLATE_FILE}}
+        jq --arg a "$DESCRIPTION_TEMPLATE" --arg b "$VERSION_DESCRIPTION" \
+        '.variables.description = $a | .variables.version_description = $b' {{.TEMPLATE_FILE}} > "$TMP"
+        mv "$TMP" {{.TEMPLATE_FILE}}
     sources:
       - '{{.TEMPLATE_FILE}}'
       - '{{.VARIABLES_PATH}}'
