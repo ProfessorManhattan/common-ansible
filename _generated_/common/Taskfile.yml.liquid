@@ -218,7 +218,7 @@ tasks:
     deps:
       - install:software:jq
     desc: Log useful links such as the current project's git repository link
-    env:
+    vars:
       GITHUB_URL:
         sh: jq -r '.blueprint.repository.github' package.json
       GITLAB_URL:
