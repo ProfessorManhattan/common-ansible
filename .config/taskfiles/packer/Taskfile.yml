@@ -55,6 +55,7 @@ tasks:
         fi
         if type vboxmanage &> /dev/null; then
           .config/log info 'VirtualBox is installed'
+          task app:virtualbox:clear
           IMAGES="${IMAGES},virtualbox-iso"
         fi
         if [ '{{OS}}' == 'linux' ] && type vmware &> /dev/null; then
