@@ -2,6 +2,16 @@
 version: '3'
 
 tasks:
+  build:
+    deps:
+      - :install:npm:ionic
+    log:
+      error: Error building Ionic project
+      start: Building Ionic project
+      success: Successfully built Ionic project
+    cmds:
+      - ionic build
+
   build:prod:
     deps:
       - :install:npm:ionic
