@@ -70,7 +70,7 @@ tasks:
       start: Auto-fixing modified files with ESLint
       success: Successfully auto-fixed modified files with ESLint
     env:
-      ESLINT_STAGED_ONLY: 'YES'
+      ESLINT_STAGED_ONLY: 'on'
     cmds:
       - >
         {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format {{.ESLINT_FORMATTER}} --cache
