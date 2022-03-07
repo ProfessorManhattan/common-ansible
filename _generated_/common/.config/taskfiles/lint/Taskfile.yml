@@ -166,7 +166,6 @@ tasks:
       success: Hadolint reported no errors
     cmds:
       - |
-        .config/log info 'Linting {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}all Dockerfiles{{end}} with a Hadolint Docker image'
         {{if .CLI_ARGS}}
           docker run -v "$PWD:/work" -w /work megabytelabs/hadolint:slim {{.CLI_ARGS | replace .PWD ""}}
         {{else}}
@@ -178,6 +177,25 @@ tasks:
   dockerfile:
     cmds:
       - task: docker
+
+  dockerfilelint:
+    deps:
+      - :install:npm:dockerfilelint
+    desc: Lint a Dockerfile with `dockerfilelint`
+    hide:
+      sh: '[ ! -f Dockerfile ]'
+    log:
+      error: '`dockerfilelint` reported errors'
+      start: Linting {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}the project{{end}} with `dockerfilelint`
+      success: '`dockerfilelint` ran successfully and reported no errors'
+    cmds:
+      - |
+        {{if .CLI_ARGS}}
+          dockerfilelint {{.CLI_ARGS | replace .PWD ""}}
+        {{else}}
+          find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name Dockerfile -o \
+            -name Dockerfile.j2 \) -print0 | xargs -0 -r -n1 dockerfilelint
+        {{end}}
 
   eslint:
     deps:

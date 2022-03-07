@@ -242,6 +242,11 @@
       "command": "bash .config/scripts/start.sh && task lint:docker"
     },
     {
+      "label": "(lint:dockerfilelint): Lint a Dockerfile with `dockerfilelint`",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task lint:dockerfilelint"
+    },
+    {
       "label": "(lint:eslint): Lint with ESLint",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task lint:eslint"
