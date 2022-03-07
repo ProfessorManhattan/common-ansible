@@ -19,7 +19,7 @@ specifiers:
 devDependencies:
   '@commitlint/config-conventional': 16.2.1
   '@washingtondc/development': 1.0.10_typescript@4.6.2
-  eslint-config-strict-mode: 1.0.44_typescript@4.6.2
+  eslint-config-strict-mode: 1.0.47_typescript@4.6.2
   git-cz-emoji: 1.1.24
   glob: 7.2.0
   handlebars-helpers: 0.10.0
@@ -3443,8 +3443,8 @@ packages:
       eslint: 8.10.0
     dev: true
 
-  /eslint-config-strict-mode/1.0.44_typescript@4.6.2:
-    resolution: {integrity: sha512-kM+KvUGpx6/Uow0d2+wCVLjVMtphht+JT6r7lpiysj51ci7PnppUQV422GDYO5D9O4q43P7H8wdsMblOGwbM+Q==}
+  /eslint-config-strict-mode/1.0.47_typescript@4.6.2:
+    resolution: {integrity: sha512-Cy1jgUv5kB2hU8FdL7zNOR363paHzMhfN/+B5UAhmBU31twrzdXY9v3OloVYGU6ojw3nmgBdV+gMeOqFMg4EJg==}
     engines: {node: '>=14.18.0'}
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.13.0_33fffc354ccfa91fbe7d1677b9395a0a
@@ -3457,6 +3457,7 @@ packages:
       eslint-formatter-summary: 1.1.0
       eslint-plugin-angular: 4.1.0
       eslint-plugin-array-func: 3.1.7_eslint@8.10.0
+      eslint-plugin-diff: 1.0.12_eslint@8.10.0
       eslint-plugin-editorconfig: 3.2.0_99f1c7fa3ada23abf5c494bf723a63d8
       eslint-plugin-eslint-comments: 3.2.0_eslint@8.10.0
       eslint-plugin-etc: 2.0.2_eslint@8.10.0+typescript@4.6.2
@@ -3593,6 +3594,15 @@ packages:
     engines: {node: '>= 6.8.0'}
     peerDependencies:
       eslint: '>=3.0.0'
+    dependencies:
+      eslint: 8.10.0
+    dev: true
+
+  /eslint-plugin-diff/1.0.12_eslint@8.10.0:
+    resolution: {integrity: sha512-gc770JHqLd5BSGc3dk/LZ4l58dEGg3leAX/7mQLnuAnC1ar8ZC1jNxLF8pvpTQTXEOXtwXyeSeXiV0TMhAM+nA==}
+    engines: {node: '>=10.23.0'}
+    peerDependencies:
+      eslint: '>=6.7.0'
     dependencies:
       eslint: 8.10.0
     dev: true

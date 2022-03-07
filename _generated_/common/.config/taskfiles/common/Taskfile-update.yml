@@ -92,7 +92,9 @@ tasks:
           cat .dockerignore | sed -n '/# Saved entries below/,$p' | sed 's/# Saved entries below//' | awk 'NF' >> "$TMP"
           mv "$TMP" .dockerignore
         elif [ '{{.PROJECT_TYPE}}' == 'project' ]; then
-          rm .config/dockerignore
+          if [ -f .config/dockerignore ]; then
+            rm .config/dockerignore
+          fi
         fi
       - task: :common:{{if eq .CONTAINER "docker"}}husky:ci{{else}}husky{{end}}
       - task: :{{if eq .REPOSITORY_SUBTYPE "role"}}ansible:keywords:sync{{else}}donothing{{end}}
