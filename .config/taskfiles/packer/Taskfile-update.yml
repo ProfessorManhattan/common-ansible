@@ -2,7 +2,7 @@
 version: '3'
 
 vars:
-  TEMPLATE_FILE: default.template.json
+  TEMPLATE_FILE: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}template.json{{end}}'
 
 tasks:
   descriptions:
