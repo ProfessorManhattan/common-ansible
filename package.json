@@ -151,6 +151,10 @@
     "**/*.json": [
       "task fix:json --"
     ],
+    "**/*.md": [
+      "task fix:markdown --",
+      "task lint:spelling:markdown --"
+    ],
     "**/*.php": [
       "task fix:php --",
       "task lint:php --"

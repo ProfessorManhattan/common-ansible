@@ -547,6 +547,24 @@ tasks:
           fi
         ignore_errors: true
 
+  spelling:markdown:
+    deps:
+      - :install:go:misspell
+    desc: Run `misspell` (a spell-checker) on all markdown files
+    log:
+      error: Encountered errors while running `misspell`
+      start: Running `misspell` spell-check
+      success: Successfully ran `misspell` with no errors reported
+    cmds:
+      - >
+        .config/log info 'If errors are found, you can auto-fix them by running `task fix:spelling:markdown`'
+        {{if .CLI_ARGS}}
+        misspell {{.CLI_ARGS}}
+        {{else}}
+        find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \)
+        -print0 | xargs -0 -r -n1 misspell
+        {{end}}
+
   spelling:staged:
     deps:
       - :install:npm:cspell

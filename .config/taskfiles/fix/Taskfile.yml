@@ -140,6 +140,38 @@ tasks:
       - '{{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --cache --cache-location .cache/eslintcache --fix
         --format pretty --ext .json {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
 
+  markdown:
+    deps:
+      - :install:npm:markdown-table-formatter
+    desc: Auto-fixes markdown files
+    summary: |
+      # Auto-Fix Markdown Files
+
+      This task performs various tasks that cleanup markdown files. It currently:
+
+      1. Runs `markdown-table-formatter` which fixes up markdown tables
+
+      You can either pass a file as a CLI argument or run it without a CLI argument to
+      auto-fix all the markdown files in the project that are not ignored by .gitignore.
+
+      **Example running against whole project:**
+      `task fix:markdown`
+
+      **Example running on single file:**
+      `task fix:markdown -- README.md`
+    log:
+      error: Error encountered while auto-fixing markdown file(s)
+      start: Auto-fixing markdown file(s)
+      success: Successfully finished auto-fixing markdown file(s)
+    cmds:
+      - >
+        {{if .CLI_ARGS}}
+        markdown-table-formatter {{.CLI_ARGS}}
+        {{else}}
+        find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \)
+        -print0 | xargs -0 -r -n1 markdown-table-formatter
+        {{end}}
+
   misc:
     deps:
       - :install:python:requirements
@@ -173,6 +205,24 @@ tasks:
           while read PATHH; do
             misc "$PATHH"
           done < <(find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f)
+        {{end}}
+
+
+  spelling:markdown:
+    deps:
+      - :install:go:misspell
+    desc: Auto-fix spelling errors in markdown files using `misspell`
+    log:
+      error: Encountered error while attempting to auto-correct spelling mistakes with `misspell`
+      start: Auto-fixing using the `misspell` spell-check engine
+      success: Successfully auto-fixed files using `misspell`
+    cmds:
+      - >
+        {{if .CLI_ARGS}}
+        misspell -w {{.CLI_ARGS}}
+        {{else}}
+        find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.md' \)
+        -print0 | xargs -0 -r -n1 misspell -w
         {{end}}
 
   packer:
@@ -340,6 +390,8 @@ tasks:
           find . -type d \( {{.IGNORE_FOLDERS}} \) -prune -o -type f \( -name '*.sh' -o -name '*.sh.j2' \) \
             -print0 | xargs -0 {{.NPX_HANDLE}}shellcheck -e {{.SHELLCHECK_EXCLUDE}} -f diff | git apply
         {{end}}
+
+
 
   toml:
     deps:

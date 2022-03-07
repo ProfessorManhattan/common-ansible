@@ -152,6 +152,11 @@
       "command": "bash .config/scripts/start.sh && task fix:json"
     },
     {
+      "label": "(fix:markdown): Auto-fixes markdown files",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task fix:markdown"
+    },
+    {
       "label": "(fix:packer): Automatically fix and format Packer templates",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task fix:packer"
@@ -175,6 +180,11 @@
       "label": "(fix:shellcheck): Automatically apply fixes to `.sh` and `.sh.j2` files using Shellcheck",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task fix:shellcheck"
+    },
+    {
+      "label": "(fix:spelling:markdown): Auto-fix spelling errors in markdown files using `misspell`",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task fix:spelling:markdown"
     },
     {
       "label": "(fix:toml): Format `.toml` files by alphabetizing and flattening",
@@ -310,6 +320,11 @@
       "label": "(lint:spelling): Checks for spelling errors in staged files",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task lint:spelling"
+    },
+    {
+      "label": "(lint:spelling:markdown): Run `misspell` (a spell-checker) on all markdown files",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task lint:spelling:markdown"
     },
     {
       "label": "(lint:vagrant): Validate the Vagrantfile",
