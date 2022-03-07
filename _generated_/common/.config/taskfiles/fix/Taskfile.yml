@@ -24,10 +24,9 @@ tasks:
       - :install:modules:local
       - :install:npm:eslint
       - :install:software:expect
-    desc: Fix JavaScript/TypeScript errors automatically
-    hide: '{{not (has .REPOSITORY_TYPE (list "angular" "npm"))}}'
+    desc: Fix ESLint errors automatically
     summary: |
-      # Fix JavaScript/TypeScript Errors with ESLint
+      # Fix Errors with ESLint Automatically
 
       This task is an [`eslint`](https://eslint.org/) task. It will attempt to automatically fix
       `eslint` issues. It will report any issues it was unable to fix. The configuration found in
@@ -36,7 +35,7 @@ tasks:
       **Example using `eslint` to fix a single JS/TS file:**
       `task fix:js -- single.ts`
 
-      **Example fixing all JS/TS files in a project:**
+      **Example fixing all files in a project:**
       `task fix:js`
     log:
       error: ESLint found some issues that need to be fixed manually
@@ -60,6 +59,22 @@ tasks:
           done
         fi
       - rm eslint.log
+
+  eslint:staged:
+    deps:
+      - :install:modules:local
+      - :install:npm:eslint
+    desc: Auto-fix only modified files with ESLint
+    log:
+      error: Failed to auto-fix modified files with ESLint
+      start: Auto-fixing modified files with ESLint
+      success: Successfully auto-fixed modified files with ESLint
+    env:
+      ESLINT_STAGED_ONLY: YES
+    cmds:
+      - >
+        {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format {{.ESLINT_FORMATTER}} --cache
+        --cache-location .cache/eslintcache --fix {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   go:
     desc: Fix Go with all available Go fixers

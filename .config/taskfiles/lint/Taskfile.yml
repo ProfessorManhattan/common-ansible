@@ -208,6 +208,22 @@ tasks:
         {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format {{.ESLINT_FORMATTER}} --cache
         --cache-location .cache/eslintcache {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
+  eslint:staged:
+    deps:
+      - :install:modules:local
+      - :install:npm:eslint
+    desc: Lint only modified files with ESLint
+    log:
+      error: Failed to lint modified files with ESLint
+      start: Linting modified files with ESLint
+      success: Successfully linted modified files with ESLint
+    env:
+      ESLINT_STAGED_ONLY: YES
+    cmds:
+      - >
+        {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format {{.ESLINT_FORMATTER}} --cache
+        --cache-location .cache/eslintcache {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
+
   eslint:warn-all:
     deps:
       - :install:modules:local

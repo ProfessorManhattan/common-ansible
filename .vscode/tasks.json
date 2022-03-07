@@ -132,9 +132,14 @@
       "command": "bash .config/scripts/start.sh && task fix"
     },
     {
-      "label": "(fix:eslint): Fix JavaScript/TypeScript errors automatically",
+      "label": "(fix:eslint): Fix ESLint errors automatically",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task fix:eslint"
+    },
+    {
+      "label": "(fix:eslint:staged): Auto-fix only modified files with ESLint",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task fix:eslint:staged"
     },
     {
       "label": "(fix:go): Fix Go with all available Go fixers",
@@ -240,6 +245,11 @@
       "label": "(lint:eslint): Lint with ESLint",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task lint:eslint"
+    },
+    {
+      "label": "(lint:eslint:staged): Lint only modified files with ESLint",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task lint:eslint:staged"
     },
     {
       "label": "(lint:eslint:warn-all): Convert ESLint errors into warnings by saving the modified configuration inside `package.json`",
