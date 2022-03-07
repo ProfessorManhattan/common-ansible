@@ -214,6 +214,19 @@ tasks:
     cmds:
       - task: fix:all
 
+  get:links:
+    deps:
+      - install:software:jq
+    desc: Log useful links such as the current project's git repository link
+    env:
+      GITHUB_URL:
+        sh: jq -r '.blueprint.repository.github' package.json
+      GITLAB_URL:
+        sh: jq -r '.blueprint.repository.gitlab' package.json
+    cmds:
+      - .config/log info 'GitHub -----> `\{{.GITHUB_URL}}`'
+      - .config/log info 'GitLab -----> `\{{.GITLAB_URL}}`'
+
   group:exec:
     desc: Execute group commands on any GitLab group (including repositories in sub-groups)
     summary: |

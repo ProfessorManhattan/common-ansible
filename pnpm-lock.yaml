@@ -3297,8 +3297,8 @@ packages:
     dev: true
     optional: true
 
-  /emoji-regex/10.0.0:
-    resolution: {integrity: sha512-KmJa8l6uHi1HrBI34udwlzZY1jOEuID/ft4d8BSSEdRyap7PwBEt910453PJa5MuGvxkLqlt4Uvhu7tttFHViw==}
+  /emoji-regex/10.0.1:
+    resolution: {integrity: sha512-cLuZzriSWVE+rllzeq4zpUEoCPfYEbQ6ZVhIq+ed6ynWST7Bw9XnOr+bKWgCup4paq72DI21gw9M3aaFkm4HAw==}
     dev: true
 
   /emoji-regex/8.0.0:
@@ -7673,7 +7673,7 @@ packages:
       prettier: ^2.3.0
     dependencies:
       '@solidity-parser/parser': 0.14.1
-      emoji-regex: 10.0.0
+      emoji-regex: 10.0.1
       escape-string-regexp: 4.0.0
       prettier: 2.5.1
       semver: 7.3.5
