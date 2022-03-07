@@ -1,6 +1,9 @@
 ---
 version: '3'
 
+vars:
+  TEMPLATE_FILE: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}template.json{{end}}'
+
 tasks:
   all:
     deps:
@@ -39,6 +42,7 @@ tasks:
       start: Running `packer build {{.TEMPLATE_FILE}}`
       success: Packer finished building
     cmds:
+      - rm -rf build
       - packer build {{.TEMPLATE_FILE}}
 
   kvm:
@@ -66,6 +70,7 @@ tasks:
       start: Running `packer build -only=qemu {{.TEMPLATE_FILE}}`
       success: Successfully ran `packer build -only=qemu {{.TEMPLATE_FILE}}`
     cmds:
+      - rm -rf build
       - packer build -only=qemu {{.TEMPLATE_FILE}}
 
   parallels:
@@ -92,6 +97,7 @@ tasks:
       start: Running `packer build -only=parallels-iso {{.TEMPLATE_FILE}}`
       success: Successfully ran `packer build -only=parallels-iso {{.TEMPLATE_FILE}}`
     cmds:
+      - rm -rf build
       - packer build -only=parallels-iso {{.TEMPLATE_FILE}}
 
   virtualbox:
@@ -118,6 +124,7 @@ tasks:
       start: Running `packer build -only=virtualbox-iso {{.TEMPLATE_FILE}}`
       success: Successfully ran `packer build -only=virtualbox-iso {{.TEMPLATE_FILE}}`
     cmds:
+      - rm -rf build
       - packer build -only=virtualbox-iso {{.TEMPLATE_FILE}}
 
   vmware:
@@ -145,4 +152,5 @@ tasks:
       start: Running `packer build -only=vmware-iso {{.TEMPLATE_FILE}}`
       success: Successfully ran `packer build -only=vmware-iso {{.TEMPLATE_FILE}}`
     cmds:
+      - rm -rf build
       - packer build -only=vmware-iso {{.TEMPLATE_FILE}}

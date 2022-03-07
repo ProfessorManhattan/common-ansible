@@ -90,15 +90,15 @@
     "**/*": [
       "task lint:any --"
     ],
+    "**/*!(template).(json|webapp|webmanifest)": [
+      "task fix:json --"
+    ],
     "**/*.(bash|cfg|cgi|command|css|env|env.*|handlebars|hbs|html|less|fcgi|java|md|mdx|mjml|php|phtml|properties|reg|scss|tmpl|tmux|tool|tpl|zsh)": [
       "task fix:prettier --"
     ],
     "**/*.(cjs|js|jsx|mjs|ts|tsx)": [
       "task fix:js --",
       "task lint:js --"
-    ],
-    "**/*.(json|webapp|webmanifest)": [
-      "task fix:json --"
     ],
     "**/*.(yml|yaml)": [
       "task fix:yaml --",

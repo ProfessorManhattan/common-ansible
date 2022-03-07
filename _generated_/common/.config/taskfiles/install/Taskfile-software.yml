@@ -534,6 +534,16 @@ tasks:
     status:
       - type jq > /dev/null
 
+  kvm:
+    run: once
+    cmds:
+      - task: :install:install-doctor
+        vars:
+          SOFTWARE: kvm
+      - task: exit:notice:restart
+    status:
+      - type qemu-system-x86_64 > /dev/null
+
   node:
     run: once
     cmds:
@@ -542,6 +552,15 @@ tasks:
           FORMULAE: node
     status:
       - type node > /dev/null
+
+  parallels:
+    run: once
+    cmds:
+      - task: brew:cask
+        vars:
+          CASK: parallels
+    status:
+      - '[ "{{OS}}" != "darwin" ] || ! mdfind -name "Parallels Desktop.app" &> /dev/null'
 
   pipx:
     run: once
