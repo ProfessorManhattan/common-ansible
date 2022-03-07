@@ -116,6 +116,7 @@ includes:
   upstream:docs: ./.config/taskfiles/upstream/Taskfile-docs.yml
   upstream:project: ./.config/taskfiles/upstream/Taskfile-project.yml
   upstream:shared: ./.config/taskfiles/upstream/Taskfile-shared.yml
+  vagrant: ./.config/taskfiles/vagrant/Taskfile.yml
   vscode: ./.config/taskfiles/vscode/Taskfile.yml
   web: ./.config/taskfiles/web/Taskfile.yml
   web:ionic: ./.config/taskfiles/web/Taskfile-ionic.yml

@@ -236,7 +236,7 @@ tasks:
       start: Linting modified files with ESLint
       success: Successfully linted modified files with ESLint
     env:
-      ESLINT_STAGED_ONLY: YES
+      ESLINT_STAGED_ONLY: 'YES'
     cmds:
       - >
         {{.NPX_HANDLE}}eslint -c package.json --no-eslintrc --format {{.ESLINT_FORMATTER}} --cache

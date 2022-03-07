@@ -432,9 +432,9 @@
       "command": "bash .config/scripts/start.sh && task npm:typesync"
     },
     {
-      "label": "(packer:build:all): Build Packer images for all platforms (default setting uses `template.json`)",
+      "label": "(packer:build): Build Packer images for all available platforms",
       "type": "shell",
-      "command": "bash .config/scripts/start.sh && task packer:build:all"
+      "command": "bash .config/scripts/start.sh && task packer:build"
     },
     {
       "label": "(packer:build:kvm): Build a Packer image for KVM",
@@ -455,6 +455,11 @@
       "label": "(packer:build:vmware): Build a Packer image for VMWare",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task packer:build:vmware"
+    },
+    {
+      "label": "(packer:install): Install all available virtualization providers",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task packer:install"
     },
     {
       "label": "(preload): Set up your workstation in advance by installing commonly used programs",
@@ -635,6 +640,11 @@
       "label": "(test): Open an interactive dialog to select and run a Molecule test",
       "type": "shell",
       "command": "bash .config/scripts/start.sh && task test"
+    },
+    {
+      "label": "(vagrant:up): Select which virtualization platform to run the image on using an interactive prompt",
+      "type": "shell",
+      "command": "bash .config/scripts/start.sh && task vagrant:up"
     }
   ]
 }
