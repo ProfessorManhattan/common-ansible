@@ -51,6 +51,8 @@ tasks:
       start: Determining whether to update README.md for `{{.TYPE}}`
     cmds:
       - task: readme:platform:{{OS}}
+        vars:
+          TYPE: '{{.TYPE}}'
     status:
       - |
         ! grep -q '"type": "{{.TYPE}}"' {{.TEMPLATE_FILE}}
