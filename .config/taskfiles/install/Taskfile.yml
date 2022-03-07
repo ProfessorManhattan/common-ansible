@@ -91,6 +91,8 @@ tasks:
         fi
         mkdir -p .task
         echo "$DEPS" > .task/npm-deps
+    sources:
+      - package.json
 
   modules:local:lockfiles:
     deps:
