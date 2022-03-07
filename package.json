@@ -51,7 +51,6 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^16.0.0",
     "@washingtondc/development": "latest",
-    "cz-emoji-conventional": "^1.0.1",
     "eslint-config-strict-mode": "latest",
     "git-cz-emoji": "latest",
     "glob": "^7.2.0",

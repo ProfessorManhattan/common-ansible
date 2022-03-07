@@ -5,6 +5,10 @@ tasks:
   build:prod:
     deps:
       - :install:npm:ionic
+    log:
+      error: Error building Ionic production build
+      start: Building Ionic project in production mode
+      success: Successfully built Ionic project in production mode
     cmds:
       - ionic build --prod
 

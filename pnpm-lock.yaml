@@ -8,7 +8,6 @@ neverBuiltDependencies:
 specifiers:
   '@commitlint/config-conventional': ^16.2.1
   '@washingtondc/development': latest
-  cz-emoji-conventional: ^1.0.1
   eslint-config-strict-mode: latest
   git-cz-emoji: latest
   glob: ^7.2.0
@@ -20,7 +19,6 @@ specifiers:
 devDependencies:
   '@commitlint/config-conventional': 16.2.1
   '@washingtondc/development': 1.0.10_typescript@4.6.2
-  cz-emoji-conventional: 1.0.1
   eslint-config-strict-mode: 1.0.44_typescript@4.6.2
   git-cz-emoji: 1.1.24
   glob: 7.2.0
