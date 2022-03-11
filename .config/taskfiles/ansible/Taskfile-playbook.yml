@@ -281,4 +281,3 @@ tasks:
         BASENAME="$(basename {{.CLI_ARGS}})"
         REMOTE="$(git remote get-url $BASENAME)"
         HUSKY=0 git subrepo init {{.CLI_ARGS}} -r "$REMOTE" -b master
-
