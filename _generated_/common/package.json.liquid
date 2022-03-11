@@ -164,6 +164,7 @@
       "repair": "Fixes basic issues in projects that are having trouble running basic commands like 'task start'",
       "start": "Entrypoint for new developers that installs requirements and then runs 'task start'",
       "test": "Runs the appropriate test logic by running the test command defined under scripts in package.json",
+      "unpack": "Populates production node_modules from compressed copies saved in the .modules/ folder",
       "update": "Update and refresh the repository with upstream changes and templated parts"
     }
   },
@@ -215,14 +216,16 @@
     "build": "{{{replace scriptsBuild scriptsReplaceThis scriptsReplaceWith}}}",
     "commit": "task commit",
     "fix": "task fix",
-    "help": "{{{replace scriptsHelp scriptsReplaceThis scriptsReplaceWith}}}",
+    "help": "task --menu",
     "lint": "task list",
     "preload": "task preload",
-    "prepare": "{{{replace scriptsPrepare scriptsReplaceThis scriptsReplaceWith}}}",
+    "prepare": "npm run start && (test -f Taskfile.yml && task common:husky) || true",
+    "prepublishOnly": "task npm:bundle:create",
     "release": "task publish:semantic-release",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
-    "start": "{{{replace scriptsStart scriptsReplaceThis scriptsReplaceWith}}}",
+    "start": "test -z SKIP_NPM_START && bash start.sh",
     "test": "{{{replace scriptsTest scriptsReplaceThis scriptsReplaceWith}}}",
+    "unpack": "task npm:bundle:unpack",
     "update": "task update"
   },
   "type": "{{npm_type}}",

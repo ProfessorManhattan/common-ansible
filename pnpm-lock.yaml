@@ -19,11 +19,11 @@ specifiers:
 devDependencies:
   '@commitlint/config-conventional': 16.2.1
   '@washingtondc/development': 1.0.10_typescript@4.6.2
-  eslint-config-strict-mode: 1.0.51_typescript@4.6.2
+  eslint-config-strict-mode: 1.0.53_typescript@4.6.2
   git-cz-emoji: 1.1.24
   glob: 7.2.0
   handlebars-helpers: 0.10.0
-  prettier-config-sexy-mode: 1.1.2_typescript@4.6.2
+  prettier-config-sexy-mode: 1.1.4_typescript@4.6.2
   semantic-release-config: 1.1.18
   typescript: 4.6.2
 
@@ -2228,7 +2228,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001314
-      electron-to-chromium: 1.4.81
+      electron-to-chromium: 1.4.82
       escalade: 3.1.1
       node-releases: 2.0.2
       picocolors: 1.0.0
@@ -3306,8 +3306,8 @@ packages:
       sigmund: 1.0.1
     dev: true
 
-  /electron-to-chromium/1.4.81:
-    resolution: {integrity: sha512-Gs7xVpIZ7tYYSDA+WgpzwpPvfGwUk3KSIjJ0akuj5XQHFdyQnsUoM76EA4CIHXNLPiVwTwOFay9RMb0ChG3OBw==}
+  /electron-to-chromium/1.4.82:
+    resolution: {integrity: sha512-Ks+ANzLoIrFDUOJdjxYMH6CMKB8UQo5modAwvSZTxgF+vEs/U7G5IbWFUp6dS4klPkTDVdxbORuk8xAXXhMsWw==}
     dev: true
 
   /elegant-spinner/1.0.1:
@@ -3462,8 +3462,8 @@ packages:
       eslint: 8.10.0
     dev: true
 
-  /eslint-config-strict-mode/1.0.51_typescript@4.6.2:
-    resolution: {integrity: sha512-pwZ0o3wD7QUcCTM5YqxcuHindtgkba6rO4ySJ/QZ66NdpySXxU8jg2aFzpkwTxW2MlQbmmrjhTcama6MtHSSZw==}
+  /eslint-config-strict-mode/1.0.53_typescript@4.6.2:
+    resolution: {integrity: sha512-kCmkfc2arq+YGs6qhK5loPaAuq4vWJHHnF/PFhxjFY+WCH1l/TjdOZML0Wg1AmAiKnNdbCWyw65kbUXmh9iksQ==}
     engines: {node: '>=14.18.0'}
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.14.0_f4054b8c3cd621db16ae1b9d571bccc0
@@ -7575,8 +7575,8 @@ packages:
     dev: true
     optional: true
 
-  /prettier-config-sexy-mode/1.1.2_typescript@4.6.2:
-    resolution: {integrity: sha512-HvLjCpnyUNyDCFKqr3uwmLcqbYR2hG8WvMpPw2VC/R0S08h5uDDrpMaA1ZdxCBsNoLba3tQ3GXUTC5aWGj6GQg==}
+  /prettier-config-sexy-mode/1.1.4_typescript@4.6.2:
+    resolution: {integrity: sha512-nJyYCqfZxuz3Lxpm1WkZmAZypi+Avv42wvByCV+lLipkpDG2uTs6Pb2vD7XOXh4s/ZLWfLg6gwlD7Yj2+0ewBg==}
     engines: {node: '>=14.18.0'}
     dependencies:
       '@prettier/plugin-php': 0.17.6_prettier@2.5.1

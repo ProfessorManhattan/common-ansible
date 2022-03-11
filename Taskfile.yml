@@ -91,6 +91,7 @@ includes:
   log: ./.config/taskfiles/log/Taskfile.yml
   nest: ./.config/taskfiles/nest/Taskfile.yml
   npm: ./.config/taskfiles/npm/Taskfile.yml
+  npm:bundle: ./.config/taskfiles/npm/Taskfile-bundle.yml
   npm:cov: ./.config/taskfiles/npm/Taskfile-cov.yml
   npm:doc: ./.config/taskfiles/npm/Taskfile-doc.yml
   packer: ./.config/taskfiles/packer/Taskfile.yml
