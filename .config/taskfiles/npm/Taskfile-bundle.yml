@@ -30,11 +30,11 @@ tasks:
     deps:
       - :install:software:node
     log:
-      error: Encountered error while running `npm install --only=prod --ignore-scripts`
+      error: Encountered error while running `npm install --only=prod`
       start: Installing production `node_modules/`
       success: Successfully set-up production `node_modules/` folder
     cmds:
-      - npm install --only=prod --ignore-scripts
+      - SKIP_NPM_START=true npm install --only=prod
 
   minify:
     deps:
