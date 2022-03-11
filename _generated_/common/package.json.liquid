@@ -154,11 +154,17 @@
   "ntl": {
     "descriptions": {
       "build": "Builds the project using the build command specified under scripts in package.json",
+      "commit": "If unsure, use this task to commit your code so that it adheres to our commit rules",
+      "fix": "Run auto-fixing with all available auto-fixers",
       "help": "Display the Bodega Taskfile.yml interactive help menu",
+      "lint": "Lint the project with all available linters",
+      "preload": "Preload the operating system with commonly used libraries and tools",
       "prepare": "A hook triggered by running npm install that runs logic such as installing pre-commit hooks",
+      "publish": "Publish the software to all supported channels using semantic-release",
       "repair": "Fixes basic issues in projects that are having trouble running basic commands like 'task start'",
       "start": "Entrypoint for new developers that installs requirements and then runs 'task start'",
-      "test": "Runs the appropriate test logic by running the test command defined under scripts in package.json"
+      "test": "Runs the appropriate test logic by running the test command defined under scripts in package.json",
+      "update": "Update and refresh the repository with upstream changes and templated parts"
     }
   },
   "optionalDependencies": {},
@@ -207,11 +213,17 @@
   },
   "scripts": {
     "build": "{{{replace scriptsBuild scriptsReplaceThis scriptsReplaceWith}}}",
+    "commit": "task commit",
+    "fix": "task fix",
     "help": "{{{replace scriptsHelp scriptsReplaceThis scriptsReplaceWith}}}",
+    "lint": "task list",
+    "preload": "task preload",
     "prepare": "{{{replace scriptsPrepare scriptsReplaceThis scriptsReplaceWith}}}",
+    "publish": "task publish:semantic-release",
     "repair": "bash <(curl -sS https://install.doctor/repair)",
     "start": "{{{replace scriptsStart scriptsReplaceThis scriptsReplaceWith}}}",
-    "test": "{{{replace scriptsTest scriptsReplaceThis scriptsReplaceWith}}}"
+    "test": "{{{replace scriptsTest scriptsReplaceThis scriptsReplaceWith}}}",
+    "update": "task update"
   },
   "type": "{{npm_type}}",
   "version": "{{version}}"

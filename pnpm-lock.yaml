@@ -19,7 +19,7 @@ specifiers:
 devDependencies:
   '@commitlint/config-conventional': 16.2.1
   '@washingtondc/development': 1.0.10_typescript@4.6.2
-  eslint-config-strict-mode: 1.0.47_typescript@4.6.2
+  eslint-config-strict-mode: 1.0.51_typescript@4.6.2
   git-cz-emoji: 1.1.24
   glob: 7.2.0
   handlebars-helpers: 0.10.0
@@ -3462,8 +3462,8 @@ packages:
       eslint: 8.10.0
     dev: true
 
-  /eslint-config-strict-mode/1.0.47_typescript@4.6.2:
-    resolution: {integrity: sha512-Cy1jgUv5kB2hU8FdL7zNOR363paHzMhfN/+B5UAhmBU31twrzdXY9v3OloVYGU6ojw3nmgBdV+gMeOqFMg4EJg==}
+  /eslint-config-strict-mode/1.0.51_typescript@4.6.2:
+    resolution: {integrity: sha512-pwZ0o3wD7QUcCTM5YqxcuHindtgkba6rO4ySJ/QZ66NdpySXxU8jg2aFzpkwTxW2MlQbmmrjhTcama6MtHSSZw==}
     engines: {node: '>=14.18.0'}
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.14.0_f4054b8c3cd621db16ae1b9d571bccc0
@@ -7578,6 +7578,7 @@ packages:
   /prettier-config-sexy-mode/1.0.3_typescript@4.6.2:
     resolution: {integrity: sha512-A4bP9Ktdxyx5c+yd6reU5zcNqieIkyNwjoAo8vfjgxa3ZWpt2eRBeqKd7ru8gcrNOCiPI57JXXFjuDEvU0lfWg==}
     engines: {node: '>=14.18.0'}
+    deprecated: Deprecated in favor of 1.1.0
     dependencies:
       '@prettier/plugin-php': 0.17.6_prettier@2.5.1
       '@prettier/plugin-pug': 1.19.2_prettier@2.5.1
