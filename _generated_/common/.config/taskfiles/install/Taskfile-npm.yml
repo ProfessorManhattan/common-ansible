@@ -8,6 +8,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: autocannon
+          INSTALL_TASK: '{{.TASK}}'
 
   bundle:
     cmds:
@@ -19,6 +20,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: clinic
+          INSTALL_TASK: '{{.TASK}}'
 
   codecov:
     run: once
@@ -26,6 +28,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: codecov
+          INSTALL_TASK: '{{.TASK}}'
 
   commitizen:
     run: once
@@ -34,6 +37,7 @@ tasks:
         vars:
           FORCE_INSTALL: true
           NPM_PACKAGE: commitizen
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: git-cz
 
   commitlint:
@@ -42,6 +46,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: '@commitlint/cli'
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: commitlint
 
   cspell:
@@ -50,13 +55,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: cspell
-
-  cz-emoji:
-    run: once
-    cmds:
-      - task: global:library
-        vars:
-          NPM_PACKAGE: cz-emoji
+          INSTALL_TASK: '{{.TASK}}'
 
   depcheck:
     run: once
@@ -64,6 +63,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: depcheck
+          INSTALL_TASK: '{{.TASK}}'
 
   dockerfilelint:
     run: once
@@ -71,6 +71,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: dockerfilelint
+          INSTALL_TASK: '{{.TASK}}'
 
   esbuild:
     run: once
@@ -78,6 +79,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: esbuild
+          INSTALL_TASK: '{{.TASK}}'
 
   eslint:
     run: once
@@ -85,6 +87,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: eslint
+          INSTALL_TASK: '{{.TASK}}'
 
   esprint:
     run: once
@@ -92,6 +95,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: esprint
+          INSTALL_TASK: '{{.TASK}}'
 
   fuite:
     run: once
@@ -99,6 +103,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: fuite
+          INSTALL_TASK: '{{.TASK}}'
 
   git-notify:
     run: once
@@ -106,12 +111,20 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: git-notify
+          INSTALL_TASK: '{{.TASK}}'
 
   global:
     deps:
       - global:package-manager
     vars:
       PACKAGE_BIN: '{{if index . "NPM_PACKAGE_BIN"}}{{.NPM_PACKAGE_BIN}}{{else}}{{.NPM_PACKAGE}}{{end}}'
+      INSTALL_RECORD:
+        sh: |
+          if [ -n "$RECORD_INSTALL" ]; then
+            mkdir -p local/slim
+            echo '{{.PACKAGE_BIN}}' >> local/slim/exe.txt
+            echo '{{.INSTALL_TASK}}' >> local/slim/install.txt
+          fi
     run: when_changed
     log:
       error: Failed to install NPM package `{{.NPM_PACKAGE}}` globally
@@ -162,6 +175,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: husky
+          INSTALL_TASK: '{{.TASK}}'
 
   ionic:
     run: once
@@ -169,6 +183,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: '@ionic/cli'
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: ionic
 
   jest:
@@ -177,6 +192,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: jest
+          INSTALL_TASK: '{{.TASK}}'
 
   leasot:
     run: once
@@ -184,6 +200,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: leasot
+          INSTALL_TASK: '{{.TASK}}'
 
   lint-staged:
     run: once
@@ -191,6 +208,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: lint-staged
+          INSTALL_TASK: '{{.TASK}}'
 
   liquidjs:
     run: once
@@ -198,10 +216,12 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: hbs-cli
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: hbs
       - task: global
         vars:
           NPM_PACKAGE: liquidjs
+          INSTALL_TASK: '{{.TASK}}'
 
   majestic:
     run: once
@@ -209,6 +229,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: majestic
+          INSTALL_TASK: '{{.TASK}}'
 
   markdown-link-check:
     run: once
@@ -216,6 +237,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: markdown-link-check
+          INSTALL_TASK: '{{.TASK}}'
 
   markdown-table-formatter:
     run: once
@@ -223,6 +245,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: markdown-table-formatter
+          INSTALL_TASK: '{{.TASK}}'
 
   modclean:
     run: once
@@ -230,6 +253,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: modclean@2
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: modclean
 
   ndb:
@@ -238,6 +262,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: ndb
+          INSTALL_TASK: '{{.TASK}}'
 
   nest:
     run: once
@@ -245,6 +270,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: '@nestjs/cli'
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: nest
 
   nodemon:
@@ -253,6 +279,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: nodemon
+          INSTALL_TASK: '{{.TASK}}'
 
   npm:
     run: once
@@ -260,6 +287,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: npm
+          INSTALL_TASK: '{{.TASK}}'
 
   ntl:
     run: once
@@ -267,6 +295,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: ntl
+          INSTALL_TASK: '{{.TASK}}'
 
   nx:
     run: once
@@ -274,6 +303,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: nx
+          INSTALL_TASK: '{{.TASK}}'
 
   only-allow:
     run: once
@@ -281,6 +311,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: only-allow
+          INSTALL_TASK: '{{.TASK}}'
 
   open-cli:
     run: once
@@ -288,6 +319,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: open-cli
+          INSTALL_TASK: '{{.TASK}}'
 
   pac:
     run: once
@@ -295,6 +327,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: pac
+          INSTALL_TASK: '{{.TASK}}'
 
   pkg:
     run: once
@@ -302,6 +335,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: pkg
+          INSTALL_TASK: '{{.TASK}}'
 
   pnpm:
     run: once
@@ -309,6 +343,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: pnpm
+          INSTALL_TASK: '{{.TASK}}'
       - task: pnpm:import
     status:
       - type pnpm &> /dev/null
@@ -319,6 +354,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: pnpm-lock-export
+          INSTALL_TASK: '{{.TASK}}'
 
   pnpm:import:
     run: once
@@ -337,6 +373,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: prettier
+          INSTALL_TASK: '{{.TASK}}'
 
   readme:
     run: once
@@ -344,6 +381,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: '@appnest/readme'
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: readme
 
   remark:
@@ -352,6 +390,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: remark-cli
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: remark
 
   semantic-release:
@@ -360,6 +399,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: semantic-release
+          INSTALL_TASK: '{{.TASK}}'
 
   sharp:
     run: once
@@ -367,6 +407,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: sharp-cli
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: sharp
 
   shellcheck:
@@ -375,6 +416,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: shellcheck
+          INSTALL_TASK: '{{.TASK}}'
 
   snyk:
     run: once
@@ -382,6 +424,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: snyk
+          INSTALL_TASK: '{{.TASK}}'
 
   standard:
     run: once
@@ -389,6 +432,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: standard
+          INSTALL_TASK: '{{.TASK}}'
 
   standard-version:
     run: once
@@ -396,6 +440,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: standard-version
+          INSTALL_TASK: '{{.TASK}}'
 
   synp:
     run: once
@@ -403,6 +448,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: synp
+          INSTALL_TASK: '{{.TASK}}'
 
   tinypng:
     run: once
@@ -410,6 +456,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: tinypng-cli
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: tinypng
 
   ts-node:
@@ -418,6 +465,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: ts-node
+          INSTALL_TASK: '{{.TASK}}'
 
   typedoc:
     run: once
@@ -425,6 +473,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: typedoc
+          INSTALL_TASK: '{{.TASK}}'
 
   typescript:
     run: once
@@ -432,6 +481,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: typescript
+          INSTALL_TASK: '{{.TASK}}'
           NPM_PACKAGE_BIN: tsc
 
   typesync:
@@ -440,6 +490,7 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: typesync
+          INSTALL_TASK: '{{.TASK}}'
 
   yarnhook:
     run: once
@@ -447,3 +498,4 @@ tasks:
       - task: global
         vars:
           NPM_PACKAGE: yarnhook
+          INSTALL_TASK: '{{.TASK}}'
