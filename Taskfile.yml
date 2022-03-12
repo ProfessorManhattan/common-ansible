@@ -542,6 +542,23 @@ tasks:
     cmds:
       - task: common:reset
 
+  pull:upstream:
+    desc: Pull from upstream repositories
+    summary: |
+      # Pull Changes from Upstream Repositories
+
+      This task will do a `git pull` on each repository defined in `.blueprint.upstreamRemotes`.
+      The variable should be an array of objects where each object has the `remote`, `url`, and `branch` keys.
+
+      **Sample value of `.blueprint.upstreamRemotes`:**
+      `[{ "remote": "ionic", "url": "git@github.com:ionic-team/ionic-docs.git", "branch": "main" }]`
+    log:
+      error: Encountered error while running `git pull` on each of the `upstreamRemotes`
+      start: Running `git pull` on each of the `upstreamRemotes`
+      success: Successfully pulled from `upstreamRemotes`
+    cmds:
+      - task: common:update:upstream:remotes:pull
+
   reset:force:
     desc: 'Aggressively reset the project (**WARNING** This will wipe uncommitted work)'
     summary: |
@@ -649,6 +666,7 @@ tasks:
 
   test:
     deps:
+      - install:software:jq
       - install:software:node
     interactive: true
     desc: Open an interactive dialog to select and run a Molecule test
