@@ -57,7 +57,7 @@ tasks:
       - task: :docker:update:retag
         vars:
           DOCKER_IMAGE: '{{.DOCKER_IMAGE}}'
-          PREV_VERSION: '{{.VERRSION}}'
+          PREV_VERSION: '{{.VERSION}}'
           NEW_VERSION:
             sh: jq -r '.version' package.json
 
