@@ -51,12 +51,13 @@ env:
   SENTRY_DSN: {{#if sentryDSN}}{{sentryDSN}}{{else}}''{{/if}}
 
 includes:
-  project:
-    taskfile: ./local/Taskfile-project.yml
+{{#forEach (bodegaIncludes)}}
+  {{key}}:{{#if (not optional)}} {{taskPath}}{{/if}}
+  {{#if optional}}
+    taskfile: {{taskPath}}
     optional: true
-{{#each (taskfileSort (glob './.config/taskfiles/**/*.yml'))}}
-  {{remove (remove (remove (replace (remove this "./.config/taskfiles/") "/Taskfile-" ":") "/Taskfile.yml") "Taskfile-") ".yml"}}: {{this}}
-{{/each}}
+  {{/if}}
+{{/forEach}}
 
 profile: |
   PATH="$PATH:$HOME/.local/bin:$HOME/.poetry/bin"
@@ -344,6 +345,11 @@ tasks:
           .config/log error '`Taskfile-project.yml` must exist and have a `livereload` task to use with `nodemon`' && exit 1
         fi
       - nodemon --config \{{if .CLI_ARGS}}\{{.CLI_ARGS}}\{{else}}.config/nodemon.json\{{end}}
+
+  new:project:
+    desc: Create a new project
+    cmds:
+      - task: prepare
 
   publish:
     desc: Publish a semantic release via `semantic-release`
