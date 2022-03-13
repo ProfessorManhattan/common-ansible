@@ -337,23 +337,27 @@ function installTask() {
   mkdir -p "$TMP_DIR/task"
   tar -xzvf "$DOWNLOAD_DESTINATION" -C "$TMP_DIR/task" > /dev/null
   if type task &> /dev/null && [ -w "$(which task)" ]; then
+    TARGET_BIN_DIR="."
     TARGET_DEST="$(which task)"
   else
-    if [ -w /usr/local/bin ]; then
+    if [ "$USER" == "root" ] || (type sudo &> /dev/null && sudo -n true); then
       TARGET_BIN_DIR='/usr/local/bin'
     else
       TARGET_BIN_DIR="$HOME/.local/bin"
     fi
     TARGET_DEST="$TARGET_BIN_DIR/task"
+  fi
+  if [ "$USER" == "root" ]; then
     mkdir -p "$TARGET_BIN_DIR"
-  fi
-  mv "$TMP_DIR/task/task" "$TARGET_DEST"
-  if type sudo &> /dev/null && sudo -n true; then
-    sudo mv "$TARGET_DEST" /usr/local/bin/task
-    logger success "Installed Task to /usr/local/bin/task"
+    mv "$TMP_DIR/task/task" "$TARGET_DEST"
+  elif type sudo &> /dev/null && sudo -n true; then
+    sudo mkdir -p "$TARGET_BIN_DIR"
+    sudo mv "$TMP_DIR/task/task" "$TARGET_DEST"
   else
-    logger success "Installed Task to $TARGET_DEST"
+    mkdir -p "$TARGET_BIN_DIR"
+    mv "$TMP_DIR/task/task" "$TARGET_DEST"
   fi
+  logger success 'Installed Task to `'"$TARGET_DEST"'`'
   rm "$CHECKSUM_DESTINATION"
   rm "$DOWNLOAD_DESTINATION"
 }
