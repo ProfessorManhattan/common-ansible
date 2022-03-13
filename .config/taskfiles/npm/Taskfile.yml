@@ -241,7 +241,6 @@ tasks:
   prepare:
     cmds:
       - task: :common:husky
-      - task: prepare:prune
 
   prepare:prune:
     cmds:
