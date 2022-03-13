@@ -257,10 +257,9 @@ tasks:
       - install:software:yq
     desc: Runs the initialization script
     summary: |
-      # Initialize the Project and Run the Full Update Sequence
+      # Initialize the Project
 
-      This command will mostly not be needed for pre-existing projects. This task begins
-      by calling a script that:
+      This command will mostly not be needed for pre-existing projects. This task:
 
       1. Migrates legacy projects
       2. Fixes common errors
@@ -282,16 +281,7 @@ tasks:
       error: Failed to run initialization script
     cmds:
       - git init
-      - |
-        TMP="$(mktemp)" && curl -sSL \{{.MODEL_TASKFILE}} > "$TMP"
-        .config/log info 'Ensuring new additions to the model `Taskfile.yml` are present in the project `Taskfile.yml`'
-        yq eval-all -i 'select(fileIndex == 0) * select(fileIndex == 1)' "$TMP" Taskfile.yml
-      - |
-        if [ -n "$UPDATE_INIT_SCRIPT" ]; then
-          bash <(curl -sSL "$UPDATE_INIT_SCRIPT")
-        else
-          bash <(curl -sSL \{{.INIT_SCRIPT}})
-        fi
+      - task: repair
       - task: ci:commit
       - task: ci:synchronize
 
