@@ -292,7 +292,7 @@ tasks:
         else
           bash <(curl -sSL \{{.INIT_SCRIPT}})
         fi
-      - git push origin master
+      - task: ci:commit
       - task: ci:synchronize
 
   lint:
@@ -511,6 +511,19 @@ tasks:
       - task: boilerplate:check:package
       - task: boilerplate:clean
 
+  repair:
+    cmds:
+      - |
+        TMP="$(mktemp)" && curl -sSL \{{.MODEL_TASKFILE}} > "$TMP"
+        .config/log info 'Ensuring new additions to the model `Taskfile.yml` are present in the project `Taskfile.yml`'
+        yq eval-all -i 'select(fileIndex == 0) * select(fileIndex == 1)' "$TMP" Taskfile.yml
+      - |
+        if [ -n "$UPDATE_INIT_SCRIPT" ]; then
+          bash <(curl -sSL "$UPDATE_INIT_SCRIPT")
+        else
+          bash <(curl -sSL \{{.INIT_SCRIPT}})
+        fi
+
   reset:
     desc: Resets the project by removing all caches and then re-generating templated files
     summary: |
@@ -679,5 +692,17 @@ tasks:
         fi
 
   update:
+    desc: Update the repository
+    log:
+      error: Failed to update the repository
+      start: Updating the repository..
+      success: Finished updating the repository
     cmds:
-      - task: init
+      - task: :install:software:brew
+      - |
+        . "$HOME/.profile"
+        task update:prereqs
+        . "$HOME/.profile"
+        task update:init
+        task prepare
+        task update:finish
