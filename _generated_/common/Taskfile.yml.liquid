@@ -8,14 +8,18 @@ vars:
   DOCKERHUB_USER: {{profile.dockerHubUser}}
   ESLINT_FIX_RECURSIVE: 'true'
   ESLINT_FORMATTER: stylish
-  ESLINT_FORMATTER_OPTIONS: git-log gitlab pretty summary{{#eq group 'ansible'}}{{#eq subgroup 'role'}}
+  ESLINT_FORMATTER_OPTIONS: git-log gitlab pretty summary
   GALAXY_AUTHOR: ProfessorManhattan
   GALAXY_COMPANY: Megabyte Labs
   GALAXY_NAMESPACE:
-    sh: "if [ -f meta/main.yml ]; then grep namespace < meta/main.yml | sed 's/.*namespace: \\(.*\\)$/\\1/g'; fi"
+    sh: |
+      if [ -f meta/main.yml ]; then
+        grep namespace < meta/main.yml | sed 's/.*namespace: \\(.*\\)$/\\1/g'
+      else
+        echo '{{profile.galaxy}}'
+      fi
   GALAXY_ROLE_NAME:
-    sh: "if [ -f meta/main.yml ]; then grep role_name < meta/main.yml | sed 's/.*role_name: \\(.*\\)$/\\1/g'; fi"{{/eq}}{{#eq subgroup 'playbook'}}
-  GALAXY_NAMESPACE: {{profile.galaxy}}{{/eq}}{{/eq}}
+    sh: "if [ -f meta/main.yml ]; then grep role_name < meta/main.yml | sed 's/.*role_name: \\(.*\\)$/\\1/g'; fi"
   GITHUB_ORG: {{profile.github}}
   GITHUB_USER: {{profile.github}}
   GROUP_EXEC_ASYNC: 'false'
@@ -26,14 +30,28 @@ vars:
     -o -name package-lock.json -o -name poetry.lock -o -name '.variables.json'
   INIT_SCRIPT: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/scripts/update-init.sh
   LOG_FIX:
-    sh: chmod +x .config/log && echo "heyhey"
+    sh: chmod +x .config/log
   MODEL_TASKFILE: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml
   NPM_KEEP_UPDATED: 'glob'
   NPM_PROGRAM: npm
   NPM_PROGRAM_LOCAL: pnpm
   NPX_HANDLE: 'pnpx '
   NPX_PACKAGE: pnpx
-  PROJECT_TYPE: {{#eq group "common"}}{{#eq subgroup "shared"}}shared{{else}}common{{/eq}}{{else}}{{#eq group "documentation"}}{{#eq subgroup "shared"}}commondocs{{else}}docs{{/eq}}{{else}}project{{/eq}}{{/eq}}
+  PROJECT_TYPE:
+    sh: |
+      if type jq &> /dev/null && [ -f package.json ]; then VER="$(jq -r '.blueprint.group' package.json)"; if [ "$VER" == 'null' ]; then echo TYPE="{{group}}"; else TYPE="$VER"; fi; else TYPE="{{group}}"; fi
+      if type jq &> /dev/null && [ -f package.json ]; then VER="$(jq -r '.blueprint.subgroup' package.json)"; if [ "$VER" == 'null' ]; then SUBTYPE="{{subgroup}}"; else SUBTYPE="$VER"; fi; else SUBTYPE="{{subgroup}}"; fi
+      if [ "$TYPE" == 'common' ] && [ "$SUBTYPE" == 'shared' ]; then
+        echo 'shared'
+      elif [ "$TYPE" == 'common' ]; then
+        echo 'common'
+      elif [ "$TYPE" == 'documentation' ] && [ "$SUBTYPE" == 'shared' ]; then
+        echo 'commondocs'
+      elif [ "$TYPE" == 'documentation' ]; then
+        echo 'docs'
+      else
+        echo 'project'
+      fi
   PYTHON_HANDLE: 'poetry run '
   PYTHON_VIRTUALENV: true
   REPOSITORY_SUBTYPE:
@@ -47,7 +65,7 @@ vars:
   REPOSITORY_TYPE:
     sh: |
       if type jq &> /dev/null && [ -f package.json ]; then
-        VER="$(jq -r '.blueprint.subgroup' package.json)"
+        VER="$(jq -r '.blueprint.group' package.json)"
         if [ "$VER" == 'null' ]; then echo "{{group}}"; else echo "$VER"; fi
       else
         echo "{{group}}"
@@ -63,8 +81,11 @@ env:
       if [ -n "$LIBC" ]; then LINUX_FLAVOR='linux-musl'; fi\{{end}}
       echo "\{{if (eq OS "linux")}}$LINUX_FLAVOR\{{else}}darwin\{{end}}"
   RECORD_INSTALL:
-    sh: test -n "$CI" && echo "true" || true
-  SENTRY_DSN: {{#if sentryDSN}}{{sentryDSN}}{{else}}''{{/if}}
+    sh: if [ -n "$CI" ]; then echo 'true'; fi
+  SENTRY_DSN:
+    sh: |
+      DSN="$(jq -r '.blueprint.sentryDSN' package.json)"
+      if [ "$DSN" != 'null' ]; then echo "$DSN"; fi
 
 includes:
 {{#forEach (bodegaIncludes)}}
@@ -660,7 +681,7 @@ tasks:
       success: Successfully synchronized the project with upstream file changes and also bootstrapped the project
       error: Error encountered while starting up the project
     cmds:
-      - task: {{#eq group "common"}}upstream:{{#eq subgroup "shared"}}shared{{else}}common{{/eq}}{{else}}{{#eq group "documentation"}}upstream:{{#eq subgroup "shared"}}commondocs{{else}}docs{{/eq}}{{else}}upstream:project{{/eq}}{{/eq}}
+      - task: upstream:\{{.PROJECT_TYPE}}
 
   test:
     deps:
