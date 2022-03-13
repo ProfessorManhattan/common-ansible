@@ -36,8 +36,22 @@ vars:
   PROJECT_TYPE: {{#eq group "common"}}{{#eq subgroup "shared"}}shared{{else}}common{{/eq}}{{else}}{{#eq group "documentation"}}{{#eq subgroup "shared"}}commondocs{{else}}docs{{/eq}}{{else}}project{{/eq}}{{/eq}}
   PYTHON_HANDLE: 'poetry run '
   PYTHON_VIRTUALENV: true
-  REPOSITORY_SUBTYPE: {{subgroup}}
-  REPOSITORY_TYPE: {{group}}
+  REPOSITORY_SUBTYPE:
+    sh: |
+      if type jq &> /dev/null && [ -f package.json ]; then
+        VER="$(jq -r '.blueprint.subgroup' package.json)"
+        if [ "$VER" == 'null' ]; then echo "{{subgroup}}"; else echo "$VER"; fi
+      else
+        echo "{{subgroup}}"
+      fi
+  REPOSITORY_TYPE:
+    sh: |
+      if type jq &> /dev/null && [ -f package.json ]; then
+        VER="$(jq -r '.blueprint.subgroup' package.json)"
+        if [ "$VER" == 'null' ]; then echo "{{group}}"; else echo "$VER"; fi
+      else
+        echo "{{group}}"
+      fi
   SEMANTIC_CONFIG: semantic-release-config
   TIMEZONE: America/New_York
 
