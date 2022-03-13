@@ -53,3 +53,13 @@ tasks:
         mv "$TMP_VARS" .variables.json
     status:
       - '[[ "{{.BUILD_COMMAND}}" == "null" ]] || [[ "{{.BUILD_OUTPUT}}" == "null" ]]'
+
+  test:
+    deps:
+      - :install:software:go
+    log:
+      error: Failed to test Go sources
+      start: Testing Go sources
+      success: Successfully finished testing Go sources
+    cmds:
+      - go test ./...
