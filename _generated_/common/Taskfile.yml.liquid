@@ -219,6 +219,12 @@ tasks:
       - HUSKY=0 git commit -m '🔧 chore(tweak): quick minor update' --no-verify
       - git push origin master
 
+  devcontainer:
+    deps:
+      - install:npm:devcontainer
+      - install:software:docker
+
+
   donothing: 'true'
 
 {{#eq group "ansible"}}{{#eq subgroup "playbook"}}
