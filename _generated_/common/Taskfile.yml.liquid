@@ -685,6 +685,28 @@ tasks:
     cmds:
       - task: upstream:\{{.PROJECT_TYPE}}
 
+  template:
+    deps:
+      - install:npm:liquidjs
+    summary: |
+      # Render a Template
+
+      This task is provided to serve as an alias for developing new templated files.
+    cmds:
+      - |
+        function handlebars() {
+          FILE="$1"
+          TMP="$(mktemp)"
+          .config/log info 'Generating `'"${FILE//.liquid}"'` from `'"$FILE"'`'
+          \{{.NPX_HANDLE}}hbs --data .variables.json --helper ./.config/hbs.cjs "$FILE" --stdout > "$TMP"
+          mv "$TMP" "${FILE//.liquid}"
+          rm "$FILE"
+        }
+        handlebars '\{{.CLI_ARGS}}'
+    preconditions:
+      - sh: test -f .variables.json
+        msg: This task requires that you have already spun up the project by running `task start`
+
   test:
     deps:
       - install:software:jq
