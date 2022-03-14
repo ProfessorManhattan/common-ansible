@@ -520,7 +520,9 @@ tasks:
       success: Successfully preloaded system with common dependencies (REBOOT RECOMMENDED)
       error: Encountered error while preloading system with common dependencies (REBOOT RECOMMENDED)
     cmds:
+      - task: install:software:common
       - task: install:brewfile
+      - task: install:extras
       - task: install:go:bundle
       - task: install:rust:bundle
       - task: install:github:bundle
