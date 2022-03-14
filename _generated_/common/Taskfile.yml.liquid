@@ -37,6 +37,7 @@ vars:
   NPM_PROGRAM_LOCAL: pnpm
   NPX_HANDLE: 'pnpx '
   NPX_PACKAGE: pnpx
+  # yamllint disable rule:line-length
   PROJECT_TYPE:
     sh: |
       # yamllint disable-line rule:line-length
@@ -54,6 +55,7 @@ vars:
       else
         echo 'project'
       fi
+  # yamllint enable rule:line-length
   PYTHON_HANDLE: 'poetry run '
   PYTHON_VIRTUALENV: true
   REPOSITORY_SUBTYPE:
