@@ -52,6 +52,8 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.10.0,<4.0.0"
 ansible = "^4.8.0"
+docker = "^5.0.3"
+python-vagrant = "^0.5.15"
 pywinrm = ">=0.3.0"
 
 # CLI tools normally installed by pipx
@@ -74,7 +76,6 @@ wheel = { version = "^0.37.1", optional = true }
 
 [tool.poetry.dev-dependencies]
 apache-libcloud = "^3.4.1"
-docker = "^5.0.3"
 gcloud = "^0.18.3"
 junit-xml = "^1.9"
 molecule = "^3.5.2"
@@ -82,7 +83,6 @@ molecule-docker = "^1.1.0"
 molecule-gce = "^0.3.1"
 molecule-vagrant = "^0.6.3"
 pycrypto = "^2.6.1"
-python-vagrant = "^0.5.15"
 
 [tool.poetry.extras]
 cli = [
