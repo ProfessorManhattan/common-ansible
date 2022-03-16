@@ -15,6 +15,7 @@ includes:
   ci:github: ./.config/taskfiles/ci/Taskfile-github.yml
   common: ./.config/taskfiles/common/Taskfile.yml
   common:code: ./.config/taskfiles/common/Taskfile-code.yml
+  common:start: ./.config/taskfiles/common/Taskfile-start.yml
   common:update: ./.config/taskfiles/common/Taskfile-update.yml
   common:util: ./.config/taskfiles/common/Taskfile-util.yml
   docker: ./.config/taskfiles/docker/Taskfile.yml
@@ -82,7 +83,6 @@ includes:
   web:ionic: ./.config/taskfiles/web/Taskfile-ionic.yml
   web:nx: ./.config/taskfiles/web/Taskfile-nx.yml
   web:profile: ./.config/taskfiles/web/Taskfile-profile.yml
-  common:start: ./.config/taskfiles/common/Taskfile-start.yml
 output: interleaved
 vars:
   DOCKERHUB_PROFILE: megabytelabs
@@ -135,10 +135,8 @@ vars:
   # yamllint enable rule:line-length
   PYTHON_HANDLE: 'poetry run '
   PYTHON_VIRTUALENV: true
-  REPOSITORY_SUBTYPE:
-    sh: if type jq &> /dev/null && [ -f package.json ]; then VER="$(jq -r .blueprint.subgroup package.json)"; if [ "$VER" == null ]; then echo "$REPOSITORY_TYPE"; else echo "$VER"; fi; else echo "$REPOSITORY_TYPE"; fi
-  REPOSITORY_TYPE:
-    sh: if type jq &> /dev/null && [ -f package.json ]; then VER="$(jq -r .blueprint.group package.json)"; if [ "$VER" == null ]; then echo "$GROUP_TYPE"; else echo "$VER"; fi; else echo "$GROUP_TYPE"; fi
+  REPOSITORY_SUBTYPE: ansible
+  REPOSITORY_TYPE: common
   SEMANTIC_CONFIG: semantic-release-config
   TIMEZONE: America/New_York
   includes:
@@ -727,4 +725,4 @@ tasks:
     cmds:
       - task: common:start
         env:
-          UPDATE_PROJECT: "true"
+          UPDATE_PROJECT: 'true'
