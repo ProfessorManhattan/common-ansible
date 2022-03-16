@@ -9,7 +9,7 @@ tasks:
     cmds:
       - |
         if [ -d ./test ]; then
-          TEST_FOLDERS="$(find ./test -mindepth 1 -maxdepth 1 -type -d)"
+          TEST_FOLDERS="$(find ./test -mindepth 1 -maxdepth 1 -type d)"
           if echo "$TEST_FOLDERS" | grep '/test/'; then
             CURR_DIR="$PWD"
             for TEST_DIR in $TEST_FOLDERS; do
@@ -130,7 +130,7 @@ tasks:
     vars:
       MOUNT_PATH: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}${PWD}{{end}}'
     hide:
-      sh: '! find ./test -mindepth 1 -maxdepth 1 -type -d | grep output'
+      sh: '! find ./test -mindepth 1 -maxdepth 1 -type d | grep output'
     log:
       error: There was an error while comparing `latest` and `slim` image outputs for `{{.DOCKER_IMAGE}}`
       start: Comparing outputs of the `latest` and `slim` images for `{{.DOCKER_IMAGE}}`
@@ -159,7 +159,7 @@ tasks:
     cmds:
       - |
         if [ -d test ]; then
-          TESTS="$(find ./test -mindepth 1 -maxdepth 1 -type -d -name "output-")"
+          TESTS="$(find ./test -mindepth 1 -maxdepth 1 -type d -name "output-")"
           if echo "$TESTS" | grep 'output'; then
             for TEST_FILE in $TESTS; do
               TARGET="$(echo "$TEST_FILE" | sed 's/.*\/\([^\/]*\).yml$/\1/')"
