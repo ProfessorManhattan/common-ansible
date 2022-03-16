@@ -757,11 +757,15 @@ tasks:
       start: Updating the repository..
       success: Finished updating the repository
     cmds:
-      - task: :install:software:brew
       - |
-        . "$HOME/.profile"
-        task update:prereqs
-        . "$HOME/.profile"
+        if ! type brew > /dev/null; then
+          task install:software:brew
+          . "$HOME/.profile"
+        fi
+        if ! type jq > /dev/null || ! type yq > /dev/null || ! type node > /dev/null || ! type go > /dev/null || ! type poetry > /dev/null; then
+          task update:prereqs
+          . "$HOME/.profile"
+        fi
         task update:init
         task prepare
         task update:finish
