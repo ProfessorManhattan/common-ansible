@@ -328,8 +328,7 @@ tasks:
     cmds:
       - git init
       - task: repair
-      - task: ci:commit
-      - task: ci:synchronize
+      - task: prepare
 
   lint:
     desc: Lints the project using all linters
@@ -676,25 +675,28 @@ tasks:
       - task: common:shell
 
   start:
-    desc: Set up the project and refresh it with the latest changes
+    desc: Start the project by installing / updating dependencies, repairing issues, and opening a tutorial
     summary: |
       # Start the Project
 
-      This task will scaffold the project with the latest upstream changes
-      and ensure your development environment has all the dependencies installed.
+      This task does everything that running `bash start.sh` does plus a little bit more:
 
-      This command should be used whenever the files that are automatically generated
-      need to be updated. It also serves as an entry point for new developers who
-      are getting started with the project.
+      1. Installs Homebrew if it is not already installed
+      2. Ensures Bodega is installed and up-to-date
+      3. Ensures common system dependencies and runtimes
+      4. Installs commonly used CLI tools
+      5. Ensures local dependencies such as `node_modules` are installed
+      6. Attempts to repair the project if it detects any issues
 
-      **Example usage:**
-      `task start`
+      It basically sets up all the tools you need, in advance so that problems can be detected as early
+      as possible. In some cases, this command will open documentation or a tutorial to read while dependencies are being
+      installed.
     log:
-      start: Synchronizing project with upstream file changes and bootstrapping
-      success: Successfully synchronized the project with upstream file changes and also bootstrapped the project
-      error: Error encountered while starting up the project
+      start: Starting the project..
+      success: Project started!
+      error: Yikes! Error starting the project!
     cmds:
-      - task: upstream:\{{.PROJECT_TYPE}}
+      - task: common:start
 
   synchronize:
     desc: Set up the project and refresh it with the latest changes
@@ -825,15 +827,6 @@ tasks:
       start: Updating the repository..
       success: Finished updating the repository
     cmds:
-      - |
-        if ! type brew > /dev/null; then
-          task install:software:brew
-          . "$HOME/.profile"
-        fi
-        if ! type jq > /dev/null || ! type yq > /dev/null || ! type node > /dev/null || ! type go > /dev/null || ! type poetry > /dev/null; then
-          task update:prereqs
-          . "$HOME/.profile"
-        fi
-        task update:init
-        task prepare
-        task update:finish
+      - task: common:start
+        env:
+          UPDATE_PROJECT: 'true'
