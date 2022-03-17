@@ -563,10 +563,7 @@ tasks:
 
   repair:
     cmds:
-      - |
-        TMP="$(mktemp)" && curl -sSL \{{.MODEL_TASKFILE}} > "$TMP"
-        .config/log info 'Ensuring new additions to the model `Taskfile.yml` are present in the project `Taskfile.yml`'
-        yq eval-all -i 'select(fileIndex == 0) * select(fileIndex == 1)' "$TMP" Taskfile.yml
+      - task: common:repair
       - |
         if [ -n "$UPDATE_INIT_SCRIPT" ]; then
           bash <(curl -sSL "$UPDATE_INIT_SCRIPT")
