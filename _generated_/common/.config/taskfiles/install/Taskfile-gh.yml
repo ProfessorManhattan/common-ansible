@@ -30,7 +30,7 @@ tasks:
       - gh release download -R edgelaboratories/fusion -p "*Linux_arm64" -D ./tmp
       - mv ./tmp/fusion* ./bin/fusion
     status:
-      - '[ -f ./bin/fusion ]'
+     - '[ -f ./bin/fusion ]'
 
   gh:
     deps:
