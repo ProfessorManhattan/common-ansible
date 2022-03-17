@@ -62,18 +62,26 @@ vars:
       if [ -n "$REPOSITORY_TYPE" ]; then REPO_SUBTYPE="$REPOSITORY_TYPE"; fi
       if type jq &> /dev/null && [ -f package.json ]; then
         VER="$(jq -r '.blueprint.subgroup' package.json)"
-        if [ "$VER" == 'null' ]; then echo "$REPO_SUBTYPE"; else echo "$VER"; fi
+        if [ "$VER" == 'null' ]; then
+          if [ -n "$REPO_SUBTYPE" ]; then echo "$REPO_SUBTYPE"; else echo "misc"; fi
+        else
+          echo "$VER"
+        fi
       else
-        echo "$REPO_SUBTYPE"
+        if [ -n "$REPO_SUBTYPE" ]; then echo "$REPO_SUBTYPE"; else echo "misc"; fi
       fi
   REPOSITORY_TYPE:
     sh: |
       if [ -n "$GROUP_TYPE" ]; then REPO_TYPE="$GROUP_TYPE"; fi
       if type jq &> /dev/null && [ -f package.json ]; then
         VER="$(jq -r '.blueprint.group' package.json)"
-        if [ "$VER" == 'null' ]; then echo "$REPO_TYPE"; else echo "$VER"; fi
+        if [ "$VER" == 'null' ]; then
+          if [ -n "$REPO_TYPE" ]; then echo "$REPO_TYPE"; else echo "misc"; fi
+        else
+          echo "$VER"
+        fi
       else
-        echo "$REPO_TYPE"
+        if [ -n "$REPO_TYPE" ]; then echo "$REPO_TYPE"; else echo "misc"; fi
       fi
   SEMANTIC_CONFIG: semantic-release-config
   TIMEZONE: America/New_York
