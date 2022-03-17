@@ -23,7 +23,9 @@ vars:
   GITHUB_ORG: {{profile.github}}
   GITHUB_USER: {{profile.github}}
   GROUP_EXEC_ASYNC: 'false'
-  IGNORE_FOLDERS: -path './.autodoc/*' -o -path './.cache/*' -o -path './.common*' -o -path './.config/*' -o -path './.git/*' -o
+  # yamllint disable rule:line-length
+  IGNORE_FOLDERS: >-
+    -path './.autodoc/*' -o -path './.cache/*' -o -path './.common*' -o -path './.config/*' -o -path './.git/*' -o
     -path './.github/*' -o -path './.gitlab/*' -o -path './.husky/*' -o -path './.modules/*' -o -path './.npm/*' -o
     -path './.pnpm-store/*' -o -path './.shared/*' -o -path './.task/*' -o -path './.venv/*' -o -path './.vscode/*' -o
     -path './build/*' -o -path './dist/*' -o -path './node_modules/*' -o -path './roles/*' -o -name pnpm-lock.yaml -o
@@ -37,7 +39,6 @@ vars:
   NPM_PROGRAM_LOCAL: pnpm
   NPX_HANDLE: 'pnpx '
   NPX_PACKAGE: pnpx
-  # yamllint disable rule:line-length
   PROJECT_TYPE:
     sh: |
       if type jq &> /dev/null && [ -f package.json ]; then VER="$(jq -r '.blueprint.group' package.json)"; if [ "$VER" == 'null' ]; then echo TYPE="$GROUP_TYPE"; else TYPE="$VER"; fi; else TYPE="$GROUP_TYPE"; fi
