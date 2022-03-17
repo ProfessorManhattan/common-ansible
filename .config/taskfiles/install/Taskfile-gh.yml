@@ -1,0 +1,66 @@
+---
+version: '3'
+
+tasks:
+  dasel:
+    deps:
+      - :install:software:gh
+    cmds:
+      - rm -rf ./tmp
+      - gh release download -R TomWright/dasel -p "*linux_amd64" -D ./tmp
+      - mv ./tmp/dasel* ./bin/dasel
+    status:
+      - '[ -f ./bin/dasel ]'
+
+  docker-pushrm:
+    deps:
+      - :install:software:gh
+    cmds:
+      - rm -rf ./tmp
+      - gh release download -R christian-korneck/docker-pushrm -p "*linux_amd64" -D ./tmp
+      - mv ./tmp/docker-pushrm* ./bin/docker-pushrm*
+    status:
+      - '[ -f ./bin/docker-pushrm ]'
+
+  fusion:
+    deps:
+      - :install:software:gh
+    cmds:
+      - rm -rf ./tmp
+      - gh release download -R edgelaboratories/fusion -p "*Linux_arm64" -D ./tmp
+      - mv ./tmp/fusion* ./bin/fusion
+    status:
+     - '[ -f ./bin/fusion ]'
+
+  gh:
+    deps:
+      - :install:software:gh
+    cmds:
+      - rm -rf ./tmp
+      - gh release download -R cli/cli -p "*linux_amd64.tar.gz" -D ./tmp
+      - tar -zxvf ./tmp/*linux_amd64.tar.gz --strip-component 1 -C ./tmp
+      - mv ./tmp/bin/gh ./bin/gh
+      - rm -rf ./tmp
+    status:
+      - '[ -f ./bin/gh ]'
+
+  glab:
+    deps:
+      - :install:software:gh
+    cmds:
+      - rm -rf ./tmp
+      - gh release download -R profclems/glab -p "*Linux_arm64.tar.gz" -D ./tmp
+      - tar -zxvf ./tmp/*Linux_arm64.tar.gz --strip-component 1 -C ./tmp
+      - mv ./tmp/glab ./bin/glab
+    status:
+      - '[ -f ./bin/glab ]'
+
+  yq:
+    deps:
+      - :install:software:gh
+    cmds:
+      - rm -rf ./tmp
+      - gh release download -R mikefarah/yq -p "*linux_amd64" -D ./tmp
+      - mv ./tmp/yq* ./bin/yq
+    status:
+      - '[ -f ./bin/yq ]'
