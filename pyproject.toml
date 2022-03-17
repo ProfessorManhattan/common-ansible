@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "{{#if customPyPiPackageName}}{{customPyPiPackageName}}{{else}}{{#if customPackageName}}{{customPackageName}}{{else}}{{repository.prefix.github}}{{slug}}{{/if}}{{/if}}"
-version = "{{version}}"
-description = "{{description}}"
-authors = ["{{author.name}} <{{author.email}}>"]
-license = "{{license}}"
+name = "common-ansible"
+version = "0.0.1"
+description = "Shared Ansible files that propagate to downstream projects (including boilerplate code for new projects)"
+authors = ["Brian Zalewski <brian@megabyte.space>"]
+license = "MIT"
 readme = "README.md"
-homepage = "{{link.home}}"
-documentation = "{{docs.link}}"
-repository = "{{repository.github}}"
-keywords = [{{{poetryKeywords}}}]
+homepage = "https://megabyte.space"
+documentation = "https://megabyte.space/docs/common/ansible"
+repository = "https://github.com/ProfessorManhattan/common-ansible"
+keywords = ["ansible", "awesome", "boilerplate", "mblabs", "megabytelabs", "npm", "package", "playbook", "professormanhattan", "role", "samples", "washingtondc"]
 include = ["docs/CHANGELOG.md", "LICENSE"]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -73,12 +73,12 @@ semantic = [
 ]
 
 [tool.poetry.urls]
-"Bug Tracker" = "{{repository.gitlab}}{{repository.location.issues.gitlab}}"
-"GitHub" = "{{repository.github}}"
-"GitLab" = "{{repository.gitlab}}"
+"Bug Tracker" = "https://gitlab.com/megabyte-labs/common/ansible/-/issues"
+"GitHub" = "https://github.com/ProfessorManhattan/common-ansible"
+"GitLab" = "https://gitlab.com/megabyte-labs/common/ansible"
 "Give Directly" = "https://givedirectly.org"
-"Open Collective" = "{{profile_link.opencollective}}/{{profile.opencollective}}"
-"Patreon" = "{{profile_link.patreon}}/{{profile.patreon}}"
+"Open Collective" = "https://opencollective.com/megabytelabs"
+"Patreon" = "https://www.patreon.com/ProfessorManhattan"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
