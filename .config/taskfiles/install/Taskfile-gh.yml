@@ -39,7 +39,7 @@ tasks:
       - gh release download -R edgelaboratories/fusion -p "*Linux_arm64" -D "$TMP"
       - mkdir -p ./bin && mv "$TMP"/fusion* ./bin/fusion
       - rm -rf "$TMP"
-  status:
+    status:
       - '[ -f ./bin/fusion ]'
 
   gh:
