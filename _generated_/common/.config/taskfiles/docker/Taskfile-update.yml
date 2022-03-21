@@ -105,6 +105,7 @@ tasks:
       start: Acquiring software version
       success: Finished software version acquisition sequence
     cmds:
+      - docker build --tag {{.DOCKER_IMAGE}}:latest  --target "{{.DOCKER_BASE_TAG}}" .
       - |
         VERSION="$({{.VERSION_COMMAND}})" || EXIT_CODE=$?
         if [ -n "$EXIT_CODE" ]; then
@@ -120,4 +121,4 @@ tasks:
           fi
         fi
     status:
-      - '[ "{{.VERSION_COMMAND}}" == "null" ]'
+      - '[ "{{.VERSION_COMMAND}}" == "null" ] || [ "{{.DOCKER_BASE_TAG}}" != "{{.CLI_ARGS}}" ]'

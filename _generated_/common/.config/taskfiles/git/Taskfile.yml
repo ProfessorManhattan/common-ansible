@@ -127,6 +127,8 @@ tasks:
         if [[ "$FULLY_AUTOMATED_TASKS" == 'true' ]]; then
           git push all master --force || git push origin master
         fi
+    status:
+      - '[ -n "$CI" ]'
 
   remotes:
     deps:
@@ -190,9 +192,9 @@ tasks:
           .config/log success 'Added git remote named `all`'
         fi
     status:
-      - '[[ "$(git config remote.all.url)" == "${GITLAB_REPO}.git" ]] || [[ "${container:=}" == "docker" ]]'
-      - '[[ "$(git config remote.github.url)" == "${GITHUB_REPO}.git" ]] || [[ "${container:=}" == "docker" ]]'
-      - '[[ "$(git config remote.gitlab.url)" == "${GITLAB_REPO}.git" ]] || [[ "${container:=}" == "docker" ]]'
+      - '[[ "$(git config remote.all.url)" == "${GITLAB_REPO}.git" ]] || [ -n "$CI" ]'
+      - '[[ "$(git config remote.github.url)" == "${GITHUB_REPO}.git" ]] || [ -n "$CI" ]'
+      - '[[ "$(git config remote.gitlab.url)" == "${GITLAB_REPO}.git" ]] || [ -n "$CI" ]'
 
   remove:history:cli:
     deps:
@@ -269,6 +271,8 @@ tasks:
       - task: :git:gitlab:create
       - task: :git:github:create
       - task: update:continue
+    status:
+      - '[ -n "$CI" ]'
 
   update:continue:
     deps:
