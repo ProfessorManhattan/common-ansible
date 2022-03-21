@@ -63,13 +63,7 @@ vars:
     sh: chmod +x .config/log
   MODEL_TASKFILE: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml
   NPM_KEEP_UPDATED: ''
-  NPM_PROGRAM:
-    sh: |
-      if type pnpm &> /dev/null; then
-        echo 'pnpm'
-      elif type npm &> /dev/null; then
-        echo 'npm'
-      fi
+  NPM_PROGRAM: npm
   NPM_PROGRAM_LOCAL:
     sh: |
       if type pnpm &> /dev/null; then
@@ -83,13 +77,6 @@ vars:
         echo 'pnpx '
       elif type pnpm &> /dev/null; then
         echo 'pnpm '
-      fi
-  NPX_PACKAGE:
-    sh: |
-      if type pnpx &> /dev/null; then
-        echo 'pnpx'
-      elif type pnpm &> /dev/null; then
-        echo 'pnpm'
       fi
   PROJECT_TYPE:
     sh: |
@@ -109,10 +96,10 @@ vars:
   # yamllint enable rule:line-length
   PYTHON_HANDLE:
     sh: |
-      if [ -n "$NO_INSTALL_POETRY" ] || ! type poetry > /dev/null; then
-        echo ''
-      else
+      if type poetry > /dev/null; then
         echo 'poetry run '
+      else
+        echo ''
       fi
   PYTHON_VIRTUALENV: true
   REPOSITORY_SUBTYPE:
