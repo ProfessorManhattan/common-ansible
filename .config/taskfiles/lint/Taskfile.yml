@@ -91,7 +91,17 @@ tasks:
       start: Running `codeclimate`
       success: Successfully validated the project by running `codeclimate`
     cmds:
-      - CODECLIMATE_DEBUG=1 codeclimate analyze --dev{{if .CLI_ARGS}}{{.CLI_ARGS}}{{end}}
+      - |
+        if [ -z "$CODECLIMATE_INTEGRATION_TEST" ]; then
+          CODECLIMATE_DEBUG=1 codeclimate analyze --dev{{if .CLI_ARGS}}{{.CLI_ARGS}}{{end}}
+        else
+          while read PATHH; do
+            cd "$(dirname $PATHH)" && break
+          done < <(find test -maxdepth 2 -type f -name .codeclimate.yml)
+          task lint:codeclimate:taskfiles:add
+          CODECLIMATE_DEBUG=1 codeclimate analyze --dev
+          task lint:codeclimate:taskfiles:remove
+        fi
 
   commit:
     deps:
