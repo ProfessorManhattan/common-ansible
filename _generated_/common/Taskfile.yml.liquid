@@ -96,7 +96,7 @@ vars:
   # yamllint enable rule:line-length
   PYTHON_HANDLE:
     sh: |
-      if type poetry > /dev/null; then
+      if type poetry &> /dev/null; then
         echo 'poetry run '
       else
         echo ''
@@ -142,8 +142,10 @@ env:
     sh: if [ -n "$CI" ]; then echo 'true'; fi
   SENTRY_DSN:
     sh: |
-      DSN="$(jq -r '.blueprint.sentryDSN' package.json)"
-      if [ "$DSN" != 'null' ]; then echo "$DSN"; fi
+      if type jq &> /dev/null; then
+        DSN="$(jq -r '.blueprint.sentryDSN' package.json)"
+        if [ "$DSN" != 'null' ]; then echo "$DSN"; fi
+      fi
 
 includes:
 {{#forEach (bodegaIncludes)}}

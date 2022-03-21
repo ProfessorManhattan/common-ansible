@@ -4,7 +4,7 @@ version: '3'
 vars:
   EMOJI_END:
     sh: |
-      if [ -f '.variables.json' ]; then
+      if [ -f '.variables.json' ] && type jq &> /dev/null; then
         BP_END="$(jq -r '.emoji_end' .variables.json)"
         if [ "$BP_END" != 'null' ]; then
           echo "$BP_END"
@@ -18,7 +18,7 @@ vars:
       fi
   EMOJI_START:
     sh: |
-      if [ -f '.variables.json' ]; then
+      if [ -f '.variables.json' ] && type jq &> /dev/null; then
         BP_START="$(jq -r '.emoji_start' .variables.json)"
         if [ "$BP_START" != 'null' ]; then
           echo "$BP_START"

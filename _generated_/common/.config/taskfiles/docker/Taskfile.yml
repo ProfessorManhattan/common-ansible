@@ -4,7 +4,7 @@ version: '3'
 vars:
   DOCKER_BASE_TAG:
     sh: |
-      if [ -f Dockerfile ]; then
+      if [ -f Dockerfile ] && type jq &> /dev/null; then
         BASE_TAG="$(jq -r '.blueprint.dockerBaseTag' package.json)"
         if [ "$BASE_TAG" != 'null' ]; then
           echo "$BASE_TAG"
@@ -23,7 +23,9 @@ vars:
       fi
   DOCKER_IMAGE:
     sh: |
-      echo "{{.DOCKERHUB_PROFILE}}/$(jq -r '.blueprint.slug' package.json)"
+      if type jq &> /dev/null; then
+        echo "{{.DOCKERHUB_PROFILE}}/$(jq -r '.blueprint.slug' package.json)"
+      fi
 
 tasks:
   build:
