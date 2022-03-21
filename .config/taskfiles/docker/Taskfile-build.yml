@@ -80,9 +80,11 @@ tasks:
           if [ "$COMMAND_TYPE" == 'string' ]; then
             echo "$(jq -r '.blueprint.dockerSlimCommand' package.json)"
           else
-            COMMAND="$(jq --arg type "$(jq -r '.blueprint.slug' package.json)" -r '.blueprint.dockerSlimCommand[$type]' package.json)"
+            COMMAND="$(jq --arg type "{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}$(jq -r '.blueprint.slug' package.json){{end}}" \
+            -r '.blueprint.dockerSlimCommand[$type]' package.json)"
             if [ "$COMMAND" != 'null' ]; then
-              echo "$(jq --arg type "$(jq -r '.blueprint.slug' package.json)" -r '.blueprint.dockerSlimCommand[$type]' package.json)"
+              echo "$(jq --arg type "{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}$(jq -r '.blueprint.slug' package.json){{end}}" \
+              -r '.blueprint.dockerSlimCommand[$type]' package.json)"
             fi
           fi
       SLUG:
