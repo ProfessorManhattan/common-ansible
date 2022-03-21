@@ -269,6 +269,8 @@ tasks:
       - task: :git:gitlab:create
       - task: :git:github:create
       - task: update:continue
+    status:
+      - '[ -n "$CI" ]'
 
   update:continue:
     deps:
