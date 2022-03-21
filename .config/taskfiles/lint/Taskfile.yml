@@ -42,7 +42,7 @@ tasks:
       start: Linting project with Ansible Lint
       success: Validated project with Ansible Lint
     cmds:
-      - '{{.PYTHON_HANDLE}}ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}'
+      - ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}
 
   any:
     deps:
@@ -53,11 +53,11 @@ tasks:
       error: Errors were reported by the global linters for `{{.CLI_ARGS}}`
       start: Linting `{{.CLI_ARGS}}` with global linters
     cmds:
-      - '{{.PYTHON_HANDLE}}blocklint --wordlist blacklist,slave,whitelist {{.CLI_ARGS}}'
-      - '{{.PYTHON_HANDLE}}check-merge-conflict {{.CLI_ARGS}}'
-      - '{{.PYTHON_HANDLE}}check-added-large-files {{.CLI_ARGS}}'
-      - '{{.PYTHON_HANDLE}}check-symlinks {{.CLI_ARGS}}'
-      - '{{.PYTHON_HANDLE}}destroyed-symlinks {{.CLI_ARGS}}'
+      - blocklint --wordlist blacklist,slave,whitelist {{.CLI_ARGS}}
+      - check-merge-conflict {{.CLI_ARGS}}
+      - check-added-large-files {{.CLI_ARGS}}
+      - check-symlinks {{.CLI_ARGS}}
+      - destroyed-symlinks {{.CLI_ARGS}}
 
   codeclimate:
     deps:
@@ -439,9 +439,9 @@ tasks:
     cmds:
       - |
         {{if .CLI_ARGS}}
-          {{.PYTHON_HANDLE}}flake8 --config {{.FLAKE8_CONFIG}} {{.CLI_ARGS}}
+          flake8 --config {{.FLAKE8_CONFIG}} {{.CLI_ARGS}}
         {{else}}
-          {{.PYTHON_HANDLE}}flake8 --config {{.FLAKE8_CONFIG}} .
+          flake8 --config {{.FLAKE8_CONFIG}} .
         {{end}}
 
   shell:
@@ -580,7 +580,7 @@ tasks:
       start: Ensuring {{if .CLI_ARGS}}`{{.CLI_ARGS}}` is valid TOML{{else}}the project'\''s TOML files are valid{{end}}
       success: The TOML appears to be valid!
     cmds:
-      - '{{.PYTHON_HANDLE}}check-toml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
+      - check-toml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   vagrant:
     deps:
@@ -622,7 +622,7 @@ tasks:
       start: Ensuring {{if .CLI_ARGS}}{{.CLI_ARGS}} is valid XML{{else}}the project contains only valid XML{{end}}
       success: The XML appears to be valid
     cmds:
-      - '{{.PYTHON_HANDLE}}check-xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
+      - check-xml {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
 
   yaml:
     deps:
@@ -653,4 +653,4 @@ tasks:
       start: Linting {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}the project{{end}} with `yamllint`
       success: No issues were detected by `yamllint`
     cmds:
-      - '{{.PYTHON_HANDLE}}yamllint -c {{.YAMLLINT_CONFIG}} -s {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}'
+      - yamllint -c {{.YAMLLINT_CONFIG}} -s {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}.{{end}}
