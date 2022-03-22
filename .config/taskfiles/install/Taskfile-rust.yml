@@ -16,6 +16,10 @@ tasks:
           BIN_NAME: catfs
           PACKAGE: catfs
 
+  clean:
+    cmds:
+      - rm -rf "$HOME/.cargo/registry"
+
   grex:
     run: once
     cmds:
