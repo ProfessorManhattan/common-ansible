@@ -330,7 +330,13 @@ tasks:
       start: Linting staged files
       success: The staged files appear to be good!
     cmds:
-      - '{{.NPX_HANDLE}}lint-staged'
+      - |
+        {{.NPX_HANDLE}}lint-staged || LINT_EXIT_CODE="$?"
+        if [ -n "$LINT_EXIT_CODE" ]; then
+          .config/log error 'Linting failed!'
+          .config/log info 'If necessary, you can bypass this pre-commit hook by running `git commit --no-verify`. Please try to fix the errors first.'
+          exit 1
+        fi
 
   packer:
     deps:

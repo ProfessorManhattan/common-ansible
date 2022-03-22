@@ -87,8 +87,7 @@
   },
   "mounts": ["source=dind-var-lib-docker,target=/var/lib/docker,type=volume"],
   "name": "Megabyte Labs DevContainer Code Rocket Pack",
-  "overrideCommand": false,
-  "postCreateCommand": "task start",
+  "postCreateCommand": "type -f start.sh && bash start.sh || true",
   "remoteUser": "megabyte",
   "runArgs": ["--init", "--privileged", "--shm-size=4g"],
   "settings": {}

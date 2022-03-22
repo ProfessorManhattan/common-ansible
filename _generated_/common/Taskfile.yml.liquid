@@ -39,9 +39,9 @@ vars:
   GITHUB_ORG:
     sh: |
       if [ -f .config/variables.json ] && type jq &> /dev/null; then
-         echo "$(jq -r '.profile.github' .config/variables.json)"
+         echo "$(jq -r '.profile.githubOrg' .config/variables.json)"
       else
-        echo 'megabytelabs'
+        echo 'megabyte-labs'
       fi
   GITHUB_USER:
     sh: |

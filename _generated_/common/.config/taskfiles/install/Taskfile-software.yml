@@ -452,6 +452,13 @@ tasks:
         vars:
           PACKAGE: dasel
 
+  deno:
+    run: once
+    cmds:
+      - task: install:software
+        vars:
+          PACKAGE: deno
+
   docker:
     run: once
     cmds:
