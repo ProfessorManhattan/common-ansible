@@ -97,6 +97,8 @@ tasks:
   # eslint-enable max-len
 
   version:
+    deps:
+      - :install:software:jq
     vars:
       VERSION_COMMAND:
         sh: jq -r '.blueprint.versionCommand' package.json
