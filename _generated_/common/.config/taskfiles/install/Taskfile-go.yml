@@ -19,6 +19,12 @@ tasks:
       - ots
       - pup
 
+  clean:
+    cmds:
+      - rm -rf "$GOPATH/pkg" "$GOPATH/src"
+    status:
+      - '[ -z "$GOPATH" ]'
+
   gitomatic:
     run: once
     cmds:

@@ -1,14 +1,4 @@
 {
-  "build": {
-    "args": {
-      "DOCKER_VERSION": "latest",
-      "ENABLE_NONROOT_DOCKER": "true",
-      "INSTALL_ZSH": "true",
-      "UPGRADE_PACKAGES": "true",
-      "USERNAME": "megabyte",
-      "USE_MOBY": "true"
-    }
-  },
   "dockerFile": "Dockerfile",
   "extensions": [
     "Angular.ng-template",
