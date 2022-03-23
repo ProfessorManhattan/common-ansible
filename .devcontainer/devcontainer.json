@@ -11,7 +11,6 @@
     "DavidAnson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "denoland.vscode-deno",
-    "dracula-theme.theme-dracula",
     "eamodio.gitlens",
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
@@ -39,10 +38,8 @@
     "MS-vsliveshare.vsliveshare-audio",
     "njpwerner.autodocstring",
     "nrwl.angular-console",
-    "paulvarache.vscode-taskfile",
     "philnash.ngrok-for-vscode",
     "PKief.material-icon-theme",
-    "pnp.polacode",
     "pranaygp.vscode-css-peek",
     "quicktype.quicktype",
     "rbbit.typescript-hero",
@@ -75,9 +72,9 @@
     "storage": "16gb"
   },
   "mounts": ["source=dind-var-lib-docker,target=/var/lib/docker,type=volume"],
-  "name": "Megabyte Labs DevContainer Code Rocket Pack",
+  "name": "Megabyte Labs Development Environment",
   "postCreateCommand": "type -f start.sh && (bash start.sh || true)",
   "remoteUser": "megabyte",
-  "runArgs": ["--init", "--privileged", "--shm-size=4g"],
+  "runArgs": ["--init", "--privileged", "--shm-size=1g"],
   "settings": {}
 }

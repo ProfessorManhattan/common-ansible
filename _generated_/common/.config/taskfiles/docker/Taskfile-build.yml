@@ -70,6 +70,11 @@ tasks:
 
   slim:command:
     vars:
+      DIND_MOUNT:
+        sh: |
+          if [ "$(jq -r '.blueprint.dockerSlimDIND')" == 'true' ]; then
+            echo "--mount {{.DIND_MOUNT_MAPPING}} "
+          fi
       SLIM_COMMAND:
         sh: |
           COMMAND_TYPE="$(jq -r '.blueprint.dockerSlimCommand | type' package.json)"
@@ -90,11 +95,11 @@ tasks:
       success: Successfully built Docker container named `{{.DOCKER_IMAGE}}:slim`
     cmds:
       - >
-        .config/log info 'Running `docker-slim build --tag {{.DOCKER_IMAGE}}:slim{{.TAG_POST}}
+        .config/log info 'Running `docker-slim build {{.DIND_MOUNT}}--tag {{.DOCKER_IMAGE}}:slim{{.TAG_POST}}
         {{if (contains "codeclimate" .CLI_ARGS)}}--tag codeclimate/codeclimate-{{.SLUG}}:slim {{end}}
         {{.SLIM_COMMAND | replace "'" "\""}} {{.DOCKER_IMAGE}}:latest{{.TAG_POST}}`'
       - >
-        docker-slim build --tag {{.DOCKER_IMAGE}}:slim{{.TAG_POST}}
+        docker-slim build {{.DIND_MOUNT}}--tag {{.DOCKER_IMAGE}}:slim{{.TAG_POST}}
         {{if (contains "codeclimate" .CLI_ARGS)}}--tag codeclimate/codeclimate-{{.SLUG}}:slim {{end}}
         {{.SLIM_COMMAND | replace "'" "\""}} {{.DOCKER_IMAGE}}:latest{{.TAG_POST}}
 

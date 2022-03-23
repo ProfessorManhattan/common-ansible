@@ -75,9 +75,9 @@
     "storage": "16gb"
   },
   "mounts": ["source=dind-var-lib-docker,target=/var/lib/docker,type=volume"],
-  "name": "Megabyte Labs DevContainer Code Rocket Pack",
+  "name": "Megabyte Labs Development Environment",
   "postCreateCommand": "type -f start.sh && (bash start.sh || true)",
   "remoteUser": "megabyte",
-  "runArgs": ["--init", "--privileged", "--shm-size=4g"],
+  "runArgs": ["--init", "--privileged", "--shm-size=1g"],
   "settings": {}
 }

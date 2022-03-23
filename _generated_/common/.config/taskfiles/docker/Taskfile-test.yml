@@ -132,6 +132,11 @@ tasks:
       If both of the command's outputs match, then that is a good indicator that the slim image is
       behaiving like the latest image. The test is performed on each project folder in the `test-output/` folder.
     vars:
+      DIND_MOUNT:
+        sh: |
+          if [ "$(jq -r '.blueprint.dockerSlimDIND')" == 'true' ]; then
+            echo "-v {{.DIND_MOUNT_MAPPING}} "
+          fi
       MOUNT_PATH: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}${PWD}{{end}}'
     hide:
       sh: '! find ./test -mindepth 1 -maxdepth 1 -type d | grep output'
@@ -141,10 +146,10 @@ tasks:
       success: The outputs of the `latest` and `slim` images match for `{{.DOCKER_IMAGE}}`!
     cmds:
       - |
-        LATEST_OUTPUT=$(docker run -v "{{.MOUNT_PATH}}:/work" -w /work {{.DOCKER_IMAGE}}:latest .)
+        LATEST_OUTPUT=$(docker run {{.DIND_MOUNT}}-v "{{.MOUNT_PATH}}:/work" -w /work {{.DOCKER_IMAGE}}:latest .)
         .config/log success 'Acquired `latest` image output for `'"$TEST_SCENARIO"'`'
         .config/log info 'Acquiring `slim` image output for `'"$TEST_SCENARIO"'`'
-        SLIM_OUTPUT=$(docker run -v "{{.MOUNT_PATH}}:/work" -w /work {{.DOCKER_IMAGE}}:slim .)
+        SLIM_OUTPUT=$(docker run {{.DIND_MOUNT}}-v "{{.MOUNT_PATH}}:/work" -w /work {{.DOCKER_IMAGE}}:slim .)
         .config/log success 'Acquired `slim` image output for `'"$TEST_SCENARIO"'`'
         if [ "$LATEST_OUTPUT" != "$SLIM_OUTPUT" ]; then
           .config/log error 'The `latest` image output did not match the `slim` image output'
