@@ -134,7 +134,7 @@ tasks:
     vars:
       DIND_MOUNT:
         sh: |
-          if [ "$(jq -r '.blueprint.dockerSlimDIND')" == 'true' ]; then
+          if [ "$(jq -r '.blueprint.dockerInDocker')" == 'true' ]; then
             echo "-v {{.DIND_MOUNT_MAPPING}} "
           fi
       MOUNT_PATH: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}${PWD}{{end}}'
