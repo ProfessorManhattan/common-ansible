@@ -2,7 +2,16 @@
 version: '3'
 
 vars:
-  SCENARIO: '{{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}config{{end}}'
+  SCENARIO:
+    sh: |
+      {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}
+      SCENARIO="$(jq -r '.blueprint.dockerBaseTag' package.json)"
+      if [ "$SCENARIO" != 'null' ]; then
+        echo "$SCENARIO"
+      else
+        echo 'default'
+      fi
+      {{end}}
 
 tasks:
   codeclimate:
@@ -45,15 +54,15 @@ tasks:
       TAG_POST: '{{if ne .DOCKER_BASE_TAG .CLI_ARGS}}-{{.CLI_ARGS}}{{end}}'
     log:
       error: '`container-structure-test` reported error(s) when testing
-        `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest`'
+        `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest{{.TAG_POST}}`'
       start: Testing the `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest`
-        Docker image with `container-structure-test`
-      success: '`{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest` was
+        Docker image with `container-structure-test{{.TAG_POST}}`
+      success: '`{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest{{.TAG_POST}}` was
         successfully validated by `container-structure-test`'
     cmds:
       - container-structure-test test --image {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest{{.TAG_POST}} --config ./test/structure/{{.SCENARIO}}.yml
     status:
-      - '[[ "$(docker images -q {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest 2>/dev/null)" == "" ]] | [ ! -f ./test/structure/{{.SCENARIO}}.yml ]'
+      - '[[ "$(docker images -q {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:latest{{.TAG_POST}} 2>/dev/null)" == "" ]] | [ ! -f ./test/structure/{{.SCENARIO}}.yml ]'
 
   container-structure-test:slim:
     deps:
@@ -63,15 +72,15 @@ tasks:
       TAG_POST: '{{if ne .DOCKER_BASE_TAG .CLI_ARGS}}-{{.CLI_ARGS}}{{end}}'
     log:
       error: '`container-structure-test` reported error(s) when testing
-        `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim`'
-      start: Testing the `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim`
+        `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim{{.TAG_POST}}`'
+      start: Testing the `{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim{{.TAG_POST}}`
         Docker image with `container-structure-test`
-      success: '`{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim` was
+      success: '`{{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim{{.TAG_POST}}` was
         successfully validated by `container-structure-test`'
     cmds:
       - container-structure-test test --image {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim{{.TAG_POST}} --config ./test/structure/{{.SCENARIO}}.yml
     status:
-      - '[[ "$(docker images -q {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim 2> /dev/null)" == "" ]] | [ ! -f ./test/structure/{{.SCENARIO}}.yml ]'
+      - '[[ "$(docker images -q {{.DOCKERHUB_PROFILE}}/{{.SLUG}}:slim{{.TAG_POST}} 2> /dev/null)" == "" ]] | [ ! -f ./test/structure/{{.SCENARIO}}.yml ]'
 
   container-structure-tests:
     cmds:
