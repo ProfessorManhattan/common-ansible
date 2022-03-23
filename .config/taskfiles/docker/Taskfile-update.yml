@@ -101,12 +101,13 @@ tasks:
   # eslint-enable max-len
 
   sort:
+    todo: Make this remove duplicates using a command like `uniq -u`
     log:
       error: Encountered error while sorting `*.txt` files in the `./local` folder`
       start: Sorting, removing empty lines, and removing duplicate lines from all `*.txt` files in the `./local` folder
       success: Successfully sorted `*.txt` files in the `./local` folder
     cmds:
-      - find ./local -type f -name '*.txt' -exec sort {} -o {} \; -exec sed -i '/^$/d' {} \; -exec uniq {} > tmp  \; -exec mv tmp {} \;
+      - find ./local -type f -name '*.txt' -exec sort {} -o {} \; -exec sed -i '/^$/d' {} \;
     status:
       - '! find ./local -type f -name "*.txt" | grep txt'
 
