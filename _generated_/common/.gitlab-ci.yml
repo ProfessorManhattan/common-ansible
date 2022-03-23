@@ -7,6 +7,8 @@ stages:
 
 variables:
   PIP_CACHE_DIR: '${CI_PROJECT_DIR}/.cache/pip'
+  SAST_EXPERIMENTAL_FEATURES: "true"
+  SECRET_DETECTION_HISTORIC_SCAN: "true"
 
 cache:
   key: '${CI_JOB_NAME}'
@@ -16,8 +18,31 @@ cache:
     - .pnpm-store
     - .venv
 
+container_scanning:
+  rules:
+    - if: $CONTAINER_SCANNING_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
+    - exists:
+        - Dockerfile
+
+license_scanning:
+  before_script:
+    - |
+      if [ -f local/package-lock.json ]; then
+        cp local/package-lock.json package-lock.json
+      fi
+    - |
+      if [ -f local/requirements.txt ]; then
+        cp local/requirements.txt requirements.txt
+      fi
+
 include:
   - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/all.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/propagate/groups.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/propagate/projects.gitlab-ci.yml
   - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/update/common.gitlab-ci.yml
+  - template: Jobs/License-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
