@@ -30,12 +30,16 @@ tasks:
     vars:
       AUTHORS:
         sh: jq -r '.docker_label_authors' .variables.json
+      DESCRIPTION:
+        sh: jq -r '.description' package.json
       HELP_EMAIL:
         sh: jq -r '.email.help' .variables.json
       LICENSE:
         sh: jq -r '.license' .variables.json
       ORGANIZATION:
         sh: jq -r '.organization' .variables.json
+      SOURCE:
+        sh: jq -r '.blueprint.repository.github' package.json
       URL:
         sh: jq -r '.link.home' .variables.json
     log:
@@ -51,11 +55,11 @@ tasks:
         echo 'LABEL maintainer="{{.ORGANIZATION}} <{{.HELP_EMAIL}}>"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.authors="{{.AUTHORS}}"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.created=$BUILD_DATE' >> Dockerfile
-        echo 'LABEL org.opencontainers.image.description="[[ Injected by running `task update` ]]"' >> Dockerfile
-        echo 'LABEL org.opencontainers.image.documentation="[[ Injected by running `task update` ]]"' >> Dockerfile
+        echo 'LABEL org.opencontainers.image.description="{{.DESCRIPTION}}"' >> Dockerfile
+        echo 'LABEL org.opencontainers.image.documentation="{{.SOURCE}}/blob/master/README.md"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.licenses="{{.LICENSE}}"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.revision=$REVISION' >> Dockerfile
-        echo 'LABEL org.opencontainers.image.source="[[ Injected by running `task update` ]]"' >> Dockerfile
+        echo 'LABEL org.opencontainers.image.source="{{.SOURCE}}"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.url="{{.URL}}"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.vendor="{{.ORGANIZATION}}"' >> Dockerfile
         echo 'LABEL org.opencontainers.image.version=$VERSION' >> Dockerfile
