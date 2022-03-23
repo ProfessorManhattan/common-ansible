@@ -96,6 +96,16 @@ tasks:
   # yamllint enable rule:line-length
   # eslint-enable max-len
 
+  sort:
+    log:
+      error: Encountered error while sorting `*.txt` files in the `./local` folder`
+      start: Sorting, removing empty lines, and removing duplicate lines from all `*.txt` files in the `./local` folder
+      success: Successfully sorted `*.txt` files in the `./local` folder
+    cmds:
+      - find ./local -type f -name '*.txt' -exec sort {} -o {} \; -exec sed -i '/^$/d' {} \; -exec uniq {} > tmp  \; -exec mv tmp {} \;
+    status:
+      - '! find ./local -type f -name "*.txt" | grep txt'
+
   version:
     deps:
       - :install:software:jq
