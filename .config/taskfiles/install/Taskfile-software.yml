@@ -177,7 +177,7 @@ tasks:
             echo "redhat"
           elif [ -f "/etc/arch-release" ]; then
             echo "archlinux"
-          else [ -f "/etc/alpine-release" ]; then
+          elif [ -f "/etc/alpine-release" ]; then
             echo "alpine"
           else
             echo "unknown"
