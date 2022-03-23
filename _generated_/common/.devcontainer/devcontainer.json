@@ -11,7 +11,6 @@
     "DavidAnson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "denoland.vscode-deno",
-    "dracula-theme.theme-dracula",
     "eamodio.gitlens",
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
@@ -70,7 +69,7 @@
   ],
   "forwardPorts": [2222, 5901, 6080, 8001, 8014],
   "hostRequirements": {
-    "cpus": 2,
+    "cpus": 1,
     "memory": "4gb",
     "storage": "16gb"
   },

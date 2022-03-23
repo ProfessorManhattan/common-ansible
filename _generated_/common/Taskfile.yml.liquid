@@ -196,7 +196,11 @@ tasks:
     cmds:
       - |
         if [ "$(jq '.scripts.build' package.json)" != 'null' ]; then
-          npm run build
+          if type npm &> /dev/null; then
+            npm run build
+          else
+            task \{{.REPOSITORY_TYPE}}:build
+          fi
         else
           [[ $- == *i* ]] && task prepare || (.config/log error '\{{.NONINTERACTIVE_MISSING_BUILD_CMD}}' && exit 1)
         fi

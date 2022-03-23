@@ -22,9 +22,9 @@ tasks:
       [Docker's build guide](https://docs.docker.com/engine/reference/commandline/build/).
     vars:
       BUILD_DATE:
-        sh: git show -s --format=%cI
+        sh: type git &> /dev/null && git show -s --format=%cI
       REVISION:
-        sh: git rev-parse HEAD
+        sh: type git &> /dev/null && git rev-parse HEAD
       SLUG:
         sh: jq -r '.blueprint.slug' package.json
       TAG_POST: '{{if ne .DOCKER_BASE_TAG .CLI_ARGS}}-{{.CLI_ARGS}}{{end}}'
@@ -72,7 +72,7 @@ tasks:
     vars:
       DIND_MOUNT:
         sh: |
-          if [ "$(jq -r '.blueprint.dockerSlimDIND')" == 'true' ]; then
+          if [ "$(jq -r '.blueprint.dockerInDocker' package.json)" == 'true' ]; then
             echo "--mount {{.DIND_MOUNT_MAPPING}} "
           fi
       SLIM_COMMAND:
