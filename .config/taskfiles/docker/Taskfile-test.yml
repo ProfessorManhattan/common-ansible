@@ -81,7 +81,7 @@ tasks:
           if echo "$TESTS" | grep '.yml'; then
             for TEST_FILE in $TESTS; do
               TARGET="$(echo "$TEST_FILE" | sed 's/.*\/\([^\/]*\).yml$/\1/')"
-              task docker:test:container-structure-test - "$TARGET"
+              task docker:test:container-structure-test -- "$TARGET"
             done
           else
             .config/log error 'The `./test/structure` folder is present but there are no container-structure-tests in it. Add tests \
