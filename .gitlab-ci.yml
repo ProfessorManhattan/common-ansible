@@ -17,14 +17,6 @@ cache:
     - .venv
 include:
   - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/all.gitlab-ci.yml
-  - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/propagate/groups.gitlab-ci.yml
-  - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/propagate/projects.gitlab-ci.yml
-  - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/update/common.gitlab-ci.yml
-  - template: Jobs/License-Scanning.gitlab-ci.yml
-  - template: Security/Container-Scanning.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
 container_scanning:
   rules:
     - if: $DO_CI == 'false'
