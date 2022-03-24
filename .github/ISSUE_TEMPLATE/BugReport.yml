@@ -75,6 +75,7 @@ body:
     validations:
       required: false
 
+  # eslint-disable max-len
   # yamllint disable rule:line-length
   - type: markdown
     attributes:
