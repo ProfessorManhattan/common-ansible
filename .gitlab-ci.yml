@@ -34,7 +34,7 @@ container_scanning:
     - if: $CONTAINER_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
-    - exists:
+      exists:
         - Dockerfile
 license_scanning:
   rules:
@@ -77,12 +77,8 @@ gemnasium-dependency_scanning:
         - '{conan.lock,*/conan.lock,*/*/conan.lock}'
   before_script:
     - |
-      if [ -f local/package-lock.json ]; then
-        cp local/package-lock.json package-lock.json
-      fi
-    - |
-      if [ -f local/requirements.txt ]; then
-        cp local/requirements.txt requirements.txt
+      if [ -f local/yarn.lock ] && [ -f local/package-lock.json ]; then
+        rm local/yarn.lock
       fi
 gemnasium-maven-dependency_scanning:
   rules:

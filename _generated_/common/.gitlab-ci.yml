@@ -38,7 +38,7 @@ container_scanning:
     - if: $CONTAINER_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
-    - exists:
+      exists:
         - Dockerfile
 
 gemnasium-dependency_scanning:
@@ -64,6 +64,11 @@ gemnasium-dependency_scanning:
         - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
         - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
         - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+  before_script:
+    - |
+      if [ -f local/yarn.lock ] && [ -f local/package-lock.json ]; then
+        rm local/yarn.lock
+      fi
 
 gemnasium-maven-dependency_scanning:
   rules:
@@ -387,7 +392,7 @@ sobelow-sast:
       when: never
     - if: $CI_COMMIT_BRANCH
       exists:
-        - 'mix.exs'
+        - mix.exs
 
 spotbugs-sast:
   rules:
@@ -409,4 +414,3 @@ spotbugs-sast:
         - '**/*.java'
         - '**/*.scala'
         - '**/*.kt'
-
