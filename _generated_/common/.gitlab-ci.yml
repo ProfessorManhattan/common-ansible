@@ -26,6 +26,17 @@ container_scanning:
     - exists:
         - Dockerfile
 
+gemnasium-dependency_scanning:
+  before_script:
+    - |
+      if [ -f local/package-lock.json ]; then
+        cp local/package-lock.json package-lock.json
+      fi
+    - |
+      if [ -f local/requirements.txt ]; then
+        cp local/requirements.txt requirements.txt
+      fi
+
 license_scanning:
   before_script:
     - |
@@ -44,5 +55,6 @@ include:
   - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/update/common.gitlab-ci.yml
   - template: Jobs/License-Scanning.gitlab-ci.yml
   - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
