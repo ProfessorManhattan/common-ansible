@@ -16,7 +16,7 @@ cache:
     - .pnpm-store
     - .venv
 include:
-  - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/all.gitlab-ci.yml
+  - remote: https://gitlab.com/megabyte-labs/gitlab-ci/-/raw/master/common.gitlab-ci.yml
 container_scanning:
   rules:
     - if: $DO_CI == 'false'
