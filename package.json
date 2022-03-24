@@ -40,13 +40,13 @@
   "dependencies": {},
   "optionalDependencies": {},
   "devDependencies": {
-    "@commitlint/config-conventional": "latest",
     "eslint-config-strict-mode": "latest",
     "git-cz-emoji": "latest",
-    "handlebars-helpers": "latest",
     "prettier-config-sexy-mode": "latest",
     "semantic-release-config": "latest",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "@commitlint/config-conventional": "latest",
+    "handlebars-helpers": "latest"
   },
   "keywords": [
     "ansible",
@@ -83,7 +83,7 @@
       "npmjs_organization": "installdoc"
     },
     "repository": {
-      "github": "https://github.com/ProfessorManhattan/common-ansible",
+      "github": "https://github.com/megabyte-labs/common-ansible",
       "gitlab": "https://gitlab.com/megabyte-labs/common/ansible"
     },
     "slug": "common-ansible",
@@ -101,9 +101,7 @@
     "showAuthor": true
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
+    "extends": [],
     "helpUrl": "https://megabyte.space/docs/contributing/commits"
   },
   "eslintConfig": {
