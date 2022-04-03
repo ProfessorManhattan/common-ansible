@@ -274,7 +274,7 @@ function ensureTaskInstalled() {
       TASK_UPDATE_TIME="$(date +%s)"
       echo "$TASK_UPDATE_TIME" > "$HOME/.cache/megabyte/start.sh/bodega-update-check"
     fi
-    TIME_DIFF="$(($(date +%s) - "$TASK_UPDATE_TIME"))"
+    TIME_DIFF="$(($(date +%s) - $TASK_UPDATE_TIME))"
     # Only run if it has been at least 15 minutes since last attempt
     if [ "$TIME_DIFF" -gt 900 ] || [ "$TIME_DIFF" -lt 5 ]; then
       date +%s > "$HOME/.cache/megabyte/start.sh/bodega-update-check"
@@ -538,10 +538,10 @@ if [ -d .git ] && type git &> /dev/null; then
   if [ -f .cache/start.sh/git-pull-time ]; then
     GIT_PULL_TIME="$(cat .cache/start.sh/git-pull-time)"
   else
-    GIT_PULL_TIME="$(date +%s)"
+    GIT_PULL_TIME=$(date +%s)
     echo "$GIT_PULL_TIME" > .cache/start.sh/git-pull-time
   fi
-  TIME_DIFF="$(($(date +%s) - "$GIT_PULL_TIME"))"
+  TIME_DIFF="$(($(date +%s) - $GIT_PULL_TIME))"
   # Only run if it has been at least 15 minutes since last attempt
   if [ "$TIME_DIFF" -gt 900 ] || [ "$TIME_DIFF" -lt 5 ]; then
     date +%s > .cache/start.sh/git-pull-time
