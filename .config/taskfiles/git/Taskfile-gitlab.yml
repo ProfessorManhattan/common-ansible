@@ -355,6 +355,13 @@ tasks:
       - '[ -z "$GITLAB_TOKEN" ]'
 
   update:
+    run: once
+    cmds:
+      - task: update:deps
+    status:
+      - '[ -z "$GITLAB_TOKEN" ] || ! type glab &> /dev/null'
+
+  update:deps:
     deps:
       - access-token
       - branches
@@ -364,9 +371,6 @@ tasks:
       - pipelines
       - update:meta
       - wiki
-    run: once
-    status:
-      - '[ -z "$GITLAB_TOKEN" ] || ! type glab &> /dev/null'
 
   update:meta:
     deps:
