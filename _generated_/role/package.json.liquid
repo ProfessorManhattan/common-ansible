@@ -226,7 +226,8 @@
     "start": "test -z $SKIP_NPM_START && bash start.sh || true",
     "test": "bash start.sh && {{{replace scriptsTest scriptsReplaceThis scriptsReplaceWith}}}",
     "unpack": "bash start.sh && task npm:bundle:unpack",
-    "update": "bash start.sh && task update"
+    "update": "bash start.sh && task update",
+    "vscode": "bash start.sh && task vscode"
   },
   "type": "{{npm_type}}",
   "version": "{{version}}"
