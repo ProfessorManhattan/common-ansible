@@ -146,6 +146,7 @@ tasks:
     status:
       - '[ "$SNAP_PACKAGE" == "null" ]'
 
+  # eslint-disable max-len
   analyze:
     summary: |
       | Command property | Description                                                                                                                                                |
@@ -159,6 +160,7 @@ tasks:
           echo 'patch'
         fi
 
+  # eslint-enable max-len
   build:
     deps:
       - build:ansible
