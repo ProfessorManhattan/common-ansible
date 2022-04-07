@@ -143,11 +143,9 @@ env:
 
 includes:
 {{#forEach (bodegaIncludes)}}
-  {{key}}:{{#if (not optional)}} {{taskPath}}{{/if}}
-  {{#if optional}}
+  {{key}}:
     taskfile: {{taskPath}}
     optional: true
-  {{/if}}
 {{/forEach}}
 
 profile: |
@@ -493,6 +491,7 @@ tasks:
       start: Running `semantic-release` via `task publish`
       success: Successfully ran `semantic-release` via `task publish`
     cmds:
+      - task: release:build
       - task: publish:semantic-release
 
   publish:force:
@@ -521,7 +520,7 @@ tasks:
       success: Successfully published update via `task publish:force`
     cmds:
       - |
-        HUSKY=0 git commit -a --allow-empty -m '🔨 build(version bump): semantic-release \{{.UPDATE_LEVEL}}' -n
+        HUSKY=0 git commit -a --allow-empty -m '🔨 chore(bump): Forced semantic-release \{{.UPDATE_LEVEL}}' -n
       - task: publish
 {{#eq group 'ansible'}}{{#eq subgroup 'playbook'}}
   playbook:

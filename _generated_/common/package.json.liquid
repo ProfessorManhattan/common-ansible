@@ -192,8 +192,10 @@
   "prettier": "prettier-config-sexy-mode",
   "private": false,
   "publishConfig": {
-    "@megabyte:registry": "https://gitlab.com/api/v4/projects/{{gitlab_project_id}}/packages/npm/",
-    "access": "{{npm_publish_config_access}}"
+    "@gitlab:registry": "https://gitlab.com/api/v4/projects/{{gitlab_project_id}}/packages/npm/",
+    "access": "{{npm_publish_config_access}}",
+    "registry": "https://registry.npmjs.org/",
+    "tag": "edge"
   },
   "release": {
     "branches": [
