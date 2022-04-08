@@ -475,7 +475,7 @@ tasks:
         sh: jq -r '.version' package.json
     cmds:
       - npm config set -- 'https://registry.npmjs.org/:_authToken' '${NPM_TOKEN}'
-      - npm dist-tag add {{.PKG_NAME}}@{{.VERSION}} latest
+      - npm dist-tag add {{.PKG_NAME}}@{{.VERSION}} latest &> /dev/null
 
   publish:npm:tasks:
     deps:
