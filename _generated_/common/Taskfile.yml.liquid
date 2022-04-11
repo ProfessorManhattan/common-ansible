@@ -134,6 +134,12 @@ env:
       LIBC=$(ldd /bin/ls | grep 'musl' | head -1 | cut -d ' ' -f1)
       if [ -n "$LIBC" ]; then LINUX_FLAVOR='linux-musl'; fi\{{end}}
       echo "\{{if (eq OS "linux")}}$LINUX_FLAVOR\{{else}}darwin\{{end}}"
+  PATH:
+    sh: |
+      PATH="$PATH:$HOME/.local/bin:$HOME/.poetry/bin:$HOME/.gem/bin:$HOME/.asdf/bin"
+      PATH="$PATH:$HOME/.local/go/bin:$HOME/go/bin"
+      PATH="$PATH:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin"
+      echo "$PATH"
   RECORD_INSTALL:
     sh: if [ -n "$CI" ]; then echo 'true'; fi
   SENTRY_DSN:
@@ -151,7 +157,6 @@ includes:
 {{/forEach}}
 
 profile: |
-  PATH="$PATH:$HOME/.local/bin:$HOME/.poetry/bin"
   if [[ "$OSTYPE" == 'linux-gnu'* ]] || [[ "$OSTYPE" == 'linux-musl'* ]]; then
     if [ -f /home/linuxbrew/.linuxbrew/bin/brew ] && ! type brew > /dev/null; then
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
