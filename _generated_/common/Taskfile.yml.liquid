@@ -38,7 +38,9 @@ vars:
     sh: "if [ -f meta/main.yml ]; then grep role_name < meta/main.yml | sed 's/.*role_name: \\(.*\\)$/\\1/g'; fi"
   GITHUB_ORG:
     sh: |
-      if [ -f .config/variables.json ] && type jq &> /dev/null; then
+      if [ -f package.json ] && type jq &> /dev/null && [ "$(jq -r '.blueprint.repository.github' package.json)" != 'null' ]; then
+        echo "$(jq -r '.blueprint.repository.github' package.json | sed 's/https:\/\/github.com\///' | sed 's/\/.*$//')"
+      elif [ -f .config/variables.json ] && type jq &> /dev/null; then
          echo "$(jq -r '.profile.githubOrg' .config/variables.json)"
       else
         echo 'megabyte-labs'
