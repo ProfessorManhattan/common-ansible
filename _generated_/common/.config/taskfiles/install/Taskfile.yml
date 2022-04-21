@@ -381,3 +381,16 @@ tasks:
         fi
     status:
       - '[ -z "$(which yum)" ]'
+
+  ventoy:
+    cmds:
+      - task: ventoy:init
+    preconditions:
+      - sh: test -d /run/media/user/Ventoy
+        msg: The `/run/media/user/Ventoy` mounted USB directory must be available!
+
+  ventoy:init:
+    deps:
+      - :install:ventoy:config
+      - :install:ventoy:download
+      - :install:ventoy:theme
