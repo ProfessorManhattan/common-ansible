@@ -26,6 +26,17 @@ gpg:
     - gnupg2
     - pcscd
     - scdaemon
+  brew:
+    - gnupg
+    - pinentry-mac
+  dnf:
+    - gnupg2
+    - pinentry-curses
+  pacman:
+    - gnupg
+  yum:
+    - gnupg2
+    - pinentry-curses
 
 yubikey:
   apt-get:
@@ -54,6 +65,12 @@ yubikey:
     - wget
     - ykman
     - yubikey-personalization
+  dnf:
+    - gnupg2
+    - gnupg2-smime
+    - pcsc-lite
+    - pcsc-lite-libs
+    - pinentry-curses
   pacman:
     - ccid
     - gnupg
