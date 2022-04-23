@@ -333,6 +333,7 @@ tasks:
       - curl -sSL https://gitlab.com/megabyte-labs/common/shared/-/blob/master/common/.gitignore > .gitignore
       - curl -sSL https://gitlab.com/megabyte-labs/common/shared/-/blob/master/common/.editorconfig > .editorconfig
       - curl -sSL https://gitlab.com/megabyte-labs/common/shared/-/blob/master/package.json > package.json
+      - curl -sSL https://gitlab.com/megabyte-labs/common/shared/-/blob/master/.gitlab-ci.yml > .gitlab-ci.yml
       - TMP="$(mktemp)" && jq -r 'del(.blueprint)' package.json > "$TMP" && mv "$TMP" package.json
       - bash start.sh
       - task: prepare
@@ -902,3 +903,22 @@ tasks:
         env:
           UPDATE_PROJECT: 'true'
       - task: common:update:finish
+
+  yubikey:
+    desc: Create an OpenGPG-enabled YubiKey
+    summary: |
+      # Create an OpenGPG-enabled YubiKey SmartCard
+
+      This task will walk you through creating an OpenGPG-enabled
+      YubiKey. You can then use it to manage your GPG keys and SSH keys.
+      It will prompt you for things like your pin and automatically
+      set up the YubiKey.
+
+      The interactive process simplifies this very popular guide on
+      how to set up a YubiKey like this:
+
+      [Guide on Using YubiKey for OpenGPG and SSH keys](https://github.com/drduh/YubiKey-Guide)
+
+      We do still recommend that you skim through the guide.
+    cmds:
+      - task: security:yubikey:prepare
