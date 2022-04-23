@@ -196,6 +196,12 @@ tasks:
       - gpg-connect-agent "scd serialno" "learn --force" /bye
 
   usb:
+    summary: |
+      # Backup Keys (Including Master) to USB and Encrypt
+
+      This task will partition a USB with two partitions. One partition will
+      be encrypted and contain your GPG keys (including the master key). The other
+      partition will not be encrypted and contain your public key.
     cmds:
       - task: usb:create
       - task: usb:mount
