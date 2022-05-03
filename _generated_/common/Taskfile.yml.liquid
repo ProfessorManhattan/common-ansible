@@ -405,6 +405,11 @@ tasks:
       - task: repair
       - task: prepare
 
+  jumpusb:
+    desc: Creates a JumpUSB (https://jumpusb.com)
+    cmds:
+      - task: install:ventoy
+
   lint:
     desc: Lints the project using all linters
     summary: |

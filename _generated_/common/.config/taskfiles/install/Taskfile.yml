@@ -384,6 +384,7 @@ tasks:
 
   ventoy:
     cmds:
+      - task: :install:ventoy:install
       - task: ventoy:init
     preconditions:
       - sh: test -d /run/media/user/Ventoy
@@ -391,6 +392,5 @@ tasks:
 
   ventoy:init:
     deps:
-      - :install:ventoy:config
+      - :install:ventoy:clone
       - :install:ventoy:download
-      - :install:ventoy:theme
