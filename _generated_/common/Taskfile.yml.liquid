@@ -128,6 +128,13 @@ vars:
   TIMEZONE: America/New_York
 
 env:
+  GOPATH:
+    sh: |
+      if [ -z "$GOPATH" ]; then
+        echo "$HOME/.local/go"
+      else
+        echo "$GOPATH"
+      fi
   OSTYPE:
     sh: |
       \{{if (eq OS "linux")}}LINUX_FLAVOR='linux-gnu'
