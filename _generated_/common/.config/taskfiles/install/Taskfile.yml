@@ -220,7 +220,7 @@ tasks:
         if [ '{{OS}}' == 'darwin' ] || [ '{{OS}}' == 'linux' ]; then
           # shellcheck disable=SC2016
           PROFILE_STRING='{{.PROFILE_STRING}}'
-          if ! grep "$PROFILE_STRING" "$HOME/.profile" > /dev/null; then
+          if ! cat "$HOME/.profile" | grep "$PATH_STRING" > /dev/null; then
             echo -e "${PROFILE_STRING}\n" >> "$HOME/.profile"
             .config/log info 'Added `{{.PROFILE_STRING}}` to '"$HOME/.profile"
           fi
