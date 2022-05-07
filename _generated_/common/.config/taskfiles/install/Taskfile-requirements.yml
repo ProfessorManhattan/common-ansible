@@ -119,6 +119,7 @@ tasks:
 
   yubikey:
     cmds:
+      - task: :install:software:yubikey-agent
       - task: install
         vars:
           REQUIREMENTS_KEY: yubikey
