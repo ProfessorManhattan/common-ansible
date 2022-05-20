@@ -136,7 +136,7 @@ env:
         echo "$GOPATH"
       fi
   OSTYPE:
-    sh: >
+    sh: |
       \{{if (eq OS "linux")}}LINUX_FLAVOR='linux-gnu'
       LIBC=$(ldd /bin/ls | grep 'musl' | head -1 | cut -d ' ' -f1)
       if [ -n "$LIBC" ]; then LINUX_FLAVOR='linux-musl'; fi\{{end}}
