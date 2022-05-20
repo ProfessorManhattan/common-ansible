@@ -450,6 +450,10 @@ function ensureTaskfiles() {
         rm -rf shared-master
       fi
     fi
+    if [ -n "$BOOTSTRAP_EXIT_CODE" ] && ! task donothing; then
+      # task donothing still does not work so issue must be with main Taskfile.yml
+      git checkout HEAD~1 -- Taskfile.yml
+    fi
   fi
 }
 
