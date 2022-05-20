@@ -570,7 +570,12 @@ if [ -d .git ] && type git &> /dev/null; then
       git reset --hard origin/master
       git push --force origin synchronize || FORCE_SYNC_ERR=$?
       if [ -n "$FORCE_SYNC_ERR" ] && type task &> /dev/null; then
-        NO_GITLAB_SYNCHRONIZE=true task ci:synchronize
+        NO_GITLAB_SYNCHRONIZE=true task ci:synchronize || CI_SYNC_TASK_ISSUE=$?
+        if [ -n "$CI_SYNC_TASK_ISSUE" ]; then
+          logger warn 'Possible issue with `Taskfile.yml` -- attempting to fix by reverting `Taskfile.yml` to previous commit'
+          git checkout HEAD~1 -- Taskfile.yml
+          NO_GITLAB_SYNCHRONIZE=true task ci:synchronize
+        fi
       else
         DELAYED_CI_SYNC=true
       fi
