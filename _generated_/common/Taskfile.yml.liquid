@@ -147,6 +147,7 @@ env:
       PATH="$PATH:$HOME/.local/go/bin:$HOME/go/bin"
       PATH="$PATH:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin"
       PATH="$PATH:$PWD/bin"
+      PATH="$PATH:$VOLTA_HOME/bin"
       echo "$PATH"
   RECORD_INSTALL:
     sh: if [ -n "$CI" ]; then echo 'true'; fi
@@ -156,6 +157,8 @@ env:
         DSN="$(jq -r '.blueprint.sentryDSN' package.json)"
         if [ "$DSN" != 'null' ]; then echo "$DSN"; fi
       fi
+  VOLTA_HOME:
+    sh: echo "$HOME/.volta"
 
 includes:
 {{#forEach (bodegaIncludes)}}
