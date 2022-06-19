@@ -62,6 +62,7 @@ yubikey:
     - gnupg
     - hopenpgp-tools
     - pinentry-mac
+    - swig
     - wget
     - ykman
     - yubikey-personalization
