@@ -937,4 +937,7 @@ tasks:
 
       We do still recommend that you skim through the guide.
     cmds:
-      - task: security:yubikey:prepare
+      - |
+        export GNUPGHOME="$HOME/.gnupgyubi"
+        export MASTER_KEY="$(LC_ALL=C tr -dc '[:upper:]' < /dev/urandom | fold -w 30 | head -n1)"
+        task security:yubikey:prepare
