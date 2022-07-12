@@ -72,6 +72,8 @@ function EnsureUbuntuAPPXInstalled {
 
 # @description Automates the process of setting up the Ubuntu 20.04 WSL environment
 function SetupUbuntuWSL {
+    Write-Host "Set default WSL version to 1 (required for bridged eth0 adapter)" -ForegroundColor Black -BackgroundColor Cyan
+    wsl --set-default-version 1
     Write-Host "Setting up Ubuntu WSL" -ForegroundColor Black -BackgroundColor Cyan
     Start-Process "ubuntu.exe" -ArgumentList "install --root" -Wait -NoNewWindow
     $username = $env:username
