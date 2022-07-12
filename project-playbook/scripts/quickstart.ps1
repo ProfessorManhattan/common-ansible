@@ -6,10 +6,10 @@
 # @description
 #   1. This script will enable Windows features required for WSL.
 #   2. It will reboot and continue where it left off.
-#   3. Installs and pre-configures the WSL environment.
-#   4. Ensures Docker Desktop is installed
-#   5. Reboots and continues where it left off.
-#   6. Ensures Windows WinRM is active so the Ubuntu WSL environment can provision the Windows host.
+#   3. Ensures Windows WinRM is active so the Ubuntu WSL environment can provision the Windows host.
+#   4. Installs and pre-configures the WSL environment.
+#   5. Ensures Docker Desktop is installed
+#   6. Reboots and continues where it left off.
 #   7. The playbook is run.
 
 New-Item -ItemType Directory -Force -Path C:\Temp
@@ -94,10 +94,6 @@ function SetupUbuntuWSL {
 
 # @description Ensures Docker Desktop is installed (which requires a reboot)
 function EnsureDockerDesktopInstalled {
-    if (!(Test-Path "C:\Temp\docker-desktop-installer.exe")) {
-        Write-Host "Downloading Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
-        Start-BitsTransfer -Source "https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -Destination "C:\Temp\docker-desktop-installer.exe" -Description "Downloading Docker Desktop"
-    }
     Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
     choco install -y docker-desktop
     if (!(Test-Path "C:\Temp\docker-desktop-rebooted")) {
