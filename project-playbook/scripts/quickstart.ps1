@@ -88,7 +88,7 @@ function RunPlaybook {
 workflow ProvisionWindowsWSLAnsible {
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name PSWindowsUpdate -Force
-    Install-Module -Name PendingReboot
+    Install-Module -Name PendingReboot -Force
     EnsureWindowsUpdated
     # Because of the error "A workflow cannot use recursion," we can just run the update process a few times to ensure everything is updated
     EnsureWindowsUpdated
