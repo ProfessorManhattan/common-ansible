@@ -15,19 +15,24 @@
 New-Item -ItemType Directory -Force -Path C:\Temp
 
 # @description Reboot and continue script after reboot
+function RebootAndContinue {
+  if (!(Test-Path "C:\Temp\quickstart.ps1")) {
+    Write-Host "Ensuring the recursive update script is downloaded"
+    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination "C:\Temp\quickstart.ps1" -Description "Downloading quickstart.ps1 script"
+  }
+  Write-Host "Changing $env:UserName password to 'MegabyteLabs' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
+  $NewPassword = ConvertTo-SecureString "MegabyteLabs" -AsPlainText -Force
+  Set-LocalUser -Name $env:UserName -Password $NewPassword
+  Write-Host "Turning on auto-logon and making script start C:\Temp\quickstart.ps1" -ForegroundColor Black -BackgroundColor Cyan
+  Set-AutoLogon -DefaultUsername "$env:UserName" -DefaultPassword "MegabyteLabs" -Script "c:\Temp\quickstart.ps1"
+  Restart-Computer
+}
+
+# @description Reboot and continue script after reboot (if required)
 function RebootAndContinueIfRequired {
   Install-Module -Name PendingReboot -Force
   if ((Test-PendingReboot).IsRebootPending) {
-    if (!(Test-Path "C:\Temp\quickstart.ps1")) {
-      Write-Host "Ensuring the recursive update script is downloaded"
-      Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination "C:\Temp\quickstart.ps1" -Description "Downloading quickstart.ps1 script"
-    }
-    Write-Host "Changing $env:UserName password to 'MegabyteLabs' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
-    $NewPassword = ConvertTo-SecureString "MegabyteLabs" -AsPlainText -Force
-    Set-LocalUser -Name $env:UserName -Password $NewPassword
-    Write-Host "Turning on auto-logon and making script start C:\Temp\quickstart.ps1" -ForegroundColor Black -BackgroundColor Cyan
-    Set-AutoLogon -DefaultUsername "$env:UserName" -DefaultPassword "MegabyteLabs" -Script "c:\Temp\quickstart.ps1"
-    Restart-Computer
+    RebootAndContinue
   }
 }
 
@@ -94,10 +99,14 @@ function EnsureDockerDesktopInstalled {
         Start-BitsTransfer -Source "https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -Destination "C:\Temp\docker-desktop-installer.exe" -Description "Downloading Docker Desktop"
     }
     Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
-    Start-Process 'C:\Temp\docker-desktop-installer.exe' -ArgumentList 'install --quiet' -Wait -NoNewWindow
-    & 'C:\Program Files\Docker\Docker\Docker Desktop.exe'
-    Write-Host "Waiting for Docker Desktop to come online" -ForegroundColor Black -BackgroundColor Cyan
-    Start-Sleep -s 30
+    choco install -y docker-desktop
+    if (!(Test-Path "C:\Temp\docker-desktop-rebooted")) {
+      New-Item "C:\Temp\docker-desktop-rebooted"
+      RebootAndContinue
+    }
+    # & 'C:\Program Files\Docker\Docker\Docker Desktop.exe'
+    # Write-Host "Waiting for Docker Desktop to come online" -ForegroundColor Black -BackgroundColor Cyan
+    # Start-Sleep -s 30
 }
 
 # @description Enables WinRM connectivity
@@ -114,7 +123,7 @@ function RunPlaybook {
     Write-Host "Running quickstart.sh in WSL environment" -ForegroundColor Black -BackgroundColor Cyan
     Start-Process "ubuntu.exe" -ArgumentList "run curl -sSL https://gitlab.com/megabyte-labs/gas-station/-/raw/master/scripts/quickstart.sh > quickstart.sh && bash quickstart.sh" -Wait -NoNewWindow
     Write-Host "Running quickstart continue command in WSL environment" -ForegroundColor Black -BackgroundColor Cyan
-    Start-Process "ubuntu.exe" -ArgumentList "run bash ~/Playbooks/.cache/ansible-playbook-continue-command.sh" -Wait -NoNewWindow
+    Start-Process "ubuntu.exe" -ArgumentList "run bash ~/.config/ansible-playbook-continue-command.sh" -Wait -NoNewWindow
 }
 
 # @description Install Chocolatey
@@ -134,9 +143,7 @@ function ProvisionWindowsWSLAnsible {
     EnsureUbuntuAPPXInstalled
     SetupUbuntuWSL
     InstallChocolatey
-    Write-Host "Installing docker-desktop"
-    choco install -y docker-desktop
-    RebootAndContinueIfRequired
+    EnsureDockerDesktopInstalled
     RunPlaybook
     Write-Host "All done! Make sure you change your password. It was set to 'MegabyteLabs'" -ForegroundColor Black -BackgroundColor Cyan
 }
