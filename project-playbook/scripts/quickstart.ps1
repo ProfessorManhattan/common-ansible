@@ -18,15 +18,15 @@ New-Item -ItemType Directory -Force -Path C:\Temp
 function RebootAndContinueIfRequired {
   Install-Module -Name PendingReboot -Force
   if ((Test-PendingReboot).IsRebootPending) {
+    if (!(Test-Path "C:\Temp\quickstart.ps1")) {
+      Write-Host "Ensuring the recursive update script is downloaded"
+      Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination "C:\Temp\quickstart.ps1" -Description "Downloading quickstart.ps1 script"
+    }
     Write-Host "Changing $env:UserName password to 'MegabyteLabs' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
     $NewPassword = ConvertTo-SecureString "MegabyteLabs" -AsPlainText -Force
     Set-LocalUser -Name $env:UserName -Password $NewPassword
     Write-Host "Turning on auto-logon and making script start C:\Temp\quickstart.ps1" -ForegroundColor Black -BackgroundColor Cyan
     Set-AutoLogon -DefaultUsername "$env:UserName" -DefaultPassword "MegabyteLabs" -Script "c:\Temp\quickstart.ps1"
-    if (!(Test-Path "C:\Temp\quickstart.ps1")) {
-      Write-Host "Ensuring the recursive update script is downloaded"
-      Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination "C:\Temp\quickstart.ps1" -Description "Downloading quickstart.ps1 script"
-    }
     Restart-Computer
   }
 }
