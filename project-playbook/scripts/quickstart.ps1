@@ -32,9 +32,6 @@ function Test-PendingReboot {
 
 # @description Ensure all Windows updates have been applied and then starts the provisioning process
 function EnsureWindowsUpdated {
-    InlineScript {
-      Write-Host "Ensuring all the available Windows updates have been applied." -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     Get-WUInstall -AcceptAll -IgnoreReboot
     $rebootrequired = Test-PendingReboot
     if ($rebootrequired -eq 1) {
@@ -47,15 +44,8 @@ function EnsureWindowsUpdated {
 function EnsureLinuxSubsystemEnabled {
     $wslenabled = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux | Select-Object -Property State
     if ($wslenabled.State -eq "Disabled") {
-        InlineScript {
-          Write-Host "WSL is not enabled. Enabling now." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
         Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
         $rebootrequired = 1
-    } else {
-        InlineScript {
-          Write-Host "WSL already enabled. Moving on." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
     }
 }
 
@@ -63,86 +53,40 @@ function EnsureLinuxSubsystemEnabled {
 function EnsureVirtualMachinePlatformEnabled {
     $vmenabled = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform | Select-Object -Property State
     if ($vmenabled.State -eq "Disabled") {
-        InlineScript {
-          Write-Host "VirtualMachinePlatform is not enabled.  Enabling now." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
         Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
         $rebootrequired=1
-    } else {
-        InlineScript {
-          Write-Host "VirtualMachinePlatform already enabled. Moving on." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
     }
 }
 
 # @description Ensures Ubuntu 20.04 is installed on the system from a .appx file
 function EnsureUbuntuAPPXInstalled {
     if(!(Test-Path "C:\Temp\UBUNTU2004.appx")) {
-        InlineScript {
-          Write-Host "Downloading the Ubuntu 20.04 image. Please wait." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
         Start-BitsTransfer -Source "https://aka.ms/wslubuntu2004" -Destination "C:\Temp\UBUNTU2004.appx" -Description "Downloading Ubuntu 20.04 WSL image"
-    } else {
-        InlineScript {
-          Write-Host "The Ubuntu 20.04 image was already at C:\Temp\UBUNTU2004.appx. Moving on." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
     }
     $ubu2004appxinstalled = Get-AppxPackage -Name CanonicalGroupLimited.Ubuntu20.04onWindows
-    if ($ubu2004appxinstalled) {
-        InlineScript {
-          Write-Host "Ubuntu 20.04 appx is already installed. Moving on." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
-    } else {
-        InlineScript {
-          Write-Host "Installing the Ubuntu 20.04 Appx distro. Please wait." -ForegroundColor Yellow -BackgroundColor DarkGreen
-        }
+    if !($ubu2004appxinstalled) {
         Add-AppxPackage -Path "C:\Temp\UBUNTU2004.appx"
     }
 }
 
 # @description Automates the process of setting up the Ubuntu 20.04 WSL environment
 function SetupUbuntuWSL {
-    InlineScript {
-      Write-Host "Configuring Ubuntu 20.04 WSL.." -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     Start-Process "ubuntu.exe" -ArgumentList "install --root" -Wait -NoNewWindow
     $username = $env:username
-    InlineScript {
-      Write-Host "Creating the $username user.." -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     Start-Process "ubuntu.exe" -ArgumentList "run adduser $username --gecos 'First,Last,RoomNumber,WorkPhone,HomePhone' --disabled-password" -Wait -NoNewWindow
-    InlineScript {
-      Write-Host "Adding $username to sudo group" -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     Start-Process "ubuntu.exe" -ArgumentList "run usermod -aG sudo $username" -Wait -NoNewWindow
-    InlineScript {
-      Write-Host "Allowing $username to run sudo without a password" -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     Start-Process "ubuntu.exe" -ArgumentList "run echo '$username ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers" -Wait -NoNewWindow
-    InlineScript {
-      Write-Host "Set WSL default user to $username" -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     Start-Process "ubuntu.exe" -ArgumentList "config --default-user $username" -Wait -NoNewWindow
 }
 
 # @description Ensures Docker Desktop is installed (which requires a reboot)
 function EnsureDockerDesktopInstalled {
-    InlineScript {
-      Write-Host "Installing Docker Desktop" -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     if (!(Test-Path "C:\Temp\docker-desktop-installer.exe")) {
-        Write-Host "Downloading the Docker Desktop installer." -ForegroundColor Yellow -BackgroundColor DarkGreen
         Start-BitsTransfer -Source "https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -Destination "C:\Temp\docker-desktop-installer.exe" -Description "Downloading Docker Desktop"
     }
     Start-Process 'C:\Temp\docker-desktop-installer.exe' -ArgumentList 'install --quiet' -Wait -NoNewWindow
-    InlineScript {
-      Write-Host "Waiting for Docker Desktop to start" -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
     & 'C:\Program Files\Docker\Docker\Docker Desktop.exe'
     Start-Sleep -s 30
-    InlineScript {
-      Write-Host "Done. Rebooting again.." -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
 }
 
 # @description Enables WinRM connectivity
@@ -179,9 +123,6 @@ workflow Provision-Windows-WSL-Ansible {
     EnsureDockerDesktopInstalled
     Restart-Computer -Wait
     RunPlaybook
-    InlineScript {
-      Write-Host "All done! If you encountered errors, please open an issue and/or PR! :) Thank you!" -ForegroundColor Yellow -BackgroundColor DarkGreen
-    }
 }
 
 # @description Run the PowerShell workflow job that spans across reboots
