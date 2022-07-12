@@ -135,7 +135,7 @@ function ProvisionWindowsWSLAnsible {
     SetupUbuntuWSL
     InstallChocolatey
     Write-Host "Installing docker-desktop"
-    choco install docker-desktop
+    choco install -y docker-desktop
     RebootAndContinueIfRequired
     RunPlaybook
     Write-Host "All done! Make sure you change your password. It was set to 'MegabyteLabs'" -ForegroundColor Black -BackgroundColor Cyan
