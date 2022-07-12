@@ -179,7 +179,9 @@ workflow Provision-Windows-WSL-Ansible {
     EnsureDockerDesktopInstalled
     Restart-Computer -Wait
     RunPlaybook
-    Write-Host "All done! If you encountered errors, please open an issue and/or PR! :) Thank you!" -ForegroundColor Yellow -BackgroundColor DarkGreen
+    InlineScript {
+      Write-Host "All done! If you encountered errors, please open an issue and/or PR! :) Thank you!" -ForegroundColor Yellow -BackgroundColor DarkGreen
+    }
 }
 
 # @description Run the PowerShell workflow job that spans across reboots
