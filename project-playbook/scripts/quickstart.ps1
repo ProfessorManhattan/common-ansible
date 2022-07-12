@@ -117,6 +117,11 @@ function RunPlaybook {
     Start-Process "ubuntu.exe" -ArgumentList "run bash ~/Playbooks/.cache/ansible-playbook-continue-command.sh" -Wait -NoNewWindow
 }
 
+# @description Install Chocolatey
+function InstallChocolatey {
+  Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+}
+
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
 # while continuing script after a restart.
 function ProvisionWindowsWSLAnsible {
@@ -128,7 +133,9 @@ function ProvisionWindowsWSLAnsible {
     EnsureVirtualMachinePlatformEnabled
     EnsureUbuntuAPPXInstalled
     SetupUbuntuWSL
-    EnsureDockerDesktopInstalled
+    InstallChocolatey
+    Write-Host "Installing docker-desktop"
+    choco install docker-desktop
     RebootAndContinueIfRequired
     RunPlaybook
     Write-Host "All done! Make sure you change your password. It was set to 'MegabyteLabs'" -ForegroundColor Black -BackgroundColor Cyan
