@@ -21,12 +21,10 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 function RebootAndContinue {
   if (!(Test-Path $quickstartScript)) {
     Write-Host "Ensuring the recursive update script is downloaded"
-    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart?cachebuster888" -Destination $quickstartScript -Description "Downloading initialization script"
+    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $quickstartScript -Description "Downloading initialization script"
   }
   Write-Host "Ensuring start-up script is present" -ForegroundColor Black -BackgroundColor Cyan
-  Set-Content -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\gas-station.bat" 'PowerShell.exe -ExecutionPolicy RemoteSigned -File C:\Temp\elevate-permission.ps1 -verb runas'
-  Write-Host "Ensuring permission elevation script is present" -ForegroundColor Black -BackgroundColor Cyan
-  Set-Content -Path "C:\Temp\elevate-permission.ps1" -Value 'Start-Process -FilePath "powershell" -ArgumentList "-File C:\Temp\quickstart.ps1 -Verbose" -verb runas'
+  Set-Content -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" "PowerShell.exe -ExecutionPolicy RemoteSigned -Command `"Start-Process -FilePath powershell -ArgumentList '-File C:\Temp\quickstart.ps1 -Verbose' -verb runas`""
   Write-Host "Changing $env:UserName password to 'MegabyteLabs' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
   $NewPassword = ConvertTo-SecureString "MegabyteLabs" -AsPlainText -Force
   Set-LocalUser -Name $env:UserName -Password $NewPassword
@@ -35,20 +33,14 @@ function RebootAndContinue {
   Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
   Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$env:username" -type String
   Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "MegabyteLabs" -type String
-  if (!(Get-ScheduledJob -Name ContinueQuickstartJob)) {
-    Write-Host "Enabling script launch on login.." -ForegroundColor Black -BackgroundColor Cyan
-    $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:30
-    Register-ScheduledJob -Trigger $trigger -FilePath "C:\Temp\quickstart-logon.ps1" -Name ContinueQuickstartJob
-  }
   Restart-Computer -Force
 }
 
 # @description Reboot and continue script after reboot (if required)
 function RebootAndContinueIfRequired {
-  if (!(Test-Path "C:\Temp\pending-reboot-installed")) {
+  if (!(Get-Module "PendingReboot")) {
     Write-Host "Installing PendingReboot module" -ForegroundColor Black -BackgroundColor Cyan
     Install-Module -Name PendingReboot -Force
-    New-Item "C:\Temp\pending-reboot-installed"
   }
   Import-Module PendingReboot -Force
   if ((Test-PendingReboot).IsRebootPending) {
@@ -58,10 +50,9 @@ function RebootAndContinueIfRequired {
 
 # @description Ensure all Windows updates have been applied and then starts the provisioning process
 function EnsureWindowsUpdated {
-    if (!(Test-Path "C:\Temp\pswindowsupdate-installed")) {
+    if (!(Get-Module "PSWindowsUpdate")) {
       Write-Host "Installing update module" -ForegroundColor Black -BackgroundColor Cyan
       Install-Module -Name PSWindowsUpdate -Force
-      New-Item "C:\Temp\pswindowsupdate-installed"
     }
     Write-Host "Ensuring all the available Windows updates have been applied." -ForegroundColor Black -BackgroundColor Cyan
     Import-Module PSWindowsUpdate -Force
@@ -120,10 +111,9 @@ function SetupUbuntuWSL {
 
 # @description Ensures Docker Desktop is installed (which requires a reboot)
 function EnsureDockerDesktopInstalled {
-    if (!(Test-Path "C:\Temp\docker-desktop-rebooted")) {
+    if (!(Test-Path "C:\Program Files\Docker\Docker\Docker Desktop.exe")) {
       Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
       choco install -y docker-desktop
-      New-Item "C:\Temp\docker-desktop-rebooted"
       RebootAndContinue
     }
     # & 'C:\Program Files\Docker\Docker\Docker Desktop.exe'
@@ -145,7 +135,7 @@ function RunPlaybook {
     Write-Host "Running quickstart.sh in WSL environment" -ForegroundColor Black -BackgroundColor Cyan
     Start-Process "ubuntu.exe" -ArgumentList "run curl -sSL https://gitlab.com/megabyte-labs/gas-station/-/raw/master/scripts/quickstart.sh > quickstart.sh && bash quickstart.sh" -Wait -NoNewWindow
     Write-Host "Running quickstart continue command in WSL environment" -ForegroundColor Black -BackgroundColor Cyan
-    Start-Process "ubuntu.exe" -ArgumentList "run bash ~/.config/ansible-playbook-continue-command.sh" -Wait -NoNewWindow
+    Start-Process "ubuntu.exe" -ArgumentList "run cd ~/Playbooks && task ansible:quickstart" -Wait -NoNewWindow
 }
 
 # @description Install Chocolatey
@@ -156,9 +146,8 @@ function InstallChocolatey {
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
 # while continuing script after a restart.
 function ProvisionWindowsWSLAnsible {
-    if (!(Test-Path "C:\Temp\installed-package-providers")) {
+    if (!(Get-PackageProvider -Name "NuGet")) {
       Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-      New-Item "C:\Temp\installed-package-providers"
     }
     EnsureWindowsUpdated
     EnableWinRM
@@ -169,14 +158,10 @@ function ProvisionWindowsWSLAnsible {
     InstallChocolatey
     EnsureDockerDesktopInstalled
     RunPlaybook
-    if (!!(Get-ScheduledJob -Name ContinueQuickstartJob)) {
-      Write-Host "Removing ContinueQuickstartJob" -ForegroundColor Black -BackgroundColor Cyan
-      Unregister-ScheduledJob -Name ContinueQuickstartJob
-    }
-    Write-Host "Removing C:\Temp and all its contents" -ForegroundColor Black -BackgroundColor Cyan
-    Remove-Item -path "C:\Temp" -recurse -force
-    Write-Host "All done! Make sure you change your password. It was set to 'MegabyteLabs'" -ForegroundColor Black -BackgroundColor Cyan
-    Read-Host "Press ENTER to exit"
+    Write-Host "All done! Make sure you change your password. It was set to 'MegabyteLabs' for automation purposes." -ForegroundColor Black -BackgroundColor Cyan
+    Read-Host "Press ENTER to exit, remove temporary files, and the start-up script"
+    Remove-Item -path "C:\Temp" -Recurse -Force
+    Remove-Item -path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" -Force
 }
 
 ProvisionWindowsWSLAnsible
