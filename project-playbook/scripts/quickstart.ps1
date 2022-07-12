@@ -64,7 +64,7 @@ function EnsureUbuntuAPPXInstalled {
         Start-BitsTransfer -Source "https://aka.ms/wslubuntu2004" -Destination "C:\Temp\UBUNTU2004.appx" -Description "Downloading Ubuntu 20.04 WSL image"
     }
     $ubu2004appxinstalled = Get-AppxPackage -Name CanonicalGroupLimited.Ubuntu20.04onWindows
-    if !($ubu2004appxinstalled) {
+    if (!$ubu2004appxinstalled) {
         Add-AppxPackage -Path "C:\Temp\UBUNTU2004.appx"
     }
 }
