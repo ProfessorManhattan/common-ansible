@@ -85,7 +85,7 @@ function RunPlaybook {
 
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
 # while continuing script after a restart.
-workflow Provision-Windows-WSL-Ansible {
+workflow ProvisionWindowsWSLAnsible {
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name PSWindowsUpdate -Force
     Install-Module -Name PendingReboot
@@ -106,5 +106,12 @@ workflow Provision-Windows-WSL-Ansible {
     RunPlaybook
 }
 
-# @description Run the PowerShell workflow job that spans across reboots
-Provision-Windows-WSL-Ansible
+
+$options = New-ScheduledJobOption -RunElevated -ContinueIfGoingOnBattery -StartIfOnBattery
+$secpasswd = ConvertTo-SecureString "Aa123456!" -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential ("WELCOME\Administrator", $secpasswd)
+$AtStartup = New-JobTrigger -AtStartup
+
+# Source: https://stackoverflow.com/questions/15166839/powershell-reboot-and-continue-script
+Register-ScheduledJob -Name ProvisionWindowsWSLAnsibleJob -Trigger $AtStartup -ScriptBlock ({[System.Management.Automation.Remoting.PSSessionConfigurationData]::IsServerManager = $true; Import-Module PSWorkflow; Resume-Job -Name RebootContinueWorkflow -Wait}) -ScheduledJobOption $options
+ProvisionWindowsWSLAnsible -AsJob -JobName RebootContinueWorkflow
