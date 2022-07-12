@@ -23,8 +23,10 @@ function RebootAndContinue {
     Write-Host "Ensuring the recursive update script is downloaded"
     Start-BitsTransfer -Source "https://install.doctor/windows-quickstart?cachebuster888" -Destination $quickstartScript -Description "Downloading initialization script"
   }
-  Write-Host "Ensuring log-on script is present"
-  Set-Content -Path "C:\Temp\quickstart-logon.ps1" -Value 'Start-Process -FilePath "powershell" -ArgumentList "-File C:\Temp\quickstart.ps1 -Verbose" -verb runas'
+  Write-Host "Ensuring start-up script is present" -ForegroundColor Black -BackgroundColor Cyan
+  Set-Content -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\gas-station.bat" 'PowerShell.exe -ExecutionPolicy RemoteSigned -File C:\Temp\elevate-permission.ps1 -verb runas'
+  Write-Host "Ensuring permission elevation script is present" -ForegroundColor Black -BackgroundColor Cyan
+  Set-Content -Path "C:\Temp\elevate-permission.ps1" -Value 'Start-Process -FilePath "powershell" -ArgumentList "-File C:\Temp\quickstart.ps1 -Verbose" -verb runas'
   Write-Host "Changing $env:UserName password to 'MegabyteLabs' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
   $NewPassword = ConvertTo-SecureString "MegabyteLabs" -AsPlainText -Force
   Set-LocalUser -Name $env:UserName -Password $NewPassword
