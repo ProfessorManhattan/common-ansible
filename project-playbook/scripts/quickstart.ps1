@@ -13,30 +13,12 @@
 #   7. The playbook is run.
 
 New-Item -ItemType Directory -Force -Path C:\Temp
-$rebootrequired = 0
-
-# @description Determines whether or not a reboot is pending
-function Test-PendingReboot {
-  if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return 1 }
-  if (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return 1 }
-  if (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) { return 1 }
-  try {
-    $util = [wmiclass]"\\.\root\ccm\clientsdk:CCM_ClientUtilities"
-    $status = $util.DetermineIfRebootPending()
-    if (($status -ne $null) -and $status.RebootPending) {
-      return 1
-    }
-  } catch {}
-  return 0
-}
 
 # @description Ensure all Windows updates have been applied and then starts the provisioning process
 function EnsureWindowsUpdated {
     Get-WUInstall -AcceptAll -IgnoreReboot
-    $rebootrequired = Test-PendingReboot
-    if ($rebootrequired -eq 1) {
+    if ((Test-PendingReboot).IsRebootPending) {
         Restart-Computer -Wait
-        $rebootrequired = 0
     }
 }
 
@@ -45,7 +27,6 @@ function EnsureLinuxSubsystemEnabled {
     $wslenabled = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux | Select-Object -Property State
     if ($wslenabled.State -eq "Disabled") {
         Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
-        $rebootrequired = 1
     }
 }
 
@@ -54,7 +35,6 @@ function EnsureVirtualMachinePlatformEnabled {
     $vmenabled = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform | Select-Object -Property State
     if ($vmenabled.State -eq "Disabled") {
         Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
-        $rebootrequired=1
     }
 }
 
@@ -108,6 +88,7 @@ function RunPlaybook {
 workflow Provision-Windows-WSL-Ansible {
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name PSWindowsUpdate -Force
+    Install-Module -Name PendingReboot
     EnsureWindowsUpdated
     # Because of the error "A workflow cannot use recursion," we can just run the update process a few times to ensure everything is updated
     EnsureWindowsUpdated
@@ -115,7 +96,7 @@ workflow Provision-Windows-WSL-Ansible {
     EnableWinRM
     EnsureLinuxSubsystemEnabled
     EnsureVirtualMachinePlatformEnabled
-    if ($rebootrequired -eq 1) {
+    if ((Test-PendingReboot).IsRebootPending) {
         Restart-Computer -Wait
     }
     EnsureUbuntuAPPXInstalled
