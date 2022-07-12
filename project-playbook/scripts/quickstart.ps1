@@ -76,7 +76,7 @@ function SetupUbuntuWSL {
     wsl --set-default-version 1
     Write-Host "Setting up Ubuntu WSL" -ForegroundColor Black -BackgroundColor Cyan
     Start-Process "ubuntu.exe" -ArgumentList "install --root" -Wait -NoNewWindow
-    $username = $env:username
+    $username = $env:username.ToLower()
     Write-Host "Adding a user" -ForegroundColor Black -BackgroundColor Cyan
     Start-Process "ubuntu.exe" -ArgumentList "run adduser $username --gecos 'First,Last,RoomNumber,WorkPhone,HomePhone' --disabled-password" -Wait -NoNewWindow
     Write-Host "Adding user to sudo group" -ForegroundColor Black -BackgroundColor Cyan
