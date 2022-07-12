@@ -12,25 +12,43 @@
 #   6. Reboots and continues where it left off.
 #   7. The playbook is run.
 
+$quickstartScript = "C:\Temp\quickstart.ps1"
+
 New-Item -ItemType Directory -Force -Path C:\Temp
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
 # @description Reboot and continue script after reboot
 function RebootAndContinue {
-  if (!(Test-Path "C:\Temp\quickstart.ps1")) {
+  if (!(Test-Path $quickstartScript)) {
     Write-Host "Ensuring the recursive update script is downloaded"
-    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination "C:\Temp\quickstart.ps1" -Description "Downloading quickstart.ps1 script"
+    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart?cachebuster" -Destination $quickstartScript -Description "Downloading initialization script"
   }
+  Write-Host "Ensuring log-on script is present"
+  Set-Content -Path "C:\Temp\quickstart-logon.ps1" -Value 'Start-Process -FilePath "powershell" -ArgumentList "-File "C:\Temp\quickstart.ps1" -Verbose -Restart" -verb runas'
   Write-Host "Changing $env:UserName password to 'MegabyteLabs' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
   $NewPassword = ConvertTo-SecureString "MegabyteLabs" -AsPlainText -Force
   Set-LocalUser -Name $env:UserName -Password $NewPassword
-  Write-Host "Turning on auto-logon and making script start C:\Temp\quickstart.ps1" -ForegroundColor Black -BackgroundColor Cyan
-  Set-AutoLogon -DefaultUsername "$env:UserName" -DefaultPassword "MegabyteLabs" -Script "c:\Temp\quickstart.ps1"
-  Restart-Computer
+  Write-Host "Turning on auto-logon" -ForegroundColor Black -BackgroundColor Cyan
+  $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+  Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
+  Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$env:username" -type String
+  Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "MegabyteLabs" -type String
+  if (!(Get-ScheduledJob -Name ContinueQuickstartJob)) {
+    Write-Host "Enabling script launch on login.." -ForegroundColor Black -BackgroundColor Cyan
+    $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:30
+    Register-ScheduledJob -Trigger $trigger -FilePath "C:\Temp\quickstart-logon.ps1" -Name ContinueQuickstartJob
+  }
+  Restart-Computer -Force
 }
 
 # @description Reboot and continue script after reboot (if required)
 function RebootAndContinueIfRequired {
-  Install-Module -Name PendingReboot -Force
+  if (!(Test-Path "C:\Temp\pending-reboot-installed")) {
+    Write-Host "Installing PendingReboot module" -ForegroundColor Black -BackgroundColor Cyan
+    Install-Module -Name PendingReboot -Force
+    New-Item "C:\Temp\pending-reboot-installed"
+  }
+  Import-Module PendingReboot -Force
   if ((Test-PendingReboot).IsRebootPending) {
     RebootAndContinue
   }
@@ -38,7 +56,13 @@ function RebootAndContinueIfRequired {
 
 # @description Ensure all Windows updates have been applied and then starts the provisioning process
 function EnsureWindowsUpdated {
+    if (!(Test-Path "C:\Temp\pswindowsupdate-installed")) {
+      Write-Host "Installing update module" -ForegroundColor Black -BackgroundColor Cyan
+      Install-Module -Name PSWindowsUpdate -Force
+      New-Item "C:\Temp\pswindowsupdate-installed"
+    }
     Write-Host "Ensuring all the available Windows updates have been applied." -ForegroundColor Black -BackgroundColor Cyan
+    Import-Module PSWindowsUpdate -Force
     Get-WUInstall -AcceptAll -IgnoreReboot
     Write-Host "Checking if reboot is required." -ForegroundColor Black -BackgroundColor Cyan
     RebootAndContinueIfRequired
@@ -94,9 +118,9 @@ function SetupUbuntuWSL {
 
 # @description Ensures Docker Desktop is installed (which requires a reboot)
 function EnsureDockerDesktopInstalled {
-    Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
-    choco install -y docker-desktop
     if (!(Test-Path "C:\Temp\docker-desktop-rebooted")) {
+      Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
+      choco install -y docker-desktop
       New-Item "C:\Temp\docker-desktop-rebooted"
       RebootAndContinue
     }
@@ -130,8 +154,10 @@ function InstallChocolatey {
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
 # while continuing script after a restart.
 function ProvisionWindowsWSLAnsible {
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    Install-Module -Name PSWindowsUpdate -Force
+    if (!(Test-Path "C:\Temp\installed-package-providers")) {
+      Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+      New-Item "C:\Temp\installed-package-providers"
+    }
     EnsureWindowsUpdated
     EnableWinRM
     EnsureLinuxSubsystemEnabled
@@ -141,7 +167,14 @@ function ProvisionWindowsWSLAnsible {
     InstallChocolatey
     EnsureDockerDesktopInstalled
     RunPlaybook
+    if (!!(Get-ScheduledJob -Name ContinueQuickstartJob)) {
+      Write-Host "Removing ContinueQuickstartJob" -ForegroundColor Black -BackgroundColor Cyan
+      Unregister-ScheduledJob -Name ContinueQuickstartJob
+    }
+    Write-Host "Removing C:\Temp and all its contents" -ForegroundColor Black -BackgroundColor Cyan
+    Remove-Item -path "C:\Temp" -recurse -force
     Write-Host "All done! Make sure you change your password. It was set to 'MegabyteLabs'" -ForegroundColor Black -BackgroundColor Cyan
+    Read-Host "Press ENTER to exit"
 }
-
+Start-Process -FilePath "powershell" -ArgumentList "-File 'C:\Temp\quickstart.ps1' -Verbose -Restart" -verb runas
 ProvisionWindowsWSLAnsible
