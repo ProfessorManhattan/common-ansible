@@ -21,7 +21,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 function RebootAndContinue {
   if (!(Test-Path $quickstartScript)) {
     Write-Host "Ensuring the recursive update script is downloaded"
-    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart?cachebuster" -Destination $quickstartScript -Description "Downloading initialization script"
+    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart?cachebuster888" -Destination $quickstartScript -Description "Downloading initialization script"
   }
   Write-Host "Ensuring log-on script is present"
   Set-Content -Path "C:\Temp\quickstart-logon.ps1" -Value 'Start-Process -FilePath "powershell" -ArgumentList "-File C:\Temp\quickstart.ps1 -Verbose" -verb runas'
