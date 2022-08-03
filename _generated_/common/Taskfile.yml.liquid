@@ -643,10 +643,11 @@ tasks:
     cmds:
       - task: common:repair
       - |
+        TMP="$(mktemp)"
         if [ -n "$UPDATE_INIT_SCRIPT" ]; then
-          bash <(curl -sSL "$UPDATE_INIT_SCRIPT")
+          curl -sSL "$UPDATE_INIT_SCRIPT" > "$TMP" && bash "$TMP" && rm "$TMP"
         else
-          bash <(curl -sSL \{{.INIT_SCRIPT}})
+          curl -sSL \{{.INIT_SCRIPT}} > "$TMP" && bash "$TMP" && rm "$TMP"
         fi
 
   reset:
