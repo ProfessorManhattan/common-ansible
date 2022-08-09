@@ -65,8 +65,7 @@ vars:
     sh: chmod +x .config/log
   MODEL_TASKFILE: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml
   NPM_KEEP_UPDATED: ''
-  NPM_PROGRAM: npm
-  NPM_PROGRAM_LOCAL: pnpm
+  NPM_PROGRAM: pnpm
   NPX_HANDLE:
     sh: |
       if type pnpx &> /dev/null; then
@@ -711,10 +710,10 @@ tasks:
       task is a convenience method that will present a list of scripts alongside
       their descriptions that you can interactively launch.
     log:
-      start: Running `NTL_RUNNER=\{{.NPM_PROGRAM}} \{{.NPX_HANDLE}}ntl`
-      error: Error running `NTL_RUNNER=\{{.NPM_PROGRAM}} \{{.NPX_HANDLE}}ntl`
+      start: Running `NTL_RUNNER=\{{.NPM_PROGRAM}} ntl`
+      error: Error running `NTL_RUNNER=\{{.NPM_PROGRAM}} ntl`
     cmds:
-      - NTL_RUNNER=\{{.NPM_PROGRAM}} \{{.NPX_HANDLE}}ntl
+      - NTL_RUNNER=\{{.NPM_PROGRAM}} ntl
 
   services:
     desc: Update elements of the repository that require API access
@@ -850,7 +849,7 @@ tasks:
           FILE="$1"
           TMP="$(mktemp)"
           .config/log info 'Generating `'"${FILE//.liquid}"'` from `'"$FILE"'`'
-          \{{.NPX_HANDLE}}hbs --data .variables.json --helper ./.config/hbs.cjs "$FILE" --stdout > "$TMP"
+          hbs --data .variables.json --helper ./.config/hbs.cjs "$FILE" --stdout > "$TMP"
           mv "$TMP" "${FILE//.liquid}"
           rm "$FILE"
         }
