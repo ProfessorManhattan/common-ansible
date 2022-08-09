@@ -66,13 +66,6 @@ vars:
   MODEL_TASKFILE: https://gitlab.com/megabyte-labs/common/shared/-/raw/master/Taskfile.yml
   NPM_KEEP_UPDATED: ''
   NPM_PROGRAM: pnpm
-  NPX_HANDLE:
-    sh: |
-      if type pnpx &> /dev/null; then
-        echo 'pnpx '
-      elif type pnpm &> /dev/null; then
-        echo 'pnpm '
-      fi
   PROJECT_TYPE:
     sh: |
       if type jq &> /dev/null && [ -f package.json ]; then VER="$(jq -r '.blueprint.group' package.json)"; if [ "$VER" == 'null' ]; then TYPE="$GROUP_TYPE"; else TYPE="$VER"; fi; else TYPE="$GROUP_TYPE"; fi
