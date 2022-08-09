@@ -2994,11 +2994,6 @@ editorconfig@^0.15.0:
     semver "^5.6.0"
     sigmund "^1.0.1"
 
-electron-to-chromium@^1.4.202:
-  version "1.4.212"
-  resolved "1.4.212"
-  integrity sha512-LjQUg1SpLj2GfyaPDVBUHdhmlDU1vDB4f0mJWSGkISoXQrn5/lH3ECPCuo2Bkvf6Y30wO+b69te+rZK/llZmjg==
-
 emoji-regex@^10.1.0:
   version "10.1.0"
   resolved "10.1.0"
