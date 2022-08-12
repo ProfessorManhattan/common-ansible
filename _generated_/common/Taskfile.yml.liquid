@@ -375,6 +375,12 @@ tasks:
     cmds:
       - task: git:gitlab:group:exec
 
+  ssh-keys:
+    deps:
+      - cloud:heroku:ssh-keys
+      - git:github:ssh-keys
+      - git:gitlab:ssh-keys
+
   init:
     deps:
       - install:software:jq
