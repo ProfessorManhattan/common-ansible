@@ -134,7 +134,7 @@ tasks:
       - |
         RESIZE_ALL_ARRAY=({{index (splitList " ---- " .CLI_ARGS) 1}})
         while read IMAGE_PATH; do
-          task image:resize:cli -- "$RESIZE_ALL_ARRAY[0]" "$RESIZE_ALL_ARRAY[1]" "$CHOSEN_IMAGE"
+          task image:resize:cli -- "$RESIZE_ALL_ARRAY[0]" "$RESIZE_ALL_ARRAY[1]" "$IMAGE_PATH"
         done < <(find "{{index (splitList " ---- " .CLI_ARGS) 0}}" -type f -name "*.jpg" -or -name "*.jpeg" -or -name "*.png" -or -name "*.bmp" -or -name "*.gif" -or -name "*.tif" -or -name "*.tiff" | sed 's/^.\///')
 
   resize:cli:
