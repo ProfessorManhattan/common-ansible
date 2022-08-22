@@ -176,7 +176,7 @@ subjectAltName = otherName:1.3.6.1.4.1.311.20.2.3;UTF8:$UsernameLowercase@localh
   $KeyPEMPath = Join-Path "C:\Temp" key.pem
   Write-Host "Generating PEM files with OpenSSL" -ForegroundColor Black -BackgroundColor Cyan
   & "C:\Program Files\OpenSSL-Win64\bin\openssl.exe" req -x509 -nodes -days 365 -newkey rsa:2048 -out $UserPEMPath -outform PEM -keyout $KeyPEMPath -subj "/CN=$UsernameLowercase" -extensions v3_req_client 2>&1
-  Remove-Item $OpenSSLConfig -Force
+  #Remove-Item $OpenSSLConfig -Force
   # Configure WinRM to use the generated configurations / credentials
   Write-Host "Importing PEM certificates" -ForegroundColor Black -BackgroundColor Cyan
   Import-Certificate -FilePath $UserPEMPath -CertStoreLocation cert:\LocalMachine\root
