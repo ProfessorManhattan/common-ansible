@@ -219,7 +219,7 @@ function RunPlaybookDocker {
   }
   PrepareForReboot
   Write-Host "Provisioning environment with Docker using $HostIP as the IP address" -ForegroundColor Black -BackgroundColor Cyan
-  docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
+  docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --add-host='windows:'$HostIP --entrypoint /bin/bash megabytelabs/updater:latest-full ./quickstart.sh
 }
 
 # @description Run the playbook with WSL
