@@ -144,9 +144,10 @@ function EnsureDockerFunctional {
     wsl --shutdown
     Write-Host "**************"
     Write-Host "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:" -ForegroundColor Black -BackgroundColor Cyan
-    Write-Host "1. Open Docker Desktop if it did not open automatically and accept the agreement." -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "1. Open Docker Desktop if it did not open automatically and accept the agreement if one is presented." -ForegroundColor Black -BackgroundColor Cyan
     Write-Host "2. If Docker Desktop opens a dialog that says WSL 2 installation is incomplete then click the Restart button." -ForegroundColor Black -BackgroundColor Cyan
-    Write-Host "3. The installation will continue after the reboot finishes." -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "3. Press ENTER here to attempt to proceed." -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "4. Optionally, configure Docker to start up on boot by going to Settings -> General." -ForegroundColor Black -BackgroundColor Cyan
     Write-Host "**************"
     Read-Host "Press ENTER to continue (after Docker Desktop stops displaying warning modals)"
     EnsureDockerFunctional
@@ -240,6 +241,7 @@ function ProvisionWindowsAnsible {
   EnsureLinuxSubsystemEnabled
   EnsureVirtualMachinePlatformEnabled
   EnsureDockerDesktopInstalled
+  EnsureDockerFunctional
   if ($ProvisionWithWSL -eq 'true') {
     EnsureUbuntuAPPXInstalled
     SetupUbuntuWSL
