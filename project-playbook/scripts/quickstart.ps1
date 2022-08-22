@@ -13,7 +13,7 @@
 #   7. The playbook is run.
 
 # Uncomment this to provision with WSL instead of Docker
-# $ProvisionWithWSL = true
+# $ProvisionWithWSL = 'True'
 $QuickstartScript = "C:\Temp\quickstart.ps1"
 # Change this to modify the password that the user account resets to
 $UserPassword = 'MegabyteLabs'
@@ -222,7 +222,7 @@ function ProvisionWindowsAnsible {
   EnsureLinuxSubsystemEnabled
   EnsureVirtualMachinePlatformEnabled
   EnsureDockerDesktopInstalled
-  if ($ProvisionWithWSL) {
+  if ($ProvisionWithWSL -eq 'true') {
     EnsureUbuntuAPPXInstalled
     SetupUbuntuWSL
     RunPlaybookWSL
