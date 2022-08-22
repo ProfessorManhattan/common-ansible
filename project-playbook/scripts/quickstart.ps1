@@ -21,8 +21,8 @@ $UserPassword = 'MegabyteLabs'
 New-Item -ItemType Directory -Force -Path C:\Temp
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
-# @description Reboot and continue script after reboot
-function RebootAndContinue {
+# @description Prepares the machine to automatically continue installation after a reboot
+function PrepareForReboot {
   if (!(Test-Path $QuickstartScript)) {
     Write-Host "Ensuring the recursive update script is downloaded"
     Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
@@ -37,6 +37,11 @@ function RebootAndContinue {
   Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
   Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$env:Username" -type String
   Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "MegabyteLabs" -type String
+}
+
+# @description Reboot and continue script after reboot
+function RebootAndContinue {
+  PrepareForReboot
   Restart-Computer -Force
 }
 
@@ -120,6 +125,22 @@ function EnsureDockerDesktopInstalled {
     Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
     choco install -y docker-desktop
     RebootAndContinue
+  }
+}
+
+# @description Attempts to run a minimal Docker container and instructs the user what to do if it is not working
+function EnsureDockerFunctional {
+  docker run hello-world
+  if ($?) {
+    Write-Host "Docker Desktop is operational! Continuing.." -ForegroundColor Black -BackgroundColor Cyan
+  } else {
+    PrepareForReboot
+    Write-Host "**************"
+    Write-Host "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:" -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "1. Open Docker Desktop if it did not open automatically and accept the agreement." -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "2. If Docker Desktop opens a dialog that says WSL 2 installation is incomplete then click the Restart button." -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "3. The installation will continue after the reboot finishes." -ForegroundColor Black -BackgroundColor Cyan
+    Write-Host "**************"
   }
 }
 
