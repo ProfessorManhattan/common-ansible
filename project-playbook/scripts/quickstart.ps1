@@ -6,7 +6,7 @@
 # @description
 #   1. This script will enable Windows features required for WSL.
 #   2. It will reboot and continue where it left off.
-#   3. Ensures Windows WinRM is active so the Ubuntu WSL environment can provision the Windows host.
+#   3. Ensures Windows WinRM is active and configured.
 #   4. Installs and pre-configures the WSL environment.
 #   5. Ensures Docker Desktop is installed
 #   6. Reboots and continues where it left off.
@@ -207,6 +207,10 @@ function RunPlaybookDocker {
   PrepareForReboot
   Write-Host "Provisioning environment with Docker using $HostIP as the IP address" -ForegroundColor Black -BackgroundColor Cyan
   docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
+  if (!$?) {
+    Write-Host "There was an issue running the ansible-provisioner Docker image. It might already have been launched. Attempting to fix.." -ForegroundColor Black -BackgroundColor Cyan
+    docker start -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
+  }
 }
 
 # @description Run the playbook with WSL
