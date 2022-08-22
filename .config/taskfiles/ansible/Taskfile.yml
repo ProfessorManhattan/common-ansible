@@ -195,6 +195,8 @@ tasks:
       success: Successfully generated documentation partials with `mod-ansible-autodoc`
     cmds:
       - >
+        PATH="$PATH:$HOME/.local/bin"
+
         {{.PYTHON_HANDLE}}mod-ansible-autodoc --actions-title '## Features' --actions-description "$ACTIONS_DESCRIPTION"
         --tags-title '### Tags' --tags-description "$TAGS_DESCRIPTION" --todo-title '### TODO'
         --todo-description "$TODO_DESCRIPTION" --variables-title '## Variables' --variables-description
