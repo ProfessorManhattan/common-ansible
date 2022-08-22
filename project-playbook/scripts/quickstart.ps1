@@ -15,6 +15,7 @@
 # Uncomment this to provision with WSL instead of Docker
 # $ProvisionWithWSL = 'True'
 $QuickstartScript = "C:\Temp\quickstart.ps1"
+$QuickstartShellScript = "C:\Temp\quickstart.sh"
 # Change this to modify the password that the user account resets to
 $UserPassword = 'MegabyteLabs'
 
@@ -196,6 +197,10 @@ function RunPlaybookDocker {
   Set-Location -Path "C:\Temp"
   $CurrentLocation = Get-Location
   $WorkDirectory = Split-Path -leaf -path (Get-Location)
+  if (!(Test-Path $QuickstartShellScript)) {
+    Write-Host "Ensuring the quickstart shell script is downloaded"
+    Start-BitsTransfer -Source "https://install.doctor/quickstart" -Destination $QuickstartShellScript -Description "Downloading initialization shell script"
+  }
   Write-Host "Acquiring LAN IP address" -ForegroundColor Black -BackgroundColor Cyan
   $HostIPValue = (Get-NetIPConfiguration | Where-Object -Property IPv4DefaultGateway).IPv4Address.IPAddress
   $HostIP = $HostIPValue[0]
