@@ -832,6 +832,13 @@ tasks:
         . "$HOME/.profile" &> /dev/null || true
         volta install node
 
+  openssl:
+    run: once
+    cmds:
+      - task: install:software
+        vars:
+          PACKAGE: openssl
+
   p7zip:
     run: once
     cmds:
