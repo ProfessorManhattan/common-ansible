@@ -196,7 +196,16 @@ function RunPlaybookDocker {
   Set-Location -Path "C:\Temp"
   $CurrentLocation = Get-Location
   $WorkDirectory = Split-Path -leaf -path (Get-Location)
-  $HostIP = (Get-NetIPConfiguration | Where-Object -Property IPv4DefaultGateway).IPv4Address.IPAddress
+  $HostIPValue = (Get-NetIPConfiguration | Where-Object -Property IPv4DefaultGateway).IPv4Address.IPAddress
+  $HostIPSpace = $HostIPValue.indexOf(" ")
+  if ($HostIPSpace -eq -1) {
+    # No space in string so nothing needs to happen
+    $HostIP = $HostIPValue
+  } else {
+    # Space in string so everything after (and including) the first space is cropped
+    $HostIP = $HostIPValue.Substring(0, $HostIPSpace)
+  }
+  PrepareForReboot
   docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
 }
 
