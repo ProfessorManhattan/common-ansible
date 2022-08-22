@@ -198,12 +198,13 @@ function RunPlaybookDocker {
   $WorkDirectory = Split-Path -leaf -path (Get-Location)
   $HostIPValue = (Get-NetIPConfiguration | Where-Object -Property IPv4DefaultGateway).IPv4Address.IPAddress
   $HostIPSpace = $HostIPValue.indexOf(" ")
-  if ($HostIPSpace -eq -1) {
+  if ($HostIPSpace -eq '-1') {
     # No space in string so nothing needs to happen
     $HostIP = $HostIPValue
   } else {
     # Space in string so everything after (and including) the first space is cropped
     $HostIP = $HostIPValue.Substring(0, $HostIPSpace)
+    Write-Host "Multiple IP addresses detected, using the first one (i.e. $HostIP)" -ForegroundColor Black -BackgroundColor Cyan
   }
   PrepareForReboot
   docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
