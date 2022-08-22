@@ -196,8 +196,10 @@ function RunPlaybookDocker {
   Set-Location -Path "C:\Temp"
   $CurrentLocation = Get-Location
   $WorkDirectory = Split-Path -leaf -path (Get-Location)
+  Write-Host "Acquiring LAN IP address" -ForegroundColor Black -BackgroundColor Cyan
   $HostIP = (Get-NetIPConfiguration | Where-Object -Property IPv4DefaultGateway).IPv4Address.IPAddress
   PrepareForReboot
+  Write-Host "Provisioning environment with Docker using $HostIP as the IP address" -ForegroundColor Black -BackgroundColor Cyan
   docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP[0] --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
 }
 
