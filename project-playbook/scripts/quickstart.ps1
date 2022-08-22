@@ -206,11 +206,7 @@ function RunPlaybookDocker {
   $HostIP = $HostIPValue[0]
   PrepareForReboot
   Write-Host "Provisioning environment with Docker using $HostIP as the IP address" -ForegroundColor Black -BackgroundColor Cyan
-  docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
-  if (!$?) {
-    Write-Host "There was an issue running the ansible-provisioner Docker image. It might already have been launched. Attempting to fix.." -ForegroundColor Black -BackgroundColor Cyan
-    docker start -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --name provisioner --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
-  }
+  docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
 }
 
 # @description Run the playbook with WSL
