@@ -124,12 +124,16 @@ function EnsureDockerDesktopInstalled {
   if (!(Test-Path "C:\Program Files\Docker\Docker\Docker Desktop.exe")) {
     Write-Host "Installing Docker Desktop for Windows" -ForegroundColor Black -BackgroundColor Cyan
     choco install -y docker-desktop
+    Write-Host "Ensuring WSL version is set to 2 (required for Docker Desktop)" -ForegroundColor Black -BackgroundColor Cyan
+    wsl --set-default-version 2
     RebootAndContinue
   }
 }
 
 # @description Attempts to run a minimal Docker container and instructs the user what to do if it is not working
 function EnsureDockerFunctional {
+  Write-Host "Ensuring WSL version is set to 2 (required for Docker Desktop)" -ForegroundColor Black -BackgroundColor Cyan
+  wsl --set-default-version 2
   docker run hello-world
   if ($?) {
     Write-Host "Docker Desktop is operational! Continuing.." -ForegroundColor Black -BackgroundColor Cyan
