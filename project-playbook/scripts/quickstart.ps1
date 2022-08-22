@@ -134,17 +134,23 @@ function EnsureDockerDesktopInstalled {
 function EnsureDockerFunctional {
   Write-Host "Ensuring WSL version is set to 2 (required for Docker Desktop)" -ForegroundColor Black -BackgroundColor Cyan
   wsl --set-default-version 2
+  Write-Host "Running test command (i.e. docker run hello-world)" -ForegroundColor Black -BackgroundColor Cyan
   docker run hello-world
   if ($?) {
     Write-Host "Docker Desktop is operational! Continuing.." -ForegroundColor Black -BackgroundColor Cyan
   } else {
-    PrepareForReboot
+    Write-Host "Updating WSL's kernel" -ForegroundColor Black -BackgroundColor Cyan
+    wsl --update
+    Write-Host "Shutting down / rebooting WSL" -ForegroundColor Black -BackgroundColor Cyan
+    wsl --shutdown
     Write-Host "**************"
     Write-Host "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:" -ForegroundColor Black -BackgroundColor Cyan
     Write-Host "1. Open Docker Desktop if it did not open automatically and accept the agreement." -ForegroundColor Black -BackgroundColor Cyan
     Write-Host "2. If Docker Desktop opens a dialog that says WSL 2 installation is incomplete then click the Restart button." -ForegroundColor Black -BackgroundColor Cyan
     Write-Host "3. The installation will continue after the reboot finishes." -ForegroundColor Black -BackgroundColor Cyan
     Write-Host "**************"
+    Read-Host "Press ENTER to continue (after Docker Desktop stops displaying warning modals)"
+    EnsureDockerFunctional
   }
 }
 
