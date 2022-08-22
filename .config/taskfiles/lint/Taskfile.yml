@@ -42,7 +42,9 @@ tasks:
       start: Linting project with Ansible Lint
       success: Validated project with Ansible Lint
     cmds:
-      - ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}
+      - |
+        PATH="$PATH:$HOME/.local/bin"
+        ansible-lint -c {{.ANSIBLE_LINT_CONFIG}}
 
   any:
     deps:

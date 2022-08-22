@@ -312,6 +312,7 @@ tasks:
       success: Fixed {{if .CLI_ARGS}}`{{.CLI_ARGS}}`{{else}}project{{end}} with `black`
     cmds:
       - |
+        PATH="$PATH:$HOME/.local/bin"
         {{if .CLI_ARGS}}
           pyformat -i {{.CLI_ARGS}}
           isort --overwrite-in-place {{.CLI_ARGS}}
