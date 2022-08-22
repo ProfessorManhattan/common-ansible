@@ -192,7 +192,7 @@ function RunPlaybookWSL {
   Write-Host "Running quickstart.sh in WSL environment" -ForegroundColor Black -BackgroundColor Cyan
   Start-Process "ubuntu.exe" -ArgumentList "run curl -sSL https://gitlab.com/megabyte-labs/gas-station/-/raw/master/scripts/quickstart.sh > quickstart.sh && bash quickstart.sh" -Wait -NoNewWindow
   Write-Host "Running quickstart continue command in WSL environment" -ForegroundColor Black -BackgroundColor Cyan
-  Start-Process "ubuntu.exe" -ArgumentList "run cd ~/Playbooks && task ansible:quickstart" -Wait -NoNewWindow
+  Start-Process "ubuntu.exe" -ArgumentList "run cd ~/Playbooks && source ~/.profile && task ansible:quickstart" -Wait -NoNewWindow
 }
 
 # @description Install Chocolatey
