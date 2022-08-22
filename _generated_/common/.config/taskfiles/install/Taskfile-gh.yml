@@ -7,9 +7,9 @@ env:
       if [ -n "$GITHUB_TOKEN" ]; then
         echo "$GITHUB_TOKEN"
       else
-        # Public repository view PAT (user: megabyte-automation)
+        # Public repository view PAT (user: TimeTravelersHackedMe)
         # The gh CLI used to download assets needs a PAT or the user to login so this prevents that requirement
-        echo "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"
+        echo "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"
       fi
 
 tasks:
