@@ -203,7 +203,11 @@ function RunPlaybookDocker {
   }
   Write-Host "Acquiring LAN IP address" -ForegroundColor Black -BackgroundColor Cyan
   $HostIPValue = (Get-NetIPConfiguration | Where-Object -Property IPv4DefaultGateway).IPv4Address.IPAddress
-  $HostIP = $HostIPValue[0]
+  if ($HostIPValue -is [array]) {
+    $HostIP = $HostIPValue[0]
+  } else {
+    $HostIP = $HostIPValue
+  }
   PrepareForReboot
   Write-Host "Provisioning environment with Docker using $HostIP as the IP address" -ForegroundColor Black -BackgroundColor Cyan
   docker run -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --add-host='windows:'$HostIP --entrypoint /bin/bash debian:buster-slim ./quickstart.sh
