@@ -161,6 +161,7 @@ function EnableWinRM {
   (New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file)
   powershell.exe -ExecutionPolicy ByPass -File $file -Verbose -EnableCredSSP -DisableBasicAuth -ForceNewSSLCert -SkipNetworkProfileCheck
   # Generate OpenSSL configuration and encryption keys
+  Write-Host "Ensuring OpenSSL is installed" -ForegroundColor Black -BackgroundColor Cyan
   choco install -y -r openssl
   $UsernameLowercase = $env:Username.ToLower()
   $env:OpenSSLConfig = "C:\Temp\openssl.conf"
@@ -173,16 +174,20 @@ subjectAltName = otherName:1.3.6.1.4.1.311.20.2.3;UTF8:$UsernameLowercase@localh
 "@
   $UserPEMPath = Join-Path "C:\Temp" user.pem
   $KeyPEMPath = Join-Path "C:\Temp" key.pem
+  Write-Host "Generating PEM files with OpenSSL" -ForegroundColor Black -BackgroundColor Cyan
   & "C:\Program Files\OpenSSL-Win64\bin\openssl.exe" req -x509 -nodes -days 365 -newkey rsa:2048 -out $UserPEMPath -outform PEM -keyout $KeyPEMPath -subj "/CN=$UsernameLowercase" -extensions v3_req_client 2>&1
   Remove-Item $env:OpenSSLConfig -Force
   # Configure WinRM to use the generated configurations / credentials
+  Write-Host "Importing PEM certificates" -ForegroundColor Black -BackgroundColor Cyan
   Import-Certificate -FilePath $UserPEMPath -CertStoreLocation cert:\LocalMachine\root
   $WinRMCert = Import-Certificate -FilePath $UserPEMPath -CertStoreLocation cert:\LocalMachine\TrustedPeople
   $PasswordCred = ConvertTo-SecureString -AsPlainText -Force $UserPassword
   $WinRMCreds = New-Object System.Management.Automation.PSCredential($UsernameLowercase, $PasswordCred) -ea Stop
+  Write-Host "Configuring WinRM to use the certificates" -ForegroundColor Black -BackgroundColor Cyan
   New-Item -Path WSMan:\localhost\ClientCertificate -Subject "$UsernameLowercase@localhost" -URI * -Issuer $WinRMCert.Thumbprint -Credential $WinRMCreds -Force
   Set-Item -Path WSMan:\localhost\Service\Auth\Certificate -Value $true
   # Restart WinRM
+  Write-Host "Restarting WinRM" -ForegroundColor Black -BackgroundColor Cyan
   Restart-Service -Name WinRM -Force
 }
 
