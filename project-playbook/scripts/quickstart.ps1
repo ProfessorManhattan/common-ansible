@@ -19,6 +19,7 @@ $QuickstartShellScript = "C:\Temp\quickstart.sh"
 # Change this to modify the password that the user account resets to
 $UserPassword = 'MegabyteLabs'
 
+# @description Checks to make sure the PowerShell instance is an Administrator instance
 function CheckForAdminRights() {
   $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
   $princ = New-Object System.Security.Principal.WindowsPrincipal($identity)
@@ -39,8 +40,8 @@ $AdminRights
 if($AdminRights){
   Read-Host
 } else {
-"no admin rights ,trying to open in admin rights"
-[Environment]::Exit(0)
+  Read-Host "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
+  [Environment]::Exit(0)
 }
 
 New-Item -ItemType Directory -Force -Path C:\Temp
