@@ -7243,11 +7243,6 @@ prettier@^2.4.1:
   resolved "2.7.1"
   integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
 
-prettier@^2.7.1:
-  version "2.7.1"
-  resolved "2.7.1"
-  integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
-
 pretty-format@^26.6.2:
   version "26.6.2"
   resolved "26.6.2"
@@ -8815,12 +8810,12 @@ typeof-article@^0.1.1:
   dependencies:
     kind-of "^3.1.0"
 
-typescript@^4.6.4:
+typescript@^4.5.5:
   version "4.7.4"
   resolved "4.7.4"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
-typescript@^4.7.4:
+typescript@^4.6.4:
   version "4.7.4"
   resolved "4.7.4"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
