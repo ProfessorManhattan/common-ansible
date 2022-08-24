@@ -19,6 +19,30 @@ $QuickstartShellScript = "C:\Temp\quickstart.sh"
 # Change this to modify the password that the user account resets to
 $UserPassword = 'MegabyteLabs'
 
+function CheckForAdminRights() {
+  $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+  $princ = New-Object System.Security.Principal.WindowsPrincipal($identity)
+  if(!$princ.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    $powershell = [System.Diagnostics.Process]::GetCurrentProcess()
+    $psi = New-Object System.Diagnostics.ProcessStartInfo $powerShell.Path
+    $psi.Arguments = '-file ' + $script:MyInvocation.MyCommand.Path
+    $psi.Verb = "runas"
+    [System.Diagnostics.Process]::Start($psi) | Out-Null
+    return $false
+  } else {
+    return $true
+  }
+}
+
+$AdminRights = CheckForAdminRights
+$AdminRights
+if($AdminRights){
+  Read-Host
+} else {
+"no admin rights ,trying to open in admin rights"
+[Environment]::Exit(0)
+}
+
 New-Item -ItemType Directory -Force -Path C:\Temp
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
