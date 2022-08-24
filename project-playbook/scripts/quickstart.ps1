@@ -30,14 +30,20 @@ function PrepareForReboot {
   }
   Write-Host "Ensuring start-up script is present" -ForegroundColor Black -BackgroundColor Cyan
   Set-Content -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" "PowerShell.exe -ExecutionPolicy RemoteSigned -Command `"Start-Process -FilePath powershell -ArgumentList '-File C:\Temp\quickstart.ps1 -Verbose' -verb runas`""
-  Write-Host "Changing $env:Username password to '$UserPassword' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
-  $NewPassword = ConvertTo-SecureString "$UserPassword" -AsPlainText -Force
-  Set-LocalUser -Name $env:Username -Password $NewPassword
-  Write-Host "Turning on auto-logon" -ForegroundColor Black -BackgroundColor Cyan
-  $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
-  Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
-  Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$env:Username" -type String
-  Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "MegabyteLabs" -type String
+  $LocalUser = (whoami).Substring((whoami).LastIndexOf('\') + 1)
+  $AccountType = Get-LocalUser -Name $LocalUser | Select-Object -ExpandProperty PrincipalSource
+  if ($AccountType -eq 'Local') {
+    Write-Host "Changing $env:Username password to '$UserPassword' so we can automatically log back in" -ForegroundColor Black -BackgroundColor Cyan
+    $NewPassword = ConvertTo-SecureString "$UserPassword" -AsPlainText -Force
+    Set-LocalUser -Name $env:Username -Password $NewPassword
+    Write-Host "Turning on auto-logon" -ForegroundColor Black -BackgroundColor Cyan
+    $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+    Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
+    Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$env:Username" -type String
+    Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "MegabyteLabs" -type String
+  } else {
+    Write-Host "Local user's account is a $AccountType account so auto-logging in after reboot is not supported" -ForegroundColor Black -BackgroundColor Cyan
+  }
 }
 
 # @description Reboot and continue script after reboot
