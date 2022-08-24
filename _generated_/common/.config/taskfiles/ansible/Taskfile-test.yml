@@ -318,6 +318,7 @@ tasks:
             done< <(echo "$CHOSEN_OPTIONS")
             CHOSEN_OPTION="${COMBINED_OPTIONS:1}"
             export ANSIBLE_ENABLE_TASK_DEBUGGER=true
+            .config/log info 'Running `task ansible:test:molecule:docker:cli -- '"$CHOSEN_OPTION"'`'
             task ansible:test:molecule:docker:cli -- "$CHOSEN_OPTION"
           fi
         fi
