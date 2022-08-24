@@ -197,6 +197,7 @@ tasks:
     deps:
       - :install:modules:local
     cmds:
+      - npm run build
       - |
         .config/log info 'The current package.json version is `'"$(jq -r '.version' package.json)"'`'
         BUMP_VERSION="$(npm version patch --no-scripts --no-commit-hooks --no-git-tag-version --force | sed 's/^v//')"
