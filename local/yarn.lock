@@ -7056,9 +7056,9 @@ prettier-plugin-organize-imports@^2.3.4:
   integrity sha512-R8o23sf5iVL/U71h9SFUdhdOEPsi3nm42FD/oDYIZ2PQa4TNWWuWecxln6jlIQzpZTDMUeO1NicJP6lLn2TtRw==
 
 prettier-plugin-package-perfection@^1.0.1:
-  version "1.0.8"
-  resolved "1.0.8"
-  integrity sha512-h3hKOhSkSerfWn0dfU/An/wFdxh6GQ5uOFpsFB5tilPgPP9K24d+FlEaMwgJk+tKCvCMnQhgiNAMSAYpJ3fTiQ==
+  version "1.0.9"
+  resolved "1.0.9"
+  integrity sha512-9lcAKtNJ6nVEhTe1PQ+76ntBdwAe1FPWUg/7IAN0TA1dcxlYxhNzxMsieqSOyP1OBf+UrF4WIuNhFVOJ1H0aVA==
   dependencies:
     prettier "^2.5.1"
     prettier-package-json "2.6.0"
