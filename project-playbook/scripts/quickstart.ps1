@@ -46,9 +46,10 @@ function CheckForAdminRights() {
 $AdminRights = CheckForAdminRights
 $AdminRights
 if($AdminRights){
-  Read-Host
+  Log "Current session is an Administrator session.. Good."
 } else {
-  Read-Host "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
+  Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
+  Read-Host
   [Environment]::Exit(0)
 }
 
