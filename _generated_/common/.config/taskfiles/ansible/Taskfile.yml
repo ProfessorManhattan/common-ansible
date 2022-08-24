@@ -315,6 +315,7 @@ tasks:
           {{.PYTHON_HANDLE}}ansible-playbook -i {{.INVENTORY}} {{.PLAY_PARAMS}}
         ignore_error: true
       - sleep 5
+      - .config/log info 'Ensuring the password (if provided) is forcibly removed'
       - rm -f ~/.VAULT_PASS_REMOVE_ME
       - rm -f ~/ANSIBLE_PLAYBOOK_CONTINUE.sh
 
