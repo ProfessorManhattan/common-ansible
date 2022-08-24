@@ -35,6 +35,7 @@ function CheckForAdminRights() {
   }
 }
 
+# @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
 $AdminRights = CheckForAdminRights
 $AdminRights
 if($AdminRights){
