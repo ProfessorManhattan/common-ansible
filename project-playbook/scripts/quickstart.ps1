@@ -242,7 +242,7 @@ function EnableWinRM {
 
 # @description Run the playbook with Docker
 function RunPlaybookDocker {
-  Set-Location -Path "C:\Temp"
+  Set-Location -Path "C:\Temp" | Out-Null
   $CurrentLocation = Get-Location
   $WorkDirectory = Split-Path -leaf -path (Get-Location)
   if (!(Test-Path $QuickstartShellScript)) {
@@ -271,7 +271,10 @@ function RunPlaybookWSL {
 
 # @description Install Chocolatey
 function InstallChocolatey {
-  Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  choco --help | Out-Null
+  if (!$?) {
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  }
 }
 
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
@@ -297,6 +300,7 @@ function ProvisionWindowsAnsible {
     RunPlaybookDocker
   }
   Read-Host "Removing temporary files (assuming you are not currently in the C:\Temp directory."
+  Set-Location -Path "$HOME" | Out-Null
   Remove-Item -path "C:\Temp" -Recurse -Force | Out-Null
   Remove-Item -path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" -Force | Out-Null
   Log "Removing temporary local administrator account named Byte"
