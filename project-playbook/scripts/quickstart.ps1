@@ -391,5 +391,5 @@ if($AdminAccess){
     Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
   }
   Log "This script requires Administrator privileges. Respawning instance with necessary privileges."
-  Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
+  cmd.exe /c powershell -Command "Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript""
 }
