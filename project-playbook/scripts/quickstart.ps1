@@ -103,11 +103,10 @@ function RebootAndContinue {
 
 # @description Reboot and continue script after reboot (if required)
 function RebootAndContinueIfRequired {
-  if (!(Get-Module "PendingReboot")) {
+  if (!(Get-Module -ListAvailable -Name 'PendingReboot')) {
     Log "Installing PendingReboot module"
-    Install-Module -Name PendingReboot -Force
+    Install-Module -Name 'PendingReboot' -Force
   }
-  Import-Module PendingReboot -Force
   if ((Test-PendingReboot).IsRebootPending) {
     RebootAndContinue
   }
@@ -115,12 +114,11 @@ function RebootAndContinueIfRequired {
 
 # @description Ensure all Windows updates have been applied and then starts the provisioning process
 function EnsureWindowsUpdated {
-  if (!(Get-Module "PSWindowsUpdate")) {
+  if (!(Get-Module -ListAvailable -Name 'PSWindowsUpdate')) {
     Log "Installing update module"
-    Install-Module -Name PSWindowsUpdate -Force
+    Install-Module -Name 'PSWindowsUpdate' -Force
   }
   Log "Ensuring all the available Windows updates have been applied."
-  Import-Module PSWindowsUpdate -Force
   Get-WUInstall -AcceptAll -IgnoreReboot | Out-Null
   Log "Checking if reboot is required."
   RebootAndContinueIfRequired
