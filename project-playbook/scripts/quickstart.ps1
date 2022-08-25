@@ -209,14 +209,13 @@ function EnsureDockerFunctional {
     wsl --update
     Log "Shutting down / rebooting WSL"
     wsl --shutdown
-    start /w 'C:\Program Files\Docker\Docker\Docker Desktop.exe' install --quiet --accept-license
     Log "Waiting for Docker Desktop to come online"
     Start-Sleep -s 10
     docker run --rm hello-world | Out-Null
     if ($?) {
       Log "Docker is now running and operational! Continuing.."
     } else {
-      if ($EnsureDockerFunctionalCount -eq 14) {
+      if ($EnsureDockerFunctionalCount -eq 24) {
         Log "*******************"
         Log "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:"
         Log "1. Open Docker Desktop if it did not open automatically and accept the agreement if one is presented."
@@ -391,7 +390,6 @@ if($AdminAccess){
     Log "Ensuring the recursive update script is downloaded"
     Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
   }
-  Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
-  Read-Host "Press ENTER to open Administrator PowerShell"
+  Log "This script requires Administrator privileges. Respawning instance with necessary privileges."
   Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
 }
