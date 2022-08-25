@@ -163,6 +163,7 @@ function EnsureUbuntuAPPXInstalled {
     }
     Log "Adding Ubuntu APPX"
     Add-AppxPackage -Path "C:\Temp\UBUNTU2204.appx"
+    UpgradeLinuxWSLKernel
     SetupUbuntuWSL
   }
 }
@@ -186,6 +187,15 @@ function SetupUbuntuWSL {
   Start-Process "ubuntu.exe" -ArgumentList "run echo '$UsernameLowercase ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers" -Wait -NoNewWindow
   Log "Setting default user"
   Start-Process "ubuntu.exe" -ArgumentList "config --default-user $UsernameLowercase" -Wait -NoNewWindow
+}
+
+# @description Update to WSL2 Linux kernel required by Docker Desktop
+function UpgradeLinuxWSLKernel {
+  if(!(Test-Path "C:\Temp\wsl-update.msi")) {
+    Log "Downloading WSL2 Linux kernel package"
+    Start-BitsTransfer -Source "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" -Destination "C:\Temp\wsl-update.msi" -Description "Downloading WSL2 Linux kernel"
+    Start-Process "C:\Temp\wsl-update.msi" -ArgumentList "/quiet /passive"
+  }
 }
 
 # @description Ensures Docker Desktop is installed (which requires a reboot)
