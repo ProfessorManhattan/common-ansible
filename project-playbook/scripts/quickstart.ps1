@@ -335,6 +335,9 @@ function ProvisionWindowsAnsible {
   EnsureNetworksReset
 }
 
+# @description Ensure the user can run scripts
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
 # @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
 $AdminAccess = CheckForAdminRights
 if($AdminAccess){
