@@ -77,10 +77,6 @@ function PrepareForReboot {
   }
   Log "Ensuring start-up script is present"
   Set-Content -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" "PowerShell.exe -ExecutionPolicy RemoteSigned -Command `"Start-Process -FilePath powershell -ArgumentList '-File $QuickstartScript -Verbose' -verb runas`""
-  # Logic below from method where local type accounts had their passwords changed
-  # New method involves creating temporary local admin account
-  # $AccountType = Get-LocalUser -Name $LocalUser | Select-Object -ExpandProperty PrincipalSource
-  # if ($AccountType -eq 'Local') { }
   Log "Creating temporary local administrator named $AdminUsername"
   net user $AdminUsername /add
   net localgroup administrators $AdminUsername /add
@@ -182,6 +178,7 @@ function EnsureDockerDesktopInstalled {
     choco install -y docker-desktop
     Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
     wsl --set-default-version 2
+    net localgroup docker-users $InitialUser /add
     RebootAndContinue
   }
 }
@@ -349,6 +346,9 @@ if($AdminAccess){
   Log "Current session is an Administrator session.. Good."
   Log 'Ensuring UAC is disabled system-wide'
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
+  if ($LocalUser -neq $AdminUsername) {
+    RebootAndContinue
+  }
   ProvisionWindowsAnsible
 } else {
   if (!(Test-Path $QuickstartScript)) {
