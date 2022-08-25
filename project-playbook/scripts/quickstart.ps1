@@ -1,5 +1,3 @@
-#Requires -RunAsAdministrator
-
 # @file scripts/quickstart.ps1
 # @brief This script allows you to perform a complete install of [Gas Station](https://github.com/megabyte-labs/gas-station)
 #   on your Windows computer with a single line of code. It is intended to be run on a freshly installed copy of Windows 11.
@@ -54,7 +52,7 @@ if($AdminAccess){
   }
   Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
   Read-Host
-  # Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
+  Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
 }
 
 # @description Prepares the machine to automatically continue installation after a reboot
