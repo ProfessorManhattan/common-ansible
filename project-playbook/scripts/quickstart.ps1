@@ -307,4 +307,5 @@ if($AdminAccess){
   Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
   Read-Host
   Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
+  Log "***IMPORTANT***Please note that if you have a local account your password will be changed to MegabyteLabs ***IMPORTANT***"
 }
