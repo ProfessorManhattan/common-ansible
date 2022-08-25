@@ -346,7 +346,7 @@ if($AdminAccess){
   Log "Current session is an Administrator session.. Good."
   Log 'Ensuring UAC is disabled system-wide'
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
-  if ($LocalUser -neq $AdminUsername) {
+  if ($LocalUser -ne $AdminUsername) {
     RebootAndContinue
   }
   ProvisionWindowsAnsible
