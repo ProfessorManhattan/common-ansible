@@ -180,7 +180,7 @@ function EnsureDockerDesktopInstalled {
     Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
     wsl --set-default-version 2
     Log "Running Docker Desktop installation using the CLI"
-    Start-Process 'C:\Temp\Docker Desktop Installer.exe' -Wait 'install --accept-license'
+    Start-Process 'C:\Temp\Docker Desktop Installer.exe' -Wait 'install --accept-license --backend=wsl-2'
     if (Test-Path("$LocalUserText")) {
       $InitialUser = cat "$LocalUserText"
     } else {
