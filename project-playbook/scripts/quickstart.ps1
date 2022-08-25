@@ -35,11 +35,11 @@ function CheckForAdminRights() {
   $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
   $princ = New-Object System.Security.Principal.WindowsPrincipal($identity)
   if(!$princ.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    $powershell = [System.Diagnostics.Process]::GetCurrentProcess()
-    $psi = New-Object System.Diagnostics.ProcessStartInfo $powerShell.Path
-    $psi.Arguments = '-file ' + $script:MyInvocation.MyCommand.Path
-    $psi.Verb = "runas"
-    [System.Diagnostics.Process]::Start($psi) | Out-Null
+    # $powershell = [System.Diagnostics.Process]::GetCurrentProcess()
+    # $psi = New-Object System.Diagnostics.ProcessStartInfo $powerShell.Path
+    # $psi.Arguments = '-file ' + $script:MyInvocation.MyCommand.Path
+    # $psi.Verb = "runas"
+    # [System.Diagnostics.Process]::Start($psi) | Out-Null
     return $false
   } else {
     return $true
@@ -184,9 +184,10 @@ function EnsureDockerDesktopInstalled {
 }
 
 # @description Attempts to run a minimal Docker container and instructs the user what to do if it is not working
+$EnsureDockerFunctionalCount = 0
 function EnsureDockerFunctional {
   Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
-  wsl --set-default-version 2
+  wsl --set-default-version 2 | Out-Null
   Log "Running test command (i.e. docker run --rm hello-world)"
   docker run --rm hello-world | Out-Null
   if ($?) {
@@ -196,21 +197,23 @@ function EnsureDockerFunctional {
     wsl --update
     Log "Shutting down / rebooting WSL"
     wsl --shutdown
-    & 'C:\Program Files\Docker\Docker\Docker Desktop.exe'
+    start /w 'C:\Program Files\Docker\Docker\Docker Desktop.exe' install --quiet --accept-license
     Log "Waiting for Docker Desktop to come online"
-    Start-Sleep -s 30
+    Start-Sleep -s 10
     docker run --rm hello-world | Out-Null
     if ($?) {
       Log "Docker is now running and operational! Continuing.."
     } else {
-      Log "**************"
-      Log "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:"
-      Log "1. Open Docker Desktop if it did not open automatically and accept the agreement if one is presented."
-      Log "2. If Docker Desktop opens a dialog that says WSL 2 installation is incomplete then click the Restart button."
-      Log "3. Press ENTER here to attempt to proceed."
-      Log "4. Optionally, configure Docker to start up on boot by going to Settings -> General."
-      Log "**************"
-      Read-Host "Press ENTER to continue (after Docker Desktop stops displaying warning modals)"
+      if ($EnsureDockerFunctionalCount -eq 14) {
+        Log "*******************"
+        Log "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:"
+        Log "1. Open Docker Desktop if it did not open automatically and accept the agreement if one is presented."
+        Log "2. If Docker Desktop opens a dialog that says WSL 2 installation is incomplete then click the Restart button."
+        Log "3. Press ENTER here to attempt to proceed."
+        Log "4. Optionally, configure Docker to start up on boot by going to Settings -> General."
+        Log "*******************"
+        Read-Host "Press ENTER to continue (after Docker Desktop stops displaying warning modals)"
+      }
       EnsureDockerFunctional
     }
   }
@@ -324,7 +327,7 @@ function ProvisionWindowsAnsible {
   }
   Log "Encounter an error? Running 'Enable-PSRemoting -SkipNetworkProfileCheck' in an Administrator PowerShell might help.."
   Log "If that does not work, this article might help: http://www.dhruvsahni.com/verifying-winrm-connectivity"
-  Read-Host "Removing temporary files"
+  Log "Removing temporary files"
   Set-Location -Path "$HOME" | Out-Null
   Remove-Item -path "C:\Temp" -Recurse -Force | Out-Null
   Remove-Item -path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" -Force | Out-Null
@@ -335,6 +338,7 @@ function ProvisionWindowsAnsible {
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 1
   Log 'Re-restricting the ExecutionPolicy'
   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force
+  Read-Host "Press ENTER to close this window"
 }
 
 # @description Ensure the user can run scripts
