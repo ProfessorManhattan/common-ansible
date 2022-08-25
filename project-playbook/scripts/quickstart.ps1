@@ -145,7 +145,7 @@ function EnsureVirtualMachinePlatformEnabled {
 # @description Ensures Ubuntu 22.04 is installed on the system from a .appx file
 function EnsureUbuntuAPPXInstalled {
   Log 'Ensuring Ubuntu 22.04 WSL environment is installed'
-  $Ubuntu2204APPXInstalled = Get-AppxPackage -Name CanonicalGroupLimited.Ubuntu22.04onWindows
+  $Ubuntu2204APPXInstalled = Get-AppxPackage -Name 'CanonicalGroupLimited.Ubuntu22.04LTS'
   if (!$Ubuntu2204APPXInstalled) {
     if(!(Test-Path "C:\Temp\UBUNTU2204.appx")) {
       Log "Downloading Ubuntu APPX"
@@ -175,8 +175,10 @@ function SetupUbuntuWSL {
 function EnsureDockerDesktopInstalled {
   if (!(Test-Path "C:\Program Files\Docker\Docker\Docker Desktop.exe")) {
     Log "Installing Docker Desktop for Windows"
-    $DockerSource = 'https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe'
-    Start-BitsTransfer -Source $DockerSource -Destination 'C:\Temp\Docker Desktop Installer.exe' -Description 'Downloading Docker Desktop for Windows'
+    if (!(Test-Path 'C:\Temp\Docker Desktop Installer.exe')) {
+      $DockerSource = 'https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe'
+      Start-BitsTransfer -Source $DockerSource -Destination 'C:\Temp\Docker Desktop Installer.exe' -Description 'Downloading Docker Desktop for Windows'
+    }
     Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
     wsl --set-default-version 2
     Log "Running Docker Desktop installation using the CLI"
