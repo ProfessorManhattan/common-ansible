@@ -21,6 +21,7 @@ $QuickstartShellScript = "C:\Temp\quickstart.sh"
 
 # @description Shared common variables
 $LocalUser = (whoami).Substring((whoami).LastIndexOf('\') + 1)
+$NetProfile = Get-NetConnectionProfile
 
 # @description Used to log styled messages
 function Log($message) {
@@ -42,6 +43,29 @@ function CheckForAdminRights() {
     return $false
   } else {
     return $true
+  }
+}
+
+# @description Changes all networks to private which is a requirement of WinRM. This could probably
+#   be improved from a security standpoint but this is just for Windows which will probably only be
+#.  getting provisioned in VMs. Perhaps when there is better support for Ansible SSH on Windows
+#.  we can get rid of WinRM entirely. Until then, this method is just going to do it like all the
+#.  tutorials on Google / StackOverflow. Ansible does provide some good documentation on using
+#.  shared keys - for now this will be on the backlog. Pull requests welcome from anyone who needs
+#.  Windows WinRM locked down.
+function EnsureNetworksPrivate() {
+  Log 'Ensuring all networks are in private mode (a requirement for WinRM connections)'
+  $NetProfile = Get-NetConnectionProfile
+  foreach ($InterfaceIndex in $NetProfile.InterfaceIndex) {
+    Set-NetConnectionProfile -InterfaceIndex $InterfaceIndex -NetworkCategory Private
+  }
+}
+
+# @description Ensures the network states are restored to their original privacy level after the play is finished.
+function EnsureNetworksReset() {
+  Log 'Resetting network connection privacy states to their original levels'
+  foreach($Profile in $NetProfile) {
+    Set-NetConnectionProfile -InterfaceIndex $Profile.InterfaceIndex -NetworkCategory $Profile.NetworkCategory
   }
 }
 
@@ -287,6 +311,7 @@ function ProvisionWindowsAnsible {
   }
   EnsureWindowsUpdated
   InstallChocolatey
+  EnsureNetworksPrivate
   EnableWinRM
   EnsureLinuxSubsystemEnabled
   EnsureVirtualMachinePlatformEnabled
@@ -299,12 +324,14 @@ function ProvisionWindowsAnsible {
   } else {
     RunPlaybookDocker
   }
-  Read-Host "Removing temporary files (assuming you are not currently in the C:\Temp directory."
+  Log "Encounter an error? Running 'Enable-PSRemoting -SkipNetworkProfileCheck' in an Administrator PowerShell might help.."
+  Read-Host "Removing temporary files"
   Set-Location -Path "$HOME" | Out-Null
   Remove-Item -path "C:\Temp" -Recurse -Force | Out-Null
   Remove-Item -path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" -Force | Out-Null
   Log "Removing temporary local administrator account named $AdminUsername"
   Remove-LocalUser -Name "$AdminUsername"
+  EnsureNetworksReset
 }
 
 # @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
