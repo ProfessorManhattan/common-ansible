@@ -325,6 +325,7 @@ function ProvisionWindowsAnsible {
     RunPlaybookDocker
   }
   Log "Encounter an error? Running 'Enable-PSRemoting -SkipNetworkProfileCheck' in an Administrator PowerShell might help.."
+  Log "If that does not work, this article might help: http://www.dhruvsahni.com/verifying-winrm-connectivity"
   Read-Host "Removing temporary files"
   Set-Location -Path "$HOME" | Out-Null
   Remove-Item -path "C:\Temp" -Recurse -Force | Out-Null
