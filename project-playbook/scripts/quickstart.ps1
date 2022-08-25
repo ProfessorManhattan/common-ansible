@@ -303,7 +303,7 @@ function ProvisionWindowsAnsible {
   Set-Location -Path "$HOME" | Out-Null
   Remove-Item -path "C:\Temp" -Recurse -Force | Out-Null
   Remove-Item -path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" -Force | Out-Null
-  Log "Removing temporary local administrator account named Byte"
+  Log "Removing temporary local administrator account named $AdminUsername"
   Remove-LocalUser -Name "$AdminUsername"
 }
 
