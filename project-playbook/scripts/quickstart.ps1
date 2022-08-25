@@ -13,7 +13,7 @@
 
 # @description Configuration variables
 $AdminUsername = 'Gas'
-$AdminPassword = 'CrownNebula'
+$AdminPassword = 'CrownNebulaSpaceButterfly888()'
 # Uncomment this to provision with WSL instead of Docker
 # $ProvisionWithWSL = 'True'
 $QuickstartScript = "C:\Temp\quickstart.ps1"
