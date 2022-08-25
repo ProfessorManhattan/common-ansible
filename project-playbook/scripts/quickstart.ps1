@@ -44,7 +44,8 @@ function CheckForAdminRights() {
 }
 
 # @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
-if(CheckForAdminRights){
+$AdminAccess = CheckForAdminRights
+if($AdminAccess){
   Log "Current session is an Administrator session.. Good."
 } else {
   if (!(Test-Path $QuickstartScript)) {
@@ -53,7 +54,7 @@ if(CheckForAdminRights){
   }
   Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
   Read-Host
-  Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
+  # Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
 }
 
 # @description Prepares the machine to automatically continue installation after a reboot
