@@ -144,13 +144,13 @@ function EnsureVirtualMachinePlatformEnabled {
 
 # @description Ensures Ubuntu 22.04 is installed on the system from a .appx file
 function EnsureUbuntuAPPXInstalled {
-  if(!(Test-Path "C:\Temp\UBUNTU2204.appx")) {
-    Log "Downloading Ubuntu APPX"
-    Start-BitsTransfer -Source "https://aka.ms/wslubuntu2204" -Destination "C:\Temp\UBUNTU2204.appx" -Description "Downloading Ubuntu 22.04 WSL image"
-  }
-  # TODO: Ensure this is the appropriate AppxPackage name
+  Log 'Ensuring Ubuntu 22.04 WSL environment is installed'
   $Ubuntu2204APPXInstalled = Get-AppxPackage -Name CanonicalGroupLimited.Ubuntu22.04onWindows
   if (!$Ubuntu2204APPXInstalled) {
+    if(!(Test-Path "C:\Temp\UBUNTU2204.appx")) {
+      Log "Downloading Ubuntu APPX"
+      Start-BitsTransfer -Source "https://aka.ms/wslubuntu2204" -Destination "C:\Temp\UBUNTU2204.appx" -Description "Downloading Ubuntu 22.04 WSL image"
+    }
     Log "Adding Ubuntu APPX"
     Add-AppxPackage -Path "C:\Temp\UBUNTU2204.appx"
   }
