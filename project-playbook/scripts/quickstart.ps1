@@ -109,7 +109,7 @@ function RebootAndContinueIfRequired {
   }
   # Status method used by the update installer
   $objSystemInfo = New-Object -ComObject "Microsoft.Update.SystemInfo"
-  if ((Test-PendingReboot).IsRebootPending || $objSystemInfo.RebootRequired) {
+  if ((Test-PendingReboot).IsRebootPending -or $objSystemInfo.RebootRequired) {
     RebootAndContinue
   }
 }
