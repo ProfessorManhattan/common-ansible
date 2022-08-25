@@ -304,6 +304,7 @@ function InstallChocolatey {
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
 # while continuing script after a restart.
 function ProvisionWindowsAnsible {
+  Log "Switching to Admin account"
   Log "Ensuring Windows is updated and that pre-requisites are installed.."
   if (!(Get-PackageProvider -Name "NuGet")) {
     Log "Installing NuGet since the system is missing the required version.."
@@ -333,15 +334,21 @@ function ProvisionWindowsAnsible {
   Log "Removing temporary local administrator account named $AdminUsername"
   Remove-LocalUser -Name "$AdminUsername"
   EnsureNetworksReset
+  Log 'Re-enabling UAC'
+  Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 1
+  Log 'Re-restricting the ExecutionPolicy'
+  Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force
 }
 
 # @description Ensure the user can run scripts
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 
 # @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
 $AdminAccess = CheckForAdminRights
 if($AdminAccess){
   Log "Current session is an Administrator session.. Good."
+  Log 'Ensuring UAC is disabled system-wide'
+  Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
   ProvisionWindowsAnsible
 } else {
   if (!(Test-Path $QuickstartScript)) {
@@ -349,7 +356,6 @@ if($AdminAccess){
     Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
   }
   Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
-  Read-Host
+  Read-Host "Press ENTER to open Administrator PowerShell"
   Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
-  Log "NOTE: In case there was an error or if you cancelled half-way through, make sure the administrator named Byte is removed."
 }
