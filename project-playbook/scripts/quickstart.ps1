@@ -134,6 +134,7 @@ function EnsureLinuxSubsystemEnabled {
   if ($wslenabled.State -eq "Disabled") {
     Log "Enabling Microsoft-Windows-Subsystem-Linux"
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
+    RebootAndContinue
   }
 }
 
@@ -143,6 +144,7 @@ function EnsureVirtualMachinePlatformEnabled {
   if ($vmenabled.State -eq "Disabled") {
     Log "Enabling VirtualMachinePlatform"
     Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
+    RebootAndContinue
   }
 }
 
@@ -151,12 +153,17 @@ function EnsureUbuntuAPPXInstalled {
   Log 'Ensuring Ubuntu 22.04 WSL environment is installed'
   $Ubuntu2204APPXInstalled = Get-AppxPackage -Name 'CanonicalGroupLimited.Ubuntu22.04LTS'
   if (!$Ubuntu2204APPXInstalled) {
+    Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
+    wsl --set-default-version 2
+    Log "Updating WSL's kernel"
+    wsl --update
     if(!(Test-Path "C:\Temp\UBUNTU2204.appx")) {
       Log "Downloading Ubuntu APPX"
       Start-BitsTransfer -Source "https://aka.ms/wslubuntu2204" -Destination "C:\Temp\UBUNTU2204.appx" -Description "Downloading Ubuntu 22.04 WSL image"
     }
     Log "Adding Ubuntu APPX"
     Add-AppxPackage -Path "C:\Temp\UBUNTU2204.appx"
+    SetupUbuntuWSL
   }
 }
 
@@ -332,7 +339,7 @@ function ProvisionWindowsAnsible {
   EnsureLinuxSubsystemEnabled
   EnsureVirtualMachinePlatformEnabled
   EnsureUbuntuAPPXInstalled
-  SetupUbuntuWSL
+  EnsureWindowsUpdated
   EnsureDockerDesktopInstalled
   EnsureDockerFunctional
   if ($ProvisionWithWSL -eq 'true') {
@@ -366,7 +373,7 @@ if (!(Test-Path 'C:\Temp')) {
 
 # @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
 $AdminAccess = CheckForAdminRights
-if($AdminAccess){
+if ($AdminAccess) {
   Log "Current session is an Administrator session.. Good."
   Log 'Ensuring UAC is disabled system-wide'
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
