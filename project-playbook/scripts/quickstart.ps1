@@ -332,9 +332,10 @@ function InstallChocolatey {
 function ProvisionWindowsAnsible {
   Log "Switching to Admin account"
   Log "Ensuring Windows is updated and that pre-requisites are installed.."
-  if (!(Get-PackageProvider -Name "NuGet")) {
+  $Packages = Get-PackageProvider -ListAvailable | Select-Object -Property Name
+  if (!($Packages.Name -contains 'NuGet')) {
     Log "Installing NuGet since the system is missing the required version.."
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+    Install-PackageProvider -Name 'NuGet' -MinimumVersion 2.8.5.201 -Force
   }
   EnsureWindowsUpdated
   InstallChocolatey
