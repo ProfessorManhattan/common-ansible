@@ -11,12 +11,16 @@
 #   5. Ensures Docker Desktop is installed and that the daemon is running.
 #   6. The LAN IP is detected and that same IP that the Windows computer has is used by Docker to provision with Ansible.
 
+# @description Configuration variables
+$AdminUsername = 'Gas'
+$AdminPassword = 'CrownNebula'
 # Uncomment this to provision with WSL instead of Docker
 # $ProvisionWithWSL = 'True'
 $QuickstartScript = "C:\Temp\quickstart.ps1"
 $QuickstartShellScript = "C:\Temp\quickstart.sh"
-# Change this to modify the password that the user account resets to (when the user's account is a local one)
-$UserPassword = 'MegabyteLabs'
+
+# @description Shared common variables
+$LocalUser = (whoami).Substring((whoami).LastIndexOf('\') + 1)
 
 # @description Used to log styled messages
 function Log($message) {
@@ -49,20 +53,24 @@ function PrepareForReboot {
   }
   Log "Ensuring start-up script is present"
   Set-Content -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" "PowerShell.exe -ExecutionPolicy RemoteSigned -Command `"Start-Process -FilePath powershell -ArgumentList '-File $QuickstartScript -Verbose' -verb runas`""
-  $LocalUser = (whoami).Substring((whoami).LastIndexOf('\') + 1)
-  $AccountType = Get-LocalUser -Name $LocalUser | Select-Object -ExpandProperty PrincipalSource
-  if ($AccountType -eq 'Local') {
-    Log "Changing $env:Username password to '$UserPassword' so we can automatically log back in"
-    $NewPassword = ConvertTo-SecureString "$UserPassword" -AsPlainText -Force
-    Set-LocalUser -Name $env:Username -Password $NewPassword
-    Log "Turning on auto-logon"
-    $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
-    Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
-    Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$env:Username" -type String
-    Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "$UserPassword" -type String
-  } else {
-    Log "Local user's account is a $AccountType account so auto-logging in after reboot is not supported"
-  }
+  # Logic below from method where local type accounts had their passwords changed
+  # New method involves creating temporary local admin account
+  # $AccountType = Get-LocalUser -Name $LocalUser | Select-Object -ExpandProperty PrincipalSource
+  # if ($AccountType -eq 'Local') { }
+  Log "Creating temporary local administrator named $AdminUsername"
+  net user $AdminUsername /add
+  net localgroup administrators $AdminUsername /add
+  Log "Setting $AdminUsername password to $AdminPassword"
+  $SecureAdminPassword = ConvertTo-SecureString "$AdminPassword" -AsPlainText -Force
+  Set-LocalUser -Name $AdminUsername -Password $SecureAdminPassword
+  # For domain user password, use the following:
+  # Set-ADAccountPassword Tom -NewPassword $NewPassword -Reset
+  Log "Turning on auto-logon"
+  $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+  Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
+  Set-ItemProperty $RegistryPath 'DefaultUsername' -Value "$AdminUsername" -type String
+  # Following line needs to use unencrypted password
+  Set-ItemProperty $RegistryPath 'DefaultPassword' -Value "$AdminPassword" -type String
 }
 
 # @description Reboot and continue script after reboot
@@ -250,7 +258,7 @@ function RunPlaybookDocker {
   }
   PrepareForReboot
   Log "Provisioning environment with Docker using $HostIP as the IP address"
-  docker run -it -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) --add-host='windows:'$HostIP --entrypoint /bin/bash megabytelabs/updater:latest-full ./quickstart.sh
+  docker run -it -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) -e MOLECULE_GROUP="windows" -e ANSIBLE_PASSWORD="$AdminPassword" -e ANSIBLE_USER="$AdminUsername" --add-host='standard:'$HostIP --entrypoint /bin/bash megabytelabs/updater:latest-full ./quickstart.sh
 }
 
 # @description Run the playbook with WSL
@@ -291,7 +299,8 @@ function ProvisionWindowsAnsible {
   Read-Host "Removing temporary files (assuming you are not currently in the C:\Temp directory."
   Remove-Item -path "C:\Temp" -Recurse -Force | Out-Null
   Remove-Item -path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\Gas Station.bat" -Force | Out-Null
-  Log "All done! Make sure you change your password. It was set to 'MegabyteLabs' for automation purposes."
+  Log "Removing temporary local administrator account named Byte"
+  Remove-LocalUser -Name "$AdminUsername"
 }
 
 # @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
@@ -307,5 +316,5 @@ if($AdminAccess){
   Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
   Read-Host
   Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
-  Log "***IMPORTANT***Please note that if you have a local account your password will be changed to MegabyteLabs ***IMPORTANT***"
+  Log "NOTE: In case there was an error or if you cancelled half-way through, make sure the administrator named Byte is removed."
 }
