@@ -374,6 +374,10 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 $AdminAccess = CheckForAdminRights
 if($AdminAccess){
   Log "Current session is an Administrator session.. Good."
+  Log 'Ensuring C:\Temp exists'
+  if (!(Test-Path 'C:\Temp')) {
+    New-Item 'C:\Temp' -ItemType Directory
+  }
   Log 'Ensuring UAC is disabled system-wide'
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
   if ($LocalUser -ne $AdminUsername) {
