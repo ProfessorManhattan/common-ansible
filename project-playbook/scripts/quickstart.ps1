@@ -108,8 +108,7 @@ function RebootAndContinueIfRequired {
     Install-Module -Name 'PendingReboot' -Force
   }
   # Status method used by the update installer
-  $objSystemInfo = New-Object -ComObject "Microsoft.Update.SystemInfo"
-  if ((Test-PendingReboot).IsRebootPending -or $objSystemInfo.RebootRequired) {
+  if (((Test-PendingReboot).IsRebootPending) -or (Get-WURebootStatus -Silent)) {
     RebootAndContinue
   }
 }
@@ -123,7 +122,8 @@ function EnsureWindowsUpdated {
   Log 'Ensuring updates are enabled for other Microsoft products besides Windows'
   Add-WUServiceManager -MicrosoftUpdate -Confirm:$false
   Log "Ensuring all the available Windows updates have been applied."
-  Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
+  PrepareForReboot
+  Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -AutoReboot
   Log "Checking if reboot is required."
   RebootAndContinueIfRequired
 }
@@ -214,6 +214,15 @@ function EnsureDockerFunctional {
   } else {
     Start-Sleep -s 14
     EnsureDockerFunctional
+  }
+}
+
+# @description Ensures NuGet is available
+function EnsureNuGet {
+  $Packages = Get-PackageProvider -ListAvailable | Select-Object -Property Name
+  if (!($Packages.Name -contains 'NuGet')) {
+    Log "Installing NuGet since the system is missing the required version.."
+    Install-PackageProvider -Name 'NuGet' -MinimumVersion 2.8.5.201 -Force
   }
 }
 
@@ -316,13 +325,7 @@ function InstallChocolatey {
 # @description The main logic for the script - enable Windows features, set up Ubuntu WSL, and install Docker Desktop
 # while continuing script after a restart.
 function ProvisionWindowsAnsible {
-  Log "Switching to Admin account"
-  Log "Ensuring Windows is updated and that pre-requisites are installed.."
-  $Packages = Get-PackageProvider -ListAvailable | Select-Object -Property Name
-  if (!($Packages.Name -contains 'NuGet')) {
-    Log "Installing NuGet since the system is missing the required version.."
-    Install-PackageProvider -Name 'NuGet' -MinimumVersion 2.8.5.201 -Force
-  }
+  EnsureNuGet
   EnsureWindowsUpdated
   EnsureNetworksPrivate
   EnableWinRM
@@ -350,7 +353,7 @@ function ProvisionWindowsAnsible {
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 1
   Log 'Re-restricting the ExecutionPolicy'
   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force
-  Read-Host "Press ENTER to close this window"
+  Read-Host "Finished! Press ENTER to close the process.."
 }
 
 # @description Ensure the user can run scripts
@@ -380,5 +383,5 @@ if($AdminAccess){
     Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
   }
   Log "This script requires Administrator privileges. Respawning instance with necessary privileges."
-  Start-Process PowerShell -verb RunAs -ArgumentList "-File $QuickstartScript"
+  Start-Process PowerShell -verb RunAs -ArgumentList "-NoExit -File $QuickstartScript"
 }
