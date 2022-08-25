@@ -107,7 +107,9 @@ function RebootAndContinueIfRequired {
     Log "Installing PendingReboot module"
     Install-Module -Name 'PendingReboot' -Force
   }
-  if ((Test-PendingReboot).IsRebootPending) {
+  # Status method used by the update installer
+  $objSystemInfo = New-Object -ComObject "Microsoft.Update.SystemInfo"
+  if ((Test-PendingReboot).IsRebootPending || $objSystemInfo.RebootRequired) {
     RebootAndContinue
   }
 }
@@ -118,8 +120,10 @@ function EnsureWindowsUpdated {
     Log "Installing update module"
     Install-Module -Name 'PSWindowsUpdate' -Force
   }
+  Log 'Ensuring updates are enabled for other Microsoft products besides Windows'
+  Add-WUServiceManager -MicrosoftUpdate -Confirm:$false
   Log "Ensuring all the available Windows updates have been applied."
-  Get-WUInstall -AcceptAll -IgnoreReboot | Out-Null
+  Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
   Log "Checking if reboot is required."
   RebootAndContinueIfRequired
 }
@@ -158,6 +162,12 @@ function EnsureUbuntuAPPXInstalled {
 
 # @description Automates the process of setting up the Ubuntu 22.04 WSL environment
 function SetupUbuntuWSL {
+  Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
+  wsl --set-default-version 2
+  Log "Updating WSL's kernel"
+  wsl --update
+  Log "Shutting down / rebooting WSL"
+  wsl --shutdown
   Log "Setting up Ubuntu WSL"
   Start-Process "ubuntu.exe" -ArgumentList "install --root" -Wait -NoNewWindow
   $UsernameLowercase = $env:Username.ToLower()
@@ -179,8 +189,6 @@ function EnsureDockerDesktopInstalled {
       $DockerSource = 'https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe'
       Start-BitsTransfer -Source $DockerSource -Destination 'C:\Temp\Docker Desktop Installer.exe' -Description 'Downloading Docker Desktop for Windows'
     }
-    Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
-    wsl --set-default-version 2
     Log "Running Docker Desktop installation using the CLI"
     Start-Process 'C:\Temp\Docker Desktop Installer.exe' -Wait 'install --accept-license --backend=wsl-2 --quiet'
     if (Test-Path("$LocalUserText")) {
@@ -192,43 +200,20 @@ function EnsureDockerDesktopInstalled {
     Log "Adding $InitialUser to the docker-users group"
     net localgroup docker-users "$InitialUser" /add
     Log 'Pausing script to give Docker time before forced reboot'
-    Start-Sleep -s 10
+    Start-Sleep -s 14
     RebootAndContinue
   }
 }
 
 # @description Attempts to run a minimal Docker container and instructs the user what to do if it is not working
-$EnsureDockerFunctionalCount = 0
 function EnsureDockerFunctional {
-  Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
-  wsl --set-default-version 2 | Out-Null
   Log "Running test command (i.e. docker run --rm hello-world)"
   docker run --rm hello-world | Out-Null
   if ($?) {
     Log "Docker Desktop is operational! Continuing.."
   } else {
-    Log "Updating WSL's kernel"
-    wsl --update
-    Log "Shutting down / rebooting WSL"
-    wsl --shutdown
-    Log "Waiting for Docker Desktop to come online"
-    Start-Sleep -s 10
-    docker run --rm hello-world | Out-Null
-    if ($?) {
-      Log "Docker is now running and operational! Continuing.."
-    } else {
-      if ($EnsureDockerFunctionalCount -eq 24) {
-        Log "*******************"
-        Log "Docker Desktop does not appear to be functional yet. If you used this script, Docker Desktop should load on boot. Follow these instructions:"
-        Log "1. Open Docker Desktop if it did not open automatically and accept the agreement if one is presented."
-        Log "2. If Docker Desktop opens a dialog that says WSL 2 installation is incomplete then click the Restart button."
-        Log "3. Press ENTER here to attempt to proceed."
-        Log "4. Optionally, configure Docker to start up on boot by going to Settings -> General."
-        Log "*******************"
-        Read-Host "Press ENTER to continue (after Docker Desktop stops displaying warning modals)"
-      }
-      EnsureDockerFunctional
-    }
+    Start-Sleep -s 14
+    EnsureDockerFunctional
   }
 }
 
@@ -308,6 +293,8 @@ function RunPlaybookDocker {
   PrepareForReboot
   Log "Provisioning environment with Docker using $HostIP as the IP address"
   docker run -it -v $("$($CurrentLocation)"+':/'+$WorkDirectory) -w $('/'+$WorkDirectory) -e MOLECULE_GROUP="windows" -e ANSIBLE_PASSWORD="$AdminPassword" -e ANSIBLE_USER="$AdminUsername" --add-host='standard:'$HostIP --entrypoint /bin/bash megabytelabs/updater:latest-full ./quickstart.sh
+  echo $?
+  Log 'Status code of docker command above'
 }
 
 # @description Run the playbook with WSL
@@ -342,10 +329,10 @@ function ProvisionWindowsAnsible {
   EnsureLinuxSubsystemEnabled
   EnsureVirtualMachinePlatformEnabled
   EnsureUbuntuAPPXInstalled
+  SetupUbuntuWSL
   EnsureDockerDesktopInstalled
   EnsureDockerFunctional
   if ($ProvisionWithWSL -eq 'true') {
-    SetupUbuntuWSL
     RunPlaybookWSL
   } else {
     RunPlaybookDocker
