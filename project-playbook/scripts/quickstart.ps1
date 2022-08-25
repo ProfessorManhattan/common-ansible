@@ -14,6 +14,7 @@
 # @description Configuration variables
 $AdminUsername = 'Gas'
 $AdminPassword = 'CrownNebulaSpaceButterfly888()'
+$LocalUserText = 'C:\Temp\local-user.txt'
 # Uncomment this to provision with WSL instead of Docker
 # $ProvisionWithWSL = 'True'
 $QuickstartScript = "C:\Temp\quickstart.ps1"
@@ -175,10 +176,16 @@ function SetupUbuntuWSL {
 function EnsureDockerDesktopInstalled {
   if (!(Test-Path "C:\Program Files\Docker\Docker\Docker Desktop.exe")) {
     Log "Installing Docker Desktop for Windows"
-    choco install -y docker-desktop
+    $DockerSource = 'https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe'
+    Start-BitsTransfer -Source $DockerSource -Destination 'C:\Temp\Docker Desktop Installer.exe' -Description 'Downloading Docker Desktop for Windows'
     Log "Ensuring WSL version is set to 2 (required for Docker Desktop)"
     wsl --set-default-version 2
-    net localgroup docker-users $InitialUser /add
+    Log "Running Docker Desktop installation using the CLI"
+    Start-Process 'C:\Temp\Docker Desktop Installer.exe' -Wait 'install --accept-license'
+    $InitialUser = cat "$LocalUserText"
+    net localgroup docker-users "$InitialUser" /add
+    Log 'Pausing script to give Docker time before forced reboot'
+    Start-Sleep -s 10
     RebootAndContinue
   }
 }
@@ -264,6 +271,18 @@ function EnableWinRM {
 #   Restart-Service -Name WinRM -Force
 # }
 
+# @description Force script to run when provisioning user first logs in
+function RunOnce() {
+  Log 'Configuring RunOnce script'
+  $KeyName = 'RunGasStationProvisioner'
+  $Command = '%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Temp\quickstart.ps1'
+  if (-not ((Get-Item -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce).$KeyName )) {
+    New-ItemProperty -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' -Name $KeyName -Value $Command -PropertyType ExpandString
+  } else {
+    Set-ItemProperty -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' -Name $KeyName -Value $Command -PropertyType ExpandString
+  }
+}
+
 # @description Run the playbook with Docker
 function RunPlaybookDocker {
   Set-Location -Path "C:\Temp" | Out-Null
@@ -316,10 +335,10 @@ function ProvisionWindowsAnsible {
   EnableWinRM
   EnsureLinuxSubsystemEnabled
   EnsureVirtualMachinePlatformEnabled
+  EnsureUbuntuAPPXInstalled
   EnsureDockerDesktopInstalled
   EnsureDockerFunctional
   if ($ProvisionWithWSL -eq 'true') {
-    EnsureUbuntuAPPXInstalled
     SetupUbuntuWSL
     RunPlaybookWSL
   } else {
@@ -351,6 +370,9 @@ if($AdminAccess){
   Log 'Ensuring UAC is disabled system-wide'
   Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
   if ($LocalUser -ne $AdminUsername) {
+    Log "Writing LocalUser name to $LocalUserText so provisioning user can add them to the Docker group"
+    echo "$LocalUser" > "$LocalUserText"
+    RunOnce
     RebootAndContinue
   }
   ProvisionWindowsAnsible
