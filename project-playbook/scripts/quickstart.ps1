@@ -15,6 +15,7 @@
 $AdminUsername = 'Gas'
 $AdminPassword = 'CrownNebulaSpaceButterfly888()'
 $LocalUserText = 'C:\Temp\local-user.txt'
+$OEMUsername = 'Starflake'
 # Uncomment this to provision with WSL instead of Docker
 # $ProvisionWithWSL = 'True'
 $QuickstartScript = "C:\Temp\quickstart.ps1"
@@ -182,7 +183,13 @@ function EnsureDockerDesktopInstalled {
     wsl --set-default-version 2
     Log "Running Docker Desktop installation using the CLI"
     Start-Process 'C:\Temp\Docker Desktop Installer.exe' -Wait 'install --accept-license'
-    $InitialUser = cat "$LocalUserText"
+    if (Test-Path("$LocalUserText")) {
+      $InitialUser = cat "$LocalUserText"
+    } else {
+      Log 'C:\Temp\local-user.txt is not present so we will assume it is an OEM build'
+      $InitialUser = $OEMUsername
+    }
+    Log "Adding $InitialUser to the docker-users group"
     net localgroup docker-users "$InitialUser" /add
     Log 'Pausing script to give Docker time before forced reboot'
     Start-Sleep -s 10
