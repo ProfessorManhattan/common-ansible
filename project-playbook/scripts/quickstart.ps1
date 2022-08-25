@@ -41,20 +41,6 @@ function CheckForAdminRights() {
   }
 }
 
-# @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
-$AdminAccess = CheckForAdminRights
-if($AdminAccess){
-  Log "Current session is an Administrator session.. Good."
-} else {
-  if (!(Test-Path $QuickstartScript)) {
-    Log "Ensuring the recursive update script is downloaded"
-    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
-  }
-  Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
-  Read-Host
-  Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
-}
-
 # @description Prepares the machine to automatically continue installation after a reboot
 function PrepareForReboot {
   if (!(Test-Path $QuickstartScript)) {
@@ -308,4 +294,17 @@ function ProvisionWindowsAnsible {
   Log "All done! Make sure you change your password. It was set to 'MegabyteLabs' for automation purposes."
 }
 
-ProvisionWindowsAnsible
+# @description Checks for admin privileges and if there are none then open a new instance with Administrator rights
+$AdminAccess = CheckForAdminRights
+if($AdminAccess){
+  Log "Current session is an Administrator session.. Good."
+  ProvisionWindowsAnsible
+} else {
+  if (!(Test-Path $QuickstartScript)) {
+    Log "Ensuring the recursive update script is downloaded"
+    Start-BitsTransfer -Source "https://install.doctor/windows-quickstart" -Destination $QuickstartScript -Description "Downloading initialization script"
+  }
+  Log "This script requires Administrator privileges. Press ENTER to escalate to Administrator privileges."
+  Read-Host
+  Start-Process PowerShell -verb runas -ArgumentList "-file $QuickstartScript"
+}
