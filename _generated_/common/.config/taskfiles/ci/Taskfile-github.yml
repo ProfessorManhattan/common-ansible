@@ -36,7 +36,7 @@ tasks:
       - cmd: |
           if [ "$GITHUB_HTTP_REPO" != 'null' ]; then
             GITHUB_REPO_WITH_TOKEN="$(echo "$GITHUB_HTTP_REPO" | sed "s/github.com/${GITHUB_TOKEN}@github.com/")"
-            git remote set-url github "${GITHUB_REPO_WITH_TOKEN}.git"
+            git remote add github "${GITHUB_REPO_WITH_TOKEN}.git"
             git push github master --force
           else
             .config/log warn 'The .blueprint.repository.github field is missing! Cannot synchronize to GitHub.'
