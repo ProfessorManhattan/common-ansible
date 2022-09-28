@@ -108,6 +108,8 @@ tasks:
       success: Converted `{{.BASENAME}}` into a sub-repo
     cmds:
       - rm -rf .git
+      - git config url."git@gitlab.com:".insteadOf "https://gitlab.com/"
+      - git config url."git@github.com:".insteadOf "https://github.com/"
       - task: commit:automated
       - |
         ROLE_DIR="$PWD"
