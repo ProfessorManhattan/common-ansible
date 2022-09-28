@@ -118,11 +118,8 @@ tasks:
           git remote add {{.BASENAME}} {{.GITLAB_REPO}}
         fi
         RELATIVE_DIR="$(echo $ROLE_DIR | sed 's@'"$PWD"'/@@')"
-        if [ -d "$RELATIVE_DIR" ]; then
-          rm -rf "$RELATIVE_DIR"
-        fi
         task git:commit:automated
-        HUSKY=0 git subrepo clone {{.BASENAME}} "$RELATIVE_DIR" -b master
+        HUSKY=0 git subrepo init "$RELATIVE_DIR" -r {{.BASENAME}} -b master -u
     status:
       - '[ "$FULLY_AUTOMATED_TASKS" != "true" ]'
 
