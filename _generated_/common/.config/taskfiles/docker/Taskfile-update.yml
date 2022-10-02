@@ -142,4 +142,4 @@ tasks:
           fi
         fi
     status:
-      - '[ "{{.VERSION_COMMAND}}" == "null" ] || [ "{{.DOCKER_BASE_TAG}}" != "{{.CLI_ARGS}}" ]'
+      - '[ "{{.VERSION_COMMAND}}" == "null" ]'
