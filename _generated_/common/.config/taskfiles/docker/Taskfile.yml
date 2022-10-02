@@ -246,8 +246,10 @@ tasks:
       DOCKERHUB_DESCRIPTION:
         sh: jq -r '.description' package.json
     cmds:
-      - docker pushrm {{.DOCKER_IMAGE}}
-      - docker pushrm --short '{{.DOCKERHUB_DESCRIPTION}}' {{.DOCKER_IMAGE}}
+      - cmd: docker pushrm {{.DOCKER_IMAGE}}
+        ignore_error: true
+      - cmd: docker pushrm --short '{{.DOCKERHUB_DESCRIPTION}}' {{.DOCKER_IMAGE}}
+        ignore_error: true
 
   shell:
     deps:
