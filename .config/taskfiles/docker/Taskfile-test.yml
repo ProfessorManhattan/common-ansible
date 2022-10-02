@@ -22,13 +22,10 @@ tasks:
         if [ -d ./test ]; then
           TEST_FOLDERS="$(find ./test -mindepth 1 -maxdepth 1 -type d)"
           if echo "$TEST_FOLDERS" | grep '/test/'; then
-            CURR_DIR="$PWD"
             for TEST_DIR in $TEST_FOLDERS; do
               if [ -f "${TEST_DIR}/.codeclimate.yml" ]; then
                 RAN_CODECLIMATE=true
-                cd "$TEST_DIR"
-                task lint:codeclimate
-                cd "$PWD"
+                task -d "$TEST_DIR" lint:codeclimate
               fi
             done
             if [ -z "$RAN_CODECLIMATE" ]; then
