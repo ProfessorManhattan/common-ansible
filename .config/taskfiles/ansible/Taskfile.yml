@@ -347,7 +347,11 @@ tasks:
               fi
             fi
           fi
-          pip3 install sentry-sdk
+          if [ -f local/requirements.txt ]; then
+            pip3 install -r local/requirements.txt
+          else
+            .config/log warn 'The `local/requirements.txt` file is missing'
+          fi
           if [ -f "playbooks/${INVENTORY_SLUG}.yml" ]; then
             PLAY_TMP="$(mktemp)" && echo "$QUICKSTART_PLAYBOOK_MATCH" > "$PLAY_TMP" && .config/log md "$PLAY_TMP"
             {{.PYTHON_HANDLE}}ansible-playbook --skip-tags "dotfiles,mas" -i {{.INVENTORY}} "playbooks/${INVENTORY_SLUG}.yml" || EXIT_CODE="$?"
