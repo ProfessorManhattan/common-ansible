@@ -158,6 +158,9 @@ includes:
     taskfile: {{taskPath}}
     optional: true
 {{/forEach}}
+  localhost:
+    taskfile: ../Taskfile-localhost.yml
+    optional: true
 
 profile: |
   if [[ "$OSTYPE" == 'linux-gnu'* ]] || [[ "$OSTYPE" == 'linux-musl'* ]]; then
